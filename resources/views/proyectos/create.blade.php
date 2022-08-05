@@ -1,0 +1,39 @@
+<!-- Modal Agregar-->
+<div class="modal fade" id="agregar" role="dialog" align="center">
+  <div class="modal-dialog">
+   <div class="modal-content">           
+    <form action="{{ action('ProyectoController@store_proyectos') }}" method="POST" enctype="multipart/form-data">
+      {{csrf_field()}}
+      <div class="modal-body">
+       <div class="row">
+         <div class="col-md-12">
+          <input type="hidden" name="id">
+          <div class="form-group col-md-12">
+            <label for="title"><strong>Titulo:</strong></label>
+            <textarea rows="3" type="text" class="form-control" name="titulo" id="titulo" required></textarea>
+            <label for="title"><strong>Fecha de proyecto:</strong></label>
+            <input type="date" name="fecha"  class="form-control col-md-5" step="1" min="2019-01-01" value="<?php echo date("Y-m-d");?>">
+            <label for="title"><strong>Observación:</strong></label>
+            <textarea rows="3" type="text" class="form-control" name="obs" id="obs"></textarea>
+            <label for="title" class="col-md-10"><strong>ASM:</strong></label>
+            <input type="file"  name="asm" accept=".asm" id="asm">
+            <label for="title" class="col-md-10"><strong>DWG:</strong></label>
+            <input type="file"  name="dwg" accept=".dwg" id="dwg">
+            <label for="title" class="col-md-10"><strong>PAR:</strong></label>
+            <input type="file"  name="par" accept=".par" id="par">
+            <label for="title" class="col-md-10"><strong>STL:</strong></label>
+            <input type="file"  name="stl" accept=".stl"  id="stl">
+            <label for="title" class="col-md-10"><strong>PDF:</strong></label>
+            <input type="file"  name="pdf" accept=".pdf"  id="pdf">
+            <label for="title" class="col-md-10"><strong>MPP:</strong></label>
+            <input type="file"  name="mpp" accept=".mpp"  id="mpp">
+          </div> 
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-info">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </form>                
+</div>
+</div>
+</div>

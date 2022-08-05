@@ -1,0 +1,93 @@
+@extends('equipamiento.layouts.layout')
+
+@section('content')
+
+@if(Session::has('message'))
+<div class="container" id="div.alert">
+  <div class="row">
+    <div class="col-1"></div>
+    <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
+     {{Session::get('message')}}
+   </div>
+ </div>
+</div>
+@endif
+
+<div class="col-md-12 ml-auto">
+  <h1>
+   <div class="form-inline pull-right">
+    <form  method="GET">
+      <div class="form-group">
+        <div class="form-group"><h6>Equipamiento:</h6>
+        </div>
+        <input type="text" name="equipamiento" class="form-control" id="equipamiento" value="{{$equipamiento}}" >
+        &nbsp
+        <div class="form-group">
+          <select class="form-control" name="resuelto"  id="resuelto" value="">
+            <option value="2">{{'Todos'}} </option>
+            <option value="1">{{'Resuelto'}} </option>
+            <option value="0">{{'No Resuelto'}} </option>
+          </select>                  
+        </div>
+        &nbsp
+        <button type="submit" class="btn btn-default"> Buscar</button>
+      </form>
+    </div>
+  </h1>            
+</div>
+
+<div class="col-md-12">             
+  <table class="table table-striped table-bordered ">
+    <thead>
+      <th class="text-center">Equipamiento</th>
+      <th class="text-center">Fecha</th>
+      <th class="text-center">Descripción</th>
+      <th class="text-center">Solución</th>
+      <th class="text-center">Acciones</th>       
+    </thead>  
+    <tbody>
+      @if(count($incidentes))
+      @foreach($incidentes as $incidente) 
+      <tr>
+        <td width="100" align="center">{{$incidente->equipamiento}}</td>
+        <td align="center" width="107">{!! \Carbon\Carbon::parse($incidente->creado)->format("d-m-Y") !!}</td>
+        <td>{{$incidente->descripcion}}</td>
+        <td>{{$incidente->solucion}}</td>
+
+        <td align="center" width="130">
+         @if ($incidente->resuelto == 1)
+         <h5>Resuelto &#10003</h5>
+
+         @else                        
+         <button class="btn btn-info btn-sm" data-id=" {{$incidente->id_i}}" data-toggle="modal" data-target="#modalForm">Resolver</button>
+         @endif
+       </td>
+     </tr>                    
+     @endforeach  
+     @endif  
+   </tbody>
+ </table>
+
+ @include('incidentes.resolver')
+
+ {{ $incidentes->appends($_GET)->links() }}
+
+ <script>
+  $(document).ready(function (e) {
+    $('#modalForm').on('show.bs.modal', function(e) {    
+      var id = $(e.relatedTarget).data().id;
+      $(e.currentTarget).find('#incidente').val(id);
+    });
+  });
+</script>
+
+<script> 
+  $("document").ready(function(){
+    setTimeout(function(){
+     $("div.alert").fadeOut();
+    }, 5000 ); // 5 secs
+
+  });
+</script>
+
+@stop

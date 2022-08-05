@@ -1,0 +1,67 @@
+@font-face{
+	font-family:juice itc;
+	src: url('juice itc.ttf');
+
+	
+}
+
+
+.texto{
+	font-family:juice itc;
+	font-size: xx-large;
+	text-indent: 2em;
+	text-align: left;
+	padding-bottom:10px; 
+	
+}
+
+.texto1{
+	font-family:juice itc;
+	font-size: x-large;
+	text-indent: 2em;
+	text-align: left;
+	padding-bottom:10px; 
+	
+}
+
+button{
+	font-family:juice itc;
+	font-size: 60px;
+	padding-bottom:10px; 
+}
+
+.botones{
+		font-family: juice itc;
+		font-size: x-large;
+		text-align: left;
+
+}
+
+.botones1{
+		font-family: juice itc;
+		font-size: x-large;
+		text-align: center;
+}
+.ent{
+	font-family: juice itc;
+	font-size: x-large;
+	text-align: left;
+	padding:0px 0px 0px 10px;
+
+}
+
+.menu{
+
+	font-family:juice itc;
+	margin-left: 20%;
+	font-size: 50px;
+	text-indent: :4em;
+	padding-bottom:10px; 
+
+}
+
+.menu1{
+	font-family:juice itc;
+	padding-bottom:10px;
+}
+
