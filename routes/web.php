@@ -278,3 +278,44 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
  Route::get('/seman/{id}','AlmuerzoController@mostrarsemana')->name('semanaactual');
  Route::get('/cerase', 'AlmuerzoController@semana_cer')->name('cerrarsem');
  Route::put('/cerse','AlmuerzoController@cerrar_semana')->name('cerrarsema');
+ 
+ //***********************************Power BI*************************************
+ Route::get('powerbis','HomeController@powerbis');
+
+   //****************Ventas**********************
+
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('ventas','VentaController')->middleware('role:administrador|venta');
+  Route::post('store_venta','VentaController@store_venta')->name('agregar-powerbi')->middleware('role:administrador|venta');
+  Route::get('destroy_venta/{venta}', ['uses' => 'VentaController@destroy_venta'])->middleware('role:administrador|venta');
+  Route::post('update_venta','VentaController@update_venta')->middleware('role:administrador|venta')->name('update_ventas');
+});
+  //****************Compras**********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('compras','CompraController')->middleware('role:administrador|compra');
+  Route::post('store_compra','CompraController@store_compra')->name('agregar-powerbi')->middleware('role:administrador|compra');
+  Route::get('destroy_compra/{compra}', ['uses' => 'CompraController@destroy_compra'])->middleware('role:administrador|compra');
+  Route::post('update_compra','CompraController@update_compra')->middleware('role:administrador|compra')->name('update_compras');
+});
+  
+  //****************Calidad**********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('calidades','CalidadController')->middleware('role:administrador|calidad');
+  Route::post('store_calidad','CalidadController@store_calidad')->name('agregar-powerbi')->middleware('role:administrador|calidad');
+  Route::get('destroy_calidad/{calidad}', ['uses' => 'CalidadController@destroy_calidad'])->middleware('role:administrador|calidad');
+  Route::post('update_calidad','CalidadController@update_calidad')->middleware('role:administrador|calidad')->name('update_calidades');
+});
+  //****************Costos***********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('costos','CostoController')->middleware('role:administrador|costo');
+  Route::post('store_costo','CostoController@store_costo')->name('agregar-powerbi')->middleware('role:administrador|costo');
+  Route::get('destroy_costo/{costo}', ['uses' => 'CostoController@destroy_costo'])->middleware('role:administrador|costo');
+  Route::post('update_costo','CostoController@update_costo')->middleware('role:administrador|costo')->name('update_costos');
+});
+//***********************************Frecuencias*************************************
+Route::get('/frecuencias', 'FrecuenciasController@index');
+

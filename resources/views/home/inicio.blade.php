@@ -76,19 +76,21 @@
 </div>-->
 
 <div class="row">
-    
+  <div class="col-md-3">
+    <a  href="{{'/powerbis'}}"> <img src="{{ URL::to('/img/powerbi.png') }}" height="120"> </a>
+  </div>
 
-    <div class="col-md-4">
-      <a  href="{{('/empleado')}}"> <img src="{{ URL::to('/img/personal.png') }}" height="120"> </a>
-    </div>
+  <div class="col-md-3">
+    <a  href="{{('/empleado')}}"> <img src="{{ URL::to('/img/personal.png') }}" height="120"> </a>
+  </div>
 
-    <div class="col-md-4">
-      <a  href="{{('/medico')}}"> <img src="{{ URL::to('/img/medico.png') }}" height="120"> </a>
-    </div>
+  <div class="col-md-3">
+    <a  href="{{('/medico')}}"> <img src="{{ URL::to('/img/medico.png') }}" height="120"> </a>
+  </div>
 
-    <div class="col-md-4">
-      <a  href="{{('/visitas')}}"> <img src="{{ URL::to('/img/guardia.png') }}" height="120"> </a>
-    </div>
+  <div class="col-md-3">
+    <a  href="{{('/visitas')}}"> <img src="{{ URL::to('/img/guardia.png') }}" height="120"> </a>
+  </div>
         
 </div>
   

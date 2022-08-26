@@ -79,8 +79,11 @@ class HomeController extends Controller
     {
         return view ('home.sistemas');
     }
-
-     public function documentos (){
+    public function documentos (){
         return view ('home.documentos');
+    }
+    public function powerbis ()
+    {
+        return view ('home.powerbis');
     }
 }
