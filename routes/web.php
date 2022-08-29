@@ -316,6 +316,22 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('destroy_costo/{costo}', ['uses' => 'CostoController@destroy_costo'])->middleware('role:administrador|costo');
   Route::post('update_costo','CostoController@update_costo')->middleware('role:administrador|costo')->name('update_costos');
 });
+  //****************Produccion***********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('producciones','ProduccionController')->middleware('role:administrador|produccion');
+  Route::post('store_produccion','ProduccionController@store_produccion')->name('agregar-powerbi')->middleware('role:administrador|produccion');
+  Route::get('destroy_produccion/{produccion}', ['uses' => 'ProduccionController@destroy_produccion'])->middleware('role:administrador|produccion');
+  Route::post('update_produccion','ProduccionController@update_produccion')->middleware('role:administrador|produccion')->name('update_producciones');
+});
+    //****************Rrhhs***********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('rrhhs','RrhhController')->middleware('role:administrador|rrhh');
+  Route::post('store_rrhh','RrhhController@store_rrhh')->name('agregar-powerbi')->middleware('role:administrador|rrhh');
+  Route::get('destroy_rrhh/{rrhh}', ['uses' => 'RrhhController@destroy_rrhh'])->middleware('role:administrador|rrhh');
+  Route::post('update_rrhh','RrhhController@update_rrhh')->middleware('role:administrador|rrhh')->name('update_rrhhs');
+});
 //***********************************Frecuencias*************************************
 Route::get('/frecuencias', 'FrecuenciasController@index');
 
