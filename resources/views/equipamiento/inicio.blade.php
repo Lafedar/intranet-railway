@@ -12,6 +12,7 @@
 </div>
 @endif
 
+<!-- Barra de busqueda -->
 <div class="col-md-12 ml-auto">
     <h1>
      <div class="form-inline pull-right">
@@ -50,6 +51,7 @@
 </h1>            
 </div>
 
+
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
@@ -75,16 +77,16 @@
             <td>{{$equipamiento->obs}}</td>
             @can('editar-equipamiento')
             <td align="center" width="140">
-
                 <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-oc="{{$equipamiento->oc}}" data-target="#editar_equipamiento" type="submit">Editar</a>
-
                 @if ($equipamiento->relacion != null)
                 <a href="{{url('destroy_relacion', $equipamiento->relacion)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> X</a>
+                <br>
                 @else
                 <a href="#" class="btn btn-success btn-sm" title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#asignar">+</a>
+                <br>
                 @endif
+                <br>
                 <a  href="#" class="btn btn-info btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#ver_s">Soft</a>
-
                 <a  href="#" class="btn btn-warning btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#incidente">!</a>
             </td>
             @endcan
@@ -94,7 +96,6 @@
         @endif  
     </tbody>
 </table>
-
 
 {{ $equipamientos->appends($_GET)->links() }}
 

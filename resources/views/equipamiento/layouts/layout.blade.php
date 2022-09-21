@@ -2,7 +2,7 @@
 <html lang="es">
 
 <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-
+<link rel="viewport" href="{{ asset('css/prueba.css')}}">
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
