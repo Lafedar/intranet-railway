@@ -29,7 +29,7 @@
           <div class="row">
             <div class="col">
               <label for="title">Observación:</label>
-              <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" required>
+              <input type="text" name="obs" class="form-control" id="obs" autocomplete="off">
             </div>
           </div>
           <div class="col-md-6">

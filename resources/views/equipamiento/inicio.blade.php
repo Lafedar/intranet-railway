@@ -80,12 +80,9 @@
                 <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-oc="{{$equipamiento->oc}}" data-target="#editar_equipamiento" type="submit">Editar</a>
                 @if ($equipamiento->relacion != null)
                 <a href="{{url('destroy_relacion', $equipamiento->relacion)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> X</a>
-                <br>
                 @else
                 <a href="#" class="btn btn-success btn-sm" title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#asignar">+</a>
-                <br>
                 @endif
-                <br>
                 <a  href="#" class="btn btn-info btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#ver_s">Soft</a>
                 <a  href="#" class="btn btn-warning btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#incidente">!</a>
             </td>
@@ -140,15 +137,17 @@
 
     $.get('select_puesto',function(data){
       var html_select = '<option value="">Seleccione </option>'
-      for(var i = 0; i<data.length; i ++){
-        if(data[i].activo ==1){
-        if(data[i].nombre_p == null){
-        html_select += '<option value ="'+data[i].id_puesto+'">'+data[i].desc_puesto+'</option>';  
+      for(var i = 0; i<data.length; i ++)
+      {
+        if(data[i].nombre_p == null)
+        {
+          html_select += '<option value ="'+data[i].id_puesto+'">'+data[i].desc_puesto+'</option>';  
         }
-        else{
+        else
+        {
         html_select += '<option value ="'+data[i].id_puesto+'">'+data[i].desc_puesto +' - '+data[i].apellido+' '+data[i].nombre_p+'</option>';
         }
-        }}
+      }
     $('#select_puesto').html(html_select);
 });
     
