@@ -1,6 +1,7 @@
 @extends('equipamiento.layouts.layout')
 @section('content')
 
+
 @if(Session::has('message'))
 <div class="container" id="div.alert">
   <div class="row">
@@ -70,21 +71,28 @@
         @foreach($equipamientos as $equipamiento) 
         <tr>
             <td align="center" width="60">{{$equipamiento->id_equipamiento}}</td>
-            <td>{{$equipamiento->puesto}}</td>
+            <td width="available">{{$equipamiento->puesto}}</td>
             <td>{{$equipamiento->nombre .' '. $equipamiento->apellido}}</td>
             <td>{{$equipamiento->area}}</td>
             <td width="110">{{$equipamiento->ip}}</td>
-            <td>{{$equipamiento->obs}}</td>
+            <td width="min-content">{{$equipamiento->obs}}</td>
             @can('editar-equipamiento')
-            <td align="center" width="140">
-                <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-oc="{{$equipamiento->oc}}" data-target="#editar_equipamiento" type="submit">Editar</a>
+            <td align="center">
+              <div class="botones">
                 @if ($equipamiento->relacion != null)
-                <a href="{{url('destroy_relacion', $equipamiento->relacion)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> X</a>
+                <!-- Boton para eliminar asignacion de equipo -->
+                <a role="button"  class="fa-solid fa-xmark" href="{{url('destroy_relacion', $equipamiento->relacion)}}"  title="Borrar" onclick="return confirm ('Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> </a>
                 @else
-                <a href="#" class="btn btn-success btn-sm" title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#asignar">+</a>
+                <!-- Boton para asignar equipo -->
+                <a role="button"  class="fa-solid fa-plus" href="#"  title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#asignar"></a>
                 @endif
-                <a  href="#" class="btn btn-info btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#ver_s">Soft</a>
-                <a  href="#" class="btn btn-warning btn-sm" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#incidente">!</a>
+                <!-- Boton para editar equipo -->
+                <a role="button"  class="fa-solid fa-pen" href="#" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-oc="{{$equipamiento->oc}}" data-target="#editar_equipamiento" type="submit"></a>
+                <!-- Boton para agregar software a equipo -->
+                <a role="button"  class="fa-solid fa-gear" href="#"  data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#ver_s"></a>
+                <!-- Boton para agregar un incidente al equipo -->
+                <a role="button"  class="fa-solid fa-exclamation" href="#"  data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" data-target="#incidente"></a>
+              </div>  
             </td>
             @endcan
             
@@ -222,6 +230,18 @@ $('#ssoftware').html(html_select);
 })
 </script>
 
-
+<script>
+ $(document).ready(function(){
+   $("#equipo").keyup(function(){
+     _this = this;
+     $.each($("#test tbody tr"), function() {
+       if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+         $(this).hide();
+       else
+         $(this).show();
+     });
+   });
+ });
+</script>
 
 @stop

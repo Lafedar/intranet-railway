@@ -1,0 +1,18 @@
+.botones{
+   margin: 0;
+}
+
+.botones a{
+    padding: 0 10px;
+    color: black;
+
+}
+
+.botones a:hover{
+    color: rgb(63, 139, 238);
+}
+
+.botones button{
+    border: 0;
+    background-color: transparent;
+}

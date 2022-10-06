@@ -15,7 +15,6 @@
       <th>Interno</th>
       <th>Correo electrónico</th>
       <th>Area</th>
-      
     </thead>		
     
     <tbody>

@@ -43,40 +43,33 @@
       <th class="text-center">Observacion</th>
       <th class="text-center">Acciones</th>
     </thead>        
-    
     <tbody>
       @if(count($software))
-      @foreach($software as $software) 
-      <tr>
-        <td align="center"> {{$software->id_s}}</td>
-        <td align="center"> {{$software->Software}}</td>
-        <td align="center">{{$software->Version}}</td>
-        <td align="center">{{$software->Licencia}}</td>
-        <td align="center">{{$software->t_Licencia}}</td>
-        <td align="center">{{$software->fecha_inst}}</td>
-        <td align="center">{{$software->Obs}}</td>
-        <td align="center" width="140">
-
-         <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit">Editar</a>
-          
-    </tr>
-
-    @endforeach  
-    @endif  
-
-  </tbody>
-</table>
-
-
-
+        @foreach($software as $software) 
+          <tr>
+            <td align="center">{{$software->id_s}}</td>
+            <td align="center">{{$software->Software}}</td>
+            <td align="center">{{$software->Version}}</td>
+            <td align="center">{{$software->Licencia}}</td>
+            <td align="center">{{$software->t_Licencia}}</td>
+            <td align="center">{{$software->fecha_inst}}</td>
+            <td align="center">{{$software->Obs}}</td>
+            <td align="center" width="140">
+            <div class="botones">
+              <!-- Boton para editar software -->
+              <a href="#" class="fa-solid fa-pen"  data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit"></a>
+            </div>
+          </tr>
+          @endforeach  
+      @endif  
+    </tbody>
+  </table>
 </div>
 
 @include ('software.edit')
 
 <script>
- 
   $('#edit_soft').on('show.bs.modal', function (event) {
-
     var button = $(event.relatedTarget) 
     var id = button.data('id')
     var software = button.data('software')
@@ -86,7 +79,6 @@
     var fecha_inst = button.data('fecha_inst')
     var obs = button.data('obs')
     var modal = $(this)
-
     modal.find('.modal-body #id_s').val(id);
     modal.find('.modal-body #Software').val(software);
     modal.find('.modal-body #Version').val(version);
@@ -94,7 +86,6 @@
     modal.find('.modal-body #t_Licencia').val(tlicencia);
     modal.find('.modal-body #fecha_inst').val(fecha_inst);
     modal.find('.modal-body #Obs').val(obs);
-    
 /*
     $.get('select_tipo_equipamiento',function(data){
       var html_select = '<option value="">Seleccione </option>'

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 
+<script src="https://kit.fontawesome.com/b36ad16a06.js" crossorigin="anonymous"></script>
+<link href="{{ asset('css/acciones.css') }}" rel="stylesheet">
 <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
@@ -34,10 +36,10 @@
         &nbsp
         @endhasrole
         <form action="{{ url('/logout') }}" method="POST" >
-         {{ csrf_field() }}
-         <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-           Cerrar sesión
-         </button>
+        {{ csrf_field() }}
+        <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+          Cerrar sesión
+        </button>
        </form>
      </ul>
    </div>
