@@ -57,7 +57,7 @@
               <form action="{{route('destroy_srelacions', $tabla_soft->id)}}" method="put">
                 <div class="botones">
                   <!-- Boton para eliminar asignacion de equipo -->
-                  <button  class="fa-solid fa-xmark" data-tooltip="Borrar"></button>
+                  <button  class="fa-solid fa-xmark eliminar" title="Borrar" data-tooltip="Borrar"></button>
                 </div>
               </form>
             </tr>

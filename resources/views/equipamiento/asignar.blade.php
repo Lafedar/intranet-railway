@@ -10,7 +10,7 @@
                       <input class="form-control" rows="5" name="equipamiento" id="equipamiento" required></input>
                   </div>
                   <div class="input-field col s12 ">Puesto:
-                      <select class="form-control"  name="puesto" id="select_puesto"></select>
+                      <select class="form-control"  name="puesto" id="select_puesto" required></select>
                   </div>
                   <p></p>
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

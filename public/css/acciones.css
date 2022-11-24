@@ -4,8 +4,7 @@
 
 .botones a{
     padding: 0 10px;
-    color: black;
-
+    /*color: rgb(230, 2, 2);*/
 }
 
 .botones a:hover{
@@ -15,4 +14,21 @@
 .botones button{
     border: 0;
     background-color: transparent;
+}
+
+.botones button:hover{
+    color: rgb(63, 139, 238) !important;
+    text-decoration: underline rgb(63, 139, 238);
+}
+
+.agregar{
+    color:rgb(21, 185, 29);
+}
+
+.default{
+    color:rgb(0, 0, 0);
+}
+
+.eliminar{
+    color:rgb(216, 13, 13);
 }

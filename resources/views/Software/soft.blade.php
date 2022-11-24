@@ -57,7 +57,7 @@
             <td align="center" width="140">
             <div class="botones">
               <!-- Boton para editar software -->
-              <a href="#" class="fa-solid fa-pen"  data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit"></a>
+              <a href="#" class="fa-solid fa-pen default" title="Editar" data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit"></a>
             </div>
           </tr>
           @endforeach  

@@ -59,7 +59,7 @@
                 <td align="center">
                     <div class="botones">
                         <!-- Boton para editar puesto -->
-                        <a href="{{url('edit_puesto', $puesto->id_puesto)}}" class="fa-solid fa-pen"  data-position="top" data-delay="50" data-tooltip="Editar"></a>  
+                        <a href="{{url('edit_puesto', $puesto->id_puesto)}}" class="fa-solid fa-pen default" title="Editar" data-position="top" data-delay="50" data-tooltip="Editar"></a>  
                     </div>    
                 </td>
                 @endcan

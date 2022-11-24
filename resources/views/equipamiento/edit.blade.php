@@ -1,7 +1,7 @@
 <div class="modal fade" id="editar_equipamiento" role="dialog" align="center">
   <div class="modal-dialog">
    <div class="modal-content">           
-    <form action="{{route('equipamiento.update' , ' ')}}" method="POST" autocomplete="off">
+    <form action="{{route('equipamiento.update', 'equipamiento')}}" method="POST">
       {{ method_field('PUT')}} {{csrf_field()}}
       <div class="modal-body">
        <div class="row">
@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-6">
               <label for="title">Tipo de equipamiento:</label>
-              <select class="form-control" name="tipo_equipamiento"  id="tipo_equipamiento_editar"></select>
+              <select class="form-control" name="tipo_equipamiento"  id="tipo_equipamiento_editar" required></select>
             </div>
           </div>
 
@@ -30,20 +30,9 @@
           </div>
           
           <div class="row"> 
-            <div class="col">
+            <div class="col-md-6">
               <label for="title">Número de serie:</label>
               <input type="text" name="num_serie" class="form-control" autocomplete="off" id="num_serie" value="{{old('num_serie')}}"> 
-            </div>
-            <div class="col">
-              <label for="title">Dirección IP:</label>
-              <input type="text" name="ip" class="form-control" id="ip" autocomplete="off" value="{{old('ip')}}">
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <label for="title">Procesador:</label>
-              <input type="text" name="procesador" class="form-control" id="procesador"  autocomplete="off" value="{{old('procesador')}}">
             </div>
             <div class="col-md-3">
               <label for="title">Disco (GB):</label>
@@ -56,19 +45,46 @@
           </div>
 
           <div class="row">
-            <div class="col-md-4">
-              <label for="title">Pulgadas:</label>
-              <input type="number" name="pulgadas" class="form-control"  autocomplete="off" id="pulgadas" value="{{old('pulgadas')}}">
+            <div class="col-md-6">
+              <label for="title">Procesador:</label>
+              <input type="text" name="procesador" class="form-control" id="procesador"  autocomplete="off" value="{{old('procesador')}}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="title">Toner:</label>
               <input type="text" name="toner" class="form-control" id="toner" autocomplete="off" value="{{old('toner')}}">
             </div>
-            <div class="col-md-4">
-              <label for="title">Unidad de imagen:</label>
+            <div class="col-md-3">
+              <label for="title">DR:</label>
               <input type="text" name="unidad_imagen" class="form-control" id="unidad_imagen" autocomplete="off" value="{{old('unidad_imagen')}}">
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label for="title">Pulgadas:</label>
+              <input type="number" name="pulgadas" class="form-control"  autocomplete="off" id="pulgadas" value="{{old('pulgadas')}}">
+            </div>
+            <div class="col-md-6">
+              <label for="title">Subred:</label>
+              <select class="form-control" name="ips" id="ips_editar"></select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class ="col-md-4">
+              <label for="title">ID de red:</label>
+              <select class="form-control" name="id_red" id="id_red_editar"></select>
+            </div>
+            <div class="col-md-3">
+              <label for="title">ID de host:</label>
+              <input type="number" name="ip" class="form-control" id="ip" autocomplete="off" max="254" min="2" value="{{old('ip')}}">
+            </div> 
+            <div class="col-md-5">
+              <label for="title">Orden de compra:</label>
+              <input type="text" name="oc" class="form-control" id="oc" autocomplete="off" value="{{old('oc')}}">
+            </div>
+          </div>
+          
 
           <div class="row">
             <div class="col">
@@ -77,12 +93,6 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col">
-              <label for="title">Orden de compra:</label>
-              <input type="text" name="oc" class="form-control" id="oc" autocomplete="off" value="{{old('oc')}}">
-            </div>
-          </div>
           <p></p>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           <button type="submit" class="btn btn-info">Editar</button>
@@ -93,3 +103,7 @@
 </div>
 </div>
 </div>
+
+<script>
+
+</script>

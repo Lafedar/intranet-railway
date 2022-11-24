@@ -36,15 +36,15 @@
         &nbsp
         @endhasrole
         <form action="{{ url('/logout') }}" method="POST" >
-        {{ csrf_field() }}
-        <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-          Cerrar sesión
-        </button>
-       </form>
-     </ul>
-   </div>
- </nav>
- <p></p>			
+          {{ csrf_field() }}
+          <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+            Cerrar sesión
+          </button>
+        </form>
+      </ul>
+    </div>
+  </nav>
+  <p></p>			
 </head>
 
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
@@ -58,12 +58,41 @@
 <script>
   $('#agregar_equipamiento').on('show.bs.modal', function (event) {
 
-    $.get('select_tipo_equipamiento/',function(data){
+    $.get('select_tipo_equipamiento/',function(data)
+    {
       var html_select = '<option value="">Seleccione </option>'
       for(var i = 0; i<data.length; i ++)
+      {
         html_select += '<option value ="'+data[i].id+'">'+data[i].equipamiento+'</option>';
+      } 
       $('#tipo_equipamiento').html(html_select);
     });
+    
+    $.get('select_ips/',function(data)
+    {
+      var html_select = '<option value="">Seleccione </option>'
+      var html_select2 = '<option value="">Seleccione </option>'
+      for(var i = 0; i<data.length; i ++)
+      {
+        let ip = data[i].puerta_enlace.split('.');
+        html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+        html_select2 += '<option value ="'+data[i].id+'">'+ip[0]+'.'+ip[1]+'.'+ip[2]+'.'+'</option>';
+      }
+
+      //al cambiar un dato de un select se cambia en el otro 
+      $("#ips").on("change", () => {
+      $("#id_red").val($("#ips").val());
+      });
+
+      $("#id_red").on("change", () => {
+      $("#ips").val($("#id_red").val());
+      });
+
+      //envia opciones de select a la vista create.blade.php
+      $('#ips').html(html_select);
+      $('#id_red').html(html_select2);
+    });
+
 
   });
 </script>
