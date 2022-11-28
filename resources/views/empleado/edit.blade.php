@@ -28,7 +28,7 @@
 
             <div class="col-md-4">
               <label for="title">Interno:</label>
-              <input type="text" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" min="6" required>
+              <input type="text" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" min="6" >
             </div>
           </div>
 

@@ -33,8 +33,8 @@
           <label><h6>IP:</h6></label>
           <input type="text" name="ip" class="form-control col-md-1" id="ip" autocomplete="off" value="{{$ip}}" >
           &nbsp
-          <label><h6>Tipo:</h6></label>
           <div class="form-group">
+            <label><h6>Tipo:</h6></label>
             <select class="form-control" name="tipo"  id="tipo">
                 <option value="0">{{'Todos'}} </option>
                 @foreach($tipo_equipamiento as $tipo_equipamiento)
@@ -46,8 +46,8 @@
             </select>
           </div>
           &nbsp
-          <label><h6>Subred:</h6></label>
           <div class="form-group">
+            <label><h6>Subred:</h6></label>
             <select class="form-control" name="subred"  id="subred">
               <option value="0">{{'Todos'}} </option>
                 @foreach($ips as $ips)
@@ -208,11 +208,8 @@
     var oc = button.data('oc')
     var modal = $(this)
 
-    
-      let ip_dividida = ip.split('.');
-      ip = ip_dividida[3];
-    
-    
+    let ip_dividida = ip.split('.');
+    ip = ip_dividida[3];
 
     modal.find('.modal-body #id_e').val(id);
     modal.find('.modal-body #ip').val(ip);
@@ -275,6 +272,7 @@
       //envia opciones de select a la vista edit.blade.php
       $('#ips_editar').html(html_select);
       $('#id_red_editar').html(html_select2);
+
     });
   });
 </script>

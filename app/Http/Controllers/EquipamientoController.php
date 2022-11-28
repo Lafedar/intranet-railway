@@ -139,15 +139,21 @@ class EquipamientoController extends Controller
         $nueva_ip = null;
 
         //armo la nueva ip con la parte de la id de red traida de la tabla ips y la id de host de lo que ingreso el usuario y consulto en la bd si existe la ip
-        if($request['ip'] != null)
+        
+        if($request['ip'] != null and $request['id_red'] != null)
         {   
-
             $puerta_enlace = DB::table('ips')->where('ips.id', $request['id_red'])->value('puerta_enlace');
             $pe_separada = explode("." , $puerta_enlace);
             $nueva_ip = $pe_separada[0].".".$pe_separada[1].".".$pe_separada[2].".".$request['ip'];
 
             //traigo de la bd la fila donde se encuentre la misma ip
             $aux_ip = DB::table('equipamientos')->where('equipamientos.ip', $nueva_ip)->first();
+
+            //if para que no tome como dato la misma fila que se esta editando ya que dira que la ip esta duplicada
+            if($request['id_e'] == $aux_ip->id_e)
+            {
+                $aux_ip = null;
+            }
             
             //si existe una ip igual
             if($aux_ip)
@@ -157,6 +163,22 @@ class EquipamientoController extends Controller
                 Session::flash('alert-class', 'alert-warning');
                 return redirect()->back()->withInput();
             }
+        }
+        else if($request['ip'] == null and $request['id_red'] != null)
+        {
+            Session::flash('message','Si el id de red contiene datos, el id de host no puede estar vacio');
+            Session::flash('alert-class', 'alert-warning');
+            return redirect()->back()->withInput();
+        }
+        else if($request['ip'] != null and $request['id_red'] == null)
+        {
+            Session::flash('message','Si el id de host contiene datos, el id de red no puede estar vacio');
+            Session::flash('alert-class', 'alert-warning');
+            return redirect()->back()->withInput();
+        }
+        else
+        {
+            $nueva_ip = null;
         }
 
        $equipamiento = DB::table('equipamientos')

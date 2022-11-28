@@ -133,7 +133,7 @@ class Equipamiento extends Model
     {
         if($subred)
         {
-
+            return $query -> where('nombre', 'LIKE', "%$subred");
         }
     }
 
