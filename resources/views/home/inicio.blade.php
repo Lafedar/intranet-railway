@@ -65,7 +65,11 @@
     <div class="col-md-4">
       <a  href="{{('/eventos')}}"> <img src="{{ URL::to('/img/calendario.png') }}" height="120"> </a>
     </div>
-    
+
+<!--<div class="col-md-3">
+      <a  href="{{('/clog')}}"> <img src="{{ URL::to('/img/almuerzo.png') }}" height="120"> </a>
+    </div>
+    -->
     
 </div>
 <br><br>

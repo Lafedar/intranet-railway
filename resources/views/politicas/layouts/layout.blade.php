@@ -20,7 +20,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbar1">
       <ul class="navbar-nav ml-auto">
-        @can('agregar-planos')
+        @can('agregar-politica')
         <button class="btn btn-info"  data-toggle="modal" data-target="#agregar"> Agregar</button>
         @endcan
         &nbsp
@@ -42,5 +42,5 @@
   @yield('content')
 </body>
 
-@include('planos.create')
+@include('politicas.create')
 </html>

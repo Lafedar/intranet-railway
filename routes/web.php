@@ -175,27 +175,33 @@ Route::group(['middleware' => ['auth']], function () {
    //****************DOCUMENTACION**********************
 Route::get('documentos','HomeController@documentos');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () 
+{
   Route::get('planos','PlanoController@planos')->middleware('role:administrador|planos|ingenieria');
-
   Route::post('store_planos','PlanoController@store_planos')->middleware('role:administrador|planos|ingenieria');
-
   Route::get('destroy_plano/{plano}', ['uses' => 'PlanoController@destroy_planos'])->middleware('role:administrador|ingenieria');
-
   Route::post('update_planos','PlanoController@update_planos')->middleware('role:administrador|ingenieria|planos')->name('update_planos');
 });
 
   //****************PROYECTOS**********************
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function ()  
+{
   Route::get('proyectos','ProyectoController@proyectos')->middleware('role:administrador|ingenieria|proyectos');
-
   Route::post('store_proyectos','ProyectoController@store_proyectos')->middleware('role:administrador|ingenieria');
-
-  Route::post('update_proyectos','ProyectoController@update_proyectos')->middleware('role:administrador|ingenieria')->name('update_proyectos');
-
   Route::get('destroy_proyecto/{proyecto}', ['uses' => 'ProyectoController@destroy_proyecto'])->middleware('role:administrador|ingenieria')->name('destroy_proyecto');
-
+  Route::post('update_proyectos','ProyectoController@update_proyectos')->middleware('role:administrador|ingenieria')->name('update_proyectos');
 });
+
+  //****************POLITICAS**********************
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::get('politicas','PoliticaController@index')->middleware('role:administrador|politicas');
+  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica')->middleware('role:administrador|politicas');
+  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica'])->middleware('role:administrador|politicas');
+  Route::post('update_politica','PoliticaController@update_politica')->middleware('role:administrador|politicas')->name('update_politicas');
+});
+
+
 //******************************QAD-Controller
 
 Route::group(['middleware' => ['auth']], function () {
