@@ -150,10 +150,14 @@ class EquipamientoController extends Controller
             $aux_ip = DB::table('equipamientos')->where('equipamientos.ip', $nueva_ip)->first();
 
             //if para que no tome como dato la misma fila que se esta editando ya que dira que la ip esta duplicada
-            if($request['id_e'] == $aux_ip->id_e)
+            if($aux_ip)
             {
-                $aux_ip = null;
+                if($request['id_e'] == $aux_ip->id_e)
+                {
+                    $aux_ip = null;
+                }
             }
+            
             
             //si existe una ip igual
             if($aux_ip)

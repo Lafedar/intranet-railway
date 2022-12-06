@@ -51,6 +51,8 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('edit_puesto/{id_puesto}', 'PuestoController@edit_puesto')->middleware('role:administrador');
 
+  Route::get('destroy_puesto/{id_puesto}', 'PuestoController@destroy_puesto')->middleware('role:administrador');
+
   Route::post('/update_puesto','PuestoController@update_puesto')->middleware('role:administrador');
 
   Route::get('select_area','PuestoController@select_area')->name('select_area');
@@ -195,10 +197,10 @@ Route::group(['middleware' => ['auth']], function ()
   //****************POLITICAS**********************
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::get('politicas','PoliticaController@index')->middleware('role:administrador|politicas');
-  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica')->middleware('role:administrador|politicas');
-  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica'])->middleware('role:administrador|politicas');
-  Route::post('update_politica','PoliticaController@update_politica')->middleware('role:administrador|politicas')->name('update_politicas');
+  Route::get('politicas','PoliticaController@index');
+  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
+  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
+  Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
 });
 
 

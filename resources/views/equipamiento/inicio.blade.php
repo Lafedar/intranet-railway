@@ -97,7 +97,7 @@
                   @if ($equipamiento->relacion != null)
                     <!-- Boton para eliminar asignacion de equipo -->
                     <a role="button"  class="fa-solid fa-xmark eliminar" href="{{url('destroy_relacion', $equipamiento->relacion)}}"  title="Borrar" 
-                    onclick="return confirm ('Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> </a>
+                    onclick="return confirm ('¿Está seguro que desea eliminar la relación?')"data-position="top" data-delay="50" data-tooltip="Borrar"> </a>
 
                   @else
                   <!-- Boton para asignar equipo -->
