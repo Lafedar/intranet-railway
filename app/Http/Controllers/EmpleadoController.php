@@ -37,7 +37,7 @@ class EmpleadoController extends Controller
         $empleado = new Empleado;
         $empleado->nombre_p = $request['nombre'];
         $empleado->apellido = $request['apellido'];
-        $empleado->dni = $request['dni '];
+        $empleado->dni = $request['dni'];
         $empleado->interno = $request['interno'];
         $empleado->correo = $request['correo'];
         $empleado->fe_nac = $request['fe_nac'];

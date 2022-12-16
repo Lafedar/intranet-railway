@@ -45,9 +45,9 @@
         <td align="center">{{$usuario->email_usuario}}</td>
         <td align="center">
           @foreach($roles as $rol)
-          @if($rol->id_usuario == $usuario->id)
-          {{$rol->nombre_rol}}&nbsp
-          @endif         
+            @if($rol->id_usuario == $usuario->id)
+              {{$rol->nombre_rol}}&nbsp
+            @endif         
           @endforeach
         </td>
         <td  align="center" width="240">
@@ -139,8 +139,8 @@
 </script>
 
 <script>
-  $('#revocar_rol').on('show.bs.modal', function (event) {
-
+  $('#revocar_rol').on('show.bs.modal', function (event) 
+  {
     var button = $(event.relatedTarget) 
     var id = button.data('id')
     var nombre = button.data('nombre')
@@ -149,7 +149,8 @@
     modal.find('.modal-body #id').val(id);
     modal.find('.modal-body #nombre').val(nombre);
 
-    $.get('select_revocar_roles/'+id ,function(data){
+    $.get('select_revocar_roles/'+id ,function(data)
+    {
       var html_select = '<option value="">Seleccione rol </option>'
       for(var i = 0; i<data.length; i ++)
         html_select += '<option value ="'+data[i].id+'">'+data[i].name+'</option>';
@@ -157,6 +158,32 @@
     });
 
   });
+</script>
+
+<script>
+  $('#agregar_usuario').on('show.bs.modal', function (event) 
+  {
+    $.get('select_personas/',function(data)
+    {
+      var html_select = '<option value="">Seleccione </option>'
+      var html_select2 = '<option value="">Seleccione </option>'
+      for(var i = 0; i<data.length; i ++)
+      {
+        html_select += '<option value ="'+data[i].id_p+'"selected">'+data[i].nombre_p+' '+data[i].apellido+'</option>';
+        html_select2 += '<option value ="'+data[i].id_p+'"selected">'+data[i].correo+'</option>';
+      }
+      $("#nombre_p").on("change", () => {
+      $("#correo").val($("#nombre_p").val());
+      });
+
+      $("#correo").on("change", () => {
+      $("#nombre_p").val($("#correo").val());
+      });
+
+      $('#nombre_p').html(html_select);
+      $('#correo').html(html_select2);
+  });
+});
 </script>
 
 @stop

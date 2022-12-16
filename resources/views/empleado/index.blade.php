@@ -36,27 +36,30 @@
       @foreach($empleados as $empleado) 
       @if($empleado->activo==1)
       <tr>
-        <td > {{$empleado->apellido . ' '. $empleado->nombre_p}}</td>
-        <td align="center">{{$empleado->dni}}</td>
-        @if ($empleado->fe_ing != '')
-        <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_ing)->format("d-m-Y") !!}</td>
-        @else
-        <td align="center"></td>
+        @if ($empleado->dni != 9999999)
+          <td > {{$empleado->apellido . ' '. $empleado->nombre_p}}</td>
+          <td align="center">{{$empleado->dni}}</td>
+          @if ($empleado->fe_ing != '')
+            <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_ing)->format("d-m-Y") !!}</td>
+          @else
+            <td align="center"></td>
+          @endif
+          @if ($empleado->fe_nac != '')
+            <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_nac)->format("d-m-Y") !!}</td>
+          @else
+            <td align="center"></td>
+          @endif
+          <td>{{$empleado->nombre_a}}</td>
+          <td align="center" width="110">
+            <form action="{{route('destroy_empleado', $empleado->id_p)}}" method="put">
+              <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" 
+              data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}" data-fe_nac="{{$empleado->fe_nac}}" 
+              data-fe_ing="{{$empleado->fe_ing}}" data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}" data-target="#editar_empleado"  
+              type="submit">Editar</a>
+              <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar"> X</button>
+            </form>
+          </td>
         @endif
-        @if ($empleado->fe_nac != '')
-        <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_nac)->format("d-m-Y") !!}</td>
-        @else
-        <td align="center"></td>
-        @endif
-        <td>{{$empleado->nombre_a}}</td>
-        <td align="center" width="110">
-          <form action="{{route('destroy_empleado', $empleado->id_p)}}" method="put">
-
-          <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}" data-fe_nac="{{$empleado->fe_nac}}" data-fe_ing="{{$empleado->fe_ing}}" data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}" data-target="#editar_empleado"  type="submit">Editar</a>
-
-          <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar"> X</button>
-          </form>
-        </td>
       </tr>
     </tr>
     @endif

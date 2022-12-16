@@ -11,7 +11,7 @@
     <br><br>
 
     <div class="col-md-3">
-      <a  href="/politicas"> <img  src="{{ URL::to('/img/politicas.png') }}" height="140"></a>
+      <a  href="/politicas"> <img  src="{{ URL::to('/img/seguridad.png') }}" height="155"></a>
     </div>
 
     <div class="col-md-3">

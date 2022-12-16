@@ -137,7 +137,13 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_roles/{id}','UsuarioController@select_roles')->name('select_roles');
 
   Route::get('select_revocar_roles/{id}','UsuarioController@select_revocar_roles')->name('select_revocar_roles');
+
+  Route::get('select_personas', 'UsuarioController@select_personas')->name('select_personas');
+
+  Route::post('store_usuario', 'UsuarioController@store_usuario')->middleware('role:administrador');
+  
 });
+
 
 //****************USUARIOS**********************
 Route::group(['middleware' => ['auth']], function () {

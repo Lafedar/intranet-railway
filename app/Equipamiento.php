@@ -129,13 +129,13 @@ class Equipamiento extends Model
     	    return $query -> where(DB::raw("CONCAT(nombre_p,' ',apellido)"), 'LIKE',"%$usuario%");
     	}
     }
-    public function scopteSubred ($query, $subred)
+    /*public function scopteSubred ($query, $subred)
     {
         if($subred)
         {
             return $query -> where('nombre', 'LIKE', "%$subred");
         }
-    }
+    }*/
 
     public function scopeListadoIpLan($query, $i)
     {

@@ -82,8 +82,10 @@ class PuestoController extends Controller
 
     public function destroy_puesto($id)
     {
+        $activos = 1;
         $relaciones = DB::table('relaciones')
         ->where('relaciones.puesto',$id)
+        ->where('relaciones.estado',$activos)
         ->first();
 
         if($relaciones)
