@@ -127,6 +127,6 @@ class PermisosController extends Controller
     }
 
     public function select_tipo_permiso(){
-        return DB::table('tipo_permiso')->get();
+        return DB::table('tipo_permiso')->where('tipo_permiso.desc', '!=', 'Licencia de cumpleaños')->get();
     }
 }
