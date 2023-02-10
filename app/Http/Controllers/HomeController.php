@@ -25,7 +25,10 @@ class HomeController extends Controller
         return DB::table('novedades')->where('novedades.fecha_desde','<=',$date)->where('novedades.fecha_hasta','>=',$date)->get();
 
     }
-
+    public function mantenimiento()
+    {
+        return view('home.mantenimiento');
+    }
     public function internos()
     {
         $personas = DB::table('personas')

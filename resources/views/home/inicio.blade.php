@@ -54,22 +54,22 @@
 <div class="row">
     
     
-    <div class="col-md-4">
+    <div class="col-md-3">
       <a  href="{{('/sistemas')}}"> <img src="{{ URL::to('/img/sistemas.png') }}" height="120"> </a>
     </div>
         
-    <div class="col-md-4">
+    <div class="col-md-3">
       <a  href="{{('/qad')}}"> <img src="{{ URL::to('/img/qad.png') }}" height="120"> </a>
     </div>
    
-    <div class="col-md-4">
+    <div class="col-md-3">
       <a  href="{{('/eventos')}}"> <img src="{{ URL::to('/img/calendario.png') }}" height="120"> </a>
     </div>
 
-<!--<div class="col-md-3">
-      <a  href="{{('/clog')}}"> <img src="{{ URL::to('/img/almuerzo.png') }}" height="120"> </a>
+    <div class="col-md-3">
+      <a  href="{{('/mantenimiento')}}"> <img src="{{ URL::to('/img/mantenimiento.png') }}" height="128"> </a>
     </div>
-    -->
+    
     
 </div>
 <br><br>

@@ -201,25 +201,19 @@ Route::group(['middleware' => ['auth']], function ()
 });
 
   //****************POLITICAS**********************
-Route::group(['middleware' => ['auth']], function () 
-{
   Route::get('politicas','PoliticaController@index');
   Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
   Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
   Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
-});
 
 
-//******************************QAD-Controller
-
-Route::group(['middleware' => ['auth']], function () {
+//******************QAD-Controller**********************
+Route::group(['middleware' => ['auth']], function () 
+{
   Route::get('qad','QADController@planos')->middleware('role:administrador|ingenieria|planos');
-
-Route::get('qad','QADController@index')->middleware('role:administrador|ingenieria|planos');
-
-Route::get('ot','QADController@ot');
-
-Route::get('oc','QADController@oc');
+  Route::get('qad','QADController@index')->middleware('role:administrador|ingenieria|planos');
+  Route::get('ot','QADController@ot'); 
+  Route::get('oc','QADController@oc');
 });
 
 //***************Evento-Calendario-reserva*********************
@@ -298,8 +292,7 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
  //***********************************Power BI*************************************
  Route::get('powerbis','HomeController@powerbis');
 
-   //****************Ventas**********************
-
+//****************Ventas**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('ventas','VentaController')->middleware('role:administrador|venta');
@@ -348,6 +341,32 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('destroy_rrhh/{rrhh}', ['uses' => 'RrhhController@destroy_rrhh'])->middleware('role:administrador|rrhh');
   Route::post('update_rrhh','RrhhController@update_rrhh')->middleware('role:administrador|rrhh')->name('update_rrhhs');
 });
-//***********************************Frecuencias*************************************
+
+  //***********************************Frecuencias*************************************
 Route::get('/frecuencias', 'FrecuenciasController@index');
 
+  //****************Mantenimiento**********************
+Route::get('mantenimiento','HomeController@mantenimiento');
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('solicitudes','SolicitudController');
+  Route::resource('historico_solicitudes','SolicitudController');
+  Route::post('store_solicitud','SolicitudController@store_solicitud')->name('agregar-solicitud');
+  Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud'])->middleware('role:administrador|mantenimiento');
+  Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitudes');
+  Route::post('show_solicitud','SolicitudController@show_solicitud')->middleware('role:administrador|mantenimiento')->name('show_solicitud');
+
+  Route::get('select_tipo_solicitud', 'SolicitudController@select_tipo_solicitud')->name('select_tipo_solicitud');
+  Route::get('select_area_localizacion', 'SolicitudController@select_area_localizacion')->name('select_area_localizacion');
+  Route::get('select_equipo', 'SolicitudController@select_equipo')->name('select_equipo');
+  Route::get('select_falla', 'SolicitudController@select_falla')->name('select_falla');
+});
+
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|mantenimiento');
+  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('agregar-equipo_mant');
+  Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
+  Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
+
+});

@@ -42,9 +42,9 @@
         <td align="center">{{$rol->nombre_rol}}&nbsp</td>
       <td>
         @foreach($permisos as $permiso)
-        @if($permiso->rol == $rol->id_rol)
-        {{$permiso->nombre_permiso}}&nbsp
-        @endif
+          @if($permiso->rol == $rol->id_rol)
+            {{$permiso->nombre_permiso}}&nbsp
+          @endif
         @endforeach
       </td>
       <td  align="center" width="300">

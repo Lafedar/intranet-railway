@@ -16,8 +16,8 @@ class Equipamiento extends Model
         {
             return  $query -> leftjoin('relaciones', function($join)
             {
-                $join->on('equipamientos.id_e','relaciones.equipamiento');
-                $join->on('relaciones.estado',DB::raw("1"));
+                $join->on('equipamientos.id_e','relaciones.equipamiento'); //une las dos tablas
+                $join->on('relaciones.estado',DB::raw("1")); //de la tabla relaciones solo toma los estados activos de las relacione ya que guarda un historico de la ubicacion de los equipos
             })
             ->leftjoin('ips','equipamientos.subred','ips.id')
             ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')

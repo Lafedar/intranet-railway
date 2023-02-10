@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
-
+    public $table = "users";
     /**
      * The attributes that are mass assignable.
      *
@@ -34,5 +34,18 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MyResetPassword($token));
+    }
+    
+    public function scopeName($query, $name)
+    {
+        if($name){
+        return $query -> where('name','LIKE',"%$name%");
+        }
+    }
+    public function scopeID($query, $id)
+    {
+        if($id){
+        return $query -> where('id','LIKE',"%$id%");
+        }
     }
 }

@@ -106,7 +106,7 @@
 
                   @endif   
                     <!-- Boton para editar equipo -->
-                    <a role="button"  class="fa-solid fa-pen default" href="#" title="Editar" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" 
+                    <a role="button" class="fa-solid fa-pen default" href="#" title="Editar" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" 
                     data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" 
                     data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" 
                     data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" 
@@ -114,11 +114,11 @@
                     data-subred="{{$equipamiento->subred}}" data-target="#editar_equipamiento" type="submit"></a>
                     
                     <!-- Boton para agregar software a equipo -->
-                    <a role="button"  class="fa-solid fa-gear default" href="#" title="Software" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
+                    <a role="button" class="fa-solid fa-gear default" href="#" title="Software" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
                     data-target="#ver_s"></a>
                     
                     <!-- Boton para agregar un incidente al equipo -->
-                    <a role="button"  class="fa-solid fa-exclamation default" href="#" title="Incidente" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
+                    <a role="button" class="fa-solid fa-exclamation default" href="#" title="Incidente" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
                     data-target="#incidente"></a>
                 </div>  
               </td>
