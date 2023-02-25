@@ -22,7 +22,6 @@
 
 <!-- barra para buscar solicitudes -->
 
-
 <!-- tabla de datos -->
 
 <div class="col-md-12">             
@@ -59,12 +58,17 @@
               @endcan
               <td class="text-center" width="206">
                 <div>
-                  <!-- Boton de ver solitud en detalle -->
-                  <button class="btn btn-info btn-sm" data-id="{{$solicitud->id}}" data-toggle="modal" data-target="#mostrar">Detalles</button>
-                  <!-- Boton de editar y eliminar -->
+                  
+                    <!-- Boton de ver solitud en detalle -->
+                    <button class="btn btn-info btn-sm" data-id="{{$solicitud->id}}" data-titulo="{{$solicitud->titulo}}" 
+                    data-tipo_solicitud="{{$solicitud->tipo_solicitud}}" data-id_equipo="{{$solicitud->id_equipo}}" 
+                    data-falla="{{$solicitud->falla}}" data-nombre_solicitante="{{$solicitud->nombre_solicitante}}" 
+                    data-nombre_encargado="{{$solicitud->nombre_encargado}}"
+                    data-toggle="modal" data-target="#mostrar">Detalles</button>
+                    <!-- Boton de editar y eliminar -->
+
                   @can('editar-solicitud')
-                    <button class="btn btn-info btn-sm" data-id="{{$solicitud->id}}" data-titulo="{{$solicitud->titulo}}" data-fecha="{{$solicitud->fecha}}" 
-                    data-obs="{{$solicitud->obs}}" data-pbix="{{$solicitud->pbix}}" data-frecuencia="{{$solicitud->frecuencia}}" data-toggle="modal" data-target="#editar">Actualizar</button>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editar">Actualizar</button>
                   @endcan
                   @can('eliminar-solicitud')
                     <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
@@ -74,10 +78,10 @@
               </td>
             </tr>
         @endforeach
-        
+
     </tbody>       
   </table>   
-
+  
   @include('solicitudes.edit')
   @include('solicitudes.show')
 
@@ -100,10 +104,21 @@
   {
     var button = $(event.relatedTarget) 
     var id = button.data('id')
+    var titulo = button.data('titulo')
+    var tipo_solicitud = button.data('tipo_solicitud')
+    var id_equipo = button.data('id_equipo')
+    var falla = button.data('falla')
+    var nombre_solicitante = button.data('nombre_solicitante')
+    var nombre_encargado = button.data('nombre_encargado')
     var modal = $(this)
 
     modal.find('.modal-body #id').val(id);
-
+    modal.find('.modal-body #titulo').val(titulo);
+    modal.find('.modal-body #tipo_solicitud').val(tipo_solicitud);
+    modal.find('.modal-body #id_equipo').val(id_equipo);
+    modal.find('.modal-body #falla').val(falla);
+    modal.find('.modal-body #nombre_solicitante').val(nombre_solicitante);
+    modal.find('.modal-body #nombre_encargado').val(nombre_encargado);
   })
 </script>
 
@@ -125,15 +140,6 @@
     modal.find('.modal-body #obs').val(obs);
     modal.find('.modal-body #frecuencia').val(frecuencia);
 
-    console.log(pbix.length);
-    if(pbix.length == 0)
-    {
-      $("div.elim_pbix").hide()
-    }
-    else
-    {
-      $("div.elim_pbix").show()   
-    }
   })
 </script>
 

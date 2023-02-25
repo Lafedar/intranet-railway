@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Historico_solicitud;
-use App\Http\Request;
+use Illuminate\Http\Request;
+use App\Historico_solicitudes;
+Use Session;
+use DB;
 
 class Historico_solicitudesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $historico_solicitudes = Historico_solicitud::all();
-        return view('historico_solicitudes.index', compact('historico_solicitudes'));
+        $historico_solicitudes = Historico_solicitudes::Detalle($request->get('detalle'))
+        ->paginate(20);
+
+        return view('historico_solicitudes.show', [
+            'historico_solicitudes' => $historico_solicitudes,
+        ]);
     }
 
-    public function estado_actual($id_solicitud)
-    {
-        $estado_actual = DB::table('Historico_solicitud')->where($id_solicitud);
-    }
 }

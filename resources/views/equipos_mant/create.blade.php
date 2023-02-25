@@ -39,11 +39,11 @@
                 <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" required></textarea>
 
                 <div class="row">
-                  <div class="col">
+                  <div class="col-6">
                     <label for="title"><strong>Area:</strong></label>
                     <select class="form-control" name="area" id="area" required></select>
                   </div>
-                  <div class="col">
+                  <div class="col-6" style="display:none;" id="div_localizacion">
                     <label for="title"><strong>Localizacion:</strong></label>
                     <select class="form-control" name="localizacion" id="localizacion" required></select>
                   </div>

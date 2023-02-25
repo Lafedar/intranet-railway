@@ -15,26 +15,38 @@ use DB;
 
 class SolicitudController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $id = null)
     {
         $solicitudes = Solicitud::ID($request->get('id_solicitud'))
         ->Equipo($request->get('id_equipo'))
         ->Titulo($request->get('id_titulo'))
         ->Relaciones_index($request->get('relaciones'))
+        ->orderBy('id_solicitud', 'desc')
         ->paginate(20);
-       
-        $historico_solicitudes = Historico_solicitudes::Detalles($request->get('id_solicitud'));
 
-        return view ('solicitudes.index',   
-       
-            array('historico_solicitudes' => $historico_solicitudes),
-            array('solicitudes' => $solicitudes));
+    $historico_solicitudes = null;
+    if ($id) {
+        $historico_solicitudes = DB::table('historico_solicitudes')
+            ->where('id_solicitud', $id)
+            ->get();
     }
 
-    public function show_solicitud(Request $request)
+    return view('solicitudes.index', [
+        'solicitudes' => $solicitudes,
+        'historico_solicitudes' => $historico_solicitudes,
+        'id' => $id,
+    ]);
+    }
+    public function show($id)
     {
-        return view ('solicitudes.show_solicitud',
-            compact('fallas'));
+        $solicitud = Solicitud::find($id);
+        $historico_solicitudes = DB::table('historico_solicitudes')
+            ->where('id_solicitud', $id)
+            ->get();
+        return view('solicitudes.show', [
+            'solicitud' => $solicitud,
+            'historico_solicitudes' => $historico_solicitudes,
+        ]);
     }
 
     //trae tabla de tipos de solicitudes 

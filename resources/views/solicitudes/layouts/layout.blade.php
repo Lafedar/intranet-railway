@@ -73,7 +73,7 @@
           document.getElementById("div_localizacion").style.display = "none";
           document.getElementById("div_tipo_solicitud").style.display = "none";
           document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_fallas").style.display = "none";
+          document.getElementById("div_falla").style.display = "none";
         }
         else
         {
@@ -81,7 +81,7 @@
           document.getElementById("div_localizacion").style.display = "block";
           document.getElementById("div_tipo_solicitud").style.display = "none";
           document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_fallas").style.display = "none";
+          document.getElementById("div_falla").style.display = "none";
         }
       });
 
@@ -91,11 +91,13 @@
         if(selectedOption == '')
         {
           document.getElementById("div_tipo_solicitud").style.display = "none";
+          document.getElementById("div_equipo").style.display = "none";
           document.getElementById("div_falla").style.display = "none";
         }
         else
         {
           document.getElementById("div_tipo_solicitud").style.display = "block";
+          document.getElementById("div_equipo").style.display = "none";
           document.getElementById("div_falla").style.display = "none";
         }
       });
@@ -110,6 +112,19 @@
         html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
       } 
       $('#tipo_solicitud').html(html_select);
+
+      
+
+    });
+
+    $.get('select_equipo/',function(data)
+    {
+      var html_select = '<option value="">Seleccione </option>'
+      for(var i = 0; i<data.length; i ++)
+      {
+        html_select += '<option value ="'+data[i].id+'">'+data[i].id+'</option>';
+      } 
+      $('#equipo').html(html_select);
 
       document.getElementById("tipo_solicitud").addEventListener("change", function() 
       {
@@ -130,17 +145,6 @@
           document.getElementById("div_falla").style.display = "block";
         }
       });
-
-    });
-
-    $.get('select_equipo/',function(data)
-    {
-      var html_select = '<option value="">Seleccione </option>'
-      for(var i = 0; i<data.length; i ++)
-      {
-        html_select += '<option value ="'+data[i].id+'">'+data[i].id+'</option>';
-      } 
-      $('#equipo').html(html_select);
 
       document.getElementById("equipo").addEventListener("change", function() 
       {

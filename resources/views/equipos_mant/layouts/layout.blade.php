@@ -70,6 +70,16 @@
             document.getElementById("localizacion").innerHTML = html_select2;
           }
         }
+        if(selectedOption == '')
+        {
+          document.getElementById("localizacion").innerHTML = html_select2;
+          document.getElementById("div_localizacion").style.display = "none";
+        }
+        else
+        {
+          document.getElementById("localizacion").innerHTML = html_select2;
+          document.getElementById("div_localizacion").style.display = "block";
+        }
       });
     });
 

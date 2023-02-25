@@ -2,77 +2,60 @@
 <div class="modal fade" id="mostrar" role="dialog" aling="center">
   <div class="modal-dialog">
     <div class="modal-content">     
-      <form action="{{ route('show_solicitud')}}" method="POST" enctype="multipart/form-data">      
-        {{csrf_field()}}
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
               <input type="hidden" name="id" id="id" value="">
               <div class="form-group col-md-12">
-                <div class="row">
-                  <label for="title"><strong>ID:</strong></label>
-                  &nbsp
-                  <p name="id" id="id">{{$solicitud->id}}</p>
+                <h4> Detalle: </h4>
+                <hr>
+                <div class="form-group">
+                  <strong>ID: </strong><output type="text" name="id" id="id">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Titulo:</strong></label>
-                  &nbsp
-                  <p name="titulo" id="titulo">{{$solicitud->titulo}}</p>
+                <div class="form-group">
+                  <strong>Titulo: </strong><output type="text" name="titulo" id="titulo">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Tipo de solicitud:</strong></label>
-                  &nbsp
-                  <p name="tipo_solicitud" id="tipo_solicitud">{{$solicitud->tipo_solicitud}}</p>
+                <div class="form-group">
+                  <strong>Tipo de solicitud: </strong><output type="text" name="tipo_solicitud" id="tipo_solicitud">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Equipo:</strong></label>
-                  &nbsp
-                  <p name="equipo" id="equipo">{{$solicitud->id_equipo}}</p>
+                <div class="form-group">
+                  <strong>Equipo: </strong><output type="text" name="id_equipo" id="id_equipo">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Tipo de falla:</strong></label>
-                  &nbsp
-                  <p name="falla" id="falla">{{$solicitud->falla}}</p>
+                <div class="form-group">
+                  <strong>Falla: </strong><output type="text" name="falla" id="falla">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Solicitante:</strong></label>
-                  &nbsp
-                  <p name="solicitante" id="solicitante">{{$solicitud->nombre_solicitante}}</p>
+                <div class="form-group">
+                  <strong>Nombre Solicitante: </strong><output type="text" name="nombre_solicitante" id="nombre_solicitante">
                 </div>
-                <div class="row">
-                  <label for="title"><strong>Encargado:</strong></label>
-                  &nbsp
-                  <p name="encargado" id="encargado">{{$solicitud->nombre_encargado}}</p>
+                <div class="form-group">
+                  <strong>Nombre Encargado: </strong><output type="text" name="nombre_encargado" id="nombre_encargado">  
                 </div>
                 <div class="row">
                   <label for="title"><strong>Historico:</strong></label>
-                  
-                  <table class="table table-striped table-bordered ">
+                  <table class="table table-striped table-bordered">
                     <thead>
                       <th class="text-center">Fecha</th>
                       <th class="text-center">Estado</th>
                       <th class="text-center">Descripcion</th>
                     </thead>
                     <tbody>
-                      @foreach($historico_solicitudes as $historico)
-                        
+                      @if($historico_solicitudes)
+                        @foreach($historico_solicitudes as $historico)
                           <tr>
-                            <td><p name="fecha" id="fecha">{{$historico->fecha}}</p></td>
-                            <td><p name="estado" id="estado">{{$historico->nombre}}</p></td>
-                            <td><p name="descripcion" id="descripcion">{{$historico->descripcion}}</p></td>
+                            <td><p name="fecha" >{{$historico->fecha}}</p></td>
+                            <td><p name="estado" >{{$historico->estado}}</p></td>
+                            <td><p name="descripcion" >{{$historico->descripcion}}</p></td>
                           </tr>
-                        
-                      @endforeach
+                        @endforeach
+                      @endif
                     </tbody>
                   </table>
                 </div>
               </div> 
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="submit" class="btn btn-info">Guardar</button>
             </div>
           </div>
         </div>
-      </form>
     </div>
   </div>
 </div>
