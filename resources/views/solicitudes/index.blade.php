@@ -58,15 +58,10 @@
               @endcan
               <td class="text-center" width="206">
                 <div>
-                  
                     <!-- Boton de ver solitud en detalle -->
-                    <button class="btn btn-info btn-sm" data-id="{{$solicitud->id}}" data-titulo="{{$solicitud->titulo}}" 
-                    data-tipo_solicitud="{{$solicitud->tipo_solicitud}}" data-id_equipo="{{$solicitud->id_equipo}}" 
-                    data-falla="{{$solicitud->falla}}" data-nombre_solicitante="{{$solicitud->nombre_solicitante}}" 
-                    data-nombre_encargado="{{$solicitud->nombre_encargado}}"
-                    data-toggle="modal" data-target="#mostrar">Detalles</button>
+                    <button id="detalle" class="btn btn-info btn-sm" 
+                    title="show">Detalles</button>
                     <!-- Boton de editar y eliminar -->
-
                   @can('editar-solicitud')
                     <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editar">Actualizar</button>
                   @endcan
@@ -100,26 +95,25 @@
 </script> 
 
 <script>
-  $('#mostrar').on('show.bs.modal', function (event) 
+  $('#table tbody').on("click", "button#detalle", function () 
   {
-    var button = $(event.relatedTarget) 
-    var id = button.data('id')
-    var titulo = button.data('titulo')
-    var tipo_solicitud = button.data('tipo_solicitud')
-    var id_equipo = button.data('id_equipo')
-    var falla = button.data('falla')
-    var nombre_solicitante = button.data('nombre_solicitante')
-    var nombre_encargado = button.data('nombre_encargado')
-    var modal = $(this)
-
-    modal.find('.modal-body #id').val(id);
-    modal.find('.modal-body #titulo').val(titulo);
-    modal.find('.modal-body #tipo_solicitud').val(tipo_solicitud);
-    modal.find('.modal-body #id_equipo').val(id_equipo);
-    modal.find('.modal-body #falla').val(falla);
-    modal.find('.modal-body #nombre_solicitante').val(nombre_solicitante);
-    modal.find('.modal-body #nombre_encargado').val(nombre_encargado);
+    var data = table.row($(this).parents("tr")).data();
+    console.log(data);
+    fnOpenModal(window.location.protocol + '//' + window.location.host + '/detalle_solicitud/' + data.idSolicitud + 'show');
   })
+
+  function fnOpenModal(url)
+  {
+    $('.modal-content').empty();
+    $(window).on('load', function() 
+    {
+      $.get(url, function(data) 
+      {
+        $('.modal-content').html(data);
+      });
+    });
+    $('#show').modal({show: true});
+  }
 </script>
 
 <script>

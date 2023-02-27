@@ -354,7 +354,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_solicitud','SolicitudController@store_solicitud')->name('agregar-solicitud');
   Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud'])->middleware('role:administrador|mantenimiento');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitudes');
-  Route::post('show_solicitud','SolicitudController@show_solicitud')->middleware('role:administrador|mantenimiento')->name('show_solicitud');
+  Route::get('show_solicitud/{solicitud}', ['uses' => 'SolicitudController@show_solicitud']);
 
   Route::get('select_tipo_solicitud', 'SolicitudController@select_tipo_solicitud')->name('select_tipo_solicitud');
   Route::get('select_area_localizacion', 'SolicitudController@select_area_localizacion')->name('select_area_localizacion');

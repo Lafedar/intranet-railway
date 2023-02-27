@@ -15,7 +15,7 @@ use DB;
 
 class SolicitudController extends Controller
 {
-    public function index(Request $request, $id = null)
+    public function index(Request $request)
     {
         $solicitudes = Solicitud::ID($request->get('id_solicitud'))
         ->Equipo($request->get('id_equipo'))
@@ -24,25 +24,18 @@ class SolicitudController extends Controller
         ->orderBy('id_solicitud', 'desc')
         ->paginate(20);
 
-    $historico_solicitudes = null;
-    if ($id) {
-        $historico_solicitudes = DB::table('historico_solicitudes')
-            ->where('id_solicitud', $id)
-            ->get();
+        return view('solicitudes.index', [
+        'solicitudes' => $solicitudes,
+        ]);
     }
 
-    return view('solicitudes.index', [
-        'solicitudes' => $solicitudes,
-        'historico_solicitudes' => $historico_solicitudes,
-        'id' => $id,
-    ]);
-    }
-    public function show($id)
+    public function show_solicitud($id)
     {
         $solicitud = Solicitud::find($id);
         $historico_solicitudes = DB::table('historico_solicitudes')
             ->where('id_solicitud', $id)
             ->get();
+        dd($solicitud);
         return view('solicitudes.show', [
             'solicitud' => $solicitud,
             'historico_solicitudes' => $historico_solicitudes,
