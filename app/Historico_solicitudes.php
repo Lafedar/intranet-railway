@@ -42,16 +42,17 @@ class Historico_solicitudes extends Model
     	    return $query -> where('descripcion','LIKE', "%$descripcion%");
     	}
     }*/
-    public function scopeDetalle ($query)
+    /*public function scopeDetalle ($query)
     {
 
-        /*SELECT historico_solicitudes.fecha ,historico_solicitudes.descripcion, estados.nombre FROM `historico_solicitudes` LEFT JOIN estados 
-        ON estados.id = historico_solicitudes.id_estado; */
+        SELECT historico_solicitudes.fecha ,historico_solicitudes.descripcion, estados.nombre FROM `historico_solicitudes` LEFT JOIN estados 
+        ON estados.id = historico_solicitudes.id_estado; 
 
-        return $query->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'historico_solicitudes.id_estado as estado');
+        return $query->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 
+        'historico_solicitudes.id_estado as estado');
 
-        /*return $query ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado')
-        ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado');*/
+        return $query ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado')
+        ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado');
 
-    }
+    }*/
 }

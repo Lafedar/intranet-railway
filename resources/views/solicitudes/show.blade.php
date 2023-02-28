@@ -3,33 +3,48 @@
 <div class="col-md-12">
     <h4> Detalle: </h4>
     <hr>
-    <div class="form-group">
-        <strong>ID: </strong>
-        <p>{{$solicitud->id}}</p>
+    <div class="row">
+        <div class="col-md-4">
+            <strong>ID: </strong>
+            <p>{{$solicitud->id}}</p>
+        </div>
+        <div class="col-md-4">
+            <strong>Titulo: </strong>
+            <p>{{$solicitud->titulo}}</p>
+        </div>
+        <div class="col-md-4">
+            <strong>Tipo de solicitud: </strong>
+            <p>{{$solicitud->tipo_solicitud}}</p>
+        </div>
     </div>
-    <div class="form-group">
-        <strong>Titulo: </strong>
-        <p>{{$solicitud->titulo}}</p>
+    <div class="row">    
+        <div class="col-md-6">
+            <strong>Equipo: </strong>
+            <p>{{$solicitud->id_equipo}}</p>
+        </div>
+        <div class="col-md-6">
+            <strong>Area: </strong>
+            <p>{{$solicitud->area}}</p>
+        </div>
+        <div class="col-md-6">
+            <strong>Localizacion: </strong>
+            <p>{{$solicitud->localizacion}}</p>
+        </div>
+    </div>  
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Falla: </strong>
+            <p>{{$solicitud->falla}}</p>
+        </div>
+        <div class="col-md-6">
+            <strong>Nombre Solicitante: </strong>
+            <p>{{$solicitud->nombre_solicitante}}</p>
+        </div>
     </div>
-    <div class="form-group">
-        <strong>Tipo de solicitud: </strong>
-        <p>{{$solicitud->id_tipo_solicitud}}</p>
-    </div>
-    <div class="form-group">
-        <strong>Equipo: </strong>
-        <p>{{$solicitud->id_equipo}}</p>
-    </div>
-    <div class="form-group">
-        <strong>Falla: </strong>
-        <p>{{$solicitud->id_falla}}</p>
-    </div>
-    <div class="form-group">
-        <strong>Nombre Solicitante: </strong>
-        <p>{{$solicitud->id_solicitante}}</p>
-    </div>
+
     <div class="form-group">
         <strong>Nombre Encargado: </strong>
-        <p>{{$solicitud->id_encargado}}</p>
+        <p>{{$solicitud->nombre_encargado}}</p>
     </div>
     <div class="row">
         <label for="title"><strong>Historico:</strong></label>
@@ -40,7 +55,13 @@
                 <th class="text-center">Descripcion</th>
             </thead>
             <tbody>
-                
+                @foreach($historico_solicitudes as $historico)
+                    <tr>
+                        <td>{{ \Carbon\Carbon::parse($historico->fecha)->format('d/m/Y H:i') }}</td>
+                        <td>{{ $historico->estado }}</td>
+                        <td>{{ $historico->descripcion }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

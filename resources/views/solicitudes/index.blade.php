@@ -59,10 +59,10 @@
               <td class="text-center" width="210">
                 <div>
                     <!-- Boton de ver solitud en detalle -->
-                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModal({{$solicitud->id}})' title="show">Detalles</button>
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                     <!-- Boton de editar y eliminar -->
-                  @can('editar-solicitud')
-                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editar">Actualizar</button>
+                  @can('actualizar-solicitud')
+                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpemModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
                   @endcan
                   @can('eliminar-solicitud')
                     <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
@@ -75,16 +75,14 @@
     </tbody>       
   </table>   
   
-@include('solicitudes.edit')
 <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div id="modalshow" class="modal-body">
         <!-- Datos -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -105,11 +103,18 @@
 </script> 
 
 <script>  
-  function fnOpenModal(id)
+  function fnOpenModalShow(id)
   {
         var myModal = new bootstrap.Modal(document.getElementById('show2'));
         $("#modalshow").empty();
         $("#modalshow").load(window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id);
+        myModal.show();
+  }
+  function fnOpenModalUpdate(id)
+  {
+        var myModal = new bootstrap.Modal(document.getElementById('show2'));
+        $("#modalshow").empty();
+        $("#modalshow").load(window.location.protocol + '//' + window.location.host + "/update_solicitud/" + id);
         myModal.show();
   }
 </script>

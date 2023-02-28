@@ -30,9 +30,26 @@ class SolicitudController extends Controller
     }
     public function show_solicitud($id)
     {
-        $solicitud = Solicitud::find($id);
+        //migrar a modelo
+        $solicitud = Solicitud::leftjoin('fallas', 'fallas.id', 'solicitudes.id_falla')
+            ->leftjoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
+            ->leftjoin('estados', 'historico_solicitudes.id_estado', 'estados.id')
+            ->leftjoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
+            ->leftjoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+            ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
+            ->leftjoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
+            ->leftjoin('localizaciones', 'localizaciones.id' ,'equipos_mant.id_localizacion')
+            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+            ->where('historico_solicitudes.actual', '=', 1)
+            ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
+            'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
+            'estados.nombre as estado', 'area.nombre_a as area', 'localizaciones.nombre as localizacion')
+            ->find($id);
         $historico_solicitudes = DB::table('historico_solicitudes')
+            ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado') 
             ->where('id_solicitud', $id)
+            ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado')
+            ->orderBy('fecha', 'desc')
             ->get();
 
         return view('solicitudes.show', [

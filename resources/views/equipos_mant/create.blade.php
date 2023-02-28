@@ -24,7 +24,7 @@
                 <div class="row">
                   <div class="col">
                     <label for="title"><strong>Marca:</strong></label>
-                    <input type="text" name="marca" class="form-control" autocomplete="off" id="marca" value="{{old('marca')}}">
+                    <input type="text" name="marca" class="form-control" autocomplete="off" id="marca" value="{{old('marca')}}" required>
                   </div>
                   <div class="col">
                     <label for="title"><strong>Modelo:</strong></label>
@@ -36,7 +36,7 @@
                 <input type="text" name="num_serie" class="form-control" autocomplete="off" id="num_serie" value="{{old('num_serie')}}">
                   
                 <label for="title"><strong>Descripcion:</strong></label>
-                <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" required></textarea>
+                <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion"></textarea>
 
                 <div class="row">
                   <div class="col-6">
@@ -48,7 +48,6 @@
                     <select class="form-control" name="localizacion" id="localizacion" required></select>
                   </div>
                 </div>
-
                 <div>
                   <br>
                   <label for="title"><strong>Uso:</strong></label>
