@@ -34,11 +34,11 @@ class SolicitudController extends Controller
         $historico_solicitudes = DB::table('historico_solicitudes')
             ->where('id_solicitud', $id)
             ->get();
-        dd($solicitud);
+
         return view('solicitudes.show', [
             'solicitud' => $solicitud,
-            'historico_solicitudes' => $historico_solicitudes,
-        ]);
+            'historico_solicitudes' => $historico_solicitudes      
+        ]);       
     }
     //trae tabla de tipos de solicitudes 
     public function select_tipo_solicitud()

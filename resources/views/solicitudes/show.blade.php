@@ -40,13 +40,7 @@
                 <th class="text-center">Descripcion</th>
             </thead>
             <tbody>
-                @foreach($historico_solicitudes as $historico)
-                    <tr>
-                        <td><p name="fecha" >{{$historico->fecha}}</p></td>
-                        <td><p name="estado" >{{$historico->estado}}</p></td>
-                        <td><p name="descripcion" >{{$historico->descripcion}}</p></td>
-                    </tr>
-                @endforeach
+                
             </tbody>
         </table>
     </div>
