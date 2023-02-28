@@ -56,17 +56,11 @@
               @can('ver_encargado')
                 <td >{{$solicitud->nombre_encargado}}</td>
               @endcan
-              <td class="text-center" width="206">
+              <td class="text-center" width="210">
                 <div>
-                  
                     <!-- Boton de ver solitud en detalle -->
-                    <button class="btn btn-info btn-sm" data-id="{{$solicitud->id}}" data-titulo="{{$solicitud->titulo}}" 
-                    data-tipo_solicitud="{{$solicitud->tipo_solicitud}}" data-id_equipo="{{$solicitud->id_equipo}}" 
-                    data-falla="{{$solicitud->falla}}" data-nombre_solicitante="{{$solicitud->nombre_solicitante}}" 
-                    data-nombre_encargado="{{$solicitud->nombre_encargado}}"
-                    data-toggle="modal" data-target="#mostrar">Detalles</button>
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModal({{$solicitud->id}})' title="show">Detalles</button>
                     <!-- Boton de editar y eliminar -->
-
                   @can('editar-solicitud')
                     <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editar">Actualizar</button>
                   @endcan
@@ -78,12 +72,29 @@
               </td>
             </tr>
         @endforeach
-
     </tbody>       
   </table>   
   
-  @include('solicitudes.edit')
-  @include('solicitudes.show')
+@include('solicitudes.edit')
+<div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="modalshow" class="modal-body">
+        <!-- Datos -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
@@ -99,27 +110,14 @@
   });
 </script> 
 
-<script>
-  $('#mostrar').on('show.bs.modal', function (event) 
+<script>  
+  function fnOpenModal(id)
   {
-    var button = $(event.relatedTarget) 
-    var id = button.data('id')
-    var titulo = button.data('titulo')
-    var tipo_solicitud = button.data('tipo_solicitud')
-    var id_equipo = button.data('id_equipo')
-    var falla = button.data('falla')
-    var nombre_solicitante = button.data('nombre_solicitante')
-    var nombre_encargado = button.data('nombre_encargado')
-    var modal = $(this)
-
-    modal.find('.modal-body #id').val(id);
-    modal.find('.modal-body #titulo').val(titulo);
-    modal.find('.modal-body #tipo_solicitud').val(tipo_solicitud);
-    modal.find('.modal-body #id_equipo').val(id_equipo);
-    modal.find('.modal-body #falla').val(falla);
-    modal.find('.modal-body #nombre_solicitante').val(nombre_solicitante);
-    modal.find('.modal-body #nombre_encargado').val(nombre_encargado);
-  })
+        var myModal = new bootstrap.Modal(document.getElementById('show2'));
+        $("#modalshow").empty();
+        $("#modalshow").load(window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id);
+        myModal.show();
+  }
 </script>
 
 <script>
