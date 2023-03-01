@@ -82,7 +82,7 @@
         <!-- Datos -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <!-- Footer -->
       </div>
     </div>
   </div>
@@ -103,13 +103,31 @@
 </script> 
 
 <script>  
-  function fnOpenModalShow(id)
-  {
-        var myModal = new bootstrap.Modal(document.getElementById('show2'));
-        $("#modalshow").empty();
-        $("#modalshow").load(window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id);
-        myModal.show();
-  }
+  function fnOpenModalShow(id) {
+  var myModal = new bootstrap.Modal(document.getElementById('show2'));
+
+  console.log("Cargando contenido del modal...");
+  $.ajax({
+    url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
+    type: 'GET',
+    success: function(data) {
+      console.log("Contenido cargado exitosamente:", data);
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
+
+      // Agregar el botón "Cerrar" al footer
+      var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+      $("#modal-footer").html(closeButton);
+
+      // Mostrar el modal
+      console.log("Mostrando modal...");
+      myModal.show();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Error al cargar contenido:", textStatus, errorThrown);
+    }
+  });
+}
   function fnOpenModalUpdate(id)
   {
         var myModal = new bootstrap.Modal(document.getElementById('show2'));

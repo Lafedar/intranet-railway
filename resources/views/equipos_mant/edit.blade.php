@@ -1,10 +1,4 @@
 <!-- Modal Editar-->
-<div class="modal fade" id="editar" role="dialog" aling="center">
-  <div class="modal-dialog">
-    <div class="modal-content">     
-      <form action="{{ route('update_solicitudes')}}" method="POST" enctype="multipart/form-data">      
-        {{csrf_field()}}
-        <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
               <input type="hidden" name="id" id="id" value="">
@@ -25,8 +19,3 @@
               <button type="submit" class="btn btn-info">Guardar</button>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>

@@ -18,33 +18,32 @@
         </div>
     </div>
     <div class="row">    
-        <div class="col-md-6">
+        <div class="col-md-4">
             <strong>Equipo: </strong>
             <p>{{$solicitud->id_equipo}}</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <strong>Area: </strong>
             <p>{{$solicitud->area}}</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <strong>Localizacion: </strong>
             <p>{{$solicitud->localizacion}}</p>
         </div>
     </div>  
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <strong>Falla: </strong>
             <p>{{$solicitud->falla}}</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <strong>Nombre Solicitante: </strong>
             <p>{{$solicitud->nombre_solicitante}}</p>
         </div>
-    </div>
-
-    <div class="form-group">
-        <strong>Nombre Encargado: </strong>
-        <p>{{$solicitud->nombre_encargado}}</p>
+        <div class="col-md-4">
+            <strong>Nombre Encargado: </strong>
+            <p>{{$solicitud->nombre_encargado}}</p>
+        </div>
     </div>
     <div class="row">
         <label for="title"><strong>Historico:</strong></label>

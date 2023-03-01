@@ -58,6 +58,4 @@
     </tbody>       
   </table>   
 
-  @include('solicitudes.edit')
-
 @stop
