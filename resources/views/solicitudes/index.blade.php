@@ -62,7 +62,7 @@
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                     <!-- Boton de editar y eliminar -->
                   @can('actualizar-solicitud')
-                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpemModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
                   @endcan
                   @can('eliminar-solicitud')
                     <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
@@ -74,24 +74,24 @@
         @endforeach
     </tbody>       
   </table>   
-  
-<div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div id="modalshow" class="modal-body">
-        <!-- Datos -->
-      </div>
-      <div class="modal-footer">
-        <!-- Footer -->
+
+  <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div id="modalshow" class="modal-body">
+          <!-- Datos -->
+        </div>
+        <div id="modalfooter" class="modal-footer">
+          <!-- Footer -->
+        </div>
       </div>
     </div>
   </div>
-</div>
-
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
-<!-- Duracion de alerta (agregado, elimnado, editado) -->
+
 <script> 
+  //Duracion de alerta (agregado, elimnado, editado)
   $("solicitud").ready(function()
   {
     setTimeout(function()
@@ -103,59 +103,68 @@
 </script> 
 
 <script>  
+  //modal show
   function fnOpenModalShow(id) {
   var myModal = new bootstrap.Modal(document.getElementById('show2'));
 
-  console.log("Cargando contenido del modal...");
-  $.ajax({
-    url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
-    type: 'GET',
-    success: function(data) {
-      console.log("Contenido cargado exitosamente:", data);
-      // Establecer el contenido del modal
-      $("#modalshow").html(data);
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow").empty();
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
 
-      // Agregar el botón "Cerrar" al footer
-      var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-      $("#modal-footer").html(closeButton);
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+        // Agregar el botón "Cerrar" al footer
+        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+        $("#modalfooter").append(closeButton);
 
-      // Mostrar el modal
-      console.log("Mostrando modal...");
-      myModal.show();
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Error al cargar contenido:", textStatus, errorThrown);
-    }
-  });
-}
+        // Mostrar el modal
+        myModal.show();
+      },
+    });
+  }
+  //modal update
   function fnOpenModalUpdate(id)
   {
-        var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
         $("#modalshow").empty();
-        $("#modalshow").load(window.location.protocol + '//' + window.location.host + "/update_solicitud/" + id);
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+        // Agregar el botón "Cerrar" al footer
+        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info" data-dismiss="modal">Guardar</button>');
+        $("#modalfooter").append(closeButton);
+
+        // Mostrar el modal
         myModal.show();
+      },
+    });
   }
-</script>
-
-<script>
-  $('#editar').on('show.bs.modal', function (event) 
+  $('#show2').on('show.bs.modal', function (event) 
   {
-    var button = $(event.relatedTarget) 
-    var id = button.data('id')
-    var titulo = button.data('titulo')
-    var fecha = button.data('fecha') 
-    var obs = button.data('obs')
-    var frecuencia = button.data('frecuencia')
-    var pbix = button.data('pbix')
-    var modal = $(this)
+    $.get('select_estado/',function(data)
+    {
+      var html_select = '<option value="">Seleccione </option>'
 
-    modal.find('.modal-body #id').val(id);
-    modal.find('.modal-body #titulo').val(titulo);
-    modal.find('.modal-body #fecha').val(fecha);
-    modal.find('.modal-body #obs').val(obs);
-    modal.find('.modal-body #frecuencia').val(frecuencia);
-
-  })
+      for(var i = 0; i<data.length; i ++)
+      {
+       html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+      }
+      $('#estado').html(html_select);
+    });
+  });
 </script>
 
 @stop

@@ -87,7 +87,7 @@
             <div class="row">
               <div class="col">
                 <label for="title">Observación:</label>
-                <input type="text" name="obs" class="form-control" id="obs" autocomplete="off"  value="{{old('obs')}}">
+                <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" value="{{old('obs')}}">
               </div>
             </div>
 

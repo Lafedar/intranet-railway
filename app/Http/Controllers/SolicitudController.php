@@ -57,6 +57,52 @@ class SolicitudController extends Controller
             'historico_solicitudes' => $historico_solicitudes      
         ]);       
     }
+    public function show_update_solicitud($id)
+    {
+        //migrar a modelo
+        $solicitud = Solicitud::leftjoin('fallas', 'fallas.id', 'solicitudes.id_falla')
+            ->leftjoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
+            ->leftjoin('estados', 'historico_solicitudes.id_estado', 'estados.id')
+            ->leftjoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
+            ->leftjoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+            ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
+            ->leftjoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
+            ->leftjoin('localizaciones', 'localizaciones.id' ,'equipos_mant.id_localizacion')
+            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+            ->where('historico_solicitudes.actual', '=', 1)
+            ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
+            'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
+            'estados.nombre as estado', 'area.nombre_a as area', 'localizaciones.nombre as localizacion')
+            ->find($id);
+        $historico_solicitudes = DB::table('historico_solicitudes')
+            ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado') 
+            ->where('id_solicitud', $id)
+            ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado')
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+        return view('solicitudes.update', [
+            'solicitud' => $solicitud,
+            'historico_solicitudes' => $historico_solicitudes      
+        ]);       
+    }
+
+    public function update_solicitud(Request $request)
+    {
+        $historico_antiguo = DB::table('historico_solicitudes')
+        ->select('historico_solicitudes.id_solicitud as id_solicitud', 'historico_solicitudes.id_estado as id_estado ', 
+        'historico_solicitudes.fecha as fecha ')
+        ->where('historico_solicitudes.id_solicitud', $request['id'])
+        ->where('historico_solicitudes.actual', 1);
+        dd($historico_antiguo);
+        /*$solicitud = DB::table('solicitudes')
+        ->where('solicitudes.id',$request['id'])
+        ->update(['titulo' => $request['titulo']]); */
+
+        Session::flash('message','Archivo modificado con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect('solicitudes');
+    }
     //trae tabla de tipos de solicitudes 
     public function select_tipo_solicitud()
     {
@@ -82,6 +128,11 @@ class SolicitudController extends Controller
     {
         return DB::table('fallas')->get();
     }  
+
+    public function select_estado()
+    {
+        return DB::table('estados')->get();
+    } 
 
     public function store_solicitud(Request $request)
     {        
@@ -126,33 +177,4 @@ class SolicitudController extends Controller
         return redirect('solicitudes');
     }
 
-    public function update_solicitud(Request $request){
-
-        if($request['titulo'] or $request['fecha'] or $request['obs'] or $request['frecuencia'])
-        {
-            $solicitud = DB::table('powerbi')
-            ->where('powerbi.id',$request['id'])
-            ->update(['titulo' => $request['titulo'], 'fecha' => $request['fecha'], 'obs' => $request['obs'], 'frecuencia' => $request['frecuencia'],]);        
-        }
-        $aux = Solicitud::find($request['id']);
-        if($request['pbix'] != null)
-        {
-            if($request->file('pbix'))
-            {
-                if ($aux->pbix != null)
-                {
-                    unlink(storage_path('app\\public\\'.$aux->pbix));
-                }
-                $file = $request->file('pbix');
-                $name = str_pad($request['id'], 5, '0', STR_PAD_LEFT).$file->getClientOriginalName();
-                Storage::disk('public')->put('powerbi/'.$name, \File::get($file));
-                $solicitud = DB::table('powerbi')
-                ->where('powerbi.id',$request['id'])
-                ->update(['pbix' => 'powerbi\\'.$name,]);
-            }
-        }
-        Session::flash('message','Archivo modificado con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('solicitudes');
-    }
 }
