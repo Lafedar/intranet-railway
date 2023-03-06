@@ -74,19 +74,23 @@
         @endforeach
     </tbody>       
   </table>   
-
+  
   <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div id="modalshow" class="modal-body">
-          <!-- Datos -->
-        </div>
-        <div id="modalfooter" class="modal-footer">
-          <!-- Footer -->
-        </div>
+       
+          {{csrf_field()}}
+          <div id="modalshow" class="modal-body">
+            <!-- Datos -->
+          </div>
+          <div id="modalfooter" class="modal-footer">
+            <!-- Footer -->
+          </div>
+        
       </div>
     </div>
   </div>
+  
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
 
@@ -144,7 +148,7 @@
         // Borrar contenido anterior
         $("#modalfooter").empty();
         // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info" data-dismiss="modal">Guardar</button>');
+        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
         $("#modalfooter").append(closeButton);
 
         // Mostrar el modal

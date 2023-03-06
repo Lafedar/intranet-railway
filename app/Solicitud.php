@@ -68,3 +68,5 @@ class Solicitud extends Model
         'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 'estados.nombre as estado');
     }
 }
+
+?>

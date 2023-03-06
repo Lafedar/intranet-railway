@@ -1,5 +1,4 @@
 <!-- Modal Editar-->
-<form action="{{ route('update_solicitud') }}" method="GET" enctype="multipart/form-data">
 <div class="form-group col-md-12">
   <div class="row">
     <div class="col-md-1">
@@ -12,8 +11,8 @@
     </div>
     <div class="col-md-7">
       <strong>Descripcion: </strong>
-      <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" required>
+      <input type="text" name="descripcion" class="form-control" id="descripcion" autocomplete="off" required>
+      <input type="hidden" name="id_solicitud" value="{{ $solicitud->id }}">
     </div>
   </div>
 </div> 
-</form>

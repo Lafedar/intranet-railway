@@ -9,6 +9,7 @@ use App\Historico_solicitudes;
 use App\Falla;
 use App\Tipo_solicitud;
 use App\User;
+use Carbon\Carbon;
 Use Session;
 use DB;
 
@@ -89,16 +90,29 @@ class SolicitudController extends Controller
 
     public function update_solicitud(Request $request)
     {
-        $historico_antiguo = DB::table('historico_solicitudes')
-        ->select('historico_solicitudes.id_solicitud as id_solicitud', 'historico_solicitudes.id_estado as id_estado ', 
-        'historico_solicitudes.fecha as fecha ')
-        ->where('historico_solicitudes.id_solicitud', $request['id'])
-        ->where('historico_solicitudes.actual', 1);
-        dd($historico_antiguo);
-        /*$solicitud = DB::table('solicitudes')
-        ->where('solicitudes.id',$request['id'])
-        ->update(['titulo' => $request['titulo']]); */
+        
+        /*$ultimo_historico = DB::table('historico_solicitudes')
+        ->select('historico_solicitudes.id_solicitud as id_solicitud', 'historico_solicitudes.id_estado as id_estado', 
+        'historico_solicitudes.fecha as fecha')
+        ->where('historico_solicitudes.id_solicitud', $request['id_solicitud'])
+        ->where('historico_solicitudes.actual', 1)
+        ->first();
+//dd($ultimo_historico);
+        $actualizo_ult = DB::table('historico_solicitudes')
+        ->where('historico_solicitudes.id_solicitud',$ultimo_historico->id_solicitud)
+        ->where('historico_solicitudes.id_estado',$ultimo_historico->id_estado) //id de estado
+        ->where('historico_solicitudes.fecha',$ultimo_historico->fecha)
+        ->update(['actual' => 0]);*/
 
+        /*$nuevo_historico = new Historico_solicitudes;
+        $nuevo_historico->id_solicitud = $request['id_solicitud'];
+        $nuevo_historico->id_estado = $request['estado']; //id de estado
+        $nuevo_historico->descripcion = $request['descripcion'];
+        $nuevo_historico->actual = 1;
+
+        $nuevo_historico->fecha = Carbon::now()->format('Y-m-d H:i:s');    
+        $nuevo_historico->save();
+*/
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
