@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Solicitud extends Model
 {
     public $table = "solicitudes";
+    public $timestamps = false;
     public function scopeID($query, $id)
     {
         if($id)

@@ -44,32 +44,32 @@
 
     $.get('select_area_localizacion/',function(data)
     {
-      var html_select = '<option value="">Seleccione </option>'
-      var html_select2 = '<option value="">Seleccione </option>'
-
+      var html_select_area = '<option value="">Seleccione </option>'
+      var html_select_localizacion = '<option value="">Seleccione </option>'
+      //areas
       for(var i = 0; i<data[0].length; i ++)
       {
-        html_select += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
+        html_select_area += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
       }
 
-      $('#area').html(html_select);
-      $('#localizacion').html(html_select2);
-
+      $('#area').html(html_select_area);
+      $('#localizacion').html(html_select_localizacion);
+      //toma cambio de seleccion de area
       document.getElementById("area").addEventListener("change", function() 
       {
         var selectedOption = this.value;
-        var html_select2 = '<option value="">Seleccione </option>';
+        var html_select_localizacion = '<option value="">Seleccione </option>';
         for (var i = 0; i < data[1].length; i++) 
         {
           if (data[1][i].id_area == selectedOption) 
           {
-            html_select2 += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
-            document.getElementById("localizacion").innerHTML = html_select2;
+            html_select_localizacion += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
+            document.getElementById("localizacion").innerHTML = html_select_localizacion;
           }
         }
         if(selectedOption == '')
         {
-          document.getElementById("localizacion").innerHTML = html_select2;
+          document.getElementById("localizacion").innerHTML = html_select_localizacion;
           document.getElementById("div_localizacion").style.display = "none";
           document.getElementById("div_tipo_solicitud").style.display = "none";
           document.getElementById("div_equipo").style.display = "none";
@@ -77,7 +77,7 @@
         }
         else
         {
-          document.getElementById("localizacion").innerHTML = html_select2;
+          document.getElementById("localizacion").innerHTML = html_select_localizacion;
           document.getElementById("div_localizacion").style.display = "block";
           document.getElementById("div_tipo_solicitud").style.display = "none";
           document.getElementById("div_equipo").style.display = "none";

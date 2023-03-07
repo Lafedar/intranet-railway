@@ -74,7 +74,7 @@
         @endforeach
     </tbody>       
   </table>   
-  
+  <form action="{{ route('update_solicitud') }}" method="POST" enctype="multipart/form-data">
   <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -90,7 +90,7 @@
       </div>
     </div>
   </div>
-  
+  </form>
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
 

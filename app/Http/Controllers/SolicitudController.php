@@ -12,7 +12,7 @@ use App\User;
 use Carbon\Carbon;
 Use Session;
 use DB;
-
+use Illuminate\Support\Facades\Auth;
 
 class SolicitudController extends Controller
 {
@@ -29,6 +29,39 @@ class SolicitudController extends Controller
         'solicitudes' => $solicitudes
         ]);
     }
+
+    public function store_solicitud(Request $request)
+    {        
+        $aux = Solicitud::get()->max('id');
+        if($aux==null)
+        {
+            $aux = 0;
+        }
+
+        $solicitud = new Solicitud;
+        $solicitud->titulo = $request['titulo'];
+        $solicitud->id_equipo = $request['equipo'];
+        $solicitud->id_falla = $request['falla'];
+        $solicitud->id_solicitante = $request['solicitante'];
+        $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
+
+        $solicitud->save();
+
+        $historico_solicitud = new Historico_solicitudes;
+        $historico_solicitud->id_solicitud = $aux+1;
+        $historico_solicitud->id_estado = 1;
+        $historico_solicitud->actual = 1;
+        $historico_solicitud->descripcion = $request['descripcion'];
+        $historico_solicitud->id_usuario = Auth::id();
+        $historico_solicitud->fecha = Carbon::now()->format('Y-m-d H:i:s');    
+
+        $historico_solicitud->save();
+
+        Session::flash('message','Archivo agregado con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect ('solicitudes');
+    }
+
     public function show_solicitud($id)
     {
         //migrar a modelo
@@ -90,29 +123,28 @@ class SolicitudController extends Controller
 
     public function update_solicitud(Request $request)
     {
-        
-        /*$ultimo_historico = DB::table('historico_solicitudes')
+        $ultimo_historico = DB::table('historico_solicitudes')
         ->select('historico_solicitudes.id_solicitud as id_solicitud', 'historico_solicitudes.id_estado as id_estado', 
         'historico_solicitudes.fecha as fecha')
         ->where('historico_solicitudes.id_solicitud', $request['id_solicitud'])
         ->where('historico_solicitudes.actual', 1)
         ->first();
-//dd($ultimo_historico);
+
         $actualizo_ult = DB::table('historico_solicitudes')
         ->where('historico_solicitudes.id_solicitud',$ultimo_historico->id_solicitud)
         ->where('historico_solicitudes.id_estado',$ultimo_historico->id_estado) //id de estado
         ->where('historico_solicitudes.fecha',$ultimo_historico->fecha)
-        ->update(['actual' => 0]);*/
+        ->update(['actual' => 0]);
 
-        /*$nuevo_historico = new Historico_solicitudes;
+        $nuevo_historico = new Historico_solicitudes;
         $nuevo_historico->id_solicitud = $request['id_solicitud'];
         $nuevo_historico->id_estado = $request['estado']; //id de estado
         $nuevo_historico->descripcion = $request['descripcion'];
         $nuevo_historico->actual = 1;
-
+        $nuevo_historico->id_usuario = Auth::id();
         $nuevo_historico->fecha = Carbon::now()->format('Y-m-d H:i:s');    
         $nuevo_historico->save();
-*/
+
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
@@ -147,36 +179,6 @@ class SolicitudController extends Controller
     {
         return DB::table('estados')->get();
     } 
-
-    public function store_solicitud(Request $request)
-    {        
-        $aux = Solicitud::get()->max('id');
-        if($aux==null)
-        {
-            $aux = 0;
-        }
-
-        $solicitud = new Solicitud;
-        $solicitud->titulo = $request['titulo'];
-        $solicitud->obs = $request['obs'];
-        $solicitud->fecha = $request['fecha'];
-        $solicitud->frecuencia = $request['frecuencia'];
-        $solicitud->categoria = '2';
-
-        if($request->file('pbix'))
-        {
-            $file = $request->file('pbix');
-            $name = str_pad($aux + 1, 5, '0', STR_PAD_LEFT).$file->getClientOriginalName();         
-            Storage::disk('public')->put('powerbi/'.$name, \File::get($file));
-            $solicitud->pbix = 'powerbi\\'.$name;
-        }
-
-        $solicitud->save();
-
-        Session::flash('message','Archivo agregado con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect ('solicitudes');
-    }
 
     public function destroy_solicitud($id)
     {

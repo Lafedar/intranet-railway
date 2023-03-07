@@ -37,12 +37,16 @@
             <p>{{$solicitud->falla}}</p>
         </div>
         <div class="col-md-4">
-            <strong>Nombre Solicitante: </strong>
+            <strong>Solicitante: </strong>
             <p>{{$solicitud->nombre_solicitante}}</p>
         </div>
         <div class="col-md-4">
-            <strong>Nombre Encargado: </strong>
-            <p>{{$solicitud->nombre_encargado}}</p>
+            <strong>Encargado: </strong>
+            @if($solicitud->nombre_encargado)
+                <p>{{$solicitud->nombre_encargado}}</p>
+            @else
+                <p style="color:gainsboro">Sin asignar</p>
+            @endif
         </div>
     </div>
     <div class="row">

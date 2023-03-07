@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Historico_solicitudes extends Model
 {
     public $table = "historico_solicitudes";
+    public $timestamps = false;
     /*public function scopeID_solicitud($query, $id_solitud)
     {
         if($id_solitud)

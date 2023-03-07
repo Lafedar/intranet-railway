@@ -10,6 +10,9 @@
               <input type="hidden" name="id">
               <div class="form-group col-md-12">
                 <label for="title"><strong>Titulo:</strong></label>
+                <input type="text" name="titulo" class="form-control"  autocomplete="off" id="titulo" required>
+
+                <label for="title"><strong>Descripcion:</strong></label>
                 <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" required></textarea>
                 
                 <div class="row">
@@ -37,7 +40,7 @@
                     <select class="form-control" name="falla" id="falla" required></select>
                   </div>
                 </div>
-                
+                <input type="hidden" name="solicitante" value="{{ Auth::id() }}">
               </div> 
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
               <button type="submit" class="btn btn-info">Agregar</button>
