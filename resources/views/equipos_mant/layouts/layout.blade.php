@@ -92,9 +92,6 @@
       }
       $('#tipo').html(html_select);
     });
-    
-
-
   });
 </script>
 

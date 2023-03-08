@@ -36,6 +36,7 @@
       <th class="text-center">Area</th>     
       <th class="text-center">Localizacion</th>
       <th class="text-center">Uso</th>
+      <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
       @foreach($equipos_mant as $equipo_mant)
@@ -53,9 +54,71 @@
           @else
             <td width="60"><div class="circle_grey"></div></td>
           @endif
+          <td><button id="edit" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$equipo_mant->id}})' title="update">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       
-  </table>   
+  </table>
+  <form action="{{ route('update_equipo_mant') }}" method="POST" enctype="multipart/form-data">
+    <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+          {{csrf_field()}}
+          <div id="modalshow" class="modal-body">
+            <!-- Datos -->
+          </div>
+          <div id="modalfooter" class="modal-footer">
+            <!-- Footer -->
+          </div>
+        
+        </div>
+      </div>
+    </div>
+  </form>
+  {{ $equipos_mant->appends($_GET)->links() }}
+</div>
+<script> 
+  //Duracion de alerta (agregado, elimnado, editado)
+  $("equipo_mant").ready(function()
+  {
+    setTimeout(function()
+    {
+      $("div.alert").fadeOut();
+    }, 5000 ); // 5 secs
+  });
+  </script> 
+
+  <script> 
+  //modal update
+  function fnOpenModalUpdate(id) {
+  var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    console.log("antes de .ajax");
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id,
+      type: 'GET',
+      success: function(data) {
+         console.log("dentro de .ajax");
+        // Borrar contenido anterior
+        $("#modalshow").empty();
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+        // Agregar el botón "Cerrar" al footer
+        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
+        $("#modalfooter").append(closeButton);
+
+        // Mostrar el modal
+        console.log("antes de myModal.show();");
+        myModal.show();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("Error en la petición AJAX: " + textStatus + " - " + errorThrown);
+      }
+    });
+  }
+</script> 
 
 @stop

@@ -358,10 +358,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
   
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
-  /*Route::get('select_tipo_solicitud', 'SolicitudController@select_tipo_solicitud')->name('select_tipo_solicitud');
-  Route::get('select_area_localizacion', 'SolicitudController@select_area_localizacion')->name('select_area_localizacion');
-  Route::get('select_equipo', 'SolicitudController@select_equipo')->name('select_equipo');
-  Route::get('select_falla', 'SolicitudController@select_falla')->name('select_falla');*/
+  Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
 });
 
 Route::group(['middleware' => ['auth']], function () 
@@ -370,5 +367,6 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('agregar-equipo_mant');
   Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
-
+  Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->name('show_update_equipo_mant');
+  Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->name('update_equipo_mant');
 });
