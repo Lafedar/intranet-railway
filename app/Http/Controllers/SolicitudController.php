@@ -150,12 +150,18 @@ class SolicitudController extends Controller
         return redirect('solicitudes');
     }
     //trae tabla de tipos de solicitudes 
-    public function select_tipo_solicitud()
+    public function select_create()
     {
-        return DB::table('tipo_solicitudes')->get();
+        return [DB::table('area')->get(), 
+        DB::table('localizaciones')->get(), 
+        DB::table('tipo_solicitudes')->get(), 
+        DB::table('equipos_mant')->get(), 
+        DB::table('fallas')->get(), 
+        DB::table('tipos_equipos')->get(),
+        DB::table('fallasxtipo')->get()];
     }   
 
-    public function select_area()
+    /*public function select_area()
     {
         return [DB::table('area')->get(), DB::table('localizaciones')->get()];
     }  
@@ -173,7 +179,7 @@ class SolicitudController extends Controller
     public function select_falla()
     {
         return DB::table('fallas')->get();
-    }  
+    }  */
 
     public function select_estado()
     {

@@ -355,13 +355,13 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud'])->middleware('role:administrador|mantenimiento');
   Route::get('show_solicitud/{solicitud}', ['uses' => 'SolicitudController@show_solicitud'])->name('show_solicitud');
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_update_solicitud');
-  Route::post('solicitudes/update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
+  Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
   
-  Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
-  Route::get('select_tipo_solicitud', 'SolicitudController@select_tipo_solicitud')->name('select_tipo_solicitud');
+  Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
+  /*Route::get('select_tipo_solicitud', 'SolicitudController@select_tipo_solicitud')->name('select_tipo_solicitud');
   Route::get('select_area_localizacion', 'SolicitudController@select_area_localizacion')->name('select_area_localizacion');
   Route::get('select_equipo', 'SolicitudController@select_equipo')->name('select_equipo');
-  Route::get('select_falla', 'SolicitudController@select_falla')->name('select_falla');
+  Route::get('select_falla', 'SolicitudController@select_falla')->name('select_falla');*/
 });
 
 Route::group(['middleware' => ['auth']], function () 
