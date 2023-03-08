@@ -141,30 +141,28 @@
           document.getElementById("div_equipo").style.display = "none";
           document.getElementById("div_falla").style.display = "block";
           var html_select_falla = '<option value="">Seleccione </option>'
-          for(var i = 0; i<data[4].length; i ++)
+          for(var j = 0; j<data[6].length; j ++)
           {
-            for(var j = 0; j<data[6].length; j ++)
+            if(data[6][j].id_tipo_solicitud == 2)
             {
-              if((data[6][j].id_falla == data[4][i].id) and (data[6][j].id_tipo_solicitud == 2))
-              {
-                html_select_falla += '<option value ="'+data[4][i].id+'">'+data[4][i].nombre+'</option>';
+              for(var i = 0; i<data[4].length; i ++)
+              { 
+                if(data[6][j].id_falla == data[4][i].id)
+                {
+                  html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                }
               }
             }
-          } 
+          }
           $('#falla').html(html_select_falla);
         }
       });
-
-    });
-
-    /*$.get('select_equipo/',function(data)
-    {
-      
-      
       
       document.getElementById("equipo").addEventListener("change", function() 
       {
+        var html_select_falla = '<option value="">Seleccione </option>'
         var selectedOption = this.value;
+        var aux_tipo_equipo;
         if(selectedOption == '')
         {
           document.getElementById("div_falla").style.display = "none";
@@ -172,16 +170,30 @@
         else
         {
           document.getElementById("div_falla").style.display = "block";
+          for(var k = 0; k<data[3].length; k ++)
+          {
+            if(selectedOption == data[3][k].id)
+            {
+              aux_tipo_equipo = data[3][k].id_tipo;
+            }
+          }
+          for(var j = 0; j<data[6].length; j ++)
+          {
+            if(data[6][j].id_tipo_equipo == selectedOption)
+            {
+              for(var i = 0; i<data[4].length; i ++)
+              { 
+                if(data[6][j].id_falla == data[4][i].id)
+                {
+                  html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                }
+              }
+            }
+          }
+          $('#falla').html(html_select_falla);
         }
       });
     });
-    
-    $.get('select_falla/',function(data)
-    {
-      
-      
-    });*/
-
   });
 </script>
 
