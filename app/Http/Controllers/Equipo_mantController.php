@@ -25,7 +25,7 @@ class Equipo_mantController extends Controller
     public function store_equipo_mant(Request $request)
     {        
         $equipo_mant = new Equipo_mant;
-        $equipo_mant->id = $request['id_e'];
+        $equipo_mant->id = $request['id'];
         $equipo_mant->id_tipo = $request['tipo'];
         $equipo_mant->marca = $request['marca'];
         $equipo_mant->modelo = $request['modelo'];
@@ -63,7 +63,38 @@ class Equipo_mantController extends Controller
 
     public function update_equipo_mant(Request $request)
     {
-
+        $aux = DB::table('equipos_mant')
+        ->select('equipos_mant.id as id')
+        ->get();
+        
+        foreach ($aux as $equipo) 
+        {
+            if($request['id'] == $equipo->id)
+            {
+                Session::flash('message','El ID ingresado ya se encuentra asignada');
+                Session::flash('alert-class', 'alert-warning');
+                return redirect ('equipos_mant');
+            }
+        }
+        $equipo_mant = DB::table('equipos_mant')
+        ->where('equipos_mant.id',$request['id'])
+        ->update([
+            'id_e' => $request['id_e'],
+            'marca' => $request['marca'],
+            'modelo' => $request['modelo'],
+            'num_serie' => $request['num_serie'],
+            'ip' => $nueva_ip,
+            'subred' => $request['ips'],
+            'obs' => $request['obs'],
+            'pulgadas' => $request['pulgadas'],
+            'procesador' => $request['procesador'],
+            'disco' => $request['disco'],
+            'memoria' => $request['memoria'],
+            'tipo' => $request['tipo_equipamiento'],
+            'toner' => $request['toner'],
+            'unidad_imagen' => $request['unidad_imagen'],
+            'oc' => $request['oc']
+        ]);      
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('equipos_mant');
