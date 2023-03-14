@@ -63,37 +63,33 @@ class Equipo_mantController extends Controller
 
     public function update_equipo_mant(Request $request)
     {
-        $aux = DB::table('equipos_mant')
-        ->select('equipos_mant.id as id')
-        ->get();
-        
-        foreach ($aux as $equipo) 
+        if($request['id'] != $request['id_vieja'])
         {
-            if($request['id'] == $equipo->id)
+            $aux = DB::table('equipos_mant')
+            ->select('equipos_mant.id as id')
+            ->get();
+
+            foreach ($aux as $equipo) 
             {
-                Session::flash('message','El ID ingresado ya se encuentra asignada');
-                Session::flash('alert-class', 'alert-warning');
-                return redirect ('equipos_mant');
+                if($request['id'] == $equipo->id)
+                {
+                    Session::flash('message','El ID ingresado ya se encuentra asignada');
+                    Session::flash('alert-class', 'alert-warning');
+                    return redirect ('equipos_mant');
+                }
             }
         }
         $equipo_mant = DB::table('equipos_mant')
-        ->where('equipos_mant.id',$request['id'])
+        ->where('equipos_mant.id',$request['id_vieja'])
         ->update([
-            'id_e' => $request['id_e'],
+            'id' => $request['id'],
+            'id_tipo' => $request['tipo_equipo_mant_editar'],
             'marca' => $request['marca'],
             'modelo' => $request['modelo'],
             'num_serie' => $request['num_serie'],
-            'ip' => $nueva_ip,
-            'subred' => $request['ips'],
-            'obs' => $request['obs'],
-            'pulgadas' => $request['pulgadas'],
-            'procesador' => $request['procesador'],
-            'disco' => $request['disco'],
-            'memoria' => $request['memoria'],
-            'tipo' => $request['tipo_equipamiento'],
-            'toner' => $request['toner'],
-            'unidad_imagen' => $request['unidad_imagen'],
-            'oc' => $request['oc']
+            'descripcion' => $request['descripcion'],
+            'id_localizacion' => $request['localizacion_editar'],
+            'uso' => $request['uso']
         ]);      
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');

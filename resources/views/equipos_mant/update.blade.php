@@ -3,6 +3,7 @@
   <div class="row">
     <div class="col">
       <label for="title"><strong>ID:</strong></label>
+      <input type="hidden" name="id_vieja" id="id_vieja" value="{{ $equipo_mant->id }}">
       <input type="text" name="id" class="form-control" id="id" autocomplete="off" value="{{$equipo_mant->id}}" min="6" required>
     </div>
     <div class="col">
@@ -41,5 +42,4 @@
     <label for="title"><strong>Uso:</strong></label>
     <input type="checkbox" name="uso" class="from-control" autocomplete="off" id="uso" value="1" {{ $equipo_mant->uso == 1 ? 'checked' : '' }}>
   </div>
-  <input type="hidden" name="id_equipo_mant" value="{{ $equipo_mant->id }}">
 </div> 
