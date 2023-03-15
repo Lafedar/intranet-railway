@@ -4,7 +4,7 @@
     <div class="col">
       <label for="title"><strong>ID:</strong></label>
       <input type="hidden" name="id_vieja" id="id_vieja" value="{{ $equipo_mant->id }}">
-      <input type="text" name="id" class="form-control" id="id" autocomplete="off" value="{{$equipo_mant->id}}" min="6" required>
+      <input type="text" name="id" class="form-control" id="id" autocomplete="off" value="{{$equipo_mant->id}}" min="5" max="5" required>
     </div>
     <div class="col">
       <label for="title"><strong>Tipo: </strong></label>

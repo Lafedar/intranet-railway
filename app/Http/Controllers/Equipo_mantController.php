@@ -79,6 +79,12 @@ class Equipo_mantController extends Controller
                 }
             }
         }
+        $uso = 0;
+        if($request['uso'])
+        {
+            $uso = 1;
+        }
+        else{$uso = 0;}
         $equipo_mant = DB::table('equipos_mant')
         ->where('equipos_mant.id',$request['id_vieja'])
         ->update([
@@ -89,7 +95,7 @@ class Equipo_mantController extends Controller
             'num_serie' => $request['num_serie'],
             'descripcion' => $request['descripcion'],
             'id_localizacion' => $request['localizacion_editar'],
-            'uso' => $request['uso']
+            'uso' => $uso
         ]);      
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
