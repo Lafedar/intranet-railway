@@ -33,7 +33,7 @@
                   </div>
                   <div class="col-6" style="display:none;" id="div_equipo">
                     <label for="title" ><strong>Equipo:</strong></label>
-                    <select class="form-control" name="equipo" id="equipo" required ></select>
+                    <select class="form-control" name="equipo" id="equipo"></select>
                   </div>
                   <div class="col-6" style="display:none;" id="div_falla">
                     <label for="title"><strong>Fallas:</strong></label>

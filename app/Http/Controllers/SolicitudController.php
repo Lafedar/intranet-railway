@@ -33,7 +33,7 @@ class SolicitudController extends Controller
     public function store_solicitud(Request $request)
     {        
         $aux = Solicitud::get()->max('id');
-        if($aux==null)
+        if($aux == null)
         {
             $aux = 0;
         }
@@ -44,6 +44,10 @@ class SolicitudController extends Controller
         $solicitud->id_falla = $request['falla'];
         $solicitud->id_solicitante = $request['solicitante'];
         $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
+        if($request['tipo_solicitud'] == 2)
+        {
+            $solicitud->id_localizacion_edilicio = $request['localizacion'];
+        }
 
         $solicitud->save();
 
@@ -72,12 +76,15 @@ class SolicitudController extends Controller
             ->leftjoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
             ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
             ->leftjoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
-            ->leftjoin('localizaciones', 'localizaciones.id' ,'equipos_mant.id_localizacion')
-            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+            ->leftjoin('localizaciones as loc_equipo', 'loc_equipo.id' ,'equipos_mant.id_localizacion')
+            ->leftjoin('localizaciones as loc_edilicio', 'loc_edilicio.id' ,'solicitudes.id_localizacion_edilicio')
+            ->leftjoin('area as area_equipo', 'area_equipo.id_a', 'loc_equipo.id_area')
+            ->leftjoin('area as area_edilicio', 'area_edilicio.id_a', 'loc_edilicio.id_area')
             ->where('historico_solicitudes.actual', '=', 1)
             ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
             'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
-            'estados.nombre as estado', 'area.nombre_a as area', 'localizaciones.nombre as localizacion')
+            'estados.nombre as estado', 'area_equipo.nombre_a as area_equipo', 'area_edilicio.nombre_a as area_edilicio', 'loc_equipo.nombre as loc_equipo', 
+            'loc_edilicio.nombre as loc_edilicio')
             ->find($id);
         $historico_solicitudes = DB::table('historico_solicitudes')
             ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado') 

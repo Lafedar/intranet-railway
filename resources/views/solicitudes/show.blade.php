@@ -20,15 +20,27 @@
     <div class="row">    
         <div class="col-md-4">
             <strong>Equipo: </strong>
-            <p>{{$solicitud->id_equipo}}</p>
+            @if($solicitud->id_equipo)
+                <p>{{$solicitud->id_equipo}}</p>
+            @else
+                <p style="color:gainsboro">N/A</p>
+            @endif
         </div>
         <div class="col-md-4">
             <strong>Area: </strong>
-            <p>{{$solicitud->area}}</p>
+            @if($solicitud->area_equipo)
+                <p>{{$solicitud->area_equipo}}</p>
+            @elseif($solicitud->area_edilicio)
+                <p>{{$solicitud->area_edilicio}}</p>
+            @endif
         </div>
         <div class="col-md-4">
             <strong>Localizacion: </strong>
-            <p>{{$solicitud->localizacion}}</p>
+            @if($solicitud->loc_edilicio)
+                <p>{{$solicitud->loc_edilicio}}</p>
+            @elseif($solicitud->loc_equipo)
+                <p>{{$solicitud->loc_equipo}}</p>
+            @endif
         </div>
     </div>  
     <div class="row">

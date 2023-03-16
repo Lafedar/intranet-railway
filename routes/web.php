@@ -356,6 +356,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_solicitud/{solicitud}', ['uses' => 'SolicitudController@show_solicitud'])->name('show_solicitud');
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_update_solicitud');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
+  Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_assing_solicitud');
+  Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|mantenimiento')->name('assing_solicitud');
   
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
