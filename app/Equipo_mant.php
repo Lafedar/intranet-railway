@@ -15,7 +15,7 @@ class Equipo_mant extends Model
             ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
             ->leftjoin('tipos_equipos', 'tipos_equipos.id', 'equipos_mant.id_tipo')
             //no colocar id solo porque convierte valores no numericos en 0
-            ->select('equipos_mant.id as id_e', 
+            ->select(DB::raw("equipos_mant.id as id_e"), 
             'equipos_mant.marca as marca', 'equipos_mant.modelo as modelo', 'equipos_mant.descripcion as descripcion', 
             'equipos_mant.uso as uso', 'localizaciones.nombre as localizacion', 'area.nombre_a as area', 
             'equipos_mant.uso as uso', 'tipos_equipos.id as id_tipo', 'localizaciones.id as id_localizacion', 

@@ -40,7 +40,7 @@
     <tbody>
       @foreach($equipos_mant as $equipo_mant)
         <tr class="text-center">
-          <td width="66">{{$equipo_mant->id_e}}</td>
+          <td width="67">{{$equipo_mant->id_e}}</td>
           <td width="200">{{$equipo_mant->nombre_tipo}}</td>
           <td width="160">{{$equipo_mant->marca}}</td>
           <td width="160">{{$equipo_mant->modelo}}</td>
@@ -53,9 +53,9 @@
           @else
             <td width="60"><div class="circle_grey"></div></td>
           @endif
-            <td><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$equipo_mant->id_e}})' title="update"
+            <td><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$equipo_mant->id_e}}")' title="update"
             data-tipo="{{$equipo_mant->id_tipo}}" data-area="{{$equipo_mant->id_area}}" data-localizacion="{{$equipo_mant->id_localizacion}}"
-            id="edit-{{$equipo_mant->id}}">Editar</button></td>
+            id="edit-{{$equipo_mant->id_e}}">Editar</button></td>
         </tr>
 
       @endforeach
@@ -93,11 +93,11 @@
 
   <script> 
   //modal update
-  function fnOpenModalUpdate(id) {
+  function fnOpenModalUpdate(id_e) {
     var myModal = new bootstrap.Modal(document.getElementById('editar_equipo_mant'));
-    var tipo = document.getElementById('edit-' + id).getAttribute('data-tipo');
-    var area = document.getElementById('edit-' + id).getAttribute('data-area');
-    var localizacion = document.getElementById('edit-' + id).getAttribute('data-localizacion');
+    var tipo = document.getElementById('edit-' + id_e).getAttribute('data-tipo');
+    var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
+    var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
     $('#editar_equipo_mant').on('show.bs.modal', function (event){
       $.get('select_tipo_equipo',function(data)
       {
@@ -180,7 +180,7 @@
       });
     });
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
       type: 'GET',
       success: function(data) {
         // Borrar contenido anterior
