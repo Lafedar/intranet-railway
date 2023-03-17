@@ -79,7 +79,7 @@
   </table>   
   
   <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog estilo" role="document">
       <div class="modal-content">
        <form id="myForm" method="POST" enctype="multipart/form-data">
           {{csrf_field()}}
@@ -111,14 +111,22 @@
 
 <script>  
   //modal show
-  var ruta = '{{ route('update_solicitud') }}';
-  function fnOpenModalShow(id) {
-  var myModal = new bootstrap.Modal(document.getElementById('show2'));
-
-    $.ajax({
+  function fnOpenModalShow(id) 
+  {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    // Cambiar el tamaño del modal al mostrarlo
+    $('#show2').on('show.bs.modal', function (event) {
+      var modal = $(this);
+      var modalDialog = modal.find('.modal-dialog');
+      // Cambiar la clase "modal-dialog" para hacer que el modal sea más grande
+      modalDialog.removeClass('estilo').addClass('modal-lg');
+    });
+    $.ajax
+    ({
       url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
       type: 'GET',
-      success: function(data) {
+      success: function(data) 
+      {
         // Borrar contenido anterior
         $("#modalshow").empty();
         // Establecer el contenido del modal
@@ -130,19 +138,25 @@
         var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
         $("#modalfooter").append(closeButton);
 
-        // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta);
-
         // Mostrar el modal
         myModal.show();
       },
     });
   }
+</script>
+<script> 
   //modal update
+  var ruta = '{{ route('update_solicitud') }}';
   function fnOpenModalUpdate(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-
+    // Cambiar el tamaño del modal al mostrarlo
+    $('#show2').on('show.bs.modal', function (event) {
+      var modal = $(this);
+      var modalDialog = modal.find('.modal-dialog');
+      // Cambiar la clase "modal-dialog" para hacer que el modal sea más grande
+      modalDialog.removeClass('estilo').addClass('modal-lg');
+    });
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,
       type: 'GET',
@@ -157,6 +171,9 @@
         // Agregar el botón "Cerrar" al footer
         var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
         $("#modalfooter").append(closeButton);
+
+        // Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta);
 
         // Mostrar el modal
         myModal.show();
@@ -176,12 +193,21 @@
       $('#estado').html(html_select);
     });
   });
-
+</script>
+<script>
   //modal assing
   var ruta = '{{ route('assing_solicitud') }}';
   function fnOpenModalAssing(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+
+    // Cambiar el tamaño del modal al mostrarlo
+    $('#show2').on('show.bs.modal', function (event) {
+      var modal = $(this);
+      var modalDialog = modal.find('.modal-dialog');
+      // Cambiar la clase "modal-dialog" para hacer que el modal sea más pequeño
+      modalDialog.removeClass('estilo').addClass('modal-sm');
+    });
 
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
@@ -198,6 +224,9 @@
         var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
         $("#modalfooter").append(closeButton);
 
+        // Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta);
+
         // Mostrar el modal
         myModal.show();
       },
@@ -205,13 +234,19 @@
   }
   $('#show2').on('show.bs.modal', function (event) 
   {
-    $.get('select_user/',function(data)
+    $.get('select_users/',function(data)
     {
       var html_select = '<option value="">Seleccione </option>'
 
-      for(var i = 0; i<data.length; i ++)
+      for(var i = 0; i<data[0].length; i ++)
       {
-       html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+        for(var k = 0; k<data[1].length; k ++)
+        {
+          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22))
+          {
+            html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
+          }
+        }
       }
       $('#user').html(html_select);
     });

@@ -361,6 +361,7 @@ Route::group(['middleware' => ['auth']], function ()
   
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
+  Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
 });
 
 Route::group(['middleware' => ['auth']], function () 
