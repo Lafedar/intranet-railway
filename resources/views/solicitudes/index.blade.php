@@ -45,7 +45,7 @@
         @foreach($solicitudes as $solicitud)
             <tr>
               <td width="60">{{sprintf('%05d',$solicitud->id)}}</td>
-              <td width="500">{{$solicitud->titulo}}</td>
+              <td width="350">{{$solicitud->titulo}}</td>
               <td width="150">{{$solicitud->tipo_solicitud}}</td>
               <td width="107">{{$solicitud->id_equipo}}</td>
               <td >{{$solicitud->estado}}</td>
@@ -56,7 +56,7 @@
               @can('ver_encargado')
                 <td >{{$solicitud->nombre_encargado}}</td>
               @endcan
-              <td class="text-center" width="275">
+              <td class="text-center" width="350">
                 <div>
                   <!-- Boton de ver solitud en detalle -->
                   <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
