@@ -362,6 +362,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
   Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
+
 });
 
 Route::group(['middleware' => ['auth']], function () 
@@ -372,4 +373,12 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
   Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->name('show_update_equipo_mant');
   Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->name('update_equipo_mant');
+});
+
+Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento');
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('areas','AreaController')->middleware('role:administrador|mantenimiento');
+  Route::post('store_area','AreaController@store_area')->name('agregar-area');
+  Route::post('update_area','AreaController@update_area')->name('update_area');
 });

@@ -29,6 +29,10 @@ class HomeController extends Controller
     {
         return view('home.mantenimiento');
     }
+    public function parametros_mantenimiento()
+    {
+        return view('home.parametros_mantenimiento');
+    }
     public function internos()
     {
         $personas = DB::table('personas')

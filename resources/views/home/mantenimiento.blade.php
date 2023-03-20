@@ -19,7 +19,7 @@
         </div>
     
         <div class="col-md-4">
-            <a  href="/"> <img  src="{{ URL::to('/img/calidad.png') }}" height="140"></a>
+            <a  href="/parametros_mantenimiento"> <img  src="{{ URL::to('/img/calidad.png') }}" height="140"></a>
         </div>
     </div>
 
