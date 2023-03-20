@@ -110,17 +110,12 @@
 </script> 
 
 <script>  
+  var ruta_update = '{{ route('update_solicitud') }}';
+  var ruta_assing = '{{ route('assing_solicitud') }}';
   //modal show
   function fnOpenModalShow(id) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    // Cambiar el tamaño del modal al mostrarlo
-    $('#show2').on('show.bs.modal', function (event) {
-      var modal = $(this);
-      var modalDialog = modal.find('.modal-dialog');
-      // Cambiar la clase "modal-dialog" para hacer que el modal sea más grande
-      modalDialog.removeClass('estilo').addClass('modal-lg');
-    });
     $.ajax
     ({
       url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
@@ -140,23 +135,18 @@
 
         // Mostrar el modal
         myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
       },
     });
   }
-</script>
-<script> 
   //modal update
-  var ruta = '{{ route('update_solicitud') }}';
   function fnOpenModalUpdate(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    // Cambiar el tamaño del modal al mostrarlo
-    $('#show2').on('show.bs.modal', function (event) {
-      var modal = $(this);
-      var modalDialog = modal.find('.modal-dialog');
-      // Cambiar la clase "modal-dialog" para hacer que el modal sea más grande
-      modalDialog.removeClass('estilo').addClass('modal-lg');
-    });
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,
       type: 'GET',
@@ -173,10 +163,15 @@
         $("#modalfooter").append(closeButton);
 
         // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta);
+        $('#myForm').attr('action', ruta_update);
 
         // Mostrar el modal
         myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
       },
     });
   }
@@ -193,22 +188,10 @@
       $('#estado').html(html_select);
     });
   });
-</script>
-<script>
   //modal assing
-  var ruta = '{{ route('assing_solicitud') }}';
   function fnOpenModalAssing(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-
-    // Cambiar el tamaño del modal al mostrarlo
-    $('#show2').on('show.bs.modal', function (event) {
-      var modal = $(this);
-      var modalDialog = modal.find('.modal-dialog');
-      // Cambiar la clase "modal-dialog" para hacer que el modal sea más pequeño
-      modalDialog.removeClass('estilo').addClass('modal-sm');
-    });
-
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
       type: 'GET',
@@ -225,10 +208,15 @@
         $("#modalfooter").append(closeButton);
 
         // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta);
+        $('#myForm').attr('action', ruta_assing);
 
         // Mostrar el modal
         myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-sm"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-lg');
+        modalDialog.classList.add('modal-sm');
       },
     });
   }
