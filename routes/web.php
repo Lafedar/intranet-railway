@@ -351,10 +351,11 @@ Route::group(['middleware' => ['auth']], function ()
 {
   Route::resource('solicitudes','SolicitudController');
   Route::resource('historico_solicitudes','SolicitudController');
-  Route::post('store_solicitud','SolicitudController@store_solicitud')->name('agregar-solicitud');
+  Route::post('store_solicitud','SolicitudController@store_solicitud')->name('store_solicitud');
   Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud'])->middleware('role:administrador|mantenimiento');
   Route::get('show_solicitud/{solicitud}', ['uses' => 'SolicitudController@show_solicitud'])->name('show_solicitud');
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_update_solicitud');
+  Route::get('show_store_solicitud',['uses' => 'SolicitudController@show_store_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_store_solicitud');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
   Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_assing_solicitud');
   Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|mantenimiento')->name('assing_solicitud');
@@ -382,4 +383,13 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_area','AreaController@store_area')->name('agregar-area');
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
+});
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|mantenimiento');
+  Route::post('store_localizacion','LocalizacionController@store_localizacion')->name('agregar-localizacion');
+  Route::get('show_update_localizacion/{localizacion}',['uses' => 'LocalizacionController@show_update_localizacion'])->name('show_update_localizacion');
+  Route::post('update_localizacion','LocalizacionController@update_localizacion')->name('update_localizacion');
+
+  Route::get('select_area', 'LocalizacionController@select_area')->name('select_area');
 });
