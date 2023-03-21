@@ -23,6 +23,16 @@ class AreaController extends Controller
 
     public function store_area(Request $request)
     {        
+        //consulta en bd si existe el id
+        $aux = DB::table('area')->where('area.id_a', $request['id_a'])->first(); 
+
+        //mensaje de id existente
+        if($aux){
+            Session::flash('message','ID ingresado ya se encuentra asignado');
+            Session::flash('alert-class', 'alert-warning');
+            return redirect()->back()->withInput();
+        }
+        
         $area = new Area;
         $area->id_a = $request['id_a'];
         $area->nombre_a = $request['nombre'];
@@ -41,23 +51,18 @@ class AreaController extends Controller
         ->update([
             'nombre_a' => $request['nombre_a']
         ]);      
-        Session::flash('message','Archivo modificado con éxito');
+        Session::flash('message','Area modificada con éxito');
         Session::flash('alert-class', 'alert-success');
-        return redirect('equipos_mant');
+        return redirect('areas');
     }
     
-    public function show_update_area($id)
+    public function show_update_area($id_a)
     {
-        $equipo_mant = DB::table('equipos_mant')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
-        ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
-        ->leftjoin('tipos_equipos', 'tipos_equipos.id', 'equipos_mant.id_tipo')
-        ->select('equipos_mant.id as id', 'equipos_mant.marca as marca', 'equipos_mant.modelo as modelo', 'equipos_mant.descripcion as descripcion', 
-        'equipos_mant.uso as uso', 'localizaciones.nombre as localizacion', 'area.nombre_a as area', 'equipos_mant.uso as uso', 
-        'tipos_equipos.nombre as nombre_tipo', 'equipos_mant.num_serie as num_serie')
-        ->where('equipos_mant.id', $id)
+        $area = DB::table('area')
+        ->select('area.id_a as id_a', 'area.nombre_a as nombre_a')
+        ->where('area.id_a', $id_a)
         ->first();
 
-        return view('equipos_mant.update', ['equipo_mant' => $equipo_mant]);       
+        return view('areas.update', ['area' => $area]);       
     }
 }

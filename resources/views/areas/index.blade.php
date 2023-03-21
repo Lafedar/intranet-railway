@@ -35,15 +35,14 @@
         <tr class="text-center">
         <td width="80">{{$area->id_a}}</td>
         <td>{{$area->nombre_a}}</td>
-        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$area->id_e}}")' title="update"
-          data-nombre_a="{{$area->nombre_a}}"
-          id="edit">Editar</button></td>
+        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$area->id_a}}")' title="update"
+          data-nombre_a="{{$area->nombre_a}}" id="edit">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       
   </table>
   <form action="{{ route('update_area') }}" method="POST" enctype="multipart/form-data">
-    <div class="modal fade" id="editar_area" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -74,11 +73,11 @@
 
 <script> 
   //modal update
-  function fnOpenModalUpdate(id_e) 
+  function fnOpenModalUpdate(id_a) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_area/" + id,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_area/" + id_a,
       type: 'GET',
       success: function(data) {
         // Borrar contenido anterior
@@ -97,11 +96,6 @@
 
         // Mostrar el modal
         myModal.show();
-
-        // Cambiar el tamaño del modal a "modal-lg"
-        var modalDialog = myModal._element.querySelector('.modal-dialog');
-        modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.add('modal-lg');
       },
     });
   }
