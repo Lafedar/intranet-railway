@@ -111,12 +111,14 @@
 
 <script>  
   var ruta_create = '{{ route('store_solicitud') }}';
-  var ruta_update = '{{ route('update_solicitud') }}';
-  var ruta_assing = '{{ route('assing_solicitud') }}';
   //modal store
   function fnOpenModalStore() 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $('#show2').on('hidden.bs.modal', function () {
+      console.log("A");
+    })
+    console.log(myModal);
     $.ajax
     ({
       url: window.location.protocol + '//' + window.location.host + "/show_store_solicitud/",
@@ -141,172 +143,179 @@
         myModal.show();
 
         // Cambiar el tamaño del modal a "modal-lg"
-        /*var modalDialog = myModal._element.querySelector('.modal-dialog');
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.remove('modal-lg');*/
-
+        modalDialog.classList.remove('modal-lg');
       },
     });
-    $('#show2').on('show.bs.modal', function (event) {
-
-    $.get('select_create/',function(data)
+    $('#show2').on('show.bs.modal', function (event)
     {
-      var html_select_area = '<option value="">Seleccione </option>'
-      var html_select_localizacion = '<option value="">Seleccione </option>'
-      var html_select_tipo_solicitud = '<option value="">Seleccione </option>'
-      var html_select_equipo = '<option value="">Seleccione </option>'
-      var html_select_falla = '<option value="">Seleccione </option>'
-
-      // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
-      // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
-      for(var i = 0; i<data[0].length; i ++)
+      if ($(event.currentTarget).data('bs.modal')._config.id === 'myFunction') {
+      $.get('select_create/',function(data)
       {
-        html_select_area += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
-      }
-
-      $('#area').html(html_select_area);
-      $('#localizacion').html(html_select_localizacion);
-      //toma cambio de seleccion de area
-      document.getElementById("area").addEventListener("change", function() 
-      {
-        var selectedOption = this.value;
-        var html_select_localizacion = '<option value="">Seleccione </option>';
-        for (var i = 0; i < data[1].length; i++) 
-        {
-          if (data[1][i].id_area == selectedOption) 
-          {
-            html_select_localizacion += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
-            document.getElementById("localizacion").innerHTML = html_select_localizacion;
-          }
-        }
-        if(selectedOption == '')
-        {
-          document.getElementById("localizacion").innerHTML = html_select_localizacion;
-          document.getElementById("div_localizacion").style.display = "none";
-          document.getElementById("div_tipo_solicitud").style.display = "none";
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "none";
-        }
-        else
-        {
-          document.getElementById("localizacion").innerHTML = html_select_localizacion;
-          document.getElementById("div_localizacion").style.display = "block";
-          document.getElementById("div_tipo_solicitud").style.display = "none";
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "none";
-        }
-      });
-      
-      var aux_localizacion;
-
-      document.getElementById("localizacion").addEventListener("change", function() 
-      {
-        var html_select_tipo_solicitud = '<option value="">Seleccione </option>';
-        var selectedOption = this.value;
-        aux_localizacion = this.value;
-        if(selectedOption == '')
-        {
-          document.getElementById("div_tipo_solicitud").style.display = "none";
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "none";
-        }
-        else
-        {
-          document.getElementById("div_tipo_solicitud").style.display = "block";
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "none";
-        }
-        for(var i = 0; i<data[2].length; i ++)
-        {
-          html_select_tipo_solicitud += '<option value ="'+data[2][i].id+'">'+data[2][i].nombre+'</option>';
-        } 
-        $('#tipo_solicitud').html(html_select_tipo_solicitud);
-      });
-
-      document.getElementById("tipo_solicitud").addEventListener("change", function() 
-      {
-        var selectedOption = this.value;
-        if(selectedOption == '')
-        {
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "none";
-        }
-        else if(selectedOption == 1)
-        {
-          document.getElementById("div_equipo").style.display = "block";
-          document.getElementById("div_falla").style.display = "none";
-          var html_select_equipo = '<option value="">Seleccione </option>'
-          for(var i = 0; i<data[3].length; i ++)
-          { 
-            if(aux_localizacion == data[3][i].id_localizacion)
-            html_select_equipo += '<option value ="'+data[3][i].id+'">'+data[3][i].id+'</option>';
-          } 
-          $('#equipo').html(html_select_equipo);
-        }
-        else
-        {
-          document.getElementById("div_equipo").style.display = "none";
-          document.getElementById("div_falla").style.display = "block";
-          var html_select_falla = '<option value="">Seleccione </option>'
-          for(var j = 0; j<data[6].length; j ++)
-          {
-            if(data[6][j].id_tipo_solicitud == 2)
-            {
-              for(var i = 0; i<data[4].length; i ++)
-              { 
-                if(data[6][j].id_falla == data[4][i].id)
-                {
-                  html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
-                }
-              }
-            }
-          }
-          $('#falla').html(html_select_falla);
-        }
-      });
-      
-      document.getElementById("equipo").addEventListener("change", function() 
-      {
+        var html_select_area = '<option value="">Seleccione </option>'
+        var html_select_localizacion = '<option value="">Seleccione </option>'
+        var html_select_tipo_solicitud = '<option value="">Seleccione </option>'
+        var html_select_equipo = '<option value="">Seleccione </option>'
         var html_select_falla = '<option value="">Seleccione </option>'
-        var selectedOption = this.value;
-        var aux_tipo_equipo;
-        if(selectedOption == '')
+
+        // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
+        // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
+        for(var i = 0; i<data[0].length; i ++)
         {
-          document.getElementById("div_falla").style.display = "none";
+          html_select_area += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
         }
-        else
+
+        $('#area').html(html_select_area);
+        $('#localizacion').html(html_select_localizacion);
+        //toma cambio de seleccion de area
+        document.getElementById("area").addEventListener("change", function() 
         {
-          document.getElementById("div_falla").style.display = "block";
-          for(var k = 0; k<data[3].length; k ++)
+          var selectedOption = this.value;
+          var html_select_localizacion = '<option value="">Seleccione </option>';
+        
+          for (var i = 0; i < data[1].length; i++) 
           {
-            if(selectedOption == data[3][k].id)
+            if (data[1][i].id_area == selectedOption) 
             {
-              aux_tipo_equipo = data[3][k].id_tipo;
+              html_select_localizacion += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
             }
           }
-          for(var j = 0; j<data[6].length; j ++)
+          document.getElementById("localizacion").innerHTML = html_select_localizacion;
+          if(selectedOption == '')
           {
-            if(data[6][j].id_tipo_equipo == selectedOption)
+            document.getElementById("localizacion").innerHTML = html_select_localizacion;
+            document.getElementById("div_localizacion").style.display = "none";
+            document.getElementById("div_tipo_solicitud").style.display = "none";
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "none";
+          }
+          else
+          {
+            document.getElementById("localizacion").innerHTML = html_select_localizacion;
+            document.getElementById("div_localizacion").style.display = "block";
+            document.getElementById("div_tipo_solicitud").style.display = "none";
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "none";
+          }
+        });
+      
+        var aux_localizacion;
+
+        document.getElementById("localizacion").addEventListener("change", function() 
+        {
+          var html_select_tipo_solicitud = '<option value="">Seleccione </option>';
+          var selectedOption = this.value;
+          aux_localizacion = this.value;
+          if(selectedOption == '')
+          {
+            document.getElementById("div_tipo_solicitud").style.display = "none";
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "none";
+          }
+          else
+          {
+            document.getElementById("div_tipo_solicitud").style.display = "block";
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "none";
+          }
+          for(var i = 0; i<data[2].length; i ++)
+          {
+            html_select_tipo_solicitud += '<option value ="'+data[2][i].id+'">'+data[2][i].nombre+'</option>';
+          } 
+          $('#tipo_solicitud').html(html_select_tipo_solicitud);
+        });
+
+        document.getElementById("tipo_solicitud").addEventListener("change", function() 
+        {
+          var selectedOption = this.value;
+          if(selectedOption == '')
+          {
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "none";
+          }
+          else if(selectedOption == 1)
+          {
+            document.getElementById("div_equipo").style.display = "block";
+            document.getElementById("div_falla").style.display = "none";
+            var html_select_equipo = '<option value="">Seleccione </option>'
+            for(var i = 0; i<data[3].length; i ++)
+            { 
+              if(aux_localizacion == data[3][i].id_localizacion)
+              html_select_equipo += '<option value ="'+data[3][i].id+'">'+data[3][i].id+'</option>';
+            } 
+            $('#equipo').html(html_select_equipo);
+          }
+          else
+          {
+            document.getElementById("div_equipo").style.display = "none";
+            document.getElementById("div_falla").style.display = "block";
+            var html_select_falla = '<option value="">Seleccione </option>'
+            for(var j = 0; j<data[6].length; j ++)
             {
-              for(var i = 0; i<data[4].length; i ++)
-              { 
-                if(data[6][j].id_falla == data[4][i].id)
-                {
-                  html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+              if(data[6][j].id_tipo_solicitud == 2)
+              {
+                for(var i = 0; i<data[4].length; i ++)
+                { 
+                  if(data[6][j].id_falla == data[4][i].id)
+                  {
+                    html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                  }
                 }
               }
             }
+            $('#falla').html(html_select_falla);
           }
-          $('#falla').html(html_select_falla);
-        }
+        });
+      
+        document.getElementById("equipo").addEventListener("change", function() 
+        {
+          var html_select_falla = '<option value="">Seleccione </option>'
+          var selectedOption = this.value;
+          var aux_tipo_equipo;
+          if(selectedOption == '')
+          {
+            document.getElementById("div_falla").style.display = "none";
+          }
+          else
+          {
+            document.getElementById("div_falla").style.display = "block";
+            for(var k = 0; k<data[3].length; k ++)
+            {
+              if(selectedOption == data[3][k].id)
+              {
+                aux_tipo_equipo = data[3][k].id_tipo;
+              }
+            }
+            for(var j = 0; j<data[6].length; j ++)
+            {
+              if(data[6][j].id_tipo_equipo == selectedOption)
+              {
+                for(var i = 0; i<data[4].length; i ++)
+                { 
+                  if(data[6][j].id_falla == data[4][i].id)
+                  {
+                    html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                  }
+                }
+              }
+            }
+            $('#falla').html(html_select_falla);
+          }
+        });
       });
+    }
     });
-  });
   }
+</script>
+<script>
   //modal show
   function fnOpenModalShow(id) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $('#myModal').on('hidden.bs.modal', function () {
+      console.log("A");
+    })
     $.ajax
     ({
       url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
@@ -327,16 +336,22 @@
         myModal.show();
 
         // Cambiar el tamaño del modal a "modal-lg"
-        /*var modalDialog = myModal._element.querySelector('.modal-dialog');
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.add('modal-lg');*/
+        modalDialog.classList.add('modal-lg');
       },
     });
   }
+</script>
+<script>
+  var ruta_update = '{{ route('update_solicitud') }}';
   //modal update
   function fnOpenModalUpdate(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $('#myModal').on('hidden.bs.modal', function () {
+      console.log("A");
+    })
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,
       type: 'GET',
@@ -359,9 +374,9 @@
         myModal.show();
 
         // Cambiar el tamaño del modal a "modal-lg"
-        /*var modalDialog = myModal._element.querySelector('.modal-dialog');
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.add('modal-lg');*/
+        modalDialog.classList.add('modal-lg');
       },
     });
   }
@@ -378,10 +393,16 @@
       $('#estado').html(html_select);
     });
   });
+</script>
+<script>
+  var ruta_assing = '{{ route('assing_solicitud') }}';
   //modal assing
   function fnOpenModalAssing(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $('#myModal').on('hidden.bs.modal', function () {
+      console.log("A");
+    })
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
       type: 'GET',
@@ -404,9 +425,9 @@
         myModal.show();
 
         // Cambiar el tamaño del modal a "modal-sm"
-        /*var modalDialog = myModal._element.querySelector('.modal-dialog');
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-lg');
-        modalDialog.classList.add('modal-sm');*/
+        modalDialog.classList.add('modal-sm');
       },
     });
   }
