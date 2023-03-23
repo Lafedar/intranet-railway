@@ -99,10 +99,8 @@
 
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
-  $("solicitud").ready(function()
-  {
-    setTimeout(function()
-    {
+  $("solicitud").ready(function(){
+    setTimeout(function(){
       $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
 
@@ -111,217 +109,174 @@
 
 <script>  
   var ruta_create = '{{ route('store_solicitud') }}';
+  var ruta_update = '{{ route('update_solicitud') }}';
+  var ruta_assing = '{{ route('assing_solicitud') }}';
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
-  function fnOpenModalStore() 
-  {
+  function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    $('#show2').on('hidden.bs.modal', function () {
-      console.log("A");
-    })
-    console.log(myModal);
-    $.ajax
-    ({
-      url: window.location.protocol + '//' + window.location.host + "/show_store_solicitud/",
-      type: 'GET',
-      success: function(data) 
-      {
-        // Borrar contenido anterior
-        $("#modalshow").empty();
-        // Establecer el contenido del modal
-        $("#modalshow").html(data);
+    var url = window.location.origin + "/show_store_solicitud/";
+    $.get(url, function(data) {
+      // Borrar contenido anterior
+      $("#modalshow").empty();
 
-        // Borrar contenido anterior
-        $("#modalfooter").empty();
-        // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>  <button type="submit" class="btn btn-info">Guardar</button>');
-        $("#modalfooter").append(closeButton);
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
 
-        // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_create);
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
 
-        // Mostrar el modal
-        myModal.show();
+      // Agregar el botón "Cerrar y Guardar" al footer
+      $("#modalfooter").append(closeButton);
+      $("#modalfooter").append(saveButton);
 
-        // Cambiar el tamaño del modal a "modal-lg"
-        var modalDialog = myModal._element.querySelector('.modal-dialog');
-        modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.remove('modal-lg');
-      },
+      // Cambiar la acción del formulario
+      $('#myForm').attr('action', ruta_create);
+
+      // Mostrar el modal
+      myModal.show();
+
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.remove('modal-lg');
     });
-    $('#show2').on('show.bs.modal', function (event)
-    {
-      if ($(event.currentTarget).data('bs.modal')._config.id === 'myFunction') {
-      $.get('select_create/',function(data)
-      {
-        var html_select_area = '<option value="">Seleccione </option>'
-        var html_select_localizacion = '<option value="">Seleccione </option>'
-        var html_select_tipo_solicitud = '<option value="">Seleccione </option>'
-        var html_select_equipo = '<option value="">Seleccione </option>'
-        var html_select_falla = '<option value="">Seleccione </option>'
+
+    $('#show2').on('show.bs.modal', function (event){
+      $.get('select_create/',function(data){
+        var htmlSelectArea = '<option value="">Seleccione </option>'
+        var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
+        var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
+        var htmlSelectEquipo = '<option value="">Seleccione </option>'
+        var htmlSelectFalla = '<option value="">Seleccione </option>'
 
         // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
         // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
-        for(var i = 0; i<data[0].length; i ++)
-        {
-          html_select_area += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
+        for(var i = 0; i<data[0].length; i ++){
+          htmlSelectArea += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
         }
 
-        $('#area').html(html_select_area);
-        $('#localizacion').html(html_select_localizacion);
+        $('#area').html(htmlSelectArea);
+        $('#localizacion').html(htmlSelectLocalizacion);
         //toma cambio de seleccion de area
-        document.getElementById("area").addEventListener("change", function() 
-        {
-          var selectedOption = this.value;
-          var html_select_localizacion = '<option value="">Seleccione </option>';
-        
-          for (var i = 0; i < data[1].length; i++) 
-          {
-            if (data[1][i].id_area == selectedOption) 
-            {
-              html_select_localizacion += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
+        $('#area').on('change', function () {
+          const selectedOption = $(this).val();
+
+          // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
+          let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
+          data[1].forEach(localizacion => {
+            if (localizacion.id_area == selectedOption) {
+              htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
             }
-          }
-          document.getElementById("localizacion").innerHTML = html_select_localizacion;
-          if(selectedOption == '')
-          {
-            document.getElementById("localizacion").innerHTML = html_select_localizacion;
-            document.getElementById("div_localizacion").style.display = "none";
-            document.getElementById("div_tipo_solicitud").style.display = "none";
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "none";
-          }
-          else
-          {
-            document.getElementById("localizacion").innerHTML = html_select_localizacion;
-            document.getElementById("div_localizacion").style.display = "block";
-            document.getElementById("div_tipo_solicitud").style.display = "none";
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "none";
+          });
+          $('#localizacion').html(htmlSelectLocalizacion);
+
+          // Mostrar o ocultar los campos según la selección
+          if (!selectedOption) {
+            $('#div_localizacion, #div_tipo_solicitud, #div_equipo, #div_falla').hide();
+          } 
+          else {
+            $('#div_localizacion').show();
+            $('#div_tipo_solicitud, #div_equipo, #div_falla').hide();
           }
         });
       
         var aux_localizacion;
 
-        document.getElementById("localizacion").addEventListener("change", function() 
-        {
-          var html_select_tipo_solicitud = '<option value="">Seleccione </option>';
-          var selectedOption = this.value;
-          aux_localizacion = this.value;
-          if(selectedOption == '')
-          {
-            document.getElementById("div_tipo_solicitud").style.display = "none";
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "none";
-          }
-          else
-          {
-            document.getElementById("div_tipo_solicitud").style.display = "block";
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "none";
-          }
-          for(var i = 0; i<data[2].length; i ++)
-          {
-            html_select_tipo_solicitud += '<option value ="'+data[2][i].id+'">'+data[2][i].nombre+'</option>';
+        $('#localizacion').on('change', function() {
+          var htmlSelectTipoSolicitud = '<option value="">Seleccione</option>';
+          var selectedOption = $(this).val();
+          aux_localizacion = selectedOption;
+          if (selectedOption == '') {
+            $('#div_tipo_solicitud, #div_equipo, #div_falla').hide();
           } 
-          $('#tipo_solicitud').html(html_select_tipo_solicitud);
+          else {
+            $('#div_tipo_solicitud').show();
+            $('#div_equipo, #div_falla').hide();
+          }
+          $.each(data[2], function(i, tipo_solicitud) {
+            htmlSelectTipoSolicitud += '<option value="' + tipo_solicitud.id + '">' + tipo_solicitud.nombre + '</option>';
+          });
+          $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
         });
 
-        document.getElementById("tipo_solicitud").addEventListener("change", function() 
-        {
-          var selectedOption = this.value;
-          if(selectedOption == '')
-          {
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "none";
-          }
-          else if(selectedOption == 1)
-          {
-            document.getElementById("div_equipo").style.display = "block";
-            document.getElementById("div_falla").style.display = "none";
-            var html_select_equipo = '<option value="">Seleccione </option>'
-            for(var i = 0; i<data[3].length; i ++)
-            { 
-              if(aux_localizacion == data[3][i].id_localizacion)
-              html_select_equipo += '<option value ="'+data[3][i].id+'">'+data[3][i].id+'</option>';
-            } 
-            $('#equipo').html(html_select_equipo);
-          }
-          else
-          {
-            document.getElementById("div_equipo").style.display = "none";
-            document.getElementById("div_falla").style.display = "block";
-            var html_select_falla = '<option value="">Seleccione </option>'
-            for(var j = 0; j<data[6].length; j ++)
-            {
-              if(data[6][j].id_tipo_solicitud == 2)
-              {
-                for(var i = 0; i<data[4].length; i ++)
-                { 
-                  if(data[6][j].id_falla == data[4][i].id)
-                  {
-                    html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
-                  }
+        $('#tipo_solicitud').on('change', function () {
+          const selectedOption = $(this).val();
+          const divEquipo = $('#div_equipo');
+          const divFalla = $('#div_falla');
+
+          if (!selectedOption) {
+            divEquipo.hide();
+            divFalla.hide();
+          } 
+          else if (selectedOption == 1) {
+            divEquipo.show();
+            divFalla.hide();
+
+            let htmlSelectEquipo = '<option value="">Seleccione </option>';
+            data[3].forEach(equipo => {
+              if (aux_localizacion == equipo.id_localizacion) {
+                htmlSelectEquipo += `<option value="${equipo.id}">${equipo.id}</option>`;
+              }
+            });
+            $('#equipo').html(htmlSelectEquipo);
+          } 
+          else {
+            divEquipo.hide();
+            divFalla.show();
+
+            let htmlSelectFalla = '<option value="">Seleccione </option>';
+            data[6].forEach(solicitud => {
+              if (solicitud.id_tipo_solicitud == 2) {
+                const falla = data[4].find(falla => falla.id === solicitud.id_falla);
+                if (falla) {
+                  htmlSelectFalla += `<option value="${solicitud.id_falla}">${falla.nombre}</option>`;
                 }
               }
-            }
-            $('#falla').html(html_select_falla);
+            });
+            $('#falla').html(htmlSelectFalla);
           }
         });
       
-        document.getElementById("equipo").addEventListener("change", function() 
-        {
-          var html_select_falla = '<option value="">Seleccione </option>'
-          var selectedOption = this.value;
+        $('#equipo').on('change', function () {
+          var htmlSelectFalla = '<option value="">Seleccione </option>'
+          var selectedOption = $(this).val();
           var aux_tipo_equipo;
-          if(selectedOption == '')
-          {
-            document.getElementById("div_falla").style.display = "none";
+          if(selectedOption == ''){
+            $('#div_falla').hide();
           }
-          else
-          {
-            document.getElementById("div_falla").style.display = "block";
-            for(var k = 0; k<data[3].length; k ++)
-            {
-              if(selectedOption == data[3][k].id)
-              {
+          else{
+            $('#div_falla').show();
+            for(var k = 0; k<data[3].length; k ++){
+              if(selectedOption == data[3][k].id){
                 aux_tipo_equipo = data[3][k].id_tipo;
               }
             }
-            for(var j = 0; j<data[6].length; j ++)
-            {
-              if(data[6][j].id_tipo_equipo == selectedOption)
-              {
-                for(var i = 0; i<data[4].length; i ++)
-                { 
-                  if(data[6][j].id_falla == data[4][i].id)
-                  {
-                    html_select_falla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+            for(var j = 0; j<data[6].length; j ++){
+              if(data[6][j].id_tipo_equipo == selectedOption){
+                for(var i = 0; i<data[4].length; i ++){ 
+                  if(data[6][j].id_falla == data[4][i].id){
+                    htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
                   }
                 }
               }
             }
-            $('#falla').html(html_select_falla);
+            $('#falla').html(htmlSelectFalla);
           }
         });
       });
-    }
     });
   }
-</script>
-<script>
+
   //modal show
   function fnOpenModalShow(id) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    $('#myModal').on('hidden.bs.modal', function () {
-      console.log("A");
-    })
-    $.ajax
-    ({
+    $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
       type: 'GET',
-      success: function(data) 
-      {
+      success: function(data) {
         // Borrar contenido anterior
         $("#modalshow").empty();
         // Establecer el contenido del modal
@@ -329,9 +284,10 @@
 
         // Borrar contenido anterior
         $("#modalfooter").empty();
+
         // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
         $("#modalfooter").append(closeButton);
+
         // Mostrar el modal
         myModal.show();
 
@@ -342,16 +298,11 @@
       },
     });
   }
-</script>
-<script>
-  var ruta_update = '{{ route('update_solicitud') }}';
+
   //modal update
   function fnOpenModalUpdate(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    $('#myModal').on('hidden.bs.modal', function () {
-      console.log("A");
-    })
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,
       type: 'GET',
@@ -363,9 +314,10 @@
 
         // Borrar contenido anterior
         $("#modalfooter").empty();
-        // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
+
+        // Agregar el botón "Cerrar y Guardar" al footer
         $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
 
         // Cambiar la acción del formulario
         $('#myForm').attr('action', ruta_update);
@@ -380,29 +332,21 @@
       },
     });
   }
-  $('#show2').on('show.bs.modal', function (event) 
-  {
-    $.get('select_estado/',function(data)
-    {
+  $('#show2').on('show.bs.modal', function (event) {
+    $.get('select_estado/',function(data){
       var html_select = '<option value="">Seleccione </option>'
 
-      for(var i = 0; i<data.length; i ++)
-      {
-       html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+      for(var i = 0; i<data.length; i ++){
+        html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
       }
       $('#estado').html(html_select);
     });
   });
-</script>
-<script>
-  var ruta_assing = '{{ route('assing_solicitud') }}';
+
   //modal assing
   function fnOpenModalAssing(id)
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    $('#myModal').on('hidden.bs.modal', function () {
-      console.log("A");
-    })
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
       type: 'GET',
@@ -414,9 +358,10 @@
 
         // Borrar contenido anterior
         $("#modalfooter").empty();
-        // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
+        // Agregar el botón "Cerrar y Guardar" al footer
+
         $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
 
         // Cambiar la acción del formulario
         $('#myForm').attr('action', ruta_assing);
@@ -431,18 +376,13 @@
       },
     });
   }
-  $('#show2').on('show.bs.modal', function (event) 
-  {
-    $.get('select_users/',function(data)
-    {
+  $('#show2').on('show.bs.modal', function (event) {
+    $.get('select_users/',function(data){
       var html_select = '<option value="">Seleccione </option>'
 
-      for(var i = 0; i<data[0].length; i ++)
-      {
-        for(var k = 0; k<data[1].length; k ++)
-        {
-          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22))
-          {
+      for(var i = 0; i<data[0].length; i ++){
+        for(var k = 0; k<data[1].length; k ++){
+          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
             html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
           }
         }

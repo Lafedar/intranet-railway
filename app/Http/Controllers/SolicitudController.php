@@ -202,12 +202,17 @@ class SolicitudController extends Controller
     public function destroy_solicitud($id)
     {
         $solicitud = Solicitud::find($id);
-        if($solicitud->pbix != null){
-            unlink(storage_path('app\\public\\'.$solicitud->pbix));
+
+        $historico_solicitudes = DB::table('historico_solicitudes')
+        ->where('historico_solicitudes.id_solicitud', $id)
+        ->get();
+
+        foreach ($historico_solicitudes as $historico_solicitud) {
+            DB::table('historico_solicitudes')->where('id_solicitud', $historico_solicitud->id_solicitud)->delete();
         }
 
         $solicitud -> delete(); 
-        Session::flash('message','Archivo eliminado con éxito');
+        Session::flash('message','Solicitud eliminada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
