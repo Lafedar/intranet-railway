@@ -22,7 +22,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav ml-auto">
-          <button class="btn btn-info"  data-toggle="modal" data-target="#agregar_localizacion">Agregar Localizacion</button>
+                        
           &nbsp
           <form action="{{ url('/logout') }}" method="POST" >
             {{ csrf_field() }}
@@ -35,11 +35,7 @@
     </nav>
     <p></p>
   </head>
-
   <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
-
-  @include('localizaciones.create')
-
   <body>
     @yield('content')
   </body>

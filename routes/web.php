@@ -380,6 +380,7 @@ Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento')
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('areas','AreaController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_area',['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|mantenimiento')->name('show_store_area');
   Route::post('store_area','AreaController@store_area')->name('agregar-area');
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
@@ -387,6 +388,7 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_localizacion',['uses' => 'AreaController@show_store_localizacion'])->middleware('role:administrador|mantenimiento')->name('show_store_localizacion');
   Route::post('store_localizacion','LocalizacionController@store_localizacion')->name('agregar-localizacion');
   Route::get('show_update_localizacion/{localizacion}',['uses' => 'LocalizacionController@show_update_localizacion'])->name('show_update_localizacion');
   Route::post('update_localizacion','LocalizacionController@update_localizacion')->name('update_localizacion');

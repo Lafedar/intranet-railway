@@ -74,6 +74,37 @@
   </script> 
 
 <script> 
+  //modal store
+  function fnOpenModalStore() {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    var url = window.location.origin + "/show_store_solicitud/";
+    $.get(url, function(data) {
+      // Borrar contenido anterior
+      $("#modalshow").empty();
+
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
+
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
+
+      // Agregar el botón "Cerrar y Guardar" al footer
+      $("#modalfooter").append(closeButton);
+      $("#modalfooter").append(saveButton);
+
+      // Cambiar la acción del formulario
+      $('#myForm').attr('action', ruta_create);
+
+      // Mostrar el modal
+      myModal.show();
+
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.remove('modal-lg');
+    });
+  }
+  
   //modal update
   function fnOpenModalUpdate(id) 
   {
