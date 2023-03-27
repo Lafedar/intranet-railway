@@ -382,7 +382,7 @@ Route::group(['middleware' => ['auth']], function ()
 {
   Route::resource('areas','AreaController')->middleware('role:administrador|mantenimiento');
   Route::get('show_store_area',['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|mantenimiento')->name('show_store_area');
-  Route::post('store_area','AreaController@store_area')->name('agregar-area');
+  Route::post('store_area','AreaController@store_area')->name('store_area');
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
 });

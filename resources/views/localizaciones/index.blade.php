@@ -43,22 +43,22 @@
       @endforeach
     </tbody>       
   </table>
-    <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form id="myForm" method="POST" enctype="multipart/form-data">
-            {{csrf_field()}}
-            <div id="modalshow" class="modal-body">
-              <!-- Datos -->
-            </div>
-            <div id="modalfooter" class="modal-footer">
-              <!-- Footer -->
-            </div>
-          </form>
-        </div>
+  <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="myForm" method="POST" enctype="multipart/form-data">
+          {{csrf_field()}}
+          <div id="modalshow" class="modal-body">
+            <!-- Datos -->
+          </div>
+          <div id="modalfooter" class="modal-footer">
+            <!-- Footer -->
+          </div>
+        </form>
       </div>
     </div>
-  {{ $localizaciones->appends($_GET)->links() }}
+  </div>
+{{ $localizaciones->appends($_GET)->links() }}
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
@@ -140,14 +140,11 @@
       },
     });
   }
-      $('#show2').on('show.bs.modal', function (event) 
-    {
-      $.get('select_area/',function(data)
-      {
+  $('#show2').on('show.bs.modal', function (event) {
+      $.get('select_area/',function(data){
         var html_select = '<option value="">Seleccione </option>'
 
-        for(var i = 0; i<data.length; i ++)
-        {
+        for(var i = 0; i<data.length; i ++){
           html_select += '<option value ="'+data[i].id_a+'">'+data[i].nombre_a+'</option>';
         }
         $('#area').html(html_select);
