@@ -22,7 +22,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav ml-auto">
-                        
+          <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_localizacion">Agregar Localizacion</button>
           &nbsp
           <form action="{{ url('/logout') }}" method="POST" >
             {{ csrf_field() }}

@@ -21,20 +21,18 @@ class LocalizacionController extends Controller
             array('localizaciones' => $localizaciones));
     }
 
+    public function show_store_localizacion()
+    {
+        return view('localizaciones.create');       
+    }
+
     public function store_localizacion(Request $request)
     {        
         //consulta en bd si existe el id
         $aux = DB::table('localizaciones')->where('localizaciones.id', $request['id'])->first(); 
-
-        //mensaje de id existente
-        if($aux){
-            Session::flash('message','ID ingresado ya se encuentra asignado');
-            Session::flash('alert-class', 'alert-warning');
-            return redirect()->back()->withInput();
-        }
         
         $localizacion = new Localizacion;
-        $localizacion->id = $request['id'];
+        $localizacion->id_area = $request['area'];
         $localizacion->nombre = $request['nombre'];
  
         $localizacion->save();
@@ -42,6 +40,17 @@ class LocalizacionController extends Controller
         Session::flash('message','Localizacion agregada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect ('localizaciones');
+    }
+
+    public function show_update_localizacion($id_a)
+    {
+        $localizacion = DB::table('localizaciones')
+        ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+        ->select('localizaciones.id as id', 'localizaciones.nombre as nombre', 'area.nombre_a')
+        ->where('localizaciones.id', $id_a)
+        ->first();
+
+        return view('localizaciones.update', ['localizacion' => $localizacion]);       
     }
 
     public function update_localizacion(Request $request)
@@ -54,16 +63,6 @@ class LocalizacionController extends Controller
         Session::flash('message','Localizacion modificada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('localizaciones');
-    }
-    
-    public function show_update_localizacion($id_a)
-    {
-        $localizacion = DB::table('localizaciones')
-        ->select('localizaciones.id as id', 'localizaciones.nombre as nombre')
-        ->where('localizaciones.id', $id_a)
-        ->first();
-
-        return view('localizaciones.update', ['localizacion' => $localizacion]);       
     }
     
     public function select_area()

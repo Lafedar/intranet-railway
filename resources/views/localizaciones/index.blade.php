@@ -43,23 +43,21 @@
       @endforeach
     </tbody>       
   </table>
-  <form action="{{ route('update_localizacion') }}" method="POST" enctype="multipart/form-data">
     <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-
-          {{csrf_field()}}
-          <div id="modalshow" class="modal-body">
-            <!-- Datos -->
-          </div>
-          <div id="modalfooter" class="modal-footer">
-            <!-- Footer -->
-          </div>
-        
+          <form id="myForm" method="POST" enctype="multipart/form-data">
+            {{csrf_field()}}
+            <div id="modalshow" class="modal-body">
+              <!-- Datos -->
+            </div>
+            <div id="modalfooter" class="modal-footer">
+              <!-- Footer -->
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </form>
   {{ $localizaciones->appends($_GET)->links() }}
 </div>
 <script> 
@@ -74,10 +72,14 @@
   </script> 
 
 <script> 
+  var ruta_create = '{{ route('store_localizacion') }}';
+  var ruta_update = '{{ route('update_localizacion') }}';
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_solicitud/";
+    var url = window.location.origin + "/show_store_localizacion/";
     $.get(url, function(data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
@@ -120,15 +122,21 @@
 
         // Borrar contenido anterior
         $("#modalfooter").empty();
-        // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
-        $("#modalfooter").append(closeButton);
 
-        /* Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_update);*/
+        // Agregar el botón "Cerrar" al footer
+        $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
+
+        //Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta_update);
 
         // Mostrar el modal
         myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.remove('modal-lg');
       },
     });
   }
@@ -140,7 +148,6 @@
 
         for(var i = 0; i<data.length; i ++)
         {
-          console.log("for ");
           html_select += '<option value ="'+data[i].id_a+'">'+data[i].nombre_a+'</option>';
         }
         $('#area').html(html_select);

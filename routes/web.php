@@ -370,10 +370,11 @@ Route::group(['middleware' => ['auth']], function ()
 {
   Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|mantenimiento');
   Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('agregar-equipo_mant');
-  Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
-  Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
   Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->name('show_update_equipo_mant');
   Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->name('update_equipo_mant');
+
+  Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
+  Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
 });
 
 Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento');
@@ -388,8 +389,8 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_localizacion',['uses' => 'AreaController@show_store_localizacion'])->middleware('role:administrador|mantenimiento')->name('show_store_localizacion');
-  Route::post('store_localizacion','LocalizacionController@store_localizacion')->name('agregar-localizacion');
+  Route::get('show_store_localizacion',['uses' => 'LocalizacionController@show_store_localizacion'])->middleware('role:administrador|mantenimiento')->name('show_store_localizacion');
+  Route::post('store_localizacion','LocalizacionController@store_localizacion')->name('store_localizacion');
   Route::get('show_update_localizacion/{localizacion}',['uses' => 'LocalizacionController@show_update_localizacion'])->name('show_update_localizacion');
   Route::post('update_localizacion','LocalizacionController@update_localizacion')->name('update_localizacion');
 

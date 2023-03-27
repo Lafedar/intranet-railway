@@ -62,10 +62,8 @@
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
-  $("area").ready(function()
-  {
-    setTimeout(function()
-    {
+  $("area").ready(function(){
+    setTimeout(function(){
       $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
   });

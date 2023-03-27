@@ -81,7 +81,7 @@
   <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog estilo" role="document">
       <div class="modal-content">
-       <form id="myForm" method="POST" enctype="multipart/form-data">
+        <form id="myForm" method="POST" enctype="multipart/form-data">
           {{csrf_field()}}
           <div id="modalshow" class="modal-body">
             <!-- Datos -->
