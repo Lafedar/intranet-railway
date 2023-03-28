@@ -421,3 +421,11 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
   Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
 });
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('tipos_solicitudes','Tipo_SolicitudController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_tipo_solicitud',['uses' => 'Tipo_SolicitudController@show_store_tipo_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_store_tipo_solicitud');
+  Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
+  Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
+  Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
+});

@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-3" aling="center">
             <br>
-            <a  href="/"> <img  src="{{ URL::to('/img/tipos de solicitudes.png') }}" height="140"></a>
+            <a  href="/tipos_solicitudes"> <img  src="{{ URL::to('/img/tipos de solicitudes.png') }}" height="140"></a>
             <h3 style="color: #3b557a">Tipos de solicitudes</h3>
         </div>
         <div class="col-md-3" aling="center">
