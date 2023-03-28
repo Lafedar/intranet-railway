@@ -22,8 +22,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav ml-auto">
-          <button class="btn btn-info"  data-toggle="modal" data-target="#agregar_equipo_mant"> Agregar Equipo</button>
-          &nbsp
+          <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_equipo_mant">Agregar Equipo</button>          &nbsp
           <form action="{{ url('/logout') }}" method="POST" >
             {{ csrf_field() }}
             <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
@@ -37,8 +36,6 @@
   </head>
 
   <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
-
-  @include('equipos_mant.create')
 
   <body>
     @yield('content')

@@ -369,7 +369,8 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|mantenimiento');
-  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('agregar-equipo_mant');
+  Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|mantenimiento')->name('show_store_equipo_mant');
+  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('store_equipo_mant');
   Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->name('show_update_equipo_mant');
   Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->name('update_equipo_mant');
 

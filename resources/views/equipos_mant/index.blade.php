@@ -61,11 +61,10 @@
       @endforeach
     </tbody>       
   </table>
-  <form action="{{ route('update_equipo_mant') }}" method="POST" enctype="multipart/form-data">
-    <div class="modal fade" id="editar_equipo_mant" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
+  <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="myForm" method="POST" enctype="multipart/form-data">
           {{csrf_field()}}
           <div id="modalshow" class="modal-body">
             <!-- Datos -->
@@ -73,112 +72,101 @@
           <div id="modalfooter" class="modal-footer">
             <!-- Footer -->
           </div>
-        
-        </div>
+        </form>
       </div>
     </div>
-  </form>
+  </div>
   {{ $equipos_mant->appends($_GET)->links() }}
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
-  $("equipo_mant").ready(function()
-  {
-    setTimeout(function()
-    {
+  $("equipo_mant").ready(function(){
+    setTimeout(function(){
       $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
   });
   </script> 
 
   <script> 
-  //modal update
-  function fnOpenModalUpdate(id_e) {
-    var myModal = new bootstrap.Modal(document.getElementById('editar_equipo_mant'));
-    var tipo = document.getElementById('edit-' + id_e).getAttribute('data-tipo');
-    var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
-    var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
-    $('#editar_equipo_mant').on('show.bs.modal', function (event){
-      $.get('select_tipo_equipo',function(data)
-      {
-        var html_select = '<option value="">Seleccione </option>'
-        for(var i = 0; i<data.length; i ++)
-        {
-          if(data[i].id == tipo)
-          {
-            html_select += '<option value ="'+data[i].id+'"selected>'+data[i].nombre+'</option>';
-          }
-          else
-          {
-            html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
-          }
-        }
-        $('#tipo_equipo_mant_editar').html(html_select);
-      });
-    
-      $.get('select_area_localizacion/',function(data)
-      {
+  var ruta_create = '{{ route('store_equipo_mant') }}';
+  var ruta_update = '{{ route('update_equipo_mant') }}';
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  
+  //modal store
+  function fnOpenModalStore() {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    var url = window.location.origin + "/show_store_equipo_mant/";
+    $.get(url, function(data) {
+      // Borrar contenido anterior
+      $("#modalshow").empty();
+
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
+
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
+
+      // Agregar el botón "Cerrar y Guardar" al footer
+      $("#modalfooter").append(closeButton);
+      $("#modalfooter").append(saveButton);
+
+      // Cambiar la acción del formulario
+      $('#myForm').attr('action', ruta_create);
+
+      // Mostrar el modal
+      myModal.show();
+
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.remove('modal-lg');
+    });
+    $('#show2').on('show.bs.modal', function (event) {
+      $.get('select_area_localizacion/',function(data){
         var html_select = '<option value="">Seleccione </option>'
         var html_select2 = '<option value="">Seleccione </option>'
-        for(var i = 0; i<data[0].length; i ++)
-        {
-          if(data[0][i].id_a == area)
-          {
-            html_select += '<option value ="'+data[0][i].id_a+'"selected>'+data[0][i].nombre_a+'</option>';
-          }
-          else
-          {
-            html_select += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
-          }
-        }
-        for(var i = 0; i<data[1].length; i ++) 
-        {
-          if (data[1][i].id_area == area) 
-          {
-            if(data[1][i].id == localizacion)
-            {
-              html_select2 += '<option value ="'+data[1][i].id+'"selected>'+data[1][i].nombre+'</option>';
-            }
-            else
-            {
-              html_select2 += '<option value ="'+data[1][i].id+'">'+data[1][i].nombre+'</option>';
-            }
-          }
+        for(var i = 0; i < data[0].length; i ++){
+          html_select += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
         }
 
-        $('#area_editar').html(html_select);
-        $('#localizacion_editar').html(html_select2);
-        document.getElementById("area_editar").addEventListener("change", function() 
-        {
-          var selectedOption = this.value;
+        $('#area').html(html_select);
+        $('#localizacion').html(html_select2);
+
+        $('#area').on('change', function() {
+          var selectedOption = $(this).val();
           var html_select2 = '<option value="">Seleccione </option>';
-          for (var i = 0; i < data[1].length; i++) 
-          {
-            if (data[1][i].id_area == selectedOption) 
-            {
-              if(data[1][i].id == localizacion)
-              {
-                html_select2 += '<option value ="'+data[1][i].id+'">'+data[1][i].nombre+'</option>';
-              }
-              else
-              {
-                html_select2 += '<option value ="'+data[1][i].id+'">'+data[1][i].nombre+'</option>';
-              }
+          for (var i = 0; i < data[1].length; i++) {
+            if (data[1][i].id_area == selectedOption) {
+              html_select2 += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
+              $('#localizacion').html(html_select2);
             }
           }
-          if(selectedOption == '')
-          {
-            document.getElementById("localizacion_editar").innerHTML = html_select2;
-            document.getElementById("div_localizacion").style.display = "none";
+          if(selectedOption == ''){
+            $('#localizacion').html(html_select2);
+            $('#div_localizacion').hide();
           }
-          else
-          {
-            document.getElementById("localizacion_editar").innerHTML = html_select2;
-            document.getElementById("div_localizacion").style.display = "block";
+          else{
+            $('#localizacion').html(html_select2);
+            $('#div_localizacion').show();
           }
         });
       });
+      $.get('select_tipo_equipo/',function(data){
+        var html_select = '<option value="">Seleccione </option>'
+        for(var i = 1; i<data.length; i ++){
+          html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+        }
+        $('#tipo').html(html_select);
+      });
     });
+  }
+  //modal update
+  function fnOpenModalUpdate(id_e) {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    var tipo = document.getElementById('edit-' + id_e).getAttribute('data-tipo');
+    var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
+    var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
       type: 'GET',
@@ -190,66 +178,66 @@
 
         // Borrar contenido anterior
         $("#modalfooter").empty();
-        // Agregar el botón "Cerrar" al footer
-        var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> <button type="submit" class="btn btn-info">Guardar</button>');
+        // Agregar el botón "Cerrar y Guardar" al footer
         $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
+
+        // Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta_update);
 
         // Mostrar el modal
         myModal.show();
       },
     });
-  }
-</script> 
-<script>
-  $('#agregar_equipo_mant').on('show.bs.modal', function (event) {
-
-    $.get('select_area_localizacion/',function(data)
-    {
-      var html_select = '<option value="">Seleccione </option>'
-      var html_select2 = '<option value="">Seleccione </option>'
-
-      for(var i = 0; i<data[0].length; i ++)
-      {
-        html_select += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
-      }
-
-      $('#area').html(html_select);
-      $('#localizacion').html(html_select2);
-
-      document.getElementById("area").addEventListener("change", function() 
-      {
-        var selectedOption = this.value;
-        var html_select2 = '<option value="">Seleccione </option>';
-        for (var i = 0; i < data[1].length; i++) 
-        {
-          if (data[1][i].id_area == selectedOption) 
-          {
-            html_select2 += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
-            document.getElementById("localizacion").innerHTML = html_select2;
+    $('#show2').on('show.bs.modal', function (event){
+      $.get('select_tipo_equipo',function(data){
+        var html_select = '<option value="">Seleccione </option>'
+        for(var i = 0; i<data.length; i ++){
+          if(data[i].id == tipo){
+            html_select += '<option value ="'+data[i].id+'"selected>'+data[i].nombre+'</option>';
+          }
+          else{
+            html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
           }
         }
-        if(selectedOption == '')
-        {
-          document.getElementById("localizacion").innerHTML = html_select2;
-          document.getElementById("div_localizacion").style.display = "none";
-        }
-        else
-        {
-          document.getElementById("localizacion").innerHTML = html_select2;
-          document.getElementById("div_localizacion").style.display = "block";
-        }
+        $('#tipo_equipo_mant_editar').html(html_select);
+      });
+    
+      $.get('select_area_localizacion/', function(data){
+        let html_select = '<option value="">Seleccione </option>';
+        let html_select2 = '<option value="">Seleccione </option>';
+
+        data[0].forEach(function(areaData){
+          const selected = (areaData.id_a == area) ? "selected" : "";
+          html_select += `<option value="${areaData.id_a}" ${selected}>${areaData.nombre_a}</option>`;
+        });
+
+        data[1].forEach(function(localizacionData){
+          const selected = (localizacionData.id == localizacion) ? "selected" : "";
+          if (localizacionData.id_area == area) {
+            html_select2 += `<option value="${localizacionData.id}" ${selected}>${localizacionData.nombre}</option>`;
+          }
+        });
+
+        $('#area_editar').html(html_select);
+        $('#localizacion_editar').html(html_select2);
+
+        $('#area_editar').on('change', function() {
+          const selectedOption = $(this).val();
+          let htmlSelect2 = '<option value="">Seleccione </option>';
+
+          data[1].forEach(function(localizacionData){
+            if (localizacionData.id_area == selectedOption) {
+              const selected = (localizacionData.id == localizacion) ? "selected" : "";
+              htmlSelect2 += `<option value="${localizacionData.id}" ${selected}>${localizacionData.nombre}</option>`;
+            }
+          });
+
+          $('#localizacion_editar').html(htmlSelect2);
+          $('#div_localizacion').css('display', selectedOption ? "block" : "none");
+        });
       });
     });
-
-    $.get('select_tipo_equipo/',function(data)
-    {
-      var html_select = '<option value="">Seleccione </option>'
-      for(var i = 1; i<data.length; i ++)
-      {
-        html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
-      }
-      $('#tipo').html(html_select);
-    });
-  });
+  }
 </script>
 @stop
