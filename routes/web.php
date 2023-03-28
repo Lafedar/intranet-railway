@@ -413,3 +413,11 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_falla/{falla}',['uses' => 'FallaController@show_update_falla'])->name('show_update_falla');
   Route::post('update_falla','FallaController@update_falla')->name('update_falla');
 });
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('tipos_equipos','Tipo_EquipoController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_tipo_equipo',['uses' => 'Tipo_EquipoController@show_store_tipo_equipo'])->middleware('role:administrador|mantenimiento')->name('show_store_tipo_equipo');
+  Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo');
+  Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
+  Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
+});
