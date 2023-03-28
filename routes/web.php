@@ -397,3 +397,11 @@ Route::group(['middleware' => ['auth']], function ()
 
   Route::get('select_area', 'LocalizacionController@select_area')->name('select_area');
 });
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('estados','EstadoController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_estado',['uses' => 'EstadoController@show_store_estado'])->middleware('role:administrador|mantenimiento')->name('show_store_estado');
+  Route::post('store_estado','EstadoController@store_estado')->name('store_estado');
+  Route::get('show_update_estado/{estado}',['uses' => 'EstadoController@show_update_estado'])->name('show_update_estado');
+  Route::post('update_estado','EstadoController@update_estado')->name('update_estado');
+});

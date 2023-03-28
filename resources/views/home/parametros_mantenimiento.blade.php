@@ -16,7 +16,7 @@
             <h3 style="color: #3b557a">Localizaciones</h3>
         </div>
         <div class="col-md-3" aling="center">
-            <a  href="/"> <img  src="{{ URL::to('/img/estados.png') }}" height="140"></a>
+            <a  href="/estados"> <img  src="{{ URL::to('/img/estados.png') }}" height="140"></a>
             <h3 style="color: #3b557a">Estados</h3>
         </div>
         <div class="col-md-3" aling="center">
