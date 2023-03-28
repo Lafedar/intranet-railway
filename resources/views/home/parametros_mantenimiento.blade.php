@@ -20,7 +20,7 @@
             <h3 style="color: #3b557a">Estados</h3>
         </div>
         <div class="col-md-3" aling="center">
-            <a  href="/"> <img  src="{{ URL::to('/img/fallas.png') }}" height="140"></a>
+            <a  href="/fallas"> <img  src="{{ URL::to('/img/fallas.png') }}" height="140"></a>
             <h3 style="color: #3b557a">Fallas</h3>
         </div>
 

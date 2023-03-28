@@ -405,3 +405,11 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_estado/{estado}',['uses' => 'EstadoController@show_update_estado'])->name('show_update_estado');
   Route::post('update_estado','EstadoController@update_estado')->name('update_estado');
 });
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('fallas','FallaController')->middleware('role:administrador|mantenimiento');
+  Route::get('show_store_falla',['uses' => 'FallaController@show_store_falla'])->middleware('role:administrador|mantenimiento')->name('show_store_falla');
+  Route::post('store_falla','FallaController@store_falla')->name('store_falla');
+  Route::get('show_update_falla/{falla}',['uses' => 'FallaController@show_update_falla'])->name('show_update_falla');
+  Route::post('update_falla','FallaController@update_falla')->name('update_falla');
+});

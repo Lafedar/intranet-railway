@@ -3,19 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Falla extends Model
 {
-    public function scopeID($query, $id)
+    public $table = "fallas";
+    public $timestamps = false;
+    public function scopeIndex ($query)
     {
-        if($id){
-        return $query -> where('id','LIKE',"%$id%");
-        }
+        return $query->select('fallas.id as id', 'fallas.nombre as nombre');
     }
-    public function scopeNombre ($query, $nombre)
-    {
-    	if($nombre){
-    	return $query -> where('nombre','LIKE', "%$nombre%");
-    	}
-    }
+
 }
+
