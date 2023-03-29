@@ -420,6 +420,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo');
   Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
   Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
+  Route::get('show_assing_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_assing_tipo_equipo'])->middleware('role:administrador|mantenimiento')->name('show_assing_tipo_equipo');
+  Route::post('assing_tipo_equipo','Tipo_EquipoController@assing_tipo_equipo')->middleware('role:administrador|mantenimiento')->name('assing_tipo_equipo');
 });
 Route::group(['middleware' => ['auth']], function () 
 {

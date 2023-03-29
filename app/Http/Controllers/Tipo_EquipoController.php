@@ -17,8 +17,13 @@ class Tipo_EquipoController extends Controller
         $tipos_equipos = Tipo_Equipo::Index($request->get('tipos_equipos'))
         ->paginate(20);
 
-        return view ('tipos_equipos.index',   
-            array('tipos_equipos' => $tipos_equipos));
+        $fallas = DB::table('fallasxtipo')
+        ->leftjoin('fallas', 'fallas.id', 'fallasxtipo.id_falla')
+        ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'fallasxtipo.id_tipo_solicitud')
+        ->select('fallasxtipo.id_tipo_equipo as id_tipo_equipo', 'fallas.nombre as nom_falla', 'tipo_solicitudes.nombre as nom_tipo_solicitud')
+        ->get();
+
+        return view ('tipos_equipos.index', array('tipos_equipos'=>$tipos_equipos, 'fallas'=>$fallas));
     }
 
     public function show_store_tipo_equipo()

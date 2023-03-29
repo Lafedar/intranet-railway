@@ -28,15 +28,25 @@
     <thead>
       <th class="text-center">ID</th>
       <th class="text-center">Nombre</th>
+      <th class="text-center">Fallas</th>
       <th class="text-center">Acciones</th>   
     </thead>
     <tbody>
       @foreach($tipos_equipos as $tipo_equipo)
         <tr class="text-center">
-        <td width="80">{{$tipo_equipo->id}}</td>
-        <td>{{$tipo_equipo->nombre}}</td>
-        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$tipo_equipo->id}}")' title="update"
-          data-nombre="{{$tipo_equipo->nombre}}" id="edit">Editar</button></td>
+          <td width="80">{{$tipo_equipo->id}}</td>
+          <td>{{$tipo_equipo->nombre}}</td>
+          <td>
+            @foreach ($fallas as $falla)
+              @if ($falla->id_tipo_equipo == $tipo_equipo->id)
+                -{{$falla->nom_falla}}
+              @endif
+            @endforeach
+          </td>
+          <td width="300">
+            <button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$tipo_equipo->id}}")' title="update" id="edit">Editar</button>
+            <button class="btn btn-info btn-sm" onclick='fnOpenModalAssing("{{$tipo_equipo->id}}")' title="assing" id="edit">Asignar</button>
+          </td>
         </tr>
       @endforeach
     </tbody>       
@@ -70,6 +80,7 @@
 <script> 
   var ruta_create = '{{ route('store_tipo_equipo') }}'; 
   var ruta_update = '{{ route('update_tipo_equipo') }}';
+  var ruta_assing = '{{ route('assing_solicitud') }}';
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
@@ -135,5 +146,52 @@
       },
     });
   }
+  //modal assing
+  function fnOpenModalAssing(id)
+  {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow").empty();
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+        // Agregar el botón "Cerrar y Guardar" al footer
+
+        $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
+
+        // Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta_assing);
+
+        // Mostrar el modal
+        myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-sm"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-lg');
+        modalDialog.classList.add('modal-sm');
+      },
+    });
+  }
+  $('#show2').on('show.bs.modal', function (event) {
+    $.get('select_users/',function(data){
+      var html_select = '<option value="">Seleccione </option>'
+
+      for(var i = 0; i<data[0].length; i ++){
+        for(var k = 0; k<data[1].length; k ++){
+          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
+            html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
+          }
+        }
+      }
+      $('#user').html(html_select);
+    });
+  });
 </script> 
 @stop
