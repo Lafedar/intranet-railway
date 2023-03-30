@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Tipo_Equipo;
+use App\Fallaxtipo;
 use App\User;
 Use Session;
 use DB;
@@ -54,6 +55,16 @@ class Tipo_EquipoController extends Controller
         return redirect ('tipos_equipos');
     }
 
+    public function show_update_tipo_equipo($id)
+    {
+        $tipo_equipo = DB::table('tipos_equipos')
+        ->select('tipos_equipos.id as id', 'tipos_equipos.nombre as nombre')
+        ->where('tipos_equipos.id', $id)
+        ->first();
+
+        return view('tipos_equipos.update', ['tipo_equipo' => $tipo_equipo]);       
+    }
+
     public function update_tipo_equipo(Request $request)
     {
         $tipo_equipo = DB::table('tipos_equipos')
@@ -65,14 +76,37 @@ class Tipo_EquipoController extends Controller
         Session::flash('alert-class', 'alert-success');
         return redirect('tipos_equipos');
     }
-    
-    public function show_update_tipo_equipo($id)
-    {
-        $tipo_equipo = DB::table('tipos_equipos')
-        ->select('tipos_equipos.id as id', 'tipos_equipos.nombre as nombre')
-        ->where('tipos_equipos.id', $id)
-        ->first();
 
-        return view('tipos_equipos.update', ['tipo_equipo' => $tipo_equipo]);       
+    public function show_assing_tipo_equipo($id)
+    {
+        //migrar a modelo
+        $tipo_equipo = Tipo_Equipo::
+            find($id);
+
+        return view('tipos_equipos.assing', [
+            'tipo_equipo' => $tipo_equipo
+        ]);       
+    }
+
+    public function assing_tipo_equipo(Request $request)
+    {
+        $fallaxtipo = new Fallaxtipo;
+        $fallaxtipo->id_tipo_equipo = $request['id_tipo_equipo'];
+        $fallaxtipo->id_falla = $request['fallas'];
+        if($request['id_tipo_equipo'] == 0){
+            $fallaxtipo->id_tipo_solicitud = 2;
+        }
+        else{$fallaxtipo->id_tipo_solicitud = 1;}
+
+        $fallaxtipo->save();
+
+        Session::flash('message','Falla asignada con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect('tipos_equipos');
+    }
+    
+    public function select_fallas()
+    {
+        return [DB::table('fallas')->get(), DB::table('fallasxtipo')->get()];
     }
 }

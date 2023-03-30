@@ -80,7 +80,7 @@
 <script> 
   var ruta_create = '{{ route('store_tipo_equipo') }}'; 
   var ruta_update = '{{ route('update_tipo_equipo') }}';
-  var ruta_assing = '{{ route('assing_solicitud') }}';
+  var ruta_assing = '{{ route('assing_tipo_equipo') }}';
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
@@ -134,7 +134,7 @@
         $("#modalfooter").append(saveButton);
 
         //Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_update);
+        $('#myForm').attr('action', ruta_assing);
 
         // Mostrar el modal
         myModal.show();
@@ -147,11 +147,13 @@
     });
   }
   //modal assing
+  var aux;
   function fnOpenModalAssing(id)
   {
+    aux=id;
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,
+      url: window.location.protocol + '//' + window.location.host + "/show_assing_tipo_equipo/" + id,
       type: 'GET',
       success: function(data) {
         // Borrar contenido anterior
@@ -180,17 +182,21 @@
     });
   }
   $('#show2').on('show.bs.modal', function (event) {
-    $.get('select_users/',function(data){
+    $.get('select_fallas/',function(data){
       var html_select = '<option value="">Seleccione </option>'
-
-      for(var i = 0; i<data[0].length; i ++){
-        for(var k = 0; k<data[1].length; k ++){
-          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
-            html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
+      for(var j = 0; j < data[0].length; j++) {
+        let found = false; // variable para indicar si se encontró la pareja (id_falla, id_tipo_equipo)
+        for(var i = 0; i < data[1].length; i++) {
+          if(data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
+            found = true; // se encontró la pareja, no se agrega
+            break;
           }
         }
+        if (!found) {
+          html_select += '<option value ="'+data[0][j].id+'">'+data[0][j].nombre+'</option>'; // no se encontró la pareja, se agrega
+        }
       }
-      $('#user').html(html_select);
+      $('#fallas').html(html_select);
     });
   });
 </script> 
