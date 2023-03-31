@@ -105,6 +105,34 @@ class Tipo_EquipoController extends Controller
         return redirect('tipos_equipos');
     }
     
+    public function show_delete_falla_te($id)
+    {
+        //migrar a modelo
+        $tipo_equipo = Tipo_Equipo::
+            find($id);
+
+        return view('tipos_equipos.assing', [
+            'tipo_equipo' => $tipo_equipo
+        ]);       
+    }
+
+    public function delete_falla_te(Request $request)
+    {
+        $fallaxtipo = new Fallaxtipo;
+        $fallaxtipo->id_tipo_equipo = $request['id_tipo_equipo'];
+        $fallaxtipo->id_falla = $request['fallas'];
+        if($request['id_tipo_equipo'] == 0){
+            $fallaxtipo->id_tipo_solicitud = 2;
+        }
+        else{$fallaxtipo->id_tipo_solicitud = 1;}
+
+        $fallaxtipo->save();
+
+        Session::flash('message','Falla asignada con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect('tipos_equipos');
+    }
+
     public function select_fallas()
     {
         return [DB::table('fallas')->get(), DB::table('fallasxtipo')->get()];

@@ -420,8 +420,11 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo');
   Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
   Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
+  Route::get('show_delete_falla_te/{falla}',['uses' => 'Tipo_EquipoController@show_delete_falla_te'])->name('show_delete_falla_te');
+  Route::post('delete_falla_te','Tipo_EquipoController@delete_falla_te')->name('delete_falla_te');
   Route::get('show_assing_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_assing_tipo_equipo'])->middleware('role:administrador|mantenimiento')->name('show_assing_tipo_equipo');
   Route::post('assing_tipo_equipo','Tipo_EquipoController@assing_tipo_equipo')->middleware('role:administrador|mantenimiento')->name('assing_tipo_equipo');
+
   Route::get('select_fallas', 'Tipo_EquipoController@select_fallas')->name('select_fallas');
 });
 Route::group(['middleware' => ['auth']], function () 
