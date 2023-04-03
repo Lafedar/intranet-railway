@@ -46,7 +46,7 @@
           <td width="300">
             <button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$tipo_equipo->id}}")' title="update" id="edit">Editar</button>
             <button class="btn btn-info btn-sm" onclick='fnOpenModalAssing("{{$tipo_equipo->id}}")' title="assing" id="edit">Asignar</button>
-            <button class="btn btn-danger btn-sm" onclick='fnOpenModalDeleteFalla("{{$tipo_equipo->id}}")' title="assing" id="edit">Eliminar falla</button>
+            <button class="btn btn-danger btn-sm" onclick='fnOpenModalDeleteFalla("{{$tipo_equipo->id}}")' title="delete" id="edit">Eliminar falla</button>
           </td>
         </tr>
       @endforeach

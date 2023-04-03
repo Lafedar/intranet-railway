@@ -92,7 +92,7 @@ class Tipo_EquipoController extends Controller
     {
         $fallaxtipo = new Fallaxtipo;
         $fallaxtipo->id_tipo_equipo = $request['id_tipo_equipo'];
-        $fallaxtipo->id_falla = $request['fallas'];
+        $fallaxtipo->id_falla = $request['fallasSinAsingar'];
         if($request['id_tipo_equipo'] == 0){
             $fallaxtipo->id_tipo_solicitud = 2;
         }
@@ -111,24 +111,17 @@ class Tipo_EquipoController extends Controller
         $tipo_equipo = Tipo_Equipo::
             find($id);
 
-        return view('tipos_equipos.assing', [
+        return view('tipos_equipos.delete_falla', [
             'tipo_equipo' => $tipo_equipo
         ]);       
     }
 
     public function delete_falla_te(Request $request)
     {
-        $fallaxtipo = new Fallaxtipo;
-        $fallaxtipo->id_tipo_equipo = $request['id_tipo_equipo'];
-        $fallaxtipo->id_falla = $request['fallas'];
-        if($request['id_tipo_equipo'] == 0){
-            $fallaxtipo->id_tipo_solicitud = 2;
-        }
-        else{$fallaxtipo->id_tipo_solicitud = 1;}
+        $fallaxtipo = DB::table('fallasxtipo')->where('fallasxtipo.id_tipo_equipo', $request['id_tipo_equipo'])
+        ->where('fallasxtipo.id_falla' ,$request['fallasAsignadas'])->delete();
 
-        $fallaxtipo->save();
-
-        Session::flash('message','Falla asignada con éxito');
+        Session::flash('message','Falla eliminada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('tipos_equipos');
     }
