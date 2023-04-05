@@ -1,10 +1,10 @@
 <!-- Modal Agregar-->
               <div class="form-group col-md-12">
                 <label for="title"><strong>Titulo:</strong></label>
-                <input type="text" name="titulo" class="form-control"  autocomplete="off" id="titulo" required>
+                <input type="text" name="titulo" class="form-control"  autocomplete="off" id="titulo" minlength="10" maxlength="50" required>
 
                 <label for="title"><strong>Descripcion:</strong></label>
-                <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" required></textarea>
+                <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion"  minlength="10" maxlength="500" required></textarea>
                 
                 <div class="row">
                   <div class="col-6">

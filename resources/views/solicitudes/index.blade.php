@@ -21,12 +21,92 @@
 @endif
 
 <!-- barra para buscar solicitudes -->
-
+<div class="col-md-12 ml-auto">
+  <h1>
+    <div class="form-inline pull-right">
+      <form  method="GET">
+        <div class="form-group">
+          <label><h6>ID:</h6></label>
+          <input type="text" name="id_solicitud" class="form-control col-md-1" id="id_solicitud" autocomplete="off" value="{{$id_solicitud}}" >
+          &nbsp
+          <label><h6>Equipo:</h6></label>
+          <input type="text" name="id_equipo" class="form-control col-md-1" id="id_equipo" autocomplete="off" value="{{$id_equipo}}" >
+          &nbsp
+          <label><h6>Titulo:</h6></label>
+          <input type="text" name="titulo" class="form-control col-md-1" id="titulo" autocomplete="off" value="{{$titulo}}" >
+          &nbsp
+          <div class="form-group">
+            <label><h6>Tipo:</h6></label>
+            <select class="form-control" name="id_tipo_solicitud"  id="id_tipo_solicitud">
+              <option value="0">{{'Todos'}} </option>
+                @foreach($tiposSolicitudes as $tipoSolicitud)
+                  @if($tipoSolicitud->id == $id_tipo_solicitud)
+                    <option value="{{$tipoSolicitud->id}}" selected>{{$tipoSolicitud->nombre}} </option>
+                  @else
+                    <option value="{{$tipoSolicitud->id}}">{{$tipoSolicitud->nombre}} </option>
+                  @endif
+                @endforeach
+            </select>
+          </div>
+          &nbsp
+          <div class="form-group">
+            <label><h6>Estado:</h6></label>
+            <select class="form-control" name="id_estado"  id="id_estado">
+              <option value="0">{{'Todos'}} </option>
+                @foreach($estados as $estado)
+                  @if($estado->id == $id_estado)
+                    <option value="{{$estado->id}}" selected>{{$estado->nombre}} </option>
+                  @else
+                    <option value="{{$estado->id}}">{{$estado->nombre}} </option>
+                  @endif
+                @endforeach
+            </select>
+          </div>
+          &nbsp
+          <div class="form-group">
+            <label><h6>Encargado:</h6></label>
+            <select class="form-control" name="id_encargado"  id="id_encargado">
+              <option value="0">{{'Todos'}} </option>
+                @foreach($usuarios as $usuario)
+                  @foreach($model_as_roles as $model_as_rol)
+                    @if($model_as_rol->role_id == 22 and $usuario->id == $model_as_rol->model_id)
+                      @if($usuario->id == $id_encargado)
+                        <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
+                      @else
+                        <option value="{{$usuario->id}}">{{$usuario->name}} </option>
+                      @endif
+                    @endif
+                  @endforeach
+                @endforeach
+            </select>
+          </div>
+          &nbsp
+          <div class="form-group">
+            <label><h6>Solicitante:</h6></label>
+            <select class="form-control" name="id_solicitante"  id="id_solicitante">
+              <option value="0">{{'Todos'}} </option>
+                @foreach($usuarios as $usuario)
+                  @if($usuario->id == $id_solicitante)
+                    <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
+                  @else
+                    <option value="{{$usuario->id}}">{{$usuario->name}} </option>
+                  @endif
+                @endforeach
+            </select>
+          </div>
+          &nbsp
+          <button type="submit" class="btn btn-default"> Buscar</button>
+        </div>
+      </form>
+    </div>
+  </h1>            
+</div>
 <!-- tabla de datos -->
 
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
+      <th class="text-center">Seleccionar</th>
       <th class="text-center">ID</th>
       <th class="text-center">Titulo</th>
       <th class="text-center">Tipo de solicitud</th>
@@ -44,7 +124,8 @@
     <tbody>
         @foreach($solicitudes as $solicitud)
             <tr>
-              <td width="60">{{sprintf('%05d',$solicitud->id)}}</td>
+              <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+              <td width="60">{{$solicitud->id}}</td>
               <td width="350">{{$solicitud->titulo}}</td>
               <td width="150">{{$solicitud->tipo_solicitud}}</td>
               <td width="107">{{$solicitud->id_equipo}}</td>
@@ -98,6 +179,18 @@
 </div>
 
 <script> 
+  $(document).ready(function(){
+    $("#id").keyup(function(){
+      _this = this;
+      $.each($("#test tbody tr"), function() {
+        if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+          $(this).hide();
+        else
+          $(this).show();
+      });
+    });
+  });
+
   //Duracion de alerta (agregado, elimnado, editado)
   $("solicitud").ready(function(){
     setTimeout(function(){
@@ -105,9 +198,12 @@
     }, 5000 ); // 5 secs
 
   });
-</script> 
 
-<script>  
+  function Report(){
+    var userId = {{ auth()->id() }};
+    console.log(userId);
+  }
+
   var ruta_create = '{{ route('store_solicitud') }}';
   var ruta_update = '{{ route('update_solicitud') }}';
   var ruta_assing = '{{ route('assing_solicitud') }}';

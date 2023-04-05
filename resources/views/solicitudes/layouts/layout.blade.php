@@ -21,6 +21,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbar1">
       <ul class="navbar-nav ml-auto">
+        <button id="reporte" class="btn btn-info" onclick='Report()' title="report">Reporte</button>
+        &nbsp&nbsp&nbsp&nbsp
         <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_solicitud"> Agregar solicitud</button>
         &nbsp
         <form action="{{ url('/logout') }}" method="POST" >
