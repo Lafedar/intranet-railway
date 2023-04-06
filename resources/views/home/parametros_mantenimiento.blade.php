@@ -37,12 +37,12 @@
         <div class="col-md-3" aling="center">
             <br>
             <a  href='/usuarios'> <img  src="{{ URL::to('/img/usuarios.png') }}" height="140"></a>
-
+            <h3 style="color: #3b557a">Usuarios</h3>
         </div>
         <div class="col-md-3" aling="center">
             <br>
             <a  href='roles'> <img  src="{{ URL::to('/img/roles.png') }}" height="140"></a>
-
+            <h3 style="color: #3b557a">Roles</h3>
         </div>
 
     </div>
