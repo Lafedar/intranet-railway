@@ -34,7 +34,6 @@
      </ul>
    </div>
  </nav>
-<p></p>
 </head>
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 <body>

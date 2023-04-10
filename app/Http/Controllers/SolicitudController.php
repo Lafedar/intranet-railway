@@ -28,7 +28,7 @@ class SolicitudController extends Controller
         ->Equipo($request->get('id_equipo'))
         ->Titulo($request->get('titulo'))
         ->Falla($request->get('id_falla'))
-        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_solicitante'), $request->get('id_encargado'))
+        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'))
         ->orderBy('id_solicitud', 'desc')
         ->paginate(20);
 
