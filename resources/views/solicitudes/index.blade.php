@@ -101,7 +101,6 @@
   </div>
 </div>
 <!-- tabla de datos -->
-
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
@@ -130,6 +129,7 @@
               <td width="107">{{$solicitud->id_equipo}}</td>
               <td >{{$solicitud->estado}}</td>
               <td >{{$solicitud->falla}}</td>
+              <td hidden>{{$solicitud->descripcion}}</td>             
               @can('ver_solicitante')
                 <td >{{$solicitud->nombre_solicitante}}</td>
               @endcan
@@ -176,7 +176,69 @@
 
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script>
+  function Report() {
+  // Obtener todos los checkboxes seleccionados
+  var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
 
+  // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
+  if (checkboxes.length === 0) {
+    alert("Por favor, seleccione al menos una solicitud.");
+    return;
+  }
+
+  // Crear un nuevo documento PDF
+  var doc = new jsPDF();
+
+  // Agregar un encabezado al PDF con subrayado
+  doc.setFontSize(18);
+  doc.text("Solicitudes seleccionadas", 20, 20);
+  doc.setLineWidth(0.5);
+  doc.line(20, 23, 190, 23);
+
+  // Agregar las solicitudes seleccionadas al PDF
+  var y = 35;
+  checkboxes.forEach(function(checkbox, index) {
+    var row = checkbox.closest('tr');
+    var id = row.querySelector('td:nth-child(2)').textContent.trim();
+    var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
+    var tipo = row.querySelector('td:nth-child(4)').textContent.trim();
+    var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
+    var estado = row.querySelector('td:nth-child(6)').textContent.trim();
+    var falla = row.querySelector('td:nth-child(7)').textContent.trim();
+    var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
+
+    var idLines = doc.splitTextToSize("ID: " + id, 150);
+    var tituloLines = doc.splitTextToSize("Título: " + titulo, 150);
+    var detalle = "Equipo: " + (equipo ? equipo : 'N/A') + " | Estado: " + estado + " | Falla: " + falla;
+    var descripcionLines = doc.splitTextToSize("Descripción: " + descripcion, 150);
+    console.log(detalle);
+    console.log(idLines);
+    console.log(tituloLines);
+    console.log(descripcionLines);
+
+    // Agregar ID, título y detalle en la misma línea
+    doc.setFontSize(12);
+    doc.text("ID: " + id + " | Título: " + titulo, 20, y);
+    doc.setFontSize(10);
+    doc.text(detalle, 20, y + maxHeight - 10);
+    doc.setFontSize(10);
+    doc.text("Descripción: " + descripcion, 20, y + maxHeight + 10);
+
+    // Agregar una línea divisoria entre las solicitudes, excepto la última
+    if (index < checkboxes.length - 1) {
+      doc.setLineWidth(0.5);
+      doc.line(20, y + maxHeight + 35, 190, y + maxHeight + 35);
+      y += maxHeight + 40;
+    } else {
+      y += maxHeight + 50;
+    }
+  });
+  // Descargar el PDF
+  doc.save("solicitudes.pdf");
+}
+</script>
 <script> 
   $(document).ready(function(){
     $("#id").keyup(function(){
@@ -197,11 +259,6 @@
     }, 5000 ); // 5 secs
 
   });
-
-  function Report(){
-    var userId = {{ auth()->id() }};
-    console.log(userId);
-  }
 
   var ruta_create = '{{ route('store_solicitud') }}';
   var ruta_update = '{{ route('update_solicitud') }}';

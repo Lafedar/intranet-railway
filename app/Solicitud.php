@@ -47,7 +47,7 @@ class Solicitud extends Model
           ->where('historico_solicitudes.actual', '=', 1)
           ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
                    'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
-                   'estados.nombre as estado');
+                   'estados.nombre as estado', 'historico_solicitudes.descripcion as descripcion');
     if ($id_tipo_solicitud != 0) {
         $query->where('id_tipo_solicitud', $id_tipo_solicitud);
     }
