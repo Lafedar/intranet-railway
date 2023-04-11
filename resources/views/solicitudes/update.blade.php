@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-7">
       <strong>Descripcion: </strong>
-      <input type="text" name="descripcion" class="form-control" id="descripcion" autocomplete="off" required>
+      <input type="text" name="descripcion" class="form-control" id="descripcion" autocomplete="off"  minlength="10" maxlength="500" required>
       <input type="hidden" name="id_solicitud" value="{{ $solicitud->id }}">
     </div>
   </div>

@@ -1,4 +1,4 @@
-@extends('areas.layouts.layout')
+@extends('localizaciones.layouts.layout')
 @section('content')
 
 <!-- alertas -->
@@ -27,16 +27,18 @@
   <table class="table table-striped table-bordered ">
     <thead>
       <th class="text-center">ID</th>
+      <th class="text-center">Area</th>
       <th class="text-center">Nombre</th>
       <th class="text-center">Acciones</th>   
     </thead>
     <tbody>
-      @foreach($areas as $area)
+      @foreach($localizaciones as $localizacion)
         <tr class="text-center">
-        <td width="80">{{$area->id_a}}</td>
-        <td>{{$area->nombre_a}}</td>
-        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$area->id_a}}")' title="update"
-          data-nombre_a="{{$area->nombre_a}}" id="edit">Editar</button></td>
+        <td width="80">{{$localizacion->id}}</td>
+        <td>{{$localizacion->nombre_a}}</td>
+        <td>{{$localizacion->nombre}}</td>
+        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$localizacion->id}}")' title="update"
+          data-nombre="{{$localizacion->nombre}}" id="edit">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       
@@ -56,26 +58,28 @@
       </div>
     </div>
   </div>
-  {{ $areas->appends($_GET)->links() }}
+{{ $localizaciones->appends($_GET)->links() }}
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
-  $("area").ready(function(){
-    setTimeout(function(){
+  $("localizacion").ready(function()
+  {
+    setTimeout(function()
+    {
       $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
   });
   </script> 
 
 <script> 
-  var ruta_create = '{{ route('store_area') }}'; 
-  var ruta_update = '{{ route('update_area') }}';
+  var ruta_create = '{{ route('store_localizacion') }}';
+  var ruta_update = '{{ route('update_localizacion') }}';
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_area/";
+    var url = window.location.origin + "/show_store_localizacion/";
     $.get(url, function(data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
@@ -102,12 +106,13 @@
       modalDialog.classList.remove('modal-lg');
     });
   }
+  
   //modal update
-  function fnOpenModalUpdate(id_a) 
+  function fnOpenModalUpdate(id) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_area/" + id_a,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_localizacion/" + id,
       type: 'GET',
       success: function(data) {
         // Borrar contenido anterior
@@ -135,5 +140,15 @@
       },
     });
   }
+  $('#show2').on('show.bs.modal', function (event) {
+      $.get('select_area/',function(data){
+        var html_select = '<option value="">Seleccione </option>'
+
+        for(var i = 0; i<data.length; i ++){
+          html_select += '<option value ="'+data[i].id_a+'">'+data[i].nombre_a+'</option>';
+        }
+        $('#area').html(html_select);
+      });
+    });
 </script> 
 @stop

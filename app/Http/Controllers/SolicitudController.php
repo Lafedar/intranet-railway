@@ -9,6 +9,7 @@ use App\Historico_solicitudes;
 use App\Falla;
 use App\Tipo_solicitud;
 use App\User;
+use App\Estado;
 use Carbon\Carbon;
 Use Session;
 use DB;
@@ -18,16 +19,23 @@ class SolicitudController extends Controller
 {
     public function index(Request $request)
     {
+        $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
+        $estados = DB::table('estados')->orderBy('nombre','asc')->get();
+        $usuarios = DB::table('users')->orderBy('name','asc')->get();
+        $model_as_roles = DB::table('model_has_roles')->get();
+
         $solicitudes = Solicitud::ID($request->get('id_solicitud'))
         ->Equipo($request->get('id_equipo'))
-        ->Titulo($request->get('id_titulo'))
-        ->Relaciones_index($request->get('relaciones'))
+        ->Titulo($request->get('titulo'))
+        ->Falla($request->get('id_falla'))
+        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'))
         ->orderBy('id_solicitud', 'desc')
         ->paginate(20);
 
-        return view('solicitudes.index', [
-        'solicitudes' => $solicitudes
-        ]);
+        return view('solicitudes.index', array('solicitudes' => $solicitudes, 'tiposSolicitudes' => $tiposSolicitudes, 'estados' => $estados,
+        'usuarios' => $usuarios, 'model_as_roles' => $model_as_roles, 'id_equipo'=>$request->get('id_equipo'), 'id_solicitud'=>$request->get('id_solicitud'), 
+        'titulo'=>$request->get('titulo'), 'id_tipo_solicitud'=>$request->get('id_tipo_solicitud'), 'id_estado'=>$request->get('id_estado'),
+        'id_encargado'=>$request->get('id_encargado'), 'id_solicitante'=>$request->get('id_solicitante')));
     }
 
     public function show_store_solicitud()
@@ -202,12 +210,17 @@ class SolicitudController extends Controller
     public function destroy_solicitud($id)
     {
         $solicitud = Solicitud::find($id);
-        if($solicitud->pbix != null){
-            unlink(storage_path('app\\public\\'.$solicitud->pbix));
+
+        $historico_solicitudes = DB::table('historico_solicitudes')
+        ->where('historico_solicitudes.id_solicitud', $id)
+        ->get();
+
+        foreach ($historico_solicitudes as $historico_solicitud) {
+            DB::table('historico_solicitudes')->where('id_solicitud', $historico_solicitud->id_solicitud)->delete();
         }
 
         $solicitud -> delete(); 
-        Session::flash('message','Archivo eliminado con éxito');
+        Session::flash('message','Solicitud eliminada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }

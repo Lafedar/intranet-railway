@@ -21,6 +21,11 @@ class AreaController extends Controller
             array('areas' => $areas));
     }
 
+    public function show_store_area()
+    {
+        return view('areas.create');       
+    }
+
     public function store_area(Request $request)
     {        
         //consulta en bd si existe el id
@@ -36,7 +41,7 @@ class AreaController extends Controller
         $area = new Area;
         $area->id_a = $request['id_a'];
         $area->nombre_a = $request['nombre'];
- 
+        
         $area->save();
 
         Session::flash('message','Area agregada con éxito');

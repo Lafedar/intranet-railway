@@ -1,4 +1,4 @@
-@extends('areas.layouts.layout')
+@extends('estados.layouts.layout')
 @section('content')
 
 <!-- alertas -->
@@ -31,12 +31,12 @@
       <th class="text-center">Acciones</th>   
     </thead>
     <tbody>
-      @foreach($areas as $area)
+      @foreach($estados as $estado)
         <tr class="text-center">
-        <td width="80">{{$area->id_a}}</td>
-        <td>{{$area->nombre_a}}</td>
-        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$area->id_a}}")' title="update"
-          data-nombre_a="{{$area->nombre_a}}" id="edit">Editar</button></td>
+        <td width="80">{{$estado->id}}</td>
+        <td>{{$estado->nombre}}</td>
+        <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$estado->id}}")' title="update"
+          data-nombre="{{$estado->nombre}}" id="edit">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       
@@ -56,11 +56,11 @@
       </div>
     </div>
   </div>
-  {{ $areas->appends($_GET)->links() }}
+  {{ $estados->appends($_GET)->links() }}
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
-  $("area").ready(function(){
+  $("estado").ready(function(){
     setTimeout(function(){
       $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
@@ -68,14 +68,14 @@
   </script> 
 
 <script> 
-  var ruta_create = '{{ route('store_area') }}'; 
-  var ruta_update = '{{ route('update_area') }}';
+  var ruta_create = '{{ route('store_estado') }}'; 
+  var ruta_update = '{{ route('update_estado') }}';
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_area/";
+    var url = window.location.origin + "/show_store_estado/";
     $.get(url, function(data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
@@ -103,11 +103,11 @@
     });
   }
   //modal update
-  function fnOpenModalUpdate(id_a) 
+  function fnOpenModalUpdate(id) 
   {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_area/" + id_a,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_estado/" + id,
       type: 'GET',
       success: function(data) {
         // Borrar contenido anterior

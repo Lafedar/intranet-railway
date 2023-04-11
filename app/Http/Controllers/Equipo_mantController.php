@@ -22,6 +22,11 @@ class Equipo_mantController extends Controller
             array('equipos_mant' => $equipos_mant));
     }
 
+    public function show_store_equipo_mant()
+    {
+        return view('equipos_mant.create');       
+    }
+
     public function store_equipo_mant(Request $request)
     {        
         $equipo_mant = new Equipo_mant;
