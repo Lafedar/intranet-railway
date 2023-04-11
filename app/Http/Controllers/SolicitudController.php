@@ -30,6 +30,11 @@ class SolicitudController extends Controller
         ]);
     }
 
+    public function show_store_solicitud()
+    {
+        return view('solicitudes.create');       
+    }
+
     public function store_solicitud(Request $request)
     {        
         $aux = Solicitud::get()->max('id');
