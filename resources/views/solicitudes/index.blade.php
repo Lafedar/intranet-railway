@@ -188,55 +188,50 @@
     return;
   }
 
-  // Crear un nuevo documento PDF
-  var doc = new jsPDF();
+// Crear un nuevo documento PDF
+var doc = new jsPDF();
 
-  // Agregar un encabezado al PDF con subrayado
-  doc.setFontSize(18);
-  doc.text("Solicitudes seleccionadas", 20, 20);
-  doc.setLineWidth(0.5);
-  doc.line(20, 23, 190, 23);
+// Agregar el título al PDF
+doc.setFontSize(14);
+doc.setFontStyle("bold");
+doc.text("Solicitudes seleccionadas", 10, 10);
 
-  // Agregar las solicitudes seleccionadas al PDF
-  var y = 35;
-  checkboxes.forEach(function(checkbox, index) {
-    var row = checkbox.closest('tr');
-    var id = row.querySelector('td:nth-child(2)').textContent.trim();
-    var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
-    var tipo = row.querySelector('td:nth-child(4)').textContent.trim();
-    var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
-    var estado = row.querySelector('td:nth-child(6)').textContent.trim();
-    var falla = row.querySelector('td:nth-child(7)').textContent.trim();
-    var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
+// Agregar las solicitudes seleccionadas al PDF
+var y = 20;
+for (var i = 0; i < checkboxes.length; i++) {
+  var checkbox = checkboxes[i];
+  var row = checkbox.closest('tr');
+  var id = row.querySelector('td:nth-child(2)').textContent.trim();
+  var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
+  var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
+  var estado = row.querySelector('td:nth-child(6)').textContent.trim();
+  var falla = row.querySelector('td:nth-child(7)').textContent.trim();
+  var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
 
-    var idLines = doc.splitTextToSize("ID: " + id, 150);
-    var tituloLines = doc.splitTextToSize("Título: " + titulo, 150);
-    var detalle = "Equipo: " + (equipo ? equipo : 'N/A') + " | Estado: " + estado + " | Falla: " + falla;
-    var descripcionLines = doc.splitTextToSize("Descripción: " + descripcion, 150);
-    console.log(detalle);
-    console.log(idLines);
-    console.log(tituloLines);
-    console.log(descripcionLines);
+  // Ajustar el diseño del contenido del PDF
+  var content = [
+    { label: "ID: ", value: id, x: 10, y: y },
+    { label: "Título: ", value: titulo, x: 30, y: y },
+    { label: "Equipo: ", value: equipo, x: 10, y: y + 8 },
+    { label: "Estado: ", value: estado, x: 40, y: y + 8 },
+    { label: "Falla: ", value: falla, x: 90, y: y + 8 },
+    { label: "Descripción: ", value: descripcion, x: 10, y: y + 16 }
+  ];
 
-    // Agregar ID, título y detalle en la misma línea
-    doc.setFontSize(12);
-    doc.text("ID: " + id + " | Título: " + titulo, 20, y);
-    doc.setFontSize(10);
-    doc.text(detalle, 20, y + maxHeight - 10);
-    doc.setFontSize(10);
-    doc.text("Descripción: " + descripcion, 20, y + maxHeight + 10);
-
-    // Agregar una línea divisoria entre las solicitudes, excepto la última
-    if (index < checkboxes.length - 1) {
-      doc.setLineWidth(0.5);
-      doc.line(20, y + maxHeight + 35, 190, y + maxHeight + 35);
-      y += maxHeight + 40;
-    } else {
-      y += maxHeight + 50;
-    }
+  // Agregar el contenido al PDF
+  doc.setFontSize(10);
+  content.forEach(function(item) {
+    doc.text(item.label, item.x, item.y);
+    var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; // Obtener la longitud del label en unidades del PDF
+    doc.text(item.value, item.x + labelWidth, item.y); // Ajustar la posición X del valor a continuación del label
   });
-  // Descargar el PDF
-  doc.save("solicitudes.pdf");
+
+  // Aumentar la posición Y para la siguiente solicitud
+  y += 30;
+}
+
+// Guardar el PDF
+doc.save('reporte.pdf');
 }
 </script>
 <script> 
