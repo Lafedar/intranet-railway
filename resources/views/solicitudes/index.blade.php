@@ -104,7 +104,7 @@
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
-      <th class="text-center">Seleccionar</th>
+      <th class="text-center"><input type="checkbox" id="checkAll" onclick="checkAll()"> Seleccionar</th>
       <th class="text-center">ID</th>
       <th class="text-center">Titulo</th>
       <th class="text-center">Tipo de solicitud</th>
@@ -178,61 +178,134 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>
-  function Report() {
-  // Obtener todos los checkboxes seleccionados
-  var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+  function checkAll() {
+    // Obtén el estado actual del checkbox "checkAll"
+    var checkAllCheckbox = document.getElementById("checkAll");
+    var isChecked = checkAllCheckbox.checked;
 
-  // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
-  if (checkboxes.length === 0) {
-    alert("Por favor, seleccione al menos una solicitud.");
-    return;
+    // Obtén todos los checkboxes generados por el bucle
+    var checkboxes = document.querySelectorAll("input[type='checkbox'][id^='cbox1']");
+
+    // Marca o desmarca todos los checkboxes según el estado del checkbox "checkAll"
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = isChecked;
+    }
+
+    // Si alguno de los checkboxes generados se desmarca, desmarca también el checkbox "checkAll"
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].addEventListener("change", function() {
+        if (!this.checked) {
+          checkAllCheckbox.checked = false;
+        }
+      });
+    }
+
+    checkAllCheckbox.addEventListener("change", function() {
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = this.checked;
+      } 
+    });
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].addEventListener("change", function() {
+        var allChecked = true;
+        for (let j = 0; j < checkboxes.length; j++) {
+          if (!checkboxes[j].checked) {
+            allChecked = false;
+            break;
+          }
+        }
+        checkAllCheckbox.checked = allChecked;
+      });
+    }
   }
+  function Report() {
+    // Obtener todos los checkboxes seleccionados
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkAll)');
 
-// Crear un nuevo documento PDF
-var doc = new jsPDF();
+    // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
+    if (checkboxes.length === 0) {
+      alert("Por favor, seleccione al menos una solicitud.");
+      return;
+    }
 
-// Agregar el título al PDF
-doc.setFontSize(14);
-doc.setFontStyle("bold");
-doc.text("Solicitudes seleccionadas", 10, 10);
+    // Crear un nuevo documento PDF
+    var doc = new jsPDF();
 
-// Agregar las solicitudes seleccionadas al PDF
-var y = 20;
-for (var i = 0; i < checkboxes.length; i++) {
-  var checkbox = checkboxes[i];
-  var row = checkbox.closest('tr');
-  var id = row.querySelector('td:nth-child(2)').textContent.trim();
-  var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
-  var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
-  var estado = row.querySelector('td:nth-child(6)').textContent.trim();
-  var falla = row.querySelector('td:nth-child(7)').textContent.trim();
-  var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
+ // Definir la variable pageHeight
+    var pageHeight = doc.internal.pageSize.height;
 
-  // Ajustar el diseño del contenido del PDF
-  var content = [
-    { label: "ID: ", value: id, x: 10, y: y },
-    { label: "Título: ", value: titulo, x: 30, y: y },
-    { label: "Equipo: ", value: equipo, x: 10, y: y + 8 },
-    { label: "Estado: ", value: estado, x: 40, y: y + 8 },
-    { label: "Falla: ", value: falla, x: 90, y: y + 8 },
-    { label: "Descripción: ", value: descripcion, x: 10, y: y + 16 }
-  ];
+    // Agregar el título al PDF
+    doc.setFontSize(14);
+    doc.setFontStyle("bold");
+    doc.text("Solicitudes seleccionadas", 10, 10);
+    doc.setLineWidth(0.5); // Establecer el grosor del subrayado
+    doc.line(10, 12, 72, 12); // Dibujar una línea debajo del texto
 
-  // Agregar el contenido al PDF
-  doc.setFontSize(10);
-  content.forEach(function(item) {
-    doc.text(item.label, item.x, item.y);
-    var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; // Obtener la longitud del label en unidades del PDF
-    doc.text(item.value, item.x + labelWidth, item.y); // Ajustar la posición X del valor a continuación del label
-  });
+    // Agregar las solicitudes seleccionadas al PDF
+    var y = 20;
+    for (var i = 0; i < checkboxes.length; i++) {
+      var checkbox = checkboxes[i];
+      var row = checkbox.closest('tr');
+      var id = row.querySelector('td:nth-child(2)').textContent.trim();
+      var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
+      var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
+      var estado = row.querySelector('td:nth-child(6)').textContent.trim();
+      var falla = row.querySelector('td:nth-child(7)').textContent.trim();
+      var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
 
-  // Aumentar la posición Y para la siguiente solicitud
-  y += 30;
-}
+      // Ajustar el diseño del contenido del PDF
+      var content = [
+        { label: "ID: ", value: id, x: 10, y: y },
+        { label: "Título: ", value: titulo, x: 50, y: y },
+        { label: "Equipo: ", value: equipo, x: 10, y: y + 5 },
+        { label: "Estado: ", value: estado, x: 50, y: y + 5 },
+        { label: "Falla: ", value: falla, x: 110, y: y + 5 },
+        { label: "Descripción: ", value: descripcion, x: 10, y: y + 10 }
+      ];
 
-// Guardar el PDF
-doc.save('reporte.pdf');
-}
+     
+      doc.setFontSize(10);
+      doc.setFontStyle("normal");
+      content.forEach(function(item) {
+        // Reiniciar la posición Y en la nueva página
+        if ((item.y + totalHeight) > pageHeight) {
+          doc.addPage(); // Agregar una nueva página si no hay suficiente espacio
+          item.y = 10; // Reiniciar la posición Y en la nueva página
+        }
+
+        doc.setFontStyle("bold"); // Establecer el estilo en negrita
+        doc.text(item.label, item.x, item.y);
+        var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; // Obtener la longitud del label en unidades del PDF
+
+        // Verificar si el valor es null o undefined y asignar "N/A" en su lugar
+        var value = (item.value !== null && item.value !== undefined && item.value.trim() !== '') ? item.value : "N/A";
+
+        doc.setFontStyle("normal"); // Restaurar el estilo a normal para el valor
+
+        // Dividir el valor de descripción en varias líneas si es necesario
+        var lines = doc.splitTextToSize(value, 160); // 160 es el ancho máximo de la descripción
+
+        // Calcular la altura total de la descripción en unidades del PDF
+        var lineHeight = 5; // Altura de línea
+        var totalHeight = lines.length * lineHeight; // Altura total de la descripción
+
+        // Mostrar la descripción en la posición correcta
+        lines.forEach(function(line) {
+          doc.text(line, item.x + labelWidth, item.y);
+          item.y += 3; // Incrementar la posición Y para la próxima línea
+          y += 3;
+        });
+      });
+
+      // Agregar una línea divisoria al final de la solicitud
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(0, 0, 0);
+      doc.line(10, y - 5, 200, y - 5);
+    }
+    // Guardar el PDF
+    doc.save('reporte.pdf');
+  }
 </script>
 <script> 
   $(document).ready(function(){
