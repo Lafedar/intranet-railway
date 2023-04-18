@@ -230,12 +230,11 @@
     }
 
     // Crear un nuevo documento PDF
-    var doc = new jsPDF();
-
- // Definir la variable pageHeight
+    var doc = new jsPDF('p', 'mm', 'a4');
+    // Definir la variable pageHeight
     var pageHeight = doc.internal.pageSize.height;
 
-    // Agregar el título al PDF
+    // Agregar el título al PDF 
     doc.setFontSize(14);
     doc.setFontStyle("bold");
     doc.text("Solicitudes seleccionadas", 10, 10);
@@ -264,20 +263,17 @@
         { label: "Descripción: ", value: descripcion, x: 10, y: y + 10 }
       ];
 
-     
       doc.setFontSize(10);
       doc.setFontStyle("normal");
+      var lineHeight = 5; // Altura de línea
+      var totalHeight = 0;
       content.forEach(function(item) {
-        // Reiniciar la posición Y en la nueva página
-        if ((item.y + totalHeight) > pageHeight) {
-          doc.addPage(); // Agregar una nueva página si no hay suficiente espacio
-          item.y = 10; // Reiniciar la posición Y en la nueva página
-        }
-
         doc.setFontStyle("bold"); // Establecer el estilo en negrita
         doc.text(item.label, item.x, item.y);
-        var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; // Obtener la longitud del label en unidades del PDF
-
+        console.log(item.label, item.x, item.y);
+        // Obtener la longitud del label en unidades del PDF
+        var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; 
+        console.log("label: ", labelWidth);
         // Verificar si el valor es null o undefined y asignar "N/A" en su lugar
         var value = (item.value !== null && item.value !== undefined && item.value.trim() !== '') ? item.value : "N/A";
 
@@ -286,18 +282,27 @@
         // Dividir el valor de descripción en varias líneas si es necesario
         var lines = doc.splitTextToSize(value, 160); // 160 es el ancho máximo de la descripción
 
-        // Calcular la altura total de la descripción en unidades del PDF
-        var lineHeight = 5; // Altura de línea
-        var totalHeight = lines.length * lineHeight; // Altura total de la descripción
-
         // Mostrar la descripción en la posición correcta
         lines.forEach(function(line) {
           doc.text(line, item.x + labelWidth, item.y);
           item.y += 3; // Incrementar la posición Y para la próxima línea
           y += 3;
         });
-      });
 
+        // Calcular la altura total de la descripción en unidades del PDF
+        totalHeight = lines.length * lineHeight; 
+
+        console.log(y + totalHeight + lineHeight);
+        console.log("-----------------------"); 
+
+      });
+              // Verificar si es necesario hacer un salto de página
+        if (y + totalHeight + lineHeight > pageHeight) {
+          doc.addPage(); // Agregar una nueva página al PDF
+          y = 10; // Establecer la posición Y al inicio de la página
+          totalHeight = 0; // Reiniciar la altura total de la descripción en la nueva página
+        }
+      console.log("///////////CAMBIO DE SOLICITUD///////////")
       // Agregar una línea divisoria al final de la solicitud
       doc.setLineWidth(0.5);
       doc.setDrawColor(0, 0, 0);
