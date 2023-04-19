@@ -296,12 +296,12 @@
         console.log("-----------------------"); 
 
       });
-              // Verificar si es necesario hacer un salto de página
-        if (y + totalHeight + lineHeight > pageHeight) {
-          doc.addPage(); // Agregar una nueva página al PDF
-          y = 10; // Establecer la posición Y al inicio de la página
-          totalHeight = 0; // Reiniciar la altura total de la descripción en la nueva página
-        }
+      // Verificar si es necesario hacer un salto de página
+      if (y + totalHeight + lineHeight > pageHeight) {
+        doc.addPage(); // Agregar una nueva página al PDF
+        y = 10; // Establecer la posición Y al inicio de la página
+        totalHeight = 0; // Reiniciar la altura total de la descripción en la nueva página
+      }
       console.log("///////////CAMBIO DE SOLICITUD///////////")
       // Agregar una línea divisoria al final de la solicitud
       doc.setLineWidth(0.5);

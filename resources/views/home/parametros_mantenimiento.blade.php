@@ -1,4 +1,4 @@
-@extends('layouts.app_parametros_mant')
+@extends('layouts.app')
 @section('content')
 
 <div class="container text-center" >
