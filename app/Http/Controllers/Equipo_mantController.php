@@ -36,6 +36,7 @@ class Equipo_mantController extends Controller
         $equipo_mant->modelo = $request['modelo'];
         $equipo_mant->num_serie = $request['num_serie'];
         $equipo_mant->descripcion = $request['descripcion'];
+        $equipo_mant->id_area = $request['area'];
         $equipo_mant->id_localizacion = $request['localizacion'];
         if($request['uso'])
         {

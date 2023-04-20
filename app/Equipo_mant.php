@@ -12,7 +12,7 @@ class Equipo_mant extends Model
     public function scopeRelaciones_index ($query)
     {
         return $query->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
-            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+            ->leftjoin('area', 'area.id_a', 'equipos_mant.id_area')
             ->leftjoin('tipos_equipos', 'tipos_equipos.id', 'equipos_mant.id_tipo')
             //no colocar id solo porque convierte valores no numericos en 0
             ->select(DB::raw("equipos_mant.id as id_e"), 
