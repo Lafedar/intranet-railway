@@ -176,6 +176,9 @@
 
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
+<!-- Incluir archivos CSS de Select2 -->
+<link href="{{ asset('select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+<script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>
   function checkAll() {
@@ -366,6 +369,7 @@
       var modalDialog = myModal._element.querySelector('.modal-dialog');
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.remove('modal-lg');
+
     });
 
     $('#show2').on('show.bs.modal', function (event){
@@ -381,7 +385,12 @@
         for(var i = 0; i<data[0].length; i ++){
           htmlSelectArea += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
         }
+        
+        $.each(data[2], function(i, tipo_solicitud) {
+          htmlSelectTipoSolicitud += '<option value="' + tipo_solicitud.id + '">' + tipo_solicitud.nombre + '</option>';
+        });
 
+        $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
         $('#area').html(htmlSelectArea);
         $('#localizacion').html(htmlSelectLocalizacion);
         //toma cambio de seleccion de area
@@ -399,11 +408,11 @@
 
           // Mostrar o ocultar los campos según la selección
           if (!selectedOption) {
-            $('#div_localizacion, #div_tipo_solicitud, #div_equipo, #div_falla').hide();
+            $('#div_localizacion, #div_falla').hide();
           } 
           else {
             $('#div_localizacion').show();
-            $('#div_tipo_solicitud, #div_equipo, #div_falla').hide();
+            $('#div_falla').hide();
           }
         });
       
@@ -414,17 +423,14 @@
           var selectedOption = $(this).val();
           aux_localizacion = selectedOption;
           if (selectedOption == '') {
-            $('#div_tipo_solicitud, #div_equipo, #div_falla').hide();
+            $('#div_falla').hide();
           } 
           else {
-            $('#div_tipo_solicitud').show();
-            $('#div_equipo, #div_falla').hide();
+            $('#div_falla').show();
           }
-          $.each(data[2], function(i, tipo_solicitud) {
-            htmlSelectTipoSolicitud += '<option value="' + tipo_solicitud.id + '">' + tipo_solicitud.nombre + '</option>';
-          });
-          $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
         });
+
+        $("#equipo").select2();
 
         $('#tipo_solicitud').on('change', function () {
           const selectedOption = $(this).val();
@@ -465,30 +471,32 @@
         });
       
         $('#equipo').on('change', function () {
-          var htmlSelectFalla = '<option value="">Seleccione </option>'
-          var selectedOption = $(this).val();
-          var aux_tipo_equipo;
-          if(selectedOption == ''){
-            $('#div_falla').hide();
-          }
-          else{
-            $('#div_falla').show();
-            for(var k = 0; k<data[3].length; k ++){
-              if(selectedOption == data[3][k].id){
-                aux_tipo_equipo = data[3][k].id_tipo;
-              }
+          $(this).on('select2:select', function (e) {
+            var htmlSelectFalla = '<option value="">Seleccione </option>'
+            var selectedOption = $(this).val();
+            var aux_tipo_equipo;
+            if(selectedOption == ''){
+              $('#div_falla').hide();
             }
-            for(var j = 0; j<data[6].length; j ++){
-              if(data[6][j].id_tipo_equipo == selectedOption){
-                for(var i = 0; i<data[4].length; i ++){ 
-                  if(data[6][j].id_falla == data[4][i].id){
-                    htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+            else{
+              $('#div_falla').show();
+              for(var k = 0; k<data[3].length; k ++){
+                if(selectedOption == data[3][k].id){
+                  aux_tipo_equipo = data[3][k].id_tipo;
+                }
+              }
+              for(var j = 0; j<data[6].length; j ++){
+                if(data[6][j].id_tipo_equipo == selectedOption){
+                  for(var i = 0; i<data[4].length; i ++){ 
+                    if(data[6][j].id_falla == data[4][i].id){
+                      htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                    }
                   }
                 }
               }
+              $('#falla').html(htmlSelectFalla);
             }
-            $('#falla').html(htmlSelectFalla);
-          }
+          });
         });
       });
     });
