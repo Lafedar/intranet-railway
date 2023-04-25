@@ -18,9 +18,6 @@
                     <br>
                     <select class="form-control select2" name="equipo" id="equipo" style="width: 100%;" required></select>
                   </div>
-                </div>
-
-                <div class="row">
                   <div class="col-6">
                     <label for="title"><strong>Area:</strong></label>
                     <select class="form-control" name="area" id="area" required></select>
@@ -29,9 +26,6 @@
                     <label for="title"><strong>Localizacion:</strong></label>
                     <select class="form-control" name="localizacion" id="localizacion" required></select>
                   </div>
-                </div>
-              
-                <div class="row">
                   <div class="col-6" style="display:none;" id="div_falla">
                     <label for="title"><strong>Fallas:</strong></label>
                     <br>

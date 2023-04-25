@@ -374,6 +374,7 @@
 
     $('#show2').on('show.bs.modal', function (event){
       $.get('select_create/',function(data){
+        var changing = false;
         var htmlSelectArea = '<option value="">Seleccione </option>'
         var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
         var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
@@ -382,21 +383,58 @@
 
         // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
         // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
-        for(var i = 0; i<data[0].length; i ++){
-          htmlSelectArea += '<option value ="'+data[0][i].id_a+'">'+data[0][i].nombre_a+'</option>';
-        }
-        
-        $.each(data[2], function(i, tipo_solicitud) {
-          htmlSelectTipoSolicitud += '<option value="' + tipo_solicitud.id + '">' + tipo_solicitud.nombre + '</option>';
-        });
 
+        htmlSelectArea += data[0].map(item => `<option value="${item.id_a}">${item.nombre_a}</option>`).join('');
+
+        htmlSelectTipoSolicitud += data[2].map(tipo_solicitud => `<option value="${tipo_solicitud.id}">${tipo_solicitud.nombre}</option>`).join('');
+        
+        htmlSelectEquipo += data[3].map(equipo => `<option value="${equipo.id}">${equipo.id}</option>`).join('');
+
+        $("#equipo").select2();
+        $('#equipo').html(htmlSelectEquipo);
         $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
         $('#area').html(htmlSelectArea);
         $('#localizacion').html(htmlSelectLocalizacion);
+
+        $('#tipo_solicitud').on('change', function () {
+          const selectedOption = $(this).val();
+          const divEquipo = $('#div_equipo');
+          const divFalla = $('#div_falla');
+
+          if (!selectedOption) {
+            divEquipo.show();
+            divFalla.hide();
+          } 
+          else if (selectedOption == 1) {
+            divEquipo.show();
+            divFalla.hide();
+          } 
+          else {
+            divEquipo.hide();
+            divFalla.show();
+
+            let htmlSelectFalla = '<option value="">Seleccione </option>';
+            data[6].forEach(solicitud => {
+              if (solicitud.id_tipo_solicitud == 2) {
+                const falla = data[4].find(falla => falla.id === solicitud.id_falla);
+                if (falla) {
+                  htmlSelectFalla += `<option value="${solicitud.id_falla}">${falla.nombre}</option>`;
+                }
+              }
+            });
+            $('#falla').html(htmlSelectFalla);
+          }
+        }); 
+
         //toma cambio de seleccion de area
         $('#area').on('change', function () {
+          // Verificar si la variable changing está establecida en true antes de realizar cualquier acción
+          if (changing) {
+            changing = false;
+            return;
+          }
           const selectedOption = $(this).val();
-
+      
           // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
           let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
           data[1].forEach(localizacion => {
@@ -414,8 +452,57 @@
             $('#div_localizacion').show();
             $('#div_falla').hide();
           }
+          $('#equipo').val('').trigger('change');
         });
-      
+        $('#equipo').on('change', function () {
+          $(this).on('select2:select', function (e) {
+            // Cambiar la variable changing a true para indicar que se está realizando un cambio
+            changing = true;
+            var htmlSelectFalla = '<option value="">Seleccione </option>'
+            var selectedOption = $(this).val();
+            var aux_tipo_equipo;
+            if(selectedOption == ''){
+              $('#div_falla').hide();
+            }
+            else{
+              $('#tipo_solicitud').val('1');
+
+              $('#div_falla').show();
+              for(var k = 0; k<data[3].length; k ++){
+                if(selectedOption == data[3][k].id){
+                  aux_tipo_equipo = data[3][k].id_tipo;
+                  // Obtener el id_area y id_localizacion del equipo seleccionado
+                  var idAreaEquipo = data[3][k].id_area;
+                  var idLocalizacionEquipo = data[3][k].id_localizacion;
+                  // Establecer el valor de id_area en el select de área
+                  $('#area').val(idAreaEquipo).trigger('change');
+                  // Establecer el valor de id_localizacion en el select de localización, o seleccionar la opción vacía si es nulo
+                  if (idLocalizacionEquipo) {
+                    $('#localizacion').val(idLocalizacionEquipo).trigger('change');
+                  } else {
+                    // Agregar la opción "No aplica" en el select de localización
+                    $('#localizacion').append('<option value="0">No aplica</option>');
+                    $('#localizacion').val('0').trigger('change');
+                  }
+                }
+              }
+              for(var j = 0; j<data[6].length; j ++){
+                console.log("1er for");
+                console.log(selectedOption);
+                console.log(data[6][j].id_tipo_equipo);
+                if(data[6][j].id_tipo_equipo == selectedOption){
+                  for(var i = 0; i<data[4].length; i ++){ 
+                    if(data[6][j].id_falla == data[4][i].id){
+                      htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                    }
+                  }
+                }
+              }
+              $('#falla').html(htmlSelectFalla);
+            }
+          });
+        });
+
         var aux_localizacion;
 
         $('#localizacion').on('change', function() {
@@ -429,75 +516,7 @@
             $('#div_falla').show();
           }
         });
-
-        $("#equipo").select2();
-
-        $('#tipo_solicitud').on('change', function () {
-          const selectedOption = $(this).val();
-          const divEquipo = $('#div_equipo');
-          const divFalla = $('#div_falla');
-
-          if (!selectedOption) {
-            divEquipo.hide();
-            divFalla.hide();
-          } 
-          else if (selectedOption == 1) {
-            divEquipo.show();
-            divFalla.hide();
-
-            let htmlSelectEquipo = '<option value="">Seleccione </option>';
-            data[3].forEach(equipo => {
-              if (aux_localizacion == equipo.id_localizacion) {
-                htmlSelectEquipo += `<option value="${equipo.id}">${equipo.id}</option>`;
-              }
-            });
-            $('#equipo').html(htmlSelectEquipo);
-          } 
-          else {
-            divEquipo.hide();
-            divFalla.show();
-
-            let htmlSelectFalla = '<option value="">Seleccione </option>';
-            data[6].forEach(solicitud => {
-              if (solicitud.id_tipo_solicitud == 2) {
-                const falla = data[4].find(falla => falla.id === solicitud.id_falla);
-                if (falla) {
-                  htmlSelectFalla += `<option value="${solicitud.id_falla}">${falla.nombre}</option>`;
-                }
-              }
-            });
-            $('#falla').html(htmlSelectFalla);
-          }
-        });
       
-        $('#equipo').on('change', function () {
-          $(this).on('select2:select', function (e) {
-            var htmlSelectFalla = '<option value="">Seleccione </option>'
-            var selectedOption = $(this).val();
-            var aux_tipo_equipo;
-            if(selectedOption == ''){
-              $('#div_falla').hide();
-            }
-            else{
-              $('#div_falla').show();
-              for(var k = 0; k<data[3].length; k ++){
-                if(selectedOption == data[3][k].id){
-                  aux_tipo_equipo = data[3][k].id_tipo;
-                }
-              }
-              for(var j = 0; j<data[6].length; j ++){
-                if(data[6][j].id_tipo_equipo == selectedOption){
-                  for(var i = 0; i<data[4].length; i ++){ 
-                    if(data[6][j].id_falla == data[4][i].id){
-                      htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
-                    }
-                  }
-                }
-              }
-              $('#falla').html(htmlSelectFalla);
-            }
-          });
-        });
       });
     });
   }
