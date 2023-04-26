@@ -374,7 +374,8 @@
 
     $('#show2').on('show.bs.modal', function (event){
       $.get('select_create/',function(data){
-        var changing = false;
+        var changingArea = false;
+        var changingLocalizacion = false;
         var htmlSelectArea = '<option value="">Seleccione </option>'
         var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
         var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
@@ -424,15 +425,11 @@
             });
             $('#falla').html(htmlSelectFalla);
           }
+          $('#equipo').val('').trigger('change');
         }); 
 
         //toma cambio de seleccion de area
         $('#area').on('change', function () {
-          // Verificar si la variable changing está establecida en true antes de realizar cualquier acción
-          if (changing) {
-            changing = false;
-            return;
-          }
           const selectedOption = $(this).val();
       
           // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
@@ -442,31 +439,41 @@
               htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
             }
           });
-          $('#localizacion').html(htmlSelectLocalizacion);
 
+          $('#localizacion').html(htmlSelectLocalizacion);
+          // Verificar si la variable changingArea está establecida en true antes de realizar cualquier acción
+          if (changingArea) {
+            changingArea = false;
+            return;
+          }
+          
           // Mostrar o ocultar los campos según la selección
           if (!selectedOption) {
-            $('#div_localizacion, #div_falla').hide();
+            $('#div_localizacion').hide();
           } 
           else {
             $('#div_localizacion').show();
             $('#div_falla').hide();
           }
           $('#equipo').val('').trigger('change');
+          $('#div_falla').hide();
         });
+
         $('#equipo').on('change', function () {
           $(this).on('select2:select', function (e) {
-            // Cambiar la variable changing a true para indicar que se está realizando un cambio
-            changing = true;
+            // Cambiar la variable changingArea a true para indicar que se está realizando un cambio
+            changingArea = true;
+            changingLocalizacion = true;
             var htmlSelectFalla = '<option value="">Seleccione </option>'
             var selectedOption = $(this).val();
             var aux_tipo_equipo;
             if(selectedOption == ''){
               $('#div_falla').hide();
+              var htmlSelectFalla = '<option value="">Seleccione </option>'
             }
             else{
               $('#tipo_solicitud').val('1');
-
+              $('#div_localizacion').show();
               $('#div_falla').show();
               for(var k = 0; k<data[3].length; k ++){
                 if(selectedOption == data[3][k].id){
@@ -486,14 +493,15 @@
                   }
                 }
               }
-              for(var j = 0; j<data[6].length; j ++){
-                console.log("1er for");
-                console.log(selectedOption);
-                console.log(data[6][j].id_tipo_equipo);
-                if(data[6][j].id_tipo_equipo == selectedOption){
-                  for(var i = 0; i<data[4].length; i ++){ 
-                    if(data[6][j].id_falla == data[4][i].id){
-                      htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+              for(var k = 0; k<data[3].length; k ++){
+                if(data[3][k].id == selectedOption){
+                  for(var j = 0; j<data[6].length; j ++){
+                    if(data[3][k].id_tipo == data[6][j].id_tipo_equipo){
+                      for(var i = 0; i<data[4].length; i ++){ 
+                        if(data[6][j].id_falla == data[4][i].id){
+                          htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
+                        }
+                      }
                     }
                   }
                 }
@@ -506,15 +514,14 @@
         var aux_localizacion;
 
         $('#localizacion').on('change', function() {
-          var htmlSelectTipoSolicitud = '<option value="">Seleccione</option>';
+          if (changingLocalizacion) {
+            changingLocalizacion = false;
+            return;
+          }
           var selectedOption = $(this).val();
           aux_localizacion = selectedOption;
-          if (selectedOption == '') {
-            $('#div_falla').hide();
-          } 
-          else {
-            $('#div_falla').show();
-          }
+          $('#equipo').val('').trigger('change');
+
         });
       
       });
