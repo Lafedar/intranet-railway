@@ -14,9 +14,13 @@
                     <select class="form-control" name="tipo_solicitud" id="tipo_solicitud" required></select>
                   </div>
                   <div class="col-6" id="div_equipo">
-                    <label for="title"><strong>Equipo:</strong></label>
+                    <label for="title"><strong>Equipo:</strong></label>&nbsp&nbsp&nbsp&nbsp<i class="fa-solid fa-magnifying-glass"></i>
                     <br>
                     <select class="form-control select2" name="equipo" id="equipo" style="width: 100%;" required></select>
+                  </div>
+                  <div class="col-12" id="div_descripcion">
+                    <label for="title"><strong>Descripcion de equipo:</strong></label>
+                    <textarea rows="3" type="text" class="form-control" name="descripcion_equipo" id="descripcion_equipo"  minlength="10" maxlength="500" required></textarea>
                   </div>
                   <div class="col-6">
                     <label for="title"><strong>Area:</strong></label>

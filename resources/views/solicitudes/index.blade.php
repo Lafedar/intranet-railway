@@ -276,7 +276,6 @@
         console.log(item.label, item.x, item.y);
         // Obtener la longitud del label en unidades del PDF
         var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; 
-        console.log("label: ", labelWidth);
         // Verificar si el valor es null o undefined y asignar "N/A" en su lugar
         var value = (item.value !== null && item.value !== undefined && item.value.trim() !== '') ? item.value : "N/A";
 
@@ -295,9 +294,6 @@
         // Calcular la altura total de la descripción en unidades del PDF
         totalHeight = lines.length * lineHeight; 
 
-        console.log(y + totalHeight + lineHeight);
-        console.log("-----------------------"); 
-
       });
       // Verificar si es necesario hacer un salto de página
       if (y + totalHeight + lineHeight > pageHeight) {
@@ -305,7 +301,6 @@
         y = 10; // Establecer la posición Y al inicio de la página
         totalHeight = 0; // Reiniciar la altura total de la descripción en la nueva página
       }
-      console.log("///////////CAMBIO DE SOLICITUD///////////")
       // Agregar una línea divisoria al final de la solicitud
       doc.setLineWidth(0.5);
       doc.setDrawColor(0, 0, 0);
@@ -374,22 +369,25 @@
 
     $('#show2').on('show.bs.modal', function (event){
       $.get('select_create/',function(data){
-        var changingArea = false;
-        var changingLocalizacion = false;
+        var divDescripcion = $('#div_descripcion')
+        divDescripcion.hide();
         var htmlSelectArea = '<option value="">Seleccione </option>'
         var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
         var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
         var htmlSelectEquipo = '<option value="">Seleccione </option>'
         var htmlSelectFalla = '<option value="">Seleccione </option>'
-
+        var htmlDescripcionEquipo = ''
         // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
         // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
 
         htmlSelectArea += data[0].map(item => `<option value="${item.id_a}">${item.nombre_a}</option>`).join('');
-
         htmlSelectTipoSolicitud += data[2].map(tipo_solicitud => `<option value="${tipo_solicitud.id}">${tipo_solicitud.nombre}</option>`).join('');
-        
         htmlSelectEquipo += data[3].map(equipo => `<option value="${equipo.id}">${equipo.id}</option>`).join('');
+
+        var tipoSolicitudSelected;
+        var equipoSelected;
+        var areaSelected;
+
 
         $("#equipo").select2();
         $('#equipo').html(htmlSelectEquipo);
@@ -398,21 +396,22 @@
         $('#localizacion').html(htmlSelectLocalizacion);
 
         $('#tipo_solicitud').on('change', function () {
-          const selectedOption = $(this).val();
+          tipoSolicitudSelected = $(this).val();
           const divEquipo = $('#div_equipo');
           const divFalla = $('#div_falla');
 
-          if (!selectedOption) {
+          if (!tipoSolicitudSelected) {
             divEquipo.show();
             divFalla.hide();
           } 
-          else if (selectedOption == 1) {
+          else if (tipoSolicitudSelected == 1) {
             divEquipo.show();
             divFalla.hide();
           } 
           else {
             divEquipo.hide();
             divFalla.show();
+            divDescripcion.hide();
 
             let htmlSelectFalla = '<option value="">Seleccione </option>';
             data[6].forEach(solicitud => {
@@ -426,75 +425,26 @@
             $('#falla').html(htmlSelectFalla);
           }
           $('#equipo').val('').trigger('change');
+          $('#area').prop('disabled', false);
+          $('#localizacion').prop('disabled', false);
+          $('#descripcion_equipo').prop('disabled', false);
         }); 
-
-        //toma cambio de seleccion de area
-        $('#area').on('change', function () {
-          const selectedOption = $(this).val();
-      
-          // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
-          let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
-          data[1].forEach(localizacion => {
-            if (localizacion.id_area == selectedOption) {
-              htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
-            }
-          });
-
-          $('#localizacion').html(htmlSelectLocalizacion);
-          // Verificar si la variable changingArea está establecida en true antes de realizar cualquier acción
-          if (changingArea) {
-            changingArea = false;
-            return;
-          }
-          
-          // Mostrar o ocultar los campos según la selección
-          if (!selectedOption) {
-            $('#div_localizacion').hide();
-          } 
-          else {
-            $('#div_localizacion').show();
-            $('#div_falla').hide();
-          }
-          $('#equipo').val('').trigger('change');
-          $('#div_falla').hide();
-        });
 
         $('#equipo').on('change', function () {
           $(this).on('select2:select', function (e) {
-            // Cambiar la variable changingArea a true para indicar que se está realizando un cambio
-            changingArea = true;
-            changingLocalizacion = true;
             var htmlSelectFalla = '<option value="">Seleccione </option>'
-            var selectedOption = $(this).val();
+            equipoSelected = $(this).val();
             var aux_tipo_equipo;
-            if(selectedOption == ''){
+            if(!equipoSelected){
               $('#div_falla').hide();
+              $('#div_descripcion').hide();
               var htmlSelectFalla = '<option value="">Seleccione </option>'
+              $('#area').prop('disabled', false);
+              $('#localizacion').prop('disabled', false);
             }
             else{
-              $('#tipo_solicitud').val('1');
-              $('#div_localizacion').show();
-              $('#div_falla').show();
               for(var k = 0; k<data[3].length; k ++){
-                if(selectedOption == data[3][k].id){
-                  aux_tipo_equipo = data[3][k].id_tipo;
-                  // Obtener el id_area y id_localizacion del equipo seleccionado
-                  var idAreaEquipo = data[3][k].id_area;
-                  var idLocalizacionEquipo = data[3][k].id_localizacion;
-                  // Establecer el valor de id_area en el select de área
-                  $('#area').val(idAreaEquipo).trigger('change');
-                  // Establecer el valor de id_localizacion en el select de localización, o seleccionar la opción vacía si es nulo
-                  if (idLocalizacionEquipo) {
-                    $('#localizacion').val(idLocalizacionEquipo).trigger('change');
-                  } else {
-                    // Agregar la opción "No aplica" en el select de localización
-                    $('#localizacion').append('<option value="0">No aplica</option>');
-                    $('#localizacion').val('0').trigger('change');
-                  }
-                }
-              }
-              for(var k = 0; k<data[3].length; k ++){
-                if(data[3][k].id == selectedOption){
+                if(equipoSelected == data[3][k].id){
                   for(var j = 0; j<data[6].length; j ++){
                     if(data[3][k].id_tipo == data[6][j].id_tipo_equipo){
                       for(var i = 0; i<data[4].length; i ++){ 
@@ -504,26 +454,48 @@
                       }
                     }
                   }
+                  aux_tipo_equipo = data[3][k].id_tipo;
+                  // Obtener el id_area y id_localizacion del equipo seleccionado
+                  var idAreaEquipo = data[3][k].id_area;
+                  var idLocalizacionEquipo = data[3][k].id_localizacion;
+                  htmlDescripcionEquipo = data[3][k].descripcion;
+                  // Establecer el valor de id_area en el select de área
+                  $('#descripcion_equipo').val(htmlDescripcionEquipo).trigger('change');
+                  $('#area').val(idAreaEquipo).trigger('change');
+                  // Establecer el valor de id_localizacion en el select de localización, o seleccionar la opción vacía si es nulo
+                  if (idLocalizacionEquipo) {
+                    $('#localizacion').val(idLocalizacionEquipo).trigger('change');
+                  } else {
+                    // Agregar la opción "No aplica" en el select de localización
+                    $('#localizacion').append('<option value="0">No aplica</option>');
+                    $('#localizacion').val('0').trigger('change');
+                  }
+                  $('#area').prop('disabled', true);
+                  $('#localizacion').prop('disabled', true);
+                  $('#descripcion_equipo').prop('disabled', true);
                 }
               }
               $('#falla').html(htmlSelectFalla);
+              $('#tipo_solicitud').val('1');
+              $('#div_localizacion').show();
+              $('#div_falla').show();
+              $('#div_descripcion').show();
             }
           });
         });
 
-        var aux_localizacion;
+        $('#area').on('change', function () {
+          areaSelected = $(this).val();
 
-        $('#localizacion').on('change', function() {
-          if (changingLocalizacion) {
-            changingLocalizacion = false;
-            return;
-          }
-          var selectedOption = $(this).val();
-          aux_localizacion = selectedOption;
-          $('#equipo').val('').trigger('change');
-
+          // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
+          let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
+          data[1].forEach(localizacion => {
+            if (localizacion.id_area == areaSelected) {
+              htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
+            }
+          });
+          $('#localizacion').html(htmlSelectLocalizacion);
         });
-      
       });
     });
   }
