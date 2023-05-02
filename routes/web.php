@@ -359,10 +359,13 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|mantenimiento')->name('update_solicitud');
   Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_assing_solicitud');
   Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|mantenimiento')->name('assing_solicitud');
+  Route::get('show_mostrar_equipos_mant',['uses' => 'SolicitudController@show_mostrar_equipos_mant'])->middleware('role:administrador|mantenimiento')->name('show_mostrar_equipos_mant');
+  Route::post('mostrar_equipos_mant','SolicitudController@mostrar_equipos_mant')->middleware('role:administrador|mantenimiento')->name('mostrar_equipos_mant');
   
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
   Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
+  Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
 
 });
 

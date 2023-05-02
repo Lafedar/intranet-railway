@@ -111,6 +111,20 @@ class SolicitudController extends Controller
             'historico_solicitudes' => $historico_solicitudes      
         ]);       
     }
+
+    public function show_mostrar_equipos_mant()
+    {
+        $equipos = DB::table('equipos_mant')
+        ->get();
+
+        return view('solicitudes.show_equipo', ['equipos' => $equipos,]);       
+    }
+    
+    public function mostrar_equipos_mant()
+    {
+        //return redirect('solicitudes');
+    }
+
     public function show_update_solicitud($id)
     {
         //migrar a modelo
@@ -205,6 +219,11 @@ class SolicitudController extends Controller
     public function select_estado()
     {
         return DB::table('estados')->get();
+    } 
+
+    public function select_equipos()
+    {
+        return DB::table('equipos_mant')->get();
     } 
 
     public function destroy_solicitud($id)
