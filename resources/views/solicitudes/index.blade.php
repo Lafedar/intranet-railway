@@ -174,6 +174,23 @@
     </div>
   </div>
 
+  <div class="modal fade" id="show3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog estilo" role="document">
+      <div class="modal-content">
+        <form id="myForm3" method="POST" enctype="multipart/form-data">
+          {{csrf_field()}}
+          <div id="modalshow3" class="modal-body">
+            <!-- Datos -->
+          </div>
+          <div id="modalfooter3" class="modal-footer">
+            <!-- Footer -->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
 <!-- Incluir archivos CSS de Select2 -->
@@ -181,6 +198,218 @@
 <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>
+
+
+  function manejarSeleccion(idEquipo) {
+    $('#equipo').val(idEquipo).trigger('change');
+  }
+
+  var ruta = '{{ route('mostrar_equipos_mant') }}';
+  var closeButton3 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  //modal store
+  function fnOpenModalShowEquipos() {
+    var myModal3 = new bootstrap.Modal(document.getElementById('show3'));
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_mostrar_equipos_mant/",
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow3").empty();
+        // Establecer el contenido del modal
+        $("#modalshow3").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter3").empty();
+
+        // Agregar el botón "Cerrar" al footer del modal interno
+        $("#modalfooter3").append(closeButton3);
+
+        // Agregar listener al botón "Cerrar" del modal secundario
+        closeButton.click(function(event) {
+          event.stopPropagation();
+          myModal3.hide();
+        });
+
+        // Mostrar el modal
+        myModal3.show();
+
+        var modalDialog = myModal3._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
+        modalDialog.style.width = '100%'; // Añade esta línea
+        modalDialog.style.maxWidth = '100%'; // Añade esta línea
+      },
+    });
+  }
+  
+  var ruta_create = '{{ route('store_solicitud') }}';
+  var ruta_update = '{{ route('update_solicitud') }}';
+  var ruta_assing = '{{ route('assing_solicitud') }}';
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  //modal store
+  function fnOpenModalStore() {
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    var url = window.location.origin + "/show_store_solicitud/";
+    var closeButton2 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+    $.get(url, function(data) {
+      // Borrar contenido anterior
+      $("#modalshow").empty();
+
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
+
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
+
+      // Agregar el botón "Cerrar y Guardar" al footer
+      $("#modalfooter").append(closeButton2);
+      $("#modalfooter").append(saveButton);
+
+      // Cambiar la acción del formulario
+      $('#myForm').attr('action', ruta_create);
+
+      // Mostrar el modal
+      myModal.show();
+
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.remove('modal-lg');
+    });
+
+    $('#show2').on('show.bs.modal', function (event){
+      $.get('select_create/',function(data){
+        var divDescripcion = $('#div_descripcion')
+        divDescripcion.hide();
+        var htmlSelectArea = '<option value="">Seleccione </option>'
+        var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
+        var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
+        var htmlSelectEquipo = '<option value="">Seleccione </option>'
+        var htmlSelectFalla = '<option value="">Seleccione </option>'
+        var htmlDescripcionEquipo = ''
+        // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
+        // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
+
+        htmlSelectArea += data[0].map(item => `<option value="${item.id_a}">${item.nombre_a}</option>`).join('');
+        htmlSelectTipoSolicitud += data[2].map(tipo_solicitud => `<option value="${tipo_solicitud.id}">${tipo_solicitud.nombre}</option>`).join('');
+        htmlSelectEquipo += data[3].map(equipo => `<option value="${equipo.id}">${equipo.id}</option>`).join('');
+
+        var tipoSolicitudSelected;
+        var equipoSelected;
+        var areaSelected;
+
+        $("#equipo").select2();
+        $('#equipo').html(htmlSelectEquipo);
+        $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
+        $('#area').html(htmlSelectArea);
+        $('#localizacion').html(htmlSelectLocalizacion);
+
+        $('#tipo_solicitud').on('change', function () {
+          tipoSolicitudSelected = $(this).val();
+          const divEquipo = $('#div_equipo');
+          const divFalla = $('#div_falla');
+
+          if (!tipoSolicitudSelected) {
+            divEquipo.show();
+            divFalla.hide();
+          } 
+          else if (tipoSolicitudSelected == 1) {
+            divEquipo.show();
+            divFalla.hide();
+          } 
+          else {
+            divEquipo.hide();
+            divFalla.show();
+            divDescripcion.hide();
+            let htmlSelectFalla = '<option value="">Seleccione </option>';
+            data[6].forEach(solicitud => {
+              if (solicitud.id_tipo_solicitud == 2) {
+                const falla = data[4].find(falla => falla.id === solicitud.id_falla);
+                if (falla) {
+                  htmlSelectFalla += `<option value="${solicitud.id_falla}">${falla.nombre}</option>`;
+                }
+              }
+            });
+            $('#falla').html(htmlSelectFalla);
+          }
+          $('#area').prop('disabled', false);
+          $('#localizacion').prop('disabled', false);
+          $('#descripcion_equipo').prop('disabled', false);
+        }); 
+
+        $('#equipo').on('change', function () {
+          var equipoSelected = $(this).val();
+          if (!equipoSelected) {
+            $('#div_falla').hide();
+            $('#div_descripcion').hide();
+            var htmlSelectFalla = '<option value="">Seleccione </option>'
+            $('#area').prop('disabled', false);
+            $('#localizacion').prop('disabled', false);
+          } else {
+            var htmlSelectFalla = '<option value="">Seleccione </option>'
+            for (var k = 0; k < data[3].length; k++) {
+              if (equipoSelected == data[3][k].id) {
+                for (var j = 0; j < data[6].length; j++) {
+                  if (data[3][k].id_tipo == data[6][j].id_tipo_equipo) {
+                    for (var i = 0; i < data[4].length; i++) {
+                      if (data[6][j].id_falla == data[4][i].id) {
+                        htmlSelectFalla += '<option value ="' + data[6][j].id_falla + '">' + data[4][i].nombre + '</option>';
+                      }
+                    }
+                  }
+                }
+                var aux_tipo_equipo = data[3][k].id_tipo;
+                // Obtener el id_area y id_localizacion del equipo seleccionado
+                var idAreaEquipo = data[3][k].id_area;
+                var idLocalizacionEquipo = data[3][k].id_localizacion;
+                var htmlDescripcionEquipo = data[3][k].descripcion;
+                // Establecer el valor de id_area en el select de área
+                $('#descripcion_equipo').val(htmlDescripcionEquipo).trigger('change');
+                $('#area').val(idAreaEquipo).trigger('change');
+                // Establecer el valor de id_localizacion en el select de localización, o seleccionar la opción vacía si es nulo
+                if (idLocalizacionEquipo) {
+                  $('#localizacion').val(idLocalizacionEquipo).trigger('change');
+                } else {
+                  // Agregar la opción "No aplica" en el select de localización
+                  $('#localizacion').append('<option value="0">No aplica</option>');
+                  $('#localizacion').val('0').trigger('change');
+                }
+                $('#area').prop('disabled', true);
+                $('#localizacion').prop('disabled', true);
+                $('#descripcion_equipo').prop('disabled', true);
+              }
+            }
+            $('#falla').html(htmlSelectFalla);
+            $('#tipo_solicitud').val('1');
+            $('#div_localizacion').show();
+            $('#div_falla').show();
+            $('#div_descripcion').show();
+          }
+        });
+
+        $('#area').on('change', function () {
+          areaSelected = $(this).val();
+
+          // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
+          let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
+          data[1].forEach(localizacion => {
+            if (localizacion.id_area == areaSelected) {
+              htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
+            }
+          });
+
+          if(!areaSelected){
+            $('#div_localizacion').hide();
+          } else{
+            $('#div_localizacion').show();
+            $('#localizacion').html(htmlSelectLocalizacion);
+          }
+        });
+      });
+    });
+  }
+
   function checkAll() {
     // Obtén el estado actual del checkbox "checkAll"
     var checkAllCheckbox = document.getElementById("checkAll");
@@ -309,8 +538,7 @@
     // Guardar el PDF
     doc.save('reporte.pdf');
   }
-</script>
-<script> 
+
   $(document).ready(function(){
     $("#id").keyup(function(){
       _this = this;
@@ -330,175 +558,6 @@
     }, 5000 ); // 5 secs
 
   });
-
-  var ruta_create = '{{ route('store_solicitud') }}';
-  var ruta_update = '{{ route('update_solicitud') }}';
-  var ruta_assing = '{{ route('assing_solicitud') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
-  //modal store
-  function fnOpenModalStore() {
-    var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_solicitud/";
-    $.get(url, function(data) {
-      // Borrar contenido anterior
-      $("#modalshow").empty();
-
-      // Establecer el contenido del modal
-      $("#modalshow").html(data);
-
-      // Borrar contenido anterior
-      $("#modalfooter").empty();
-
-      // Agregar el botón "Cerrar y Guardar" al footer
-      $("#modalfooter").append(closeButton);
-      $("#modalfooter").append(saveButton);
-
-      // Cambiar la acción del formulario
-      $('#myForm').attr('action', ruta_create);
-
-      // Mostrar el modal
-      myModal.show();
-
-      // Cambiar el tamaño del modal a "modal-lg"
-      var modalDialog = myModal._element.querySelector('.modal-dialog');
-      modalDialog.classList.remove('modal-sm');
-      modalDialog.classList.remove('modal-lg');
-
-    });
-
-    $('#show2').on('show.bs.modal', function (event){
-      $.get('select_create/',function(data){
-        var divDescripcion = $('#div_descripcion')
-        divDescripcion.hide();
-        var htmlSelectArea = '<option value="">Seleccione </option>'
-        var htmlSelectLocalizacion = '<option value="">Seleccione </option>'
-        var htmlSelectTipoSolicitud = '<option value="">Seleccione </option>'
-        var htmlSelectEquipo = '<option value="">Seleccione </option>'
-        var htmlSelectFalla = '<option value="">Seleccione </option>'
-        var htmlDescripcionEquipo = ''
-        // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
-        // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
-
-        htmlSelectArea += data[0].map(item => `<option value="${item.id_a}">${item.nombre_a}</option>`).join('');
-        htmlSelectTipoSolicitud += data[2].map(tipo_solicitud => `<option value="${tipo_solicitud.id}">${tipo_solicitud.nombre}</option>`).join('');
-        htmlSelectEquipo += data[3].map(equipo => `<option value="${equipo.id}">${equipo.id}</option>`).join('');
-
-        var tipoSolicitudSelected;
-        var equipoSelected;
-        var areaSelected;
-
-
-        $("#equipo").select2();
-        $('#equipo').html(htmlSelectEquipo);
-        $('#tipo_solicitud').html(htmlSelectTipoSolicitud);
-        $('#area').html(htmlSelectArea);
-        $('#localizacion').html(htmlSelectLocalizacion);
-
-        $('#tipo_solicitud').on('change', function () {
-          tipoSolicitudSelected = $(this).val();
-          const divEquipo = $('#div_equipo');
-          const divFalla = $('#div_falla');
-
-          if (!tipoSolicitudSelected) {
-            divEquipo.show();
-            divFalla.hide();
-          } 
-          else if (tipoSolicitudSelected == 1) {
-            divEquipo.show();
-            divFalla.hide();
-          } 
-          else {
-            divEquipo.hide();
-            divFalla.show();
-            divDescripcion.hide();
-
-            let htmlSelectFalla = '<option value="">Seleccione </option>';
-            data[6].forEach(solicitud => {
-              if (solicitud.id_tipo_solicitud == 2) {
-                const falla = data[4].find(falla => falla.id === solicitud.id_falla);
-                if (falla) {
-                  htmlSelectFalla += `<option value="${solicitud.id_falla}">${falla.nombre}</option>`;
-                }
-              }
-            });
-            $('#falla').html(htmlSelectFalla);
-          }
-          $('#equipo').val('').trigger('change');
-          $('#area').prop('disabled', false);
-          $('#localizacion').prop('disabled', false);
-          $('#descripcion_equipo').prop('disabled', false);
-        }); 
-
-        $('#equipo').on('change', function () {
-          $(this).on('select2:select', function (e) {
-            var htmlSelectFalla = '<option value="">Seleccione </option>'
-            equipoSelected = $(this).val();
-            var aux_tipo_equipo;
-            if(!equipoSelected){
-              $('#div_falla').hide();
-              $('#div_descripcion').hide();
-              var htmlSelectFalla = '<option value="">Seleccione </option>'
-              $('#area').prop('disabled', false);
-              $('#localizacion').prop('disabled', false);
-            }
-            else{
-              for(var k = 0; k<data[3].length; k ++){
-                if(equipoSelected == data[3][k].id){
-                  for(var j = 0; j<data[6].length; j ++){
-                    if(data[3][k].id_tipo == data[6][j].id_tipo_equipo){
-                      for(var i = 0; i<data[4].length; i ++){ 
-                        if(data[6][j].id_falla == data[4][i].id){
-                          htmlSelectFalla += '<option value ="'+data[6][j].id_falla+'">'+data[4][i].nombre+'</option>';
-                        }
-                      }
-                    }
-                  }
-                  aux_tipo_equipo = data[3][k].id_tipo;
-                  // Obtener el id_area y id_localizacion del equipo seleccionado
-                  var idAreaEquipo = data[3][k].id_area;
-                  var idLocalizacionEquipo = data[3][k].id_localizacion;
-                  htmlDescripcionEquipo = data[3][k].descripcion;
-                  // Establecer el valor de id_area en el select de área
-                  $('#descripcion_equipo').val(htmlDescripcionEquipo).trigger('change');
-                  $('#area').val(idAreaEquipo).trigger('change');
-                  // Establecer el valor de id_localizacion en el select de localización, o seleccionar la opción vacía si es nulo
-                  if (idLocalizacionEquipo) {
-                    $('#localizacion').val(idLocalizacionEquipo).trigger('change');
-                  } else {
-                    // Agregar la opción "No aplica" en el select de localización
-                    $('#localizacion').append('<option value="0">No aplica</option>');
-                    $('#localizacion').val('0').trigger('change');
-                  }
-                  $('#area').prop('disabled', true);
-                  $('#localizacion').prop('disabled', true);
-                  $('#descripcion_equipo').prop('disabled', true);
-                }
-              }
-              $('#falla').html(htmlSelectFalla);
-              $('#tipo_solicitud').val('1');
-              $('#div_localizacion').show();
-              $('#div_falla').show();
-              $('#div_descripcion').show();
-            }
-          });
-        });
-
-        $('#area').on('change', function () {
-          areaSelected = $(this).val();
-
-          // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
-          let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
-          data[1].forEach(localizacion => {
-            if (localizacion.id_area == areaSelected) {
-              htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
-            }
-          });
-          $('#localizacion').html(htmlSelectLocalizacion);
-        });
-      });
-    });
-  }
 
   //modal show
   function fnOpenModalShow(id) 
