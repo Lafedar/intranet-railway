@@ -68,6 +68,8 @@
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Estado</th>
                 <th class="text-center">Descripcion</th>
+                <th class="text-center">Repuesto</th>
+                <th class="text-center">Desc. repuesto</th>
             </thead>
             <tbody>
                 @foreach($historico_solicitudes as $historico)
@@ -75,6 +77,12 @@
                         <td>{{ \Carbon\Carbon::parse($historico->fecha)->format('d/m/Y H:i') }}</td>
                         <td>{{ $historico->estado }}</td>
                         <td>{{ $historico->descripcion }}</td>
+                        @if($historico->rep)
+                            <td>Si</td>
+                        @else
+                            <td>No</td>
+                        @endif
+                        <td>{{ $historico->desc_rep }}</td>
                     </tr>
                 @endforeach
             </tbody>

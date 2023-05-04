@@ -102,7 +102,8 @@ class SolicitudController extends Controller
         $historico_solicitudes = DB::table('historico_solicitudes')
             ->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado') 
             ->where('id_solicitud', $id)
-            ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado')
+            ->select('historico_solicitudes.fecha as fecha', 'historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado', 
+            'historico_solicitudes.repuestos as rep', 'historico_solicitudes.descripcion_repuestos as desc_rep')
             ->orderBy('fecha', 'desc')
             ->get();
 
@@ -166,6 +167,14 @@ class SolicitudController extends Controller
         $nuevo_historico->id_solicitud = $request['id_solicitud'];
         $nuevo_historico->id_estado = $request['estado']; //id de estado
         $nuevo_historico->descripcion = $request['descripcion'];
+        $nuevo_historico->repuestos = $request['rep'];
+        if($request['rep']){
+            $nuevo_historico->repuestos = $request['rep'];
+            $nuevo_historico->descripcion_repuestos = $request['descripcionRep'];
+        } else{
+            $nuevo_historico->repuestos = 0;
+            $nuevo_historico->descripcion_repuestos = "";
+        }
         $nuevo_historico->actual = 1;
         $nuevo_historico->id_usuario = Auth::id();
         $nuevo_historico->fecha = Carbon::now()->format('Y-m-d H:i:s');    

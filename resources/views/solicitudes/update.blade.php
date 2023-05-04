@@ -1,18 +1,30 @@
-<!-- Modal Editar-->
 <div class="form-group col-md-12">
   <div class="row">
-    <div class="col-md-1">
-      <strong>ID: </strong>
-      <p>{{$solicitud->id}}</p>
+    <div class="col-md-2">
+      <label for="id_solicitud" class="form-label"><strong>ID:</strong></label>
+      <p class="form-control-static">{{$solicitud->id}}</p>
+      <input type="hidden" name="id_solicitud" id="id_solicitud" value="{{ $solicitud->id }}">
     </div>
     <div class="col-md-4">
-      <strong>Estado: </strong>
+      <label for="estado" class="form-label"><strong>Estado:</strong></label>
       <select class="form-control" name="estado" id="estado" required></select>
     </div>
-    <div class="col-md-7">
-      <strong>Descripcion: </strong>
-      <input type="text" name="descripcion" class="form-control" id="descripcion" autocomplete="off"  minlength="10" maxlength="500" required>
-      <input type="hidden" name="id_solicitud" value="{{ $solicitud->id }}">
+    <div class="col-md-6">
+      <label for="descripcion" class="form-label"><strong>Descripción:</strong></label>
+      <input type="text" name="descripcion" class="form-control" id="descripcion" minlength="10" maxlength="500" required>
     </div>
   </div>
-</div> 
+  <div class="row">
+    <div class="col-md-3">
+      <label for="rep" class="form-label"><strong>Repuestos:</strong></label>
+      <div class="form-check">
+        <input type="checkbox" name="rep" class="form-check-input" id="rep" value="1">
+        <label class="form-check-label" for="rep">Sí</label>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <label for="descripcionRep" class="form-label"><strong>Descripción de repuestos:</strong></label>
+      <input type="text" name="descripcionRep" class="form-control" id="descripcionRep" minlength="10" maxlength="500">
+    </div>
+  </div>
+</div>
