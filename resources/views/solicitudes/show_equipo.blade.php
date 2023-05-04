@@ -1,7 +1,7 @@
 <div class="col-md-12">
     <div class="row">
         <label for="title"><strong>Equipos:</strong></label>
-        <table class="table table-striped table-bordered">
+        <table class="table table-bordered table-hover">
             <thead>
                 <th class="text-center">ID</th>
                 <th class="text-center">Marca</th>
