@@ -28,16 +28,6 @@ class Tipo_SolicitudController extends Controller
 
     public function store_tipo_solicitud(Request $request)
     {        
-        //consulta en bd si existe el id
-        $aux = DB::table('tipo_solicitudes')->where('tipo_solicitudes.id', $request['id'])->first(); 
-
-        //mensaje de id existente
-        if($aux){
-            Session::flash('message','ID ingresado ya se encuentra asignado');
-            Session::flash('alert-class', 'alert-warning');
-            return redirect()->back()->withInput();
-        }
-        
         $tipo_solicitud = new Tipo_Solicitud;
         $tipo_solicitud->id = $request['id'];
         $tipo_solicitud->nombre = $request['nombre'];

@@ -21,7 +21,7 @@ class Equipo_mant extends Model
             'equipos_mant.uso as uso', 'tipos_equipos.id as id_tipo', 'localizaciones.id as id_localizacion', 
             'area.id_a as id_area', 'tipos_equipos.nombre as nombre_tipo', 'equipos_mant.num_serie as num_serie');
     }
-    public function getEquipoMantPorId($id)
+    public function getEquipoMantShowUpdate($id)
     {
         $equipo_mant = DB::table('equipos_mant')
             ->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
@@ -34,6 +34,10 @@ class Equipo_mant extends Model
             ->first();
 
         return $equipo_mant;
+    }
+    public static function getEquipmentToUpdate($id)
+    {
+        return self::where('id', $id)->first();
     }
 }
 

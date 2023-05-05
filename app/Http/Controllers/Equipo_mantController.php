@@ -55,7 +55,7 @@ class Equipo_mantController extends Controller
     public function show_update_equipo_mant($id)
     {
         $equipoMantModel = new Equipo_mant();
-        $equipo_mant = $equipoMantModel->getEquipoMantPorId($id);
+        $equipo_mant = $equipoMantModel->getEquipoMantShowUpdate($id);
 
         return view('equipos_mant.update', ['equipo_mant' => $equipo_mant]);       
     }
@@ -64,9 +64,7 @@ class Equipo_mantController extends Controller
     {
         if($request['id'] != $request['id_vieja'])
         {
-            $aux = DB::table('equipos_mant')
-            ->select('equipos_mant.id as id')
-            ->get();
+            $aux = equipos_mant::getEquipmentToUpdate($request['id']);
 
             foreach ($aux as $equipo) 
             {

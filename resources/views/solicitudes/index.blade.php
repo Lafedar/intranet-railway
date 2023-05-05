@@ -502,7 +502,6 @@
       content.forEach(function(item) {
         doc.setFontStyle("bold"); // Establecer el estilo en negrita
         doc.text(item.label, item.x, item.y);
-        console.log(item.label, item.x, item.y);
         // Obtener la longitud del label en unidades del PDF
         var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; 
         // Verificar si el valor es null o undefined y asignar "N/A" en su lugar
@@ -669,7 +668,6 @@
   $('#show2').on('show.bs.modal', function (event) {
     $.get('select_users/',function(data){
       var html_select = '<option value="">Seleccione </option>'
-
       for(var i = 0; i<data[0].length; i ++){
         for(var k = 0; k<data[1].length; k ++){
           if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){

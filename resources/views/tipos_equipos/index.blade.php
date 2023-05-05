@@ -190,7 +190,6 @@
             html_select += '<option value ="'+data[0][j].id+'">'+data[0][j].nombre+'</option>'; // no se encontró la pareja, se agrega
           }
         }
-        console.log(html_select);
         $('#fallasSinAsingar').html(html_select);
       });
     });
@@ -229,12 +228,10 @@
       for(var j = 0; j < data[0].length; j++) {
         for(var i = 0; i < data[1].length; i++) {
           if(data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
-            console.log(html_select);
             html_select += '<option value ="'+data[0][j].id+'">'+data[0][j].nombre+'</option>';
           }
         }
       }
-      console.log(html_select);
       $('#fallasAsignadas').html(html_select);
     });
   });
