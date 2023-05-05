@@ -54,7 +54,7 @@ class Equipo_mantController extends Controller
 
     public function show_update_equipo_mant($id)
     {
-        $equipoMantModel = new EquiposMant();
+        $equipoMantModel = new Equipo_mant();
         $equipo_mant = $equipoMantModel->getEquipoMantPorId($id);
 
         return view('equipos_mant.update', ['equipo_mant' => $equipo_mant]);       
