@@ -22,7 +22,7 @@
         <label class="form-check-label" for="rep">Sí</label>
       </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-9" style="display:none;" id="divDescRep">
       <label for="descripcionRep" class="form-label"><strong>Descripción de repuestos:</strong></label>
       <input type="text" name="descripcionRep" class="form-control" id="descripcionRep" minlength="10" maxlength="500">
     </div>

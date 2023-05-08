@@ -38,26 +38,17 @@ class Tipo_SolicitudController extends Controller
         Session::flash('alert-class', 'alert-success');
         return redirect ('tipos_solicitudes');
     }
+    public function show_update_tipo_solicitud($id)
+    {
+        $tipo_solicitud = Tipo_Solicitud::showTipoSolicitud($id); 
 
+        return view('tipos_solicitudes.update', ['tipo_solicitud' => $tipo_solicitud]);       
+    }
     public function update_tipo_solicitud(Request $request)
     {
-        $tipo_solicitud = DB::table('tipo_solicitudes')
-        ->where('tipo_solicitudes.id',$request['id'])
-        ->update([
-            'nombre' => $request['nombre']
-        ]);      
+        Tipo_Solicitud::updateTipoSolicitud($request['id'], $request['nombre']);
         Session::flash('message','Tipo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('tipos_solicitudes');
-    }
-    
-    public function show_update_tipo_solicitud($id)
-    {
-        $tipo_solicitud = DB::table('tipo_solicitudes')
-        ->select('tipo_solicitudes.id as id', 'tipo_solicitudes.nombre as nombre')
-        ->where('tipo_solicitudes.id', $id)
-        ->first();
-
-        return view('tipos_solicitudes.update', ['tipo_solicitud' => $tipo_solicitud]);       
     }
 }

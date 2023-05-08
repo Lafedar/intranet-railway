@@ -629,6 +629,14 @@
         html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
       }
       $('#estado').html(html_select);
+
+      $('#rep').on('change', function() {
+        if ($(this).is(':checked')) {
+          $('#divDescRep').show();
+        } else {
+          $('#divDescRep').hide();
+        }
+      });
     });
   });
 
@@ -664,20 +672,21 @@
         modalDialog.classList.add('modal-sm');
       },
     });
-  }
-  $('#show2').on('show.bs.modal', function (event) {
-    $.get('select_users/',function(data){
-      var html_select = '<option value="">Seleccione </option>'
-      for(var i = 0; i<data[0].length; i ++){
-        for(var k = 0; k<data[1].length; k ++){
-          if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
-            html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
+      $('#show2').on('show.bs.modal', function (event) {
+      $.get('select_users/',function(data){
+        var html_select = '<option value="">Seleccione </option>'
+        for(var i = 0; i<data[0].length; i ++){
+          for(var k = 0; k<data[1].length; k ++){
+            if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
+              html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
+            }
           }
         }
-      }
-      $('#user').html(html_select);
+        $('#user').html(html_select);
+      });
     });
-  });
+  }
+  
 </script>
 
 @stop
