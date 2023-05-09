@@ -74,7 +74,7 @@
             <tbody>
                 @foreach($historico_solicitudes as $historico)
                     <tr>
-                        <td>{{ \Carbon\Carbon::parse($historico->fecha)->format('d/m/Y H:i') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($historico->fecha_2)->format('d/m/Y H:i') }}</td>
                         <td>{{ $historico->estado }}</td>
                         <td>{{ $historico->descripcion }}</td>
                         @if($historico->rep)

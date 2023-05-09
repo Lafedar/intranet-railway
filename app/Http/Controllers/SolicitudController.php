@@ -26,14 +26,15 @@ class SolicitudController extends Controller{
         ->Equipo($request->get('id_equipo'))
         ->Titulo($request->get('titulo'))
         ->Falla($request->get('id_falla'))
+        ->Fecha($request->get('fecha'))        
         ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'))
-        ->orderBy('id_solicitud', 'desc')
+        ->orderBy('id_solicitud', 'asc')
         ->paginate(20);
 
         return view('solicitudes.index', array('solicitudes' => $solicitudes, 'tiposSolicitudes' => $tiposSolicitudes, 'estados' => $estados,
         'usuarios' => $usuarios, 'model_as_roles' => $model_as_roles, 'id_equipo'=>$request->get('id_equipo'), 'id_solicitud'=>$request->get('id_solicitud'), 
         'titulo'=>$request->get('titulo'), 'id_tipo_solicitud'=>$request->get('id_tipo_solicitud'), 'id_estado'=>$request->get('id_estado'),
-        'id_encargado'=>$request->get('id_encargado'), 'id_solicitante'=>$request->get('id_solicitante')));
+        'id_encargado'=>$request->get('id_encargado'), 'fecha' => $request->get('fecha'), 'id_solicitante'=>$request->get('id_solicitante')));
     }
 
     public function show_store_solicitud(){
@@ -97,7 +98,7 @@ class SolicitudController extends Controller{
     public function update_solicitud(Request $request){
         $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
 
-        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha_2);
 
         $nuevo_historico = new Historico_solicitudes;
         $nuevo_historico->id_solicitud = $request['id_solicitud'];

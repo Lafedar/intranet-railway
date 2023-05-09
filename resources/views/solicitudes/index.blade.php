@@ -77,8 +77,12 @@
         </select>
       </div>
       <div style="display: inline-block;">
+        <label for="fecha" style="display: block; margin-bottom: 5px;"><h6>Fecha:</h6></label>
+        <input class="form-control" type="date" id="fecha" name="fecha" value="{{$fecha}}">
+      </div>
+      <div style="display: inline-block;">
         <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
-        <select class="form-control" name="id_encargado"  id="id_encargado">
+        <select class="form-control" name="id_encargado" id="id_encargado">
           <option value="0">{{'Todos'}} </option>
           @foreach($usuarios as $usuario)
             @foreach($model_as_roles as $model_as_rol)
@@ -111,6 +115,7 @@
       <th class="text-center">Equipo</th>
       <th class="text-center">Estado</th>     
       <th class="text-center">Tipo de falla</th>    
+      <th class="text-center">Fecha de emision</th> 
       @can('ver_solicitante')  
         <th class="text-center">Solicitante</th>
       @endcan
@@ -128,8 +133,8 @@
               <td width="150">{{$solicitud->tipo_solicitud}}</td>
               <td width="107">{{$solicitud->id_equipo}}</td>
               <td >{{$solicitud->estado}}</td>
-              <td >{{$solicitud->falla}}</td>
-              <td hidden>{{$solicitud->descripcion}}</td>             
+              <td >{{$solicitud->falla}}</td>     
+              <td>{{ \Carbon\Carbon::parse($solicitud->fecha)->format('d/m/Y') }}</td>          
               @can('ver_solicitante')
                 <td >{{$solicitud->nombre_solicitante}}</td>
               @endcan

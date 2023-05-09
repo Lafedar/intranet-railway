@@ -2,59 +2,60 @@
 
 namespace App;
 use App\Historico_solicitudes;
-use DB;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
-class Solicitud extends Model
-{
+class Solicitud extends Model{
     public $table = "solicitudes";
     public $timestamps = false;
-    public function scopeID($query, $id_solicitud)
-    {
-        if($id_solicitud)
-        {
+    public function scopeID($query, $id_solicitud){
+        if($id_solicitud){
             return $query -> where('id_solicitud','LIKE',"%$id_solicitud%");
         }
     }
-    public function scopeTitulo($query, $titulo)
-    {
-        if($titulo)
-        {
+    public function scopeTitulo($query, $titulo){
+        if($titulo){
             return $query -> where('titulo','LIKE',"%$titulo%");
         }
     }
-    public  function scopeEquipo ($query, $id_equipo)
-    {
-    	if($id_equipo)
-        {
+    public  function scopeEquipo ($query, $id_equipo){
+    	if($id_equipo){
     	    return $query -> where('id_equipo','LIKE', "%$id_equipo%");
     	}
     }
-    public  function scopeFalla ($query, $id_falla)
-    {
-    	if($id_falla)
-        {
+    public  function scopeFalla ($query, $id_falla){
+    	if($id_falla){
     	    return $query -> where('id_falla','LIKE', "%$id_falla%");
     	}
     }   
-    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante)
-    {
-        $query->leftjoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
-        ->leftjoin('estados', 'historico_solicitudes.id_estado', 'estados.id')
-        ->leftjoin('fallas', 'fallas.id', 'solicitudes.id_falla')
-        ->leftjoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
-        ->leftjoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
-        ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
-        ->where('historico_solicitudes.actual', '=', 1)
+    public function scopeFecha($query, $fecha){
+        if($fecha != null){
+            $resultados = $query
+                ->join('historico_solicitudes', 'solicitudes.id', '=', 'historico_solicitudes.id_solicitud')
+                ->where('historico_solicitudes.fecha', 'LIKE', "%$fecha%")
+                ->get();
+            return $resultados;
+        }
+    }
+    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante){
+        $query->leftJoin('historico_solicitudes', function($join){
+            $join->on('historico_solicitudes.id_solicitud', '=', 'solicitudes.id')
+                ->where('historico_solicitudes.actual', '=', 1);
+        })
+        ->leftJoin('estados', 'historico_solicitudes.id_estado', '=', 'estados.id')
+        ->leftJoin('fallas', 'fallas.id', '=', 'solicitudes.id_falla')
+        ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', '=', 'solicitudes.id_encargado')
+        ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', '=', 'solicitudes.id_solicitante')
+        ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', '=', 'solicitudes.id_tipo_solicitud')
         ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
-        'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
-        'estados.nombre as estado', 'historico_solicitudes.descripcion as descripcion');
+            'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
+            'estados.nombre as estado', 'historico_solicitudes.descripcion as descripcion')
+        ->selectRaw('(SELECT MIN(hs.fecha) FROM historico_solicitudes hs WHERE hs.id_solicitud = solicitudes.id) AS fecha');
         if ($id_tipo_solicitud != 0) {
             $query->where('id_tipo_solicitud', $id_tipo_solicitud);
         }
         if ($id_estado != 0) {
-            $query->where('id_estado', $id_estado);
+            $query->where('id_estado', $id_estado); 
         }
         if ($id_encargado != 0) {
             $query->where('id_encargado', $id_encargado);
@@ -62,6 +63,10 @@ class Solicitud extends Model
         if ($id_solicitante != 0) {
             $query->where('id_solicitante', $id_solicitante);
         }
+        if ($id_solicitante != 0) {
+            $query->where('id_solicitante', $id_solicitante);
+        }
+
         return $query;
     }
     public function scopeWithRelatedData($query, $id){
@@ -86,10 +91,10 @@ class Solicitud extends Model
     public function scopeHistoricoSolicitudes($query, $id){
         return $query->leftjoin('estados', 'estados.id', 'historico_solicitudes.id_estado') 
             ->where('id_solicitud', $id)
-            ->select('historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado', 'historico_solicitudes.fecha as fecha', 
+            ->select('historico_solicitudes.descripcion as descripcion', 'estados.nombre as estado', 'historico_solicitudes.fecha as fecha_2', 
             'historico_solicitudes.repuestos as rep', 'historico_solicitudes.descripcion_repuestos as desc_rep')
             ->from('historico_solicitudes')
-            ->orderBy('fecha', 'desc')
+            ->orderBy('fecha_2', 'desc')
             ->get();
     }
     public static function getEquiposMantenimiento(){
@@ -140,16 +145,16 @@ class Solicitud extends Model
     public static function ultimoHistoricoById($id){
         return DB::table('historico_solicitudes')
         ->select('historico_solicitudes.id_solicitud as id_solicitud', 'historico_solicitudes.id_estado as id_estado', 
-        'historico_solicitudes.fecha as fecha')
+        'historico_solicitudes.fecha as fecha_2')
         ->where('historico_solicitudes.id_solicitud', $id)
         ->where('historico_solicitudes.actual', 1)
         ->first();
     }
-    public static function updateHistorico($id, $estado, $fecha){
+    public static function updateHistorico($id, $estado, $fecha_2){
         DB::table('historico_solicitudes')
         ->where('historico_solicitudes.id_solicitud',$id)
         ->where('historico_solicitudes.id_estado',$estado) //id de estado
-        ->where('historico_solicitudes.fecha',$fecha)
+        ->where('historico_solicitudes.fecha',$fecha_2)
         ->update(['actual' => 0]);
     }
     public static function assingSolicitud($idSolicitud, $idUser){
