@@ -25,9 +25,8 @@ class SolicitudController extends Controller{
         $solicitudes = Solicitud::ID($request->get('id_solicitud'))
         ->Equipo($request->get('id_equipo'))
         ->Titulo($request->get('titulo'))
-        ->Falla($request->get('id_falla'))
-        ->Fecha($request->get('fecha'))        
-        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'))
+        ->Falla($request->get('id_falla'))  
+        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
         ->orderBy('id_solicitud', 'asc')
         ->paginate(20);
 

@@ -78,7 +78,7 @@
       </div>
       <div style="display: inline-block;">
         <label for="fecha" style="display: block; margin-bottom: 5px;"><h6>Fecha:</h6></label>
-        <input class="form-control" type="date" id="fecha" name="fecha" value="{{$fecha}}">
+        <input class="form-control" type="date" id="fecha" name="fecha">
       </div>
       <div style="display: inline-block;">
         <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
@@ -203,12 +203,9 @@
 <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>
-
-
   function manejarSeleccion(idEquipo) {
     $('#equipo').val(idEquipo).trigger('change');
   }
-
   var ruta = '{{ route('mostrar_equipos_mant') }}';
   var closeButton3 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   //modal store

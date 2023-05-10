@@ -28,34 +28,23 @@ class Solicitud extends Model{
     	    return $query -> where('id_falla','LIKE', "%$id_falla%");
     	}
     }   
-    public function scopeFecha($query, $fecha){
-        if($fecha != null){
-            $resultados = $query
-                ->join('historico_solicitudes', 'solicitudes.id', '=', 'historico_solicitudes.id_solicitud')
-                ->where('historico_solicitudes.fecha', 'LIKE', "%$fecha%")
-                ->get();
-            return $resultados;
-        }
-    }
-    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante){
-        $query->leftJoin('historico_solicitudes', function($join){
-            $join->on('historico_solicitudes.id_solicitud', '=', 'solicitudes.id')
-                ->where('historico_solicitudes.actual', '=', 1);
-        })
-        ->leftJoin('estados', 'historico_solicitudes.id_estado', '=', 'estados.id')
+    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha){
+        $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', '=', 'solicitudes.id')
         ->leftJoin('fallas', 'fallas.id', '=', 'solicitudes.id_falla')
         ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', '=', 'solicitudes.id_encargado')
         ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', '=', 'solicitudes.id_solicitante')
         ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', '=', 'solicitudes.id_tipo_solicitud')
         ->select('solicitudes.id as id', 'solicitudes.titulo as titulo', 'tipo_solicitudes.nombre as tipo_solicitud', 'fallas.nombre as falla', 
-            'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
-            'estados.nombre as estado', 'historico_solicitudes.descripcion as descripcion')
-        ->selectRaw('(SELECT MIN(hs.fecha) FROM historico_solicitudes hs WHERE hs.id_solicitud = solicitudes.id) AS fecha');
+        'usuario_encargado.name as nombre_encargado', 'usuario_solicitante.name as nombre_solicitante', 'solicitudes.id_equipo as id_equipo', 
+        DB::raw("(SELECT MIN(hs.fecha) FROM historico_solicitudes hs WHERE hs.id_solicitud = solicitudes.id) as fecha"),
+        DB::raw("(SELECT e.nombre FROM historico_solicitudes hs JOIN estados e ON hs.id_estado = e.id WHERE hs.id_solicitud = solicitudes.id AND hs.actual = 1) AS estado"),  
+        DB::raw("(SELECT hs.descripcion FROM historico_solicitudes hs WHERE hs.id_solicitud = solicitudes.id AND hs.actual = 1) AS descripcion"));
+
         if ($id_tipo_solicitud != 0) {
             $query->where('id_tipo_solicitud', $id_tipo_solicitud);
         }
         if ($id_estado != 0) {
-            $query->where('id_estado', $id_estado); 
+            $query->where('id_estado', $id_estado);
         }
         if ($id_encargado != 0) {
             $query->where('id_encargado', $id_encargado);
@@ -66,7 +55,11 @@ class Solicitud extends Model{
         if ($id_solicitante != 0) {
             $query->where('id_solicitante', $id_solicitante);
         }
-
+        if($fecha != null){
+            $query->where('fecha', 'LIKE', "%$fecha%");
+        }
+        $r = $query->get();
+        dd($r);
         return $query;
     }
     public function scopeWithRelatedData($query, $id){
