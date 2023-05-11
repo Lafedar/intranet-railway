@@ -29,12 +29,14 @@ class Solicitud extends Model{
     	}
     }   
     public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha){
-        $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', '=', 'solicitudes.id')
-        ->leftJoin('fallas', 'fallas.id', '=', 'solicitudes.id_falla')
-        ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', '=', 'solicitudes.id_encargado')
-        ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', '=', 'solicitudes.id_solicitante')
-        ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', '=', 'solicitudes.id_tipo_solicitud')
-        ->leftJoin('estados', 'estados.id', '=', 'solicitudes.id_estado')
+        $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
+        ->leftJoin('fallas', 'fallas.id', 'solicitudes.id_falla')
+        ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
+        ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+        ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
+        ->leftJoin('estados', 'estados.id', 'solicitudes.id_estado')
+        ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
+        ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
         ->select('solicitudes.id as id', 
             'solicitudes.titulo as titulo', 
             'tipo_solicitudes.nombre as tipo_solicitud', 
@@ -45,7 +47,8 @@ class Solicitud extends Model{
             'estados.nombre as estado',
             'solicitudes.fecha_alta as fechaEmision',
             'solicitudes.fecha_finalizacion as fechaFinalizacion',
-            'historico_solicitudes.descripcion as descripcion')
+            'historico_solicitudes.descripcion as descripcion',
+            'area.id_a as area')
         ->where('historico_solicitudes.actual', '=', 1);
         if ($id_tipo_solicitud != 0) {
             $query->where('id_tipo_solicitud', $id_tipo_solicitud);
@@ -190,6 +193,13 @@ class Solicitud extends Model{
     }
     public static function deleteHistorico($id){
         DB::table('historico_solicitudes')->where('id_solicitud', $id)->delete();
+    }
+    public static function obtenerAreaUserAutenticado($idUser){
+        return (DB::table('personas')
+        ->leftJoin('users', 'users.id', 'personas.usuario')
+        ->select('personas.area as area')
+        ->where('users.id', $idUser)
+        ->first());
     }
 }
 ?>

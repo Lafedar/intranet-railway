@@ -21,6 +21,7 @@ class SolicitudController extends Controller{
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
         $usuarios = DB::table('users')->orderBy('name','asc')->get();
         $model_as_roles = DB::table('model_has_roles')->get();
+        $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado(Auth::id());
 
         $solicitudes = Solicitud::ID($request->get('id_solicitud'))
         ->Equipo($request->get('id_equipo'))
@@ -31,9 +32,10 @@ class SolicitudController extends Controller{
         ->paginate(20);
 
         return view('solicitudes.index', array('solicitudes' => $solicitudes, 'tiposSolicitudes' => $tiposSolicitudes, 'estados' => $estados,
-        'usuarios' => $usuarios, 'model_as_roles' => $model_as_roles, 'id_equipo'=>$request->get('id_equipo'), 'id_solicitud'=>$request->get('id_solicitud'), 
-        'titulo'=>$request->get('titulo'), 'id_tipo_solicitud'=>$request->get('id_tipo_solicitud'), 'id_estado'=>$request->get('id_estado'),
-        'id_encargado'=>$request->get('id_encargado'), 'fecha' => $request->get('fecha'), 'id_solicitante'=>$request->get('id_solicitante')));
+        'usuarios' => $usuarios, 'areaUserAutenticado' => $areaUserAutenticado, 'model_as_roles' => $model_as_roles, 
+        'id_equipo'=>$request->get('id_equipo'), 'id_solicitud'=>$request->get('id_solicitud'), 'titulo'=>$request->get('titulo'), 
+        'id_tipo_solicitud'=>$request->get('id_tipo_solicitud'), 'id_estado'=>$request->get('id_estado'),'id_encargado'=>$request->get('id_encargado'), 
+        'fecha' => $request->get('fecha'), 'id_solicitante'=>$request->get('id_solicitante')));
     }
 
     public function show_store_solicitud(){

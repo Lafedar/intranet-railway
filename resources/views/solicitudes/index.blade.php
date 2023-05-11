@@ -127,6 +127,9 @@
     </thead>
     <tbody>
         @foreach($solicitudes as $solicitud)
+          <?php dd($areaUserAutenticado, $solicitud->area);
+          ?>
+          @if($areaUserAutenticado === $solicitud->area)
             <tr>
               <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
               <td width="60">{{$solicitud->id}}</td>
@@ -165,6 +168,7 @@
                 </div>
               </td>
             </tr>
+          @endif
         @endforeach
     </tbody>       
   </table>   
