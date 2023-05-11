@@ -116,6 +116,7 @@
       <th class="text-center">Estado</th>     
       <th class="text-center">Tipo de falla</th>    
       <th class="text-center">Fecha de emision</th> 
+      <!--<th class="text-center">Fecha de finalizacion</th>--> 
       @can('ver_solicitante')  
         <th class="text-center">Solicitante</th>
       @endcan
@@ -134,7 +135,12 @@
               <td width="107">{{$solicitud->id_equipo}}</td>
               <td >{{$solicitud->estado}}</td>
               <td >{{$solicitud->falla}}</td>     
-              <td>{{ \Carbon\Carbon::parse($solicitud->fecha)->format('d/m/Y') }}</td>          
+              <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
+              @if($solicitud->fechaFinalizacion)
+                <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
+              @else     
+                <!--<td></td>  --> 
+              @endif
               @can('ver_solicitante')
                 <td >{{$solicitud->nombre_solicitante}}</td>
               @endcan
@@ -202,6 +208,22 @@
 <link href="{{ asset('select2/dist/css/select2.min.css') }}" rel="stylesheet" />
 <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script>
+  // Obtén el campo de entrada de fecha por su ID
+  var fechaInput = document.getElementById('fecha');
+
+  // Verifica si hay un valor guardado en el almacenamiento local (localStorage)
+  if (localStorage.getItem('fechaValue')) {
+    // Restaura el valor guardado en el campo de entrada de fecha
+    fechaInput.value = localStorage.getItem('fechaValue');
+  }
+
+  // Escucha el evento 'change' del campo de entrada de fecha
+  fechaInput.addEventListener('change', function() {
+    // Guarda el valor seleccionado en el almacenamiento local (localStorage)
+    localStorage.setItem('fechaValue', fechaInput.value);
+  });
+</script>
 <script>
   function manejarSeleccion(idEquipo) {
     $('#equipo').val(idEquipo).trigger('change');

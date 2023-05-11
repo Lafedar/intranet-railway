@@ -46,12 +46,16 @@ class SolicitudController extends Controller{
             $aux = 0;
         }
 
+        $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+
         $solicitud = new Solicitud;
         $solicitud->titulo = $request['titulo'];
         $solicitud->id_equipo = $request['equipo'];
         $solicitud->id_falla = $request['falla'];
         $solicitud->id_solicitante = $request['solicitante'];
         $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
+        $solicitud->fecha_alta = $fechaActual;
+        $solicitud->id_estado = 1;
         if($request['tipo_solicitud'] == 2){
             $solicitud->id_localizacion_edilicio = $request['localizacion'];
         }
@@ -64,7 +68,7 @@ class SolicitudController extends Controller{
         $historico_solicitud->actual = 1;
         $historico_solicitud->descripcion = $request['descripcion'];
         $historico_solicitud->id_usuario = Auth::id();
-        $historico_solicitud->fecha = Carbon::now()->format('Y-m-d H:i:s');    
+        $historico_solicitud->fecha = $fechaActual;    
 
         $historico_solicitud->save();
 
@@ -95,9 +99,10 @@ class SolicitudController extends Controller{
     }
 
     public function update_solicitud(Request $request){
+        $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
         $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
-
-        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha_2);
+        Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
+        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
 
         $nuevo_historico = new Historico_solicitudes;
         $nuevo_historico->id_solicitud = $request['id_solicitud'];
@@ -113,7 +118,7 @@ class SolicitudController extends Controller{
         }
         $nuevo_historico->actual = 1;
         $nuevo_historico->id_usuario = Auth::id();
-        $nuevo_historico->fecha = Carbon::now()->format('Y-m-d H:i:s');    
+        $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
         Session::flash('message','Archivo modificado con éxito');
