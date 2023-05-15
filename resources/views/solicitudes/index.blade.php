@@ -117,19 +117,13 @@
       <th class="text-center">Tipo de falla</th>    
       <th class="text-center">Fecha de emision</th> 
       <!--<th class="text-center">Fecha de finalizacion</th>--> 
-      @can('ver_solicitante')  
-        <th class="text-center">Solicitante</th>
-      @endcan
-      @can('ver_encargado')
-        <th class="text-center">Encargado</th>  
-      @endcan
+      <th class="text-center">Solicitante</th>
+      <th class="text-center">Encargado</th>  
       <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
         @foreach($solicitudes as $solicitud)
-          <?php dd($areaUserAutenticado, $solicitud->area);
-          ?>
-          @if($areaUserAutenticado === $solicitud->area)
+          @can('ver-todas-las-solicitudes')
             <tr>
               <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
               <td width="60">{{$solicitud->id}}</td>
@@ -144,12 +138,8 @@
               @else     
                 <!--<td></td>  --> 
               @endif
-              @can('ver_solicitante')
-                <td >{{$solicitud->nombre_solicitante}}</td>
-              @endcan
-              @can('ver_encargado')
-                <td >{{$solicitud->nombre_encargado}}</td>
-              @endcan
+              <td >{{$solicitud->nombre_solicitante}}</td>
+              <td >{{$solicitud->nombre_encargado}}</td>
               <td class="text-center" width="350">
                 <div>
                   <!-- Boton de ver solitud en detalle -->
@@ -168,7 +158,63 @@
                 </div>
               </td>
             </tr>
-          @endif
+          @elsecan('ver-solicitudes-asignadas')
+            @if($solicitud->id_encargado == $userAutenticado)
+              <tr>
+                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                <td width="60">{{$solicitud->id}}</td>
+                <td width="350">{{$solicitud->titulo}}</td>
+                <td width="150">{{$solicitud->tipo_solicitud}}</td>
+                <td width="107">{{$solicitud->id_equipo}}</td>
+                <td >{{$solicitud->estado}}</td>
+                <td >{{$solicitud->falla}}</td>     
+                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
+                @if($solicitud->fechaFinalizacion)
+                  <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
+                @else     
+                  <!--<td></td>  --> 
+                @endif
+                <td >{{$solicitud->nombre_solicitante}}</td>
+                <td >{{$solicitud->nombre_encargado}}</td>
+                <td class="text-center" width="350">
+                  <div>
+                    <!-- Boton de ver solitud en detalle -->
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                    <!-- Boton de editar y eliminar -->
+                    @can('actualizar-solicitud')
+                      <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                    @endcan
+                  </div>
+                </td>
+              </tr>
+            @endif
+          @else ('ver-todas-las-solicitudes', 'editar-solicitudes')            
+            @if($areaUserAutenticado->area === $solicitud->area)
+              <tr>
+                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                <td width="60">{{$solicitud->id}}</td>
+                <td width="350">{{$solicitud->titulo}}</td>
+                <td width="150">{{$solicitud->tipo_solicitud}}</td>
+                <td width="107">{{$solicitud->id_equipo}}</td>
+                <td >{{$solicitud->estado}}</td>
+                <td >{{$solicitud->falla}}</td>     
+                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
+                @if($solicitud->fechaFinalizacion)
+                  <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
+                @else     
+                  <!--<td></td>  --> 
+                @endif
+                <td >{{$solicitud->nombre_solicitante}}</td>
+                <td >{{$solicitud->nombre_encargado}}</td>
+                <td class="text-center" width="350">
+                  <div>
+                    <!-- Boton de ver solitud en detalle -->
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                  </div>
+                </td>
+              </tr>
+            @endif
+          @endcan
         @endforeach
     </tbody>       
   </table>   
