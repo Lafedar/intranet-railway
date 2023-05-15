@@ -142,19 +142,11 @@
               <td >{{$solicitud->nombre_encargado}}</td>
               <td class="text-center" width="350">
                 <div>
-                  <!-- Boton de ver solitud en detalle -->
                   <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                  <!-- Boton de editar y eliminar -->
-                  @can('actualizar-solicitud')
-                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                  @endcan
-                  @can('asignar-solicitud')
-                    <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                  @endcan
-                  @can('eliminar-solicitud')
-                    <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
-                    data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                  @endcan
+                  <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                  <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                  <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
+                  data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                 </div>
               </td>
             </tr>
@@ -169,26 +161,17 @@
                 <td >{{$solicitud->estado}}</td>
                 <td >{{$solicitud->falla}}</td>     
                 <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-                @if($solicitud->fechaFinalizacion)
-                  <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
-                @else     
-                  <!--<td></td>  --> 
-                @endif
                 <td >{{$solicitud->nombre_solicitante}}</td>
                 <td >{{$solicitud->nombre_encargado}}</td>
                 <td class="text-center" width="350">
                   <div>
-                    <!-- Boton de ver solitud en detalle -->
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                    <!-- Boton de editar y eliminar -->
-                    @can('actualizar-solicitud')
-                      <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                    @endcan
+                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
                   </div>
                 </td>
               </tr>
             @endif
-          @else ('ver-todas-las-solicitudes', 'editar-solicitudes')            
+          @else         
             @if($areaUserAutenticado->area === $solicitud->area)
               <tr>
                 <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
@@ -199,16 +182,10 @@
                 <td >{{$solicitud->estado}}</td>
                 <td >{{$solicitud->falla}}</td>     
                 <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-                @if($solicitud->fechaFinalizacion)
-                  <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
-                @else     
-                  <!--<td></td>  --> 
-                @endif
                 <td >{{$solicitud->nombre_solicitante}}</td>
                 <td >{{$solicitud->nombre_encargado}}</td>
                 <td class="text-center" width="350">
                   <div>
-                    <!-- Boton de ver solitud en detalle -->
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
                 </td>
