@@ -93,7 +93,7 @@ class SolicitudController extends Controller{
     }
 
     public function show_mostrar_equipos_mant(){
-        $equipos = Solicitud::getEquiposMantenimiento();
+        $equipos = Solicitud::getEquiposMantenimientoConLocalizacionYArea();
 
         return view('solicitudes.show_equipo', ['equipos' => $equipos,]);
     }
@@ -130,10 +130,10 @@ class SolicitudController extends Controller{
         $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
 
         //da error cuando el correo no existe
-        
+        try {
             Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+        } catch (\Exception $e) {}
         
-
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');

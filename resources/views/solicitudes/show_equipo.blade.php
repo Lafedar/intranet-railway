@@ -17,8 +17,8 @@
                         <td>{{ $equipo->marca }}</td>
                         <td>{{ $equipo->modelo }}</td>
                         <td>{{ $equipo->descripcion }}</td>
-                        <td>{{ $equipo->id_area }}</td>
-                        <td>{{ $equipo->id_localizacion }}</td>
+                        <td>{{ $equipo->area }}</td>
+                        <td>{{ $equipo->localizacion }}</td>
                     </tr>
                 @endforeach
             </tbody>
