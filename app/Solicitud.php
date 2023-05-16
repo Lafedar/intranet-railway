@@ -202,5 +202,23 @@ class Solicitud extends Model{
         ->where('users.id', $idUser)
         ->first());
     }
+    public static function obtenerMailNombreSolicitante($idSolicitud){
+        $consulta = DB::table('users')
+        ->leftJoin('solicitudes', 'solicitudes.id_solicitante', 'users.id')
+        ->select('users.email as email', 'users.name as nombre')
+        ->where('solicitudes.id', $idSolicitud)
+        ->first();
+
+        return $consulta;
+    }
+    public static function obtenerNombreEstadoSolicitud($idSolicitud){
+        $consulta = DB::table('estados')
+        ->leftJoin('solicitudes', 'solicitudes.id_estado', 'estados.id')
+        ->select('estados.nombre as nombre')
+        ->where('solicitudes.id', $idSolicitud)
+        ->first();
+
+        return $consulta->nombre;
+    }
 }
 ?>

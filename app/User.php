@@ -31,10 +31,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function sendPasswordResetNotification($token)
+    /*public function sendPasswordResetNotification($token)
     {
         $this->notify(new MyResetPassword($token));
-    }
+    }*/
     
     public function scopeName($query, $name)
     {

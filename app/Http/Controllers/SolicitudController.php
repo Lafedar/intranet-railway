@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use App\Solicitud;
 use App\Historico_solicitudes;
 use App\Falla;
@@ -123,6 +125,14 @@ class SolicitudController extends Controller{
         $nuevo_historico->id_usuario = Auth::id();
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
+
+        $mailNombreSolicitante = Solicitud::obtenerMailNombreSolicitante($request['id_solicitud']);
+        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
+
+        //da error cuando el correo no existe
+        
+            Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+        
 
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
