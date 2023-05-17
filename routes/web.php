@@ -366,16 +366,15 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
   Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
-
 });
 
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|mantenimiento')->name('show_store_equipo_mant');
-  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->name('store_equipo_mant');
-  Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->name('show_update_equipo_mant');
-  Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->name('update_equipo_mant');
+  Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento|Empleado-Mantenimiento');
+  Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_store_equipo_mant');
+  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('store_equipo_mant');
+  Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_update_equipo_mant');
+  Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('update_equipo_mant');
 
   Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
@@ -384,16 +383,16 @@ Route::group(['middleware' => ['auth']], function ()
 Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento');
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('areas','AreaController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_area',['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|mantenimiento')->name('show_store_area');
+  Route::resource('areas','AreaController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_area',['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_area');
   Route::post('store_area','AreaController@store_area')->name('store_area');
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
 });
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_localizacion',['uses' => 'LocalizacionController@show_store_localizacion'])->middleware('role:administrador|mantenimiento')->name('show_store_localizacion');
+  Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_localizacion',['uses' => 'LocalizacionController@show_store_localizacion'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_localizacion');
   Route::post('store_localizacion','LocalizacionController@store_localizacion')->name('store_localizacion');
   Route::get('show_update_localizacion/{localizacion}',['uses' => 'LocalizacionController@show_update_localizacion'])->name('show_update_localizacion');
   Route::post('update_localizacion','LocalizacionController@update_localizacion')->name('update_localizacion');
@@ -402,38 +401,38 @@ Route::group(['middleware' => ['auth']], function ()
 });
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('estados','EstadoController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_estado',['uses' => 'EstadoController@show_store_estado'])->middleware('role:administrador|mantenimiento')->name('show_store_estado');
+  Route::resource('estados','EstadoController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_estado',['uses' => 'EstadoController@show_store_estado'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_estado');
   Route::post('store_estado','EstadoController@store_estado')->name('store_estado');
   Route::get('show_update_estado/{estado}',['uses' => 'EstadoController@show_update_estado'])->name('show_update_estado');
   Route::post('update_estado','EstadoController@update_estado')->name('update_estado');
 });
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('fallas','FallaController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_falla',['uses' => 'FallaController@show_store_falla'])->middleware('role:administrador|mantenimiento')->name('show_store_falla');
+  Route::resource('fallas','FallaController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_falla',['uses' => 'FallaController@show_store_falla'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_falla');
   Route::post('store_falla','FallaController@store_falla')->name('store_falla');
   Route::get('show_update_falla/{falla}',['uses' => 'FallaController@show_update_falla'])->name('show_update_falla');
   Route::post('update_falla','FallaController@update_falla')->name('update_falla');
 });
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('tipos_equipos','Tipo_EquipoController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_tipo_equipo',['uses' => 'Tipo_EquipoController@show_store_tipo_equipo'])->middleware('role:administrador|mantenimiento')->name('show_store_tipo_equipo');
+  Route::resource('tipos_equipos','Tipo_EquipoController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_tipo_equipo',['uses' => 'Tipo_EquipoController@show_store_tipo_equipo'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_tipo_equipo');
   Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo');
   Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
   Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
   Route::get('show_delete_falla_te/{falla}',['uses' => 'Tipo_EquipoController@show_delete_falla_te'])->name('show_delete_falla_te');
   Route::post('delete_falla_te','Tipo_EquipoController@delete_falla_te')->name('delete_falla_te');
-  Route::get('show_assing_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_assing_tipo_equipo'])->middleware('role:administrador|mantenimiento')->name('show_assing_tipo_equipo');
-  Route::post('assing_tipo_equipo','Tipo_EquipoController@assing_tipo_equipo')->middleware('role:administrador|mantenimiento')->name('assing_tipo_equipo');
+  Route::get('show_assing_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_assing_tipo_equipo'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_assing_tipo_equipo');
+  Route::post('assing_tipo_equipo','Tipo_EquipoController@assing_tipo_equipo')->middleware('role:administrador|Jefe-Mantenimiento')->name('assing_tipo_equipo');
 
   Route::get('select_fallas', 'Tipo_EquipoController@select_fallas')->name('select_fallas');
 });
 Route::group(['middleware' => ['auth']], function () 
 {
-  Route::resource('tipos_solicitudes','Tipo_SolicitudController')->middleware('role:administrador|mantenimiento');
-  Route::get('show_store_tipo_solicitud',['uses' => 'Tipo_SolicitudController@show_store_tipo_solicitud'])->middleware('role:administrador|mantenimiento')->name('show_store_tipo_solicitud');
+  Route::resource('tipos_solicitudes','Tipo_SolicitudController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_store_tipo_solicitud',['uses' => 'Tipo_SolicitudController@show_store_tipo_solicitud'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_tipo_solicitud');
   Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');

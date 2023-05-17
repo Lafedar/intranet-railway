@@ -172,7 +172,7 @@
               </tr>
             @endif
           @else         
-            @if($areaUserAutenticado->area === $solicitud->area)
+            @if($areaUserAutenticado->area === $solicitud->area || $solicitud->id_solicitante == $userAutenticado)
               <tr>
                 <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
                 <td width="60">{{$solicitud->id}}</td>

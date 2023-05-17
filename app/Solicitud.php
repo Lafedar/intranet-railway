@@ -44,6 +44,7 @@ class Solicitud extends Model{
             'usuario_encargado.name as nombre_encargado', 
             'usuario_encargado.id as id_encargado',
             'usuario_solicitante.name as nombre_solicitante', 
+            'usuario_solicitante.id as id_solicitante', 
             'solicitudes.id_equipo as id_equipo', 
             'estados.nombre as estado',
             'solicitudes.fecha_alta as fechaEmision',
