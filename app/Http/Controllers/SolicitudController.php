@@ -152,6 +152,30 @@ class SolicitudController extends Controller{
     public function assing_solicitud(Request $request){
         $solicitud = Solicitud::assingSolicitud($request['id_solicitud'], $request['user']); 
 
+        $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+        $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
+        Solicitud::updateSoliciutud($request['id_solicitud'], 2, $fechaActual);
+        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+
+        $nuevo_historico = new Historico_solicitudes;
+        $nuevo_historico->id_solicitud = $request['id_solicitud'];
+        $nuevo_historico->id_estado = 2; //id de estado
+        $nuevo_historico->descripcion = null;
+        $nuevo_historico->repuestos = null;
+        $nuevo_historico->descripcion_repuestos = null;
+        $nuevo_historico->actual = 1;
+        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->fecha = $fechaActual;    
+        $nuevo_historico->save();
+
+        $mailNombreSolicitante = Solicitud::obtenerMailNombreSolicitante($request['id_solicitud']);
+        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
+
+        //da error cuando el correo no existe
+        try {
+            Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+        } catch (\Exception $e) {}
+
         Session::flash('message','Solicitud asignada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');

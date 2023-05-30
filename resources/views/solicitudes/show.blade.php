@@ -40,6 +40,8 @@
                 <p>{{$solicitud->loc_edilicio}}</p>
             @elseif($solicitud->loc_equipo)
                 <p>{{$solicitud->loc_equipo}}</p>
+            @else
+                <p style="color:gainsboro">N/A</p>
             @endif
         </div>
     </div>  

@@ -94,7 +94,7 @@ class Solicitud extends Model{
             ->leftjoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
             ->leftjoin('localizaciones as loc_equipo', 'loc_equipo.id' ,'equipos_mant.id_localizacion')
             ->leftjoin('localizaciones as loc_edilicio', 'loc_edilicio.id' ,'solicitudes.id_localizacion_edilicio')
-            ->leftjoin('area as area_equipo', 'area_equipo.id_a', 'loc_equipo.id_area')
+            ->leftjoin('area as area_equipo', 'area_equipo.id_a', 'equipos_mant.id_area')
             ->leftjoin('area as area_edilicio', 'area_edilicio.id_a', 'loc_edilicio.id_area')
             ->where('historico_solicitudes.actual', '=', 1)
             ->where('solicitudes.id', $id);

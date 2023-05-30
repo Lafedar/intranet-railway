@@ -187,6 +187,9 @@
                 <td class="text-center" width="350">
                   <div>
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                    @if($solicitud->estado == "Aprob. pendiente")
+                      <button id="aprobar" class="btn btn-info btn-sm" title="aprobar">Aprobar</button>
+                    @endif
                   </div>
                 </td>
               </tr>

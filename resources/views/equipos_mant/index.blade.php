@@ -35,12 +35,14 @@
       <th class="text-center">Area</th>     
       <th class="text-center">Localizacion</th>
       <th class="text-center">Uso</th>
-      <th class="text-center">Acciones</th>        
+      @can('editar-equiposmant')
+        <th class="text-center">Acciones</th>    
+      @endcan    
     </thead>
     <tbody>
       @foreach($equipos_mant as $equipo_mant)
         <tr class="text-center">
-          <td width="67">{{$equipo_mant->id_e}}</td>
+          <td width="92">{{$equipo_mant->id_e}}</td>
           <td width="200">{{$equipo_mant->nombre_tipo}}</td>
           <td width="160">{{$equipo_mant->marca}}</td>
           <td width="160">{{$equipo_mant->modelo}}</td>
@@ -53,9 +55,11 @@
           @else
             <td width="60"><div class="circle_grey"></div></td>
           @endif
+          @can('editar-equiposmant')
             <td><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$equipo_mant->id_e}}")' title="update"
             data-tipo="{{$equipo_mant->id_tipo}}" data-area="{{$equipo_mant->id_area}}" data-localizacion="{{$equipo_mant->id_localizacion}}"
             id="edit-{{$equipo_mant->id_e}}">Editar</button></td>
+          @endcan
         </tr>
 
       @endforeach

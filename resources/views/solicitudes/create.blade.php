@@ -17,11 +17,11 @@
         <label for="title"><strong>Equipo:</strong></label>&nbsp&nbsp&nbsp&nbsp<a role="button" class="fa-solid fa-magnifying-glass default" 
         href="#" title="Mostrar Equipos" data-toggle="modal" data-target="#mostrar" onclick="fnOpenModalShowEquipos()"></a>
         <br>
-        <select class="form-control select2" name="equipo" id="equipo" style="width: 100%;" required></select>
+        <select class="form-control select2" name="equipo" id="equipo" style="width: 100%;"></select>
       </div>
       <div class="col-12" id="div_descripcion">
         <label for="title"><strong>Descripcion de equipo:</strong></label>
-        <textarea rows="3" type="text" class="form-control" name="descripcion_equipo" id="descripcion_equipo"  minlength="10" maxlength="500" required></textarea>
+        <textarea rows="3" type="text" class="form-control" name="descripcion_equipo" id="descripcion_equipo"  minlength="10" maxlength="500"></textarea>
       </div>
       <div class="col-6">
         <label for="title"><strong>Area:</strong></label>
