@@ -188,7 +188,8 @@
                   <div>
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                     @if($solicitud->estado == "Aprob. pendiente")
-                      <button id="aprobar" class="btn btn-info btn-sm" title="aprobar">Aprobar</button>
+                      <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')"
+                      data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                     @endif
                   </div>
                 </td>

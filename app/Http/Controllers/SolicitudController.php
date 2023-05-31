@@ -31,7 +31,7 @@ class SolicitudController extends Controller{
         ->Titulo($request->get('titulo'))
         ->Falla($request->get('id_falla'))  
         ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
-        ->orderBy('id_solicitud', 'asc')
+        ->orderBy('id_solicitud', 'desc')
         ->paginate(20);
 
         return view('solicitudes.index', array('solicitudes' => $solicitudes, 'tiposSolicitudes' => $tiposSolicitudes, 'estados' => $estados,
@@ -219,5 +219,27 @@ class SolicitudController extends Controller{
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
+    public function aprobar_solicitud($id){
+        $solicitud = Solicitud::find($id);
 
+        $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+        $ultimo_historico = Solicitud::ultimoHistoricoById($solicitud->id);
+        Solicitud::updateSoliciutud($solicitud->id, 6, $fechaActual);
+        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+
+        $nuevo_historico = new Historico_solicitudes;
+        $nuevo_historico->id_solicitud = $solicitud->id;
+        $nuevo_historico->id_estado = 6; //id de estado
+        $nuevo_historico->descripcion = null;
+        $nuevo_historico->repuestos = null;
+        $nuevo_historico->descripcion_repuestos = null;
+        $nuevo_historico->actual = 1;
+        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->fecha = $fechaActual;    
+        $nuevo_historico->save();
+
+        Session::flash('message','Solicitud aprobada con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect('solicitudes');
+    }
 }

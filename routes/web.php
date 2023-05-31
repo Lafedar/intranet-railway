@@ -361,6 +361,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|Jefe-Mantenimiento')->name('assing_solicitud');
   Route::get('show_mostrar_equipos_mant',['uses' => 'SolicitudController@show_mostrar_equipos_mant'])->name('show_mostrar_equipos_mant');
   Route::post('mostrar_equipos_mant','SolicitudController@mostrar_equipos_mant')->name('mostrar_equipos_mant');
+  Route::get('aprobar_solicitud/{solicitud}', ['uses' => 'SolicitudController@aprobar_solicitud']);
   
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
