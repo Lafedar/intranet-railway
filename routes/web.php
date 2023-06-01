@@ -357,8 +357,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento')->name('show_update_solicitud');
   Route::get('show_store_solicitud',['uses' => 'SolicitudController@show_store_solicitud'])->name('show_store_solicitud');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento')->name('update_solicitud');
-  Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_assing_solicitud');
-  Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|Jefe-Mantenimiento')->name('assing_solicitud');
+  Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes')->name('show_assing_solicitud');
+  Route::post('assing_solicitud','SolicitudController@assing_solicitud')->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes')->name('assing_solicitud');
   Route::get('show_mostrar_equipos_mant',['uses' => 'SolicitudController@show_mostrar_equipos_mant'])->name('show_mostrar_equipos_mant');
   Route::post('mostrar_equipos_mant','SolicitudController@mostrar_equipos_mant')->name('mostrar_equipos_mant');
   Route::get('aprobar_solicitud/{solicitud}', ['uses' => 'SolicitudController@aprobar_solicitud']);

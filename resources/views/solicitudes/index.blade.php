@@ -86,7 +86,7 @@
           <option value="0">{{'Todos'}} </option>
           @foreach($usuarios as $usuario)
             @foreach($model_as_roles as $model_as_rol)
-              @if($model_as_rol->role_id == 22 and $usuario->id == $model_as_rol->model_id)
+              @if(($model_as_rol->role_id == 22 || $model_as_rol->role_id == 25) and $usuario->id == $model_as_rol->model_id)
                 @if($usuario->id == $id_encargado)
                   <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
                 @else
@@ -108,7 +108,9 @@
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
-      <th class="text-center"><input type="checkbox" id="checkAll" onclick="checkAll()"> Seleccionar</th>
+      @can('reporte-solicitudes')
+        <th class="text-center"><input type="checkbox" id="checkAll" onclick="checkAll()"> Seleccionar</th>
+      @endcan
       <th class="text-center">ID</th>
       <th class="text-center">Titulo</th>
       <th class="text-center">Tipo de solicitud</th>
@@ -123,9 +125,12 @@
     </thead>
     <tbody>
         @foreach($solicitudes as $solicitud)
+          <!-- Jefe -->
           @can('ver-todas-las-solicitudes')
             <tr>
-              <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+              @can('reporte-solicitudes')
+                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+              @endcan
               <td width="60">{{$solicitud->id}}</td>
               <td width="350">{{$solicitud->titulo}}</td>
               <td width="150">{{$solicitud->tipo_solicitud}}</td>
@@ -151,9 +156,12 @@
               </td>
             </tr>
           @elsecan('ver-solicitudes-asignadas')
+            <!-- Empleados -->
             @if($solicitud->id_encargado == $userAutenticado)
               <tr>
-                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @can('reporte-solicitudes')
+                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @endcan
                 <td width="60">{{$solicitud->id}}</td>
                 <td width="350">{{$solicitud->titulo}}</td>
                 <td width="150">{{$solicitud->tipo_solicitud}}</td>
@@ -171,10 +179,38 @@
                 </td>
               </tr>
             @endif
-          @else         
+          @elsecan('ver-solicitudes-sin-asignar')
+            <!-- Empleados que pueden asignar -->
+            @if($solicitud->id_encargado == $userAutenticado || $solicitud->id_encargado == null)
+              <tr>
+                @can('reporte-solicitudes')
+                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @endcan
+                <td width="60">{{$solicitud->id}}</td>
+                <td width="350">{{$solicitud->titulo}}</td>
+                <td width="150">{{$solicitud->tipo_solicitud}}</td>
+                <td width="107">{{$solicitud->id_equipo}}</td>
+                <td >{{$solicitud->estado}}</td>
+                <td >{{$solicitud->falla}}</td>     
+                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
+                <td >{{$solicitud->nombre_solicitante}}</td>
+                <td >{{$solicitud->nombre_encargado}}</td>
+                <td class="text-center" width="350">
+                  <div>
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                    <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                  </div>
+                </td>
+              </tr>
+            @endif
+          @else
+            <!-- Usuarios -->         
             @if($areaUserAutenticado->area === $solicitud->area || $solicitud->id_solicitante == $userAutenticado)
               <tr>
-                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @can('reporte-solicitudes')
+                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @endcan
                 <td width="60">{{$solicitud->id}}</td>
                 <td width="350">{{$solicitud->titulo}}</td>
                 <td width="150">{{$solicitud->tipo_solicitud}}</td>
@@ -732,7 +768,7 @@
         var html_select = '<option value="">Seleccione </option>'
         for(var i = 0; i<data[0].length; i ++){
           for(var k = 0; k<data[1].length; k ++){
-            if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22)){
+            if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22 || data[1][k].role_id == 25)){
               html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
             }
           }
