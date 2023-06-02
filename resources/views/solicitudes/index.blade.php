@@ -118,120 +118,51 @@
       <th class="text-center">Estado</th>     
       <th class="text-center">Tipo de falla</th>    
       <th class="text-center">Fecha de emision</th> 
-      <!--<th class="text-center">Fecha de finalizacion</th>--> 
+      <!--<th class="text-center">Fecha de finalizacion</th> -->
       <th class="text-center">Solicitante</th>
       <th class="text-center">Encargado</th>  
       <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
         @foreach($solicitudes as $solicitud)
-          <!-- Jefe -->
-          @can('ver-todas-las-solicitudes')
-            <tr>
-              @can('reporte-solicitudes')
-                <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
-              @endcan
-              <td width="60">{{$solicitud->id}}</td>
-              <td width="350">{{$solicitud->titulo}}</td>
-              <td width="150">{{$solicitud->tipo_solicitud}}</td>
-              <td width="107">{{$solicitud->id_equipo}}</td>
-              <td >{{$solicitud->estado}}</td>
-              <td >{{$solicitud->falla}}</td>     
-              <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-              @if($solicitud->fechaFinalizacion)
-                <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
-              @else     
-                <!--<td></td>  --> 
-              @endif
-              <td >{{$solicitud->nombre_solicitante}}</td>
-              <td >{{$solicitud->nombre_encargado}}</td>
-              <td class="text-center" width="350">
-                <div>
-                  <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+          <tr>
+            @can('reporte-solicitudes')
+              <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+            @endcan
+            <td>{{$solicitud->id}}</td>
+            <td>{{$solicitud->titulo}}</td>
+            <td>{{$solicitud->tipo_solicitud}}</td>
+            <td>{{$solicitud->id_equipo}}</td>
+            <td>{{$solicitud->estado}}</td>
+            <td>{{$solicitud->falla}}</td>
+            <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>
+            @if($solicitud->fechaFinalizacion)
+              <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
+            @else     
+              <!--<td></td>  --> 
+            @endif  
+            <td >{{$solicitud->nombre_solicitante}}</td>
+            <td >{{$solicitud->nombre_encargado}}</td>
+            <td>
+              <div class="text-center">
+                <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                @can('actualizar-solicitud')
                   <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                @endcan
+                @can('asignar-solicitud')
                   <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                  <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar esta solicitud?')"
-                  data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                </div>
-              </td>
-            </tr>
-          @elsecan('ver-solicitudes-asignadas')
-            <!-- Empleados -->
-            @if($solicitud->id_encargado == $userAutenticado)
-              <tr>
-                @can('reporte-solicitudes')
-                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
                 @endcan
-                <td width="60">{{$solicitud->id}}</td>
-                <td width="350">{{$solicitud->titulo}}</td>
-                <td width="150">{{$solicitud->tipo_solicitud}}</td>
-                <td width="107">{{$solicitud->id_equipo}}</td>
-                <td >{{$solicitud->estado}}</td>
-                <td >{{$solicitud->falla}}</td>     
-                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-                <td >{{$solicitud->nombre_solicitante}}</td>
-                <td >{{$solicitud->nombre_encargado}}</td>
-                <td class="text-center" width="350">
-                  <div>
-                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                  </div>
-                </td>
-              </tr>
-            @endif
-          @elsecan('ver-solicitudes-sin-asignar')
-            <!-- Empleados que pueden asignar -->
-            @if($solicitud->id_encargado == $userAutenticado || $solicitud->id_encargado == null)
-              <tr>
-                @can('reporte-solicitudes')
-                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
+                @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
+                  <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')"
+                  data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
+                @endif
+                @can('eliminar-solicitud')
+                  <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm 
+                  ('Está seguro que desea eliminar esta solicitud?')"data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                 @endcan
-                <td width="60">{{$solicitud->id}}</td>
-                <td width="350">{{$solicitud->titulo}}</td>
-                <td width="150">{{$solicitud->tipo_solicitud}}</td>
-                <td width="107">{{$solicitud->id_equipo}}</td>
-                <td >{{$solicitud->estado}}</td>
-                <td >{{$solicitud->falla}}</td>     
-                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-                <td >{{$solicitud->nombre_solicitante}}</td>
-                <td >{{$solicitud->nombre_encargado}}</td>
-                <td class="text-center" width="350">
-                  <div>
-                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                    <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                  </div>
-                </td>
-              </tr>
-            @endif
-          @else
-            <!-- Usuarios -->         
-            @if($areaUserAutenticado->area === $solicitud->area || $solicitud->id_solicitante == $userAutenticado)
-              <tr>
-                @can('reporte-solicitudes')
-                  <td><label><input type="checkbox" id="cbox1" value="first_checkbox"></label><br></td>
-                @endcan
-                <td width="60">{{$solicitud->id}}</td>
-                <td width="350">{{$solicitud->titulo}}</td>
-                <td width="150">{{$solicitud->tipo_solicitud}}</td>
-                <td width="107">{{$solicitud->id_equipo}}</td>
-                <td >{{$solicitud->estado}}</td>
-                <td >{{$solicitud->falla}}</td>     
-                <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>   
-                <td >{{$solicitud->nombre_solicitante}}</td>
-                <td >{{$solicitud->nombre_encargado}}</td>
-                <td class="text-center" width="350">
-                  <div>
-                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                    @if($solicitud->estado == "Aprob. pendiente")
-                      <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')"
-                      data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
-                    @endif
-                  </div>
-                </td>
-              </tr>
-            @endif
-          @endcan
+              </div>
+            </td>
+          </tr>
         @endforeach
     </tbody>       
   </table>   

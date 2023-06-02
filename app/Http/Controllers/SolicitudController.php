@@ -2,43 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
-use App\Solicitud;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 use App\Historico_solicitudes;
-use App\Falla;
+use Illuminate\Http\Request;
 use App\Tipo_solicitud;
-use App\User;
-use App\Estado;
+use App\Solicitud;
 use Carbon\Carbon;
+use App\Estado;
+use App\Falla;
+use App\User;
 Use Session;
 use DB;
-use Illuminate\Support\Facades\Auth;
+
 
 class SolicitudController extends Controller{
-    public function index(Request $request){
+    public function index(Request $request)
+    {
+        $userAutenticado = Auth::id();
+        $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado($userAutenticado);
+    
+        $solicitudesQuery = Solicitud::ID($request->get('id_solicitud'))
+            ->Equipo($request->get('id_equipo'))
+            ->Titulo($request->get('titulo'))
+            ->Falla($request->get('id_falla'))
+            ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
+            ->orderBy('id_solicitud', 'desc');
+
+        if (Gate::allows('ver-todas-las-solicitudes')) {
+            // Jefe
+            $solicitudes = $solicitudesQuery->paginate(20);
+        } elseif (Gate::allows('ver-solicitudes-asignadas')) {
+            // Empleados - Solicitudes asignadas
+            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->paginate(20);
+        } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
+            // Empleados que pueden asignar
+            $solicitudes = $solicitudesQuery->where(function ($query) use ($userAutenticado) {
+                $query->where('id_encargado', $userAutenticado)
+                    ->orWhereNull('id_encargado');
+            })->paginate(20);
+        } else{
+            // usuarios
+            $solicitudes = $solicitudesQuery->where(function ($query) use ($areaUserAutenticado, $userAutenticado) {
+                $query->where('id_area', $areaUserAutenticado->area)
+                    ->orWhere('id_solicitante', $userAutenticado);
+            })->paginate(20);
+        }
+    
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
         $usuarios = DB::table('users')->orderBy('name','asc')->get();
         $model_as_roles = DB::table('model_has_roles')->get();
-        $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado(Auth::id());
-        $userAutenticado = Auth::id();
+    
 
-        $solicitudes = Solicitud::ID($request->get('id_solicitud'))
-        ->Equipo($request->get('id_equipo'))
-        ->Titulo($request->get('titulo'))
-        ->Falla($request->get('id_falla'))  
-        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
-        ->orderBy('id_solicitud', 'desc')
-        ->paginate(20);
-
-        return view('solicitudes.index', array('solicitudes' => $solicitudes, 'tiposSolicitudes' => $tiposSolicitudes, 'estados' => $estados,
-        'usuarios' => $usuarios, 'areaUserAutenticado' => $areaUserAutenticado, 'userAutenticado' => $userAutenticado, 'model_as_roles' => $model_as_roles, 
-        'id_equipo'=>$request->get('id_equipo'), 'id_solicitud'=>$request->get('id_solicitud'), 'titulo'=>$request->get('titulo'), 
-        'id_tipo_solicitud'=>$request->get('id_tipo_solicitud'), 'id_estado'=>$request->get('id_estado'),'id_encargado'=>$request->get('id_encargado'), 
-        'fecha' => $request->get('fecha'), 'id_solicitante'=>$request->get('id_solicitante')));
+        return view('solicitudes.index', [
+            'solicitudes' => $solicitudes,
+            'tiposSolicitudes' => $tiposSolicitudes,
+            'estados' => $estados,
+            'usuarios' => $usuarios,
+            'areaUserAutenticado' => $areaUserAutenticado,
+            'userAutenticado' => $userAutenticado,
+            'model_as_roles' => $model_as_roles,
+            'id_equipo' => $request->get('id_equipo'),
+            'id_solicitud' => $request->get('id_solicitud'),
+            'titulo' => $request->get('titulo'),
+            'id_tipo_solicitud' => $request->get('id_tipo_solicitud'),
+            'id_estado' => $request->get('id_estado'),
+            'id_encargado' => $request->get('id_encargado'),
+            'fecha' => $request->get('fecha'),
+            'id_solicitante' => $request->get('id_solicitante'),
+        ]);
     }
 
     public function show_store_solicitud(){
