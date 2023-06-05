@@ -43,8 +43,6 @@ class Equipo_mantController extends Controller
             $equipo_mant->uso = 1;
         }
         else{$equipo_mant->uso = 0;}
-        $equipo_mant->updated_at = null;
-        $equipo_mant->created_at = null;
         $equipo_mant->save();
 
         Session::flash('message','Equipo agregado con éxito');

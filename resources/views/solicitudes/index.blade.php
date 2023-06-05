@@ -142,6 +142,7 @@
               <!--<td></td>  --> 
             @endif  
             <td >{{$solicitud->nombre_solicitante}}</td>
+            <td style="display: none;">{{$solicitud->descripcion}}</td>
             <td >{{$solicitud->nombre_encargado}}</td>
             <td>
               <div class="text-center">
@@ -505,8 +506,9 @@
       var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
       var estado = row.querySelector('td:nth-child(6)').textContent.trim();
       var falla = row.querySelector('td:nth-child(7)').textContent.trim();
-      var descripcion = row.querySelector('td:nth-child(8)').textContent.trim();
-
+      var fechaEmision = row.querySelector('td:nth-child(8)').textContent.trim();
+      var solicitante = row.querySelector('td:nth-child(9)').textContent.trim();
+      var descripcion = row.querySelector('td:nth-child(10)').textContent.trim();
       // Ajustar el diseño del contenido del PDF
       var content = [
         { label: "ID: ", value: id, x: 10, y: y },
@@ -514,7 +516,9 @@
         { label: "Equipo: ", value: equipo, x: 10, y: y + 5 },
         { label: "Estado: ", value: estado, x: 50, y: y + 5 },
         { label: "Falla: ", value: falla, x: 110, y: y + 5 },
-        { label: "Descripción: ", value: descripcion, x: 10, y: y + 10 }
+        { label: "Fecha: ", value: fechaEmision, x: 10, y: y + 10 },
+        { label: "Solicitante: ", value: solicitante, x: 50, y: y + 10 },
+        { label: "Descripcion: ", value: descripcion, x: 10, y: y + 15 }
       ];
 
       doc.setFontSize(10);

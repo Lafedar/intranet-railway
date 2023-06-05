@@ -8,7 +8,7 @@ use DB;
 class Equipo_mant extends Model
 {
     public $table = "equipos_mant";
-
+    public $timestamps = false;
     public function scopeRelaciones_index ($query)
     {
         return $query->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')

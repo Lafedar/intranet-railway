@@ -28,30 +28,34 @@ class Solicitud extends Model{
     	    return $query -> where('id_falla','LIKE', "%$id_falla%");
     	}
     }   
-    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha){
+    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha)
+    {
         $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
-        ->leftJoin('fallas', 'fallas.id', 'solicitudes.id_falla')
-        ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
-        ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
-        ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
-        ->leftJoin('estados', 'estados.id', 'solicitudes.id_estado')
-        ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
-        ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
-        ->select('solicitudes.id as id', 
-            'solicitudes.titulo as titulo', 
-            'tipo_solicitudes.nombre as tipo_solicitud', 
-            'fallas.nombre as falla', 
-            'usuario_encargado.name as nombre_encargado', 
-            'usuario_encargado.id as id_encargado',
-            'usuario_solicitante.name as nombre_solicitante', 
-            'usuario_solicitante.id as id_solicitante', 
-            'solicitudes.id_equipo as id_equipo', 
-            'estados.nombre as estado',
-            'solicitudes.fecha_alta as fechaEmision',
-            'solicitudes.fecha_finalizacion as fechaFinalizacion',
-            'historico_solicitudes.descripcion as descripcion',
-            'area.id_a as area')
-        ->where('historico_solicitudes.actual', '=', 1);
+            ->leftJoin('fallas', 'fallas.id', 'solicitudes.id_falla')
+            ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
+            ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+            ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
+            ->leftJoin('estados', 'estados.id', 'solicitudes.id_estado')
+            ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
+            ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
+            ->select(
+                'solicitudes.id as id',
+                'solicitudes.titulo as titulo',
+                'tipo_solicitudes.nombre as tipo_solicitud',
+                'fallas.nombre as falla',
+                'usuario_encargado.name as nombre_encargado',
+                'usuario_encargado.id as id_encargado',
+                'usuario_solicitante.name as nombre_solicitante',
+                'usuario_solicitante.id as id_solicitante',
+                'solicitudes.id_equipo as id_equipo',
+                'estados.nombre as estado',
+                'solicitudes.fecha_alta as fechaEmision',
+                'solicitudes.fecha_finalizacion as fechaFinalizacion',
+                'area.id_a as area',
+                DB::raw('(SELECT descripcion FROM historico_solicitudes WHERE id_solicitud = solicitudes.id AND id_estado = 1 LIMIT 1) AS descripcion')
+            )
+            ->where('historico_solicitudes.actual', '=', 1);
+
         if ($id_tipo_solicitud != 0) {
             $query->where('id_tipo_solicitud', $id_tipo_solicitud);
         }
@@ -64,12 +68,10 @@ class Solicitud extends Model{
         if ($id_solicitante != 0) {
             $query->where('id_solicitante', $id_solicitante);
         }
-        if ($id_solicitante != 0) {
-            $query->where('id_solicitante', $id_solicitante);
-        }
-        if($fecha != null){
+        if ($fecha != null) {
             $query->where('fecha_alta', 'LIKE', "%$fecha%");
         }
+
         return $query;
     }
     public function scopeWithRelatedData($query, $id){
@@ -116,7 +118,9 @@ class Solicitud extends Model{
         ->leftJoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
         ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
         ->select('equipos_mant.id as id', 'equipos_mant.marca as marca', 'equipos_mant.modelo as modelo', 'equipos_mant.descripcion as descripcion',
-        'localizaciones.nombre as localizacion', 'area.nombre_a as area')->get();
+        'localizaciones.nombre as localizacion', 'area.nombre_a as area')
+        ->orderBy('id', 'asc')
+        ->get();
     }
     public static function getEquiposMantenimiento(){
         return DB::table('equipos_mant')->get();
