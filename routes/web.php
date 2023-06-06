@@ -200,12 +200,17 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('update_proyectos','ProyectoController@update_proyectos')->middleware('role:administrador|ingenieria')->name('update_proyectos');
 });
 
-  //****************POLITICAS**********************
-  Route::get('politicas','PoliticaController@index');
-  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
-  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
-  Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
+//****************POLITICAS**********************
+Route::get('politicas','PoliticaController@index');
+Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
+Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
+Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
 
+//****************INSTRUCTIVOS**********************
+Route::get('instructivos','InstructivoController@index');
+Route::post('store_instructivo','InstructivoController@store_instructivo')->name('agregar-instructivo');
+Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo']);
+Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivos');
 
 //******************QAD-Controller**********************
 Route::group(['middleware' => ['auth']], function () 

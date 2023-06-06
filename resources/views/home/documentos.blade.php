@@ -23,7 +23,7 @@
     </div>
     
     <div class="col-md-3">
-      <a  href="#"> <img  src="{{ URL::to('/img/manuales.png') }}" height="140"></a>
+      <a  href="/instructivos"> <img  src="{{ URL::to('/img/instructivos.png') }}" height="140"></a>
     </div>
   </div>
 
