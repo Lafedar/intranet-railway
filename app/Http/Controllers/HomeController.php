@@ -36,12 +36,23 @@ class HomeController extends Controller
     public function internos()
     {
         $personas = DB::table('personas')
-        ->where('personas.interno','>=','0')
+        ->whereNotNull('personas.interno')
+        ->where('personas.activo', '=', 1)
         ->leftjoin('area', 'area.id_a', 'personas.area')
+        ->select('personas.nombre_p as nombre', 'personas.apellido as apellido', 'personas.interno as interno', 
+            'personas.correo as correo', 'area.nombre_a as area')
         ->orderBy('interno','ASC')
-        ->paginate(200);    
-                
-        return view ('internos.internos', array('personas'=>$personas));
+        ->paginate(300);  
+
+        $localizaciones = DB::table('localizaciones')
+        ->whereNotNull('localizaciones.interno')
+        ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+        ->select('localizaciones.nombre as nombre', 'localizaciones.interno as interno', 'area.nombre_a as area')
+        ->orderBy('interno', 'ASC')
+        ->paginate(300); 
+
+        return view ('internos.internos', ['personas'=>$personas, 
+            'localizaciones'=>$localizaciones]);
 
     }
     public function novedades()

@@ -29,6 +29,7 @@
       <th class="text-center">ID</th>
       <th class="text-center">Area</th>
       <th class="text-center">Nombre</th>
+      <th class="text-center">Interno</th>
       <th class="text-center">Acciones</th>   
     </thead>
     <tbody>
@@ -37,8 +38,9 @@
         <td width="80">{{$localizacion->id}}</td>
         <td>{{$localizacion->nombre_a}}</td>
         <td>{{$localizacion->nombre}}</td>
+        <td>{{$localizacion->interno}}</td>
         <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$localizacion->id}}")' title="update"
-          data-nombre="{{$localizacion->nombre}}" id="edit">Editar</button></td>
+          data-nombre="{{$localizacion->nombre}}" data-interno="{{$localizacion->interno}}" id="edit">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       
@@ -103,7 +105,7 @@
       // Cambiar el tamaño del modal a "modal-lg"
       var modalDialog = myModal._element.querySelector('.modal-dialog');
       modalDialog.classList.remove('modal-sm');
-      modalDialog.classList.remove('modal-lg');
+      modalDialog.classList.add('modal-lg');
     });
   }
   
@@ -136,7 +138,7 @@
         // Cambiar el tamaño del modal a "modal-lg"
         var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.remove('modal-lg');
+        modalDialog.classList.add('modal-lg');
       },
     });
   }

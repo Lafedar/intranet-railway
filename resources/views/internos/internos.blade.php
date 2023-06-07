@@ -11,26 +11,31 @@
 <div class="col-sm-12 ">             
   <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0" cellpadding="2" border="10">
     <thead>
-      <th >Nombre</th>
+      <th>Nombre / Localizacion</th>
       <th>Interno</th>
       <th>Correo electrónico</th>
       <th>Area</th>
     </thead>		
     
     <tbody>
-      @if(count($personas))
-      @foreach($personas as $persona)	
-      @if($persona->activo==1)
-      <tr>
-        <td> {{$persona->nombre_p . ' '. $persona->apellido}}</td>
-        <td>{{$persona->interno}}</td>
-        <td><a href="mailto:{{$persona->correo}}">{{$persona->correo}}</a>
-          <td>{{$persona->nombre_a}}</td>
+      @foreach ($localizaciones as $localizacion)
+        <tr>
+          <td>{{$localizacion->nombre}}</td>
+          <td>{{$localizacion->interno}}</td>
+          <td></td>
+          <td>{{$localizacion->area}}</td>
+          </tr>
         </tr>
-      </tr>
-      @endif
+      @endforeach
+      @foreach($personas as $persona)	
+        <tr>
+          <td>{{$persona->nombre . ' '. $persona->apellido}}</td>
+          <td>{{$persona->interno}}</td>
+          <td><a href="mailto:{{$persona->correo}}">{{$persona->correo}}</a></td>
+            <td>{{$persona->area}}</td>
+          </tr>
+        </tr>
       @endforeach  
-      @endif	
     </tbody>
   </table>
   {{ $personas->links() }}
