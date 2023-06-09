@@ -146,21 +146,31 @@
             <td >{{$solicitud->nombre_encargado}}</td>
             <td>
               <div class="text-center">
-                <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                @can('actualizar-solicitud')
-                  <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                @endcan
-                @can('asignar-solicitud')
-                  <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                @endcan
-                @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
-                  <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')"
-                  data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
-                @endif
-                @can('eliminar-solicitud')
-                  <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm 
-                  ('Está seguro que desea eliminar esta solicitud?')"data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                @endcan
+                <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+                  </div>
+                  @can('actualizar-solicitud')
+                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                  </div>
+                  @endcan
+                  @can('asignar-solicitud')
+                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                    <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                  </div>
+                  @endcan
+                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
+                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                    <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
+                  </div>
+                  @endif
+                  @can('eliminar-solicitud')
+                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                    <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                  </div>
+                  @endcan
+                </div>
               </div>
             </td>
           </tr>
