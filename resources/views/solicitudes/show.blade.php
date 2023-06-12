@@ -32,6 +32,8 @@
                 <p>{{$solicitud->area_equipo}}</p>
             @elseif($solicitud->area_edilicio)
                 <p>{{$solicitud->area_edilicio}}</p>
+            @elseif($solicitud->area_proyecto)
+                <p>{{$solicitud->area_proyecto}}</p>
             @endif
         </div>
         <div class="col-md-4">

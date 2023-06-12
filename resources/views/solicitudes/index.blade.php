@@ -124,6 +124,7 @@
       <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
+        <?php //dd($solicitudes); ?>
         @foreach($solicitudes as $solicitud)
           <tr>
             @can('reporte-solicitudes')
@@ -132,18 +133,38 @@
             <td>{{$solicitud->id}}</td>
             <td>{{$solicitud->titulo}}</td>
             <td>{{$solicitud->tipo_solicitud}}</td>
-            <td>{{$solicitud->id_equipo}}</td>
+            <td>
+              @if($solicitud->id_equipo)
+                <p>{{$solicitud->id_equipo}}</p>
+              @else
+                <p style="color:gainsboro">N/A</p>
+              @endif
+            </td>
             <td>{{$solicitud->estado}}</td>
-            <td>{{$solicitud->falla}}</td>
+            <td>
+              @if($solicitud->falla)
+                <p>{{$solicitud->falla}}</p>
+              @else
+                <p style="color:gainsboro">N/A</p>
+              @endif
+            </td>
             <td>{{ \Carbon\Carbon::parse($solicitud->fechaEmision)->format('d/m/Y') }}</td>
             @if($solicitud->fechaFinalizacion)
               <!--<td>{{ \Carbon\Carbon::parse($solicitud->fechaFinalizacion)->format('d/m/Y') }}</td>  --> 
             @else     
               <!--<td></td>  --> 
             @endif  
-            <td >{{$solicitud->nombre_solicitante}}</td>
+            <td>{{$solicitud->nombre_solicitante}}</td>
             <td style="display: none;">{{$solicitud->descripcion}}</td>
-            <td >{{$solicitud->nombre_encargado}}</td>
+            <td>
+              @if($solicitud->nombre_encargado)
+                {{$solicitud->nombre_encargado}}
+              @elseif($solicitud->tipo_solicitud == "Proyectos de ingenieria")
+                <p style="color:gainsboro">N/A</p>
+              @else
+                <p style="color:gainsboro">Sin asignar</p>
+              @endif
+            </td>
             <td>
               <div class="text-center">
                 <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
@@ -151,14 +172,16 @@
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
                   @can('actualizar-solicitud')
-                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                    <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                  </div>
+                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+                    </div>
                   @endcan
                   @can('asignar-solicitud')
-                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                    <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                  </div>
+                    @if($solicitud->tipo_solicitud != "Proyectos de ingenieria")
+                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                        <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                      </div>
+                    @endif
                   @endcan
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
                   <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
@@ -346,12 +369,16 @@
           if (!tipoSolicitudSelected) {
             divEquipo.show();
             divFalla.hide();
+            document.getElementById("localizacion").setAttribute("required", "required");
+            document.getElementById("falla").setAttribute("required", "required");
           } 
           else if (tipoSolicitudSelected == 1) {
             divEquipo.show();
             divFalla.hide();
+            document.getElementById("localizacion").setAttribute("required", "required");
+            document.getElementById("falla").setAttribute("required", "required");
           } 
-          else {
+          else if (tipoSolicitudSelected == 2) {
             divEquipo.hide();
             divFalla.show();
             divDescripcion.hide();
@@ -365,6 +392,16 @@
               }
             });
             $('#falla').html(htmlSelectFalla);
+            document.getElementById("localizacion").setAttribute("required", "required");
+            document.getElementById("falla").setAttribute("required", "required");
+          }
+          else if (tipoSolicitudSelected == 3) {
+            divEquipo.hide();
+            divFalla.hide();
+            divDescripcion.hide();
+            $('#div_localizacion').hide();
+            document.getElementById("localizacion").removeAttribute("required");
+            document.getElementById("falla").removeAttribute("required");
           }
           $('#area').prop('disabled', false);
           $('#localizacion').prop('disabled', false);
@@ -435,7 +472,12 @@
           if(!areaSelected){
             $('#div_localizacion').hide();
           } else{
-            $('#div_localizacion').show();
+            if (tipoSolicitudSelected == 3) {
+              $('#div_localizacion').hide();
+            }
+            else{
+              $('#div_localizacion').show();
+            }
             $('#localizacion').html(htmlSelectLocalizacion);
           }
         });
@@ -708,12 +750,12 @@
         modalDialog.classList.add('modal-sm');
       },
     });
-      $('#show2').on('show.bs.modal', function (event) {
+    $('#show2').on('show.bs.modal', function (event) {
       $.get('select_users/',function(data){
         var html_select = '<option value="">Seleccione </option>'
         for(var i = 0; i<data[0].length; i ++){
           for(var k = 0; k<data[1].length; k ++){
-            if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 22 || data[1][k].role_id == 25)){
+            if((data[0][i].id == data[1][k].model_id) && (data[1][k].role_id == 21 || data[1][k].role_id == 24 || data[1][k].role_id == 30)){
               html_select += '<option value ="'+data[0][i].id+'">'+data[0][i].name+'</option>';
             }
           }

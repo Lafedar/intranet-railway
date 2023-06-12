@@ -42,6 +42,7 @@ class Solicitud extends Model{
                 'solicitudes.id as id',
                 'solicitudes.titulo as titulo',
                 'tipo_solicitudes.nombre as tipo_solicitud',
+                'tipo_solicitudes.id as id_tipo_solicitud',
                 'fallas.nombre as falla',
                 'usuario_encargado.name as nombre_encargado',
                 'usuario_encargado.id as id_encargado',
@@ -71,7 +72,7 @@ class Solicitud extends Model{
         if ($fecha != null) {
             $query->where('fecha_alta', 'LIKE', "%$fecha%");
         }
-
+        
         return $query;
     }
     public function scopeWithRelatedData($query, $id){
@@ -85,6 +86,7 @@ class Solicitud extends Model{
                 'estados.nombre as estado', 
                 'area_equipo.nombre_a as area_equipo', 
                 'area_edilicio.nombre_a as area_edilicio', 
+                'area_proyecto.nombre_a as area_proyecto',
                 'loc_equipo.nombre as loc_equipo', 
                 'loc_edilicio.nombre as loc_edilicio')
             ->leftjoin('fallas', 'fallas.id', 'solicitudes.id_falla')
@@ -98,6 +100,7 @@ class Solicitud extends Model{
             ->leftjoin('localizaciones as loc_edilicio', 'loc_edilicio.id' ,'solicitudes.id_localizacion_edilicio')
             ->leftjoin('area as area_equipo', 'area_equipo.id_a', 'equipos_mant.id_area')
             ->leftjoin('area as area_edilicio', 'area_edilicio.id_a', 'loc_edilicio.id_area')
+            ->leftjoin('area as area_proyecto', 'area_proyecto.id_a', 'solicitudes.id_area_proyecto')
             ->where('historico_solicitudes.actual', '=', 1)
             ->where('solicitudes.id', $id);
     }

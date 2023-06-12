@@ -32,20 +32,25 @@ class SolicitudController extends Controller{
             ->Falla($request->get('id_falla'))
             ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
             ->orderBy('id_solicitud', 'desc');
-
         if (Gate::allows('ver-todas-las-solicitudes')) {
             // Jefe
-            $solicitudes = $solicitudesQuery->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-asignadas')) {
             // Empleados - Solicitudes asignadas
-            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->orWhere('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
             // Empleados que pueden asignar
             $solicitudes = $solicitudesQuery->where(function ($query) use ($userAutenticado) {
                 $query->where('id_encargado', $userAutenticado)
+                    ->orWhere('id_tipo_solicitud', '!=', 3)
                     ->orWhereNull('id_encargado');
             })->paginate(20);
-        } else{
+        } elseif (Gate::allows('ver-todas-las-solicitudes-y-proyectos')){
+            $solicitudes = $solicitudesQuery->paginate(20);
+        } elseif (Gate::allows('ver-proyectos')){
+            //revisar -----------------
+            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->orWhere('id_tipo_solicitud', 3)->where('historico_solicitudes.actual', '=', 1)->paginate(20);
+        }else{
             // usuarios
             $solicitudes = $solicitudesQuery->where(function ($query) use ($areaUserAutenticado, $userAutenticado) {
                 $query->where('id_area', $areaUserAutenticado->area)
@@ -92,14 +97,21 @@ class SolicitudController extends Controller{
 
         $solicitud = new Solicitud;
         $solicitud->titulo = $request['titulo'];
-        $solicitud->id_equipo = $request['equipo'];
-        $solicitud->id_falla = $request['falla'];
+        if($request['tipo_solicitud'] == 1){
+            $solicitud->id_equipo = $request['equipo'];
+        }
+        if($request['tipo_solicitud'] != 3){
+            $solicitud->id_falla = $request['falla'];
+        }
         $solicitud->id_solicitante = $request['solicitante'];
         $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
         $solicitud->fecha_alta = $fechaActual;
         $solicitud->id_estado = 1;
         if($request['tipo_solicitud'] == 2){
             $solicitud->id_localizacion_edilicio = $request['localizacion'];
+        }
+        if($request['tipo_solicitud'] == 3){
+            $solicitud->id_area_proyecto = $request['area'];
         }
 
         $solicitud->save();
