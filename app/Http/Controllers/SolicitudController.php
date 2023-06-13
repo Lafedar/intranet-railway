@@ -37,12 +37,12 @@ class SolicitudController extends Controller{
             $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-asignadas')) {
             // Empleados - Solicitudes asignadas
-            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->orWhere('id_tipo_solicitud', '!=', 3)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->where('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
             // Empleados que pueden asignar
             $solicitudes = $solicitudesQuery->where(function ($query) use ($userAutenticado) {
                 $query->where('id_encargado', $userAutenticado)
-                    ->orWhere('id_tipo_solicitud', '!=', 3)
+                    ->where('id_tipo_solicitud', '!=', 3)
                     ->orWhereNull('id_encargado');
             })->paginate(20);
         } elseif (Gate::allows('ver-todas-las-solicitudes-y-proyectos')){
