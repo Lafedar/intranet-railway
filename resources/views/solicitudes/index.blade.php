@@ -178,9 +178,11 @@
                   @endcan
                   @can('asignar-solicitud')
                     @if($solicitud->tipo_solicitud != "Proyectos de ingenieria")
-                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                      </div>
+                      @if(!$solicitud->nombre_encargado)
+                        <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                          <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                        </div>
+                      @endif  
                     @endif
                   @endcan
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)

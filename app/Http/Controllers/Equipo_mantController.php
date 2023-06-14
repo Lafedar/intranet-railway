@@ -14,12 +14,24 @@ class Equipo_mantController extends Controller
 {
     public function index(Request $request)
     {
-        $equipos_mant = Equipo_mant::
-        Relaciones_index($request->get('relaciones'))
-        ->paginate(20);
+        $equipos_mant = Equipo_mant::ID($request->get('id_e'))
+        ->Relaciones_index($request->get('tipo'), $request->get('id_area'), $request->get('id_localizacion'))
+        ->orderBy('id_e')
+        ->paginate(50);
 
-        return view ('equipos_mant.index',   
-            array('equipos_mant' => $equipos_mant));
+        $tiposEquipos = DB::table('tipos_equipos')->orderBy('nombre','asc')->get();
+        $areas = DB::table('area')->orderBy('nombre_a','asc')->get();
+        $localizaciones = DB::table('localizaciones')->orderBy('nombre','asc')->get();
+
+        return view ('equipos_mant.index',[
+            'id_e' => $request->get('id_e'),
+            'tipo' => $request->get('tipo'),
+            'id_localizacion' => $request->get('id_localizacion'),
+            'id_area' => $request->get('id_area'),
+            'tiposEquipos' => $tiposEquipos,
+            'areas' => $areas,
+            'localizaciones' => $localizaciones,
+            'equipos_mant' => $equipos_mant]);
     }
 
     public function show_store_equipo_mant()

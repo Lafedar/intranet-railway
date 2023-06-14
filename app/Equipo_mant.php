@@ -9,9 +9,29 @@ class Equipo_mant extends Model
 {
     public $table = "equipos_mant";
     public $timestamps = false;
-    public function scopeRelaciones_index ($query)
+    public function scopeID($query, $id_e){
+        if($id_e){
+            return $query -> where('equipos_mant.id','LIKE',"%$id_e%");
+        }
+    }
+    /*public function scopeTipo($query, $tipo){
+        if($tipo){
+            return $query -> where('id_tipo','LIKE',"%$tipo%");
+        }
+    }
+    public function scopeArea($query, $id_area){
+        if($id_area){
+            return $query -> where('id_a','LIKE',"%$id_area%");
+        }
+    }
+    public function scopeLocalizacion($query, $id_localizacion){
+        if($id_localizacion){
+            return $query -> where('id_localizacion','LIKE',"%$id_localizacion%");
+        }
+    }*/
+    public function scopeRelaciones_index ($query, $tipo, $id_area, $id_localizacion)
     {
-        return $query->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
+        $query->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
             ->leftjoin('area', 'area.id_a', 'equipos_mant.id_area')
             ->leftjoin('tipos_equipos', 'tipos_equipos.id', 'equipos_mant.id_tipo')
             //no colocar id solo porque convierte valores no numericos en 0
@@ -20,6 +40,18 @@ class Equipo_mant extends Model
             'equipos_mant.uso as uso', 'localizaciones.nombre as localizacion', 'area.nombre_a as area', 
             'equipos_mant.uso as uso', 'tipos_equipos.id as id_tipo', 'localizaciones.id as id_localizacion', 
             'area.id_a as id_area', 'tipos_equipos.nombre as nombre_tipo', 'equipos_mant.num_serie as num_serie');
+
+        if($tipo != 0){
+            $query->where('id_tipo', $tipo);
+        }
+        if($id_area != ""){
+            $query->where('equipos_mant.id_area', $id_area);
+        }
+        if($id_localizacion != 0){
+            $query->where('id_localizacion', $id_localizacion);
+        }
+
+        return $query;
     }
     public function getEquipoMantShowUpdate($id)
     {

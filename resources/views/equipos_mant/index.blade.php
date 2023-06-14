@@ -21,7 +21,60 @@
 @endif
 
 <!-- barra para buscar equipos -->
-
+<div class="col">
+  <div class="form-group">
+    <form  method="GET">
+      <div style="display: inline-block;">
+        <label for="id_e" style="display: block; margin-bottom: 5px;"><h6>ID:</h6></label>
+        <input type="text" class="form-control" name="id_e" id="id_e" autocomplete="off" value="{{$id_e}}">
+      </div>
+      <div style="display: inline-block; width: 200px;">
+        <label for="tipo" style="display: block; margin-bottom: 5px;"><h6>Tipo:</h6></label>
+        <select class="form-control" name="tipo"  id="tipo">
+          <option value="0">{{'Todos'}} </option>
+          @foreach($tiposEquipos as $tipoEquipo)
+            @if($tipoEquipo->id != 0)
+              @if($tipoEquipo->id == $tipo)
+                <option value="{{$tipoEquipo->id}}" selected>{{$tipoEquipo->nombre}} </option>
+              @else
+                <option value="{{$tipoEquipo->id}}">{{$tipoEquipo->nombre}} </option>
+              @endif
+            @endif
+          @endforeach
+        </select>
+      </div>
+      <div style="display: inline-block; width: 200px;">
+        <label for="id_area" style="display: block; margin-bottom: 5px;"><h6>Area:</h6></label>
+        <select class="form-control" name="id_area"  id="id_area">
+          <option value="0">{{'Todos'}} </option>
+          @foreach($areas as $area)
+            @if($area->id_a == $id_area)
+              <option value="{{$area->id_a}}" selected>{{$area->nombre_a}} </option>
+            @else
+              <option value="{{$area->id_a}}">{{$area->nombre_a}} </option>
+            @endif
+          @endforeach
+        </select>
+      </div>
+      <div style="display: inline-block; width: 200px;">
+        <label for="id_localizacion" style="display: block; margin-bottom: 5px;"><h6>Localizaciones:</h6></label>
+        <select class="form-control" name="id_localizacion"  id="id_localizacion">
+          <option value="0">{{'Todos'}} </option>
+          @foreach($localizaciones as $localizacion)
+            @if($localizacion->id == $id_localizacion)
+              <option value="{{$localizacion->id}}" selected>{{$localizacion->nombre}} </option>
+            @else
+              <option value="{{$localizacion->id}}">{{$localizacion->nombre}} </option>
+            @endif
+          @endforeach
+        </select>
+      </div>
+      <div style="display: inline-block;">
+        <button type="submit" class="btn btn-default"> Buscar</button>
+      </div>
+    </form>          
+  </div>
+</div>
 <!-- tabla de datos -->
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
