@@ -50,7 +50,11 @@
     <div class="row">
         <div class="col-md-4">
             <strong>Falla: </strong>
-            <p>{{$solicitud->falla}}</p>
+            @if($solicitud->falla)
+                <p>{{$solicitud->falla}}</p>
+            @else
+                <p style="color:gainsboro">N/A</p>
+            @endif
         </div>
         <div class="col-md-4">
             <strong>Solicitante: </strong>

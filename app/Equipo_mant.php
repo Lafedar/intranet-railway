@@ -14,23 +14,8 @@ class Equipo_mant extends Model
             return $query -> where('equipos_mant.id','LIKE',"%$id_e%");
         }
     }
-    /*public function scopeTipo($query, $tipo){
-        if($tipo){
-            return $query -> where('id_tipo','LIKE',"%$tipo%");
-        }
-    }
-    public function scopeArea($query, $id_area){
-        if($id_area){
-            return $query -> where('id_a','LIKE',"%$id_area%");
-        }
-    }
-    public function scopeLocalizacion($query, $id_localizacion){
-        if($id_localizacion){
-            return $query -> where('id_localizacion','LIKE',"%$id_localizacion%");
-        }
-    }*/
-    public function scopeRelaciones_index ($query, $tipo, $id_area, $id_localizacion)
-    {
+
+    public function scopeRelaciones_index ($query, $tipo, $id_area, $id_localizacion){
         $query->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
             ->leftjoin('area', 'area.id_a', 'equipos_mant.id_area')
             ->leftjoin('tipos_equipos', 'tipos_equipos.id', 'equipos_mant.id_tipo')
@@ -53,8 +38,7 @@ class Equipo_mant extends Model
 
         return $query;
     }
-    public function getEquipoMantShowUpdate($id)
-    {
+    public function getEquipoMantShowUpdate($id){
         $equipo_mant = DB::table('equipos_mant')
             ->leftjoin('localizaciones', 'localizaciones.id', 'equipos_mant.id_localizacion')
             ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
@@ -67,8 +51,7 @@ class Equipo_mant extends Model
 
         return $equipo_mant;
     }
-    public static function getEquipmentToUpdate($id)
-    {
+    public static function getEquipmentToUpdate($id){
         return self::where('id', $id)->first();
     }
 }

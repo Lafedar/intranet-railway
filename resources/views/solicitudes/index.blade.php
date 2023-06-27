@@ -86,7 +86,7 @@
           <option value="0">{{'Todos'}} </option>
           @foreach($usuarios as $usuario)
             @foreach($model_as_roles as $model_as_rol)
-              @if(($model_as_rol->role_id == 22 || $model_as_rol->role_id == 25) and $usuario->id == $model_as_rol->model_id)
+              @if(($model_as_rol->role_id == 21 || $model_as_rol->role_id == 24 || $model_as_rol->role_id == 25 || $model_as_rol->role_id == 30) and $usuario->id == $model_as_rol->model_id)
                 @if($usuario->id == $id_encargado)
                   <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
                 @else
@@ -159,8 +159,6 @@
             <td>
               @if($solicitud->nombre_encargado)
                 {{$solicitud->nombre_encargado}}
-              @elseif($solicitud->tipo_solicitud == "Proyectos de ingenieria")
-                <p style="color:gainsboro">N/A</p>
               @else
                 <p style="color:gainsboro">Sin asignar</p>
               @endif
@@ -177,12 +175,10 @@
                     </div>
                   @endcan
                   @can('asignar-solicitud')
-                    @if($solicitud->tipo_solicitud != "Proyectos de ingenieria")
-                      @if(!$solicitud->nombre_encargado)
-                        <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                          <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                        </div>
-                      @endif  
+                    @if(!$solicitud->nombre_encargado)
+                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                        <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+                      </div>
                     @endif
                   @endcan
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
@@ -306,7 +302,8 @@
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
-  function fnOpenModalStore() {
+  function fnOpenModalStore() 
+  {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_solicitud/";
     var closeButton2 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
@@ -486,7 +483,7 @@
       });
     });
   }
-
+    
   function checkAll() {
     // Obtén el estado actual del checkbox "checkAll"
     var checkAllCheckbox = document.getElementById("checkAll");
@@ -528,95 +525,193 @@
       });
     }
   }
-  function Report() {
-    // Obtener todos los checkboxes seleccionados
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkAll)');
-
-    // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
-    if (checkboxes.length === 0) {
-      alert("Por favor, seleccione al menos una solicitud.");
-      return;
-    }
-
-    // Crear un nuevo documento PDF
-    var doc = new jsPDF('p', 'mm', 'a4');
-    // Definir la variable pageHeight
-    var pageHeight = doc.internal.pageSize.height;
-
-    // Agregar el título al PDF 
-    doc.setFontSize(14);
-    doc.setFontStyle("bold");
-    doc.text("Solicitudes seleccionadas", 10, 10);
-    doc.setLineWidth(0.5); // Establecer el grosor del subrayado
-    doc.line(10, 12, 72, 12); // Dibujar una línea debajo del texto
-
-    // Agregar las solicitudes seleccionadas al PDF
-    var y = 20;
-    for (var i = 0; i < checkboxes.length; i++) {
-      var checkbox = checkboxes[i];
-      var row = checkbox.closest('tr');
-      var id = row.querySelector('td:nth-child(2)').textContent.trim();
-      var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
-      var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
-      var estado = row.querySelector('td:nth-child(6)').textContent.trim();
-      var falla = row.querySelector('td:nth-child(7)').textContent.trim();
-      var fechaEmision = row.querySelector('td:nth-child(8)').textContent.trim();
-      var solicitante = row.querySelector('td:nth-child(9)').textContent.trim();
-      var descripcion = row.querySelector('td:nth-child(10)').textContent.trim();
-      // Ajustar el diseño del contenido del PDF
-      var content = [
-        { label: "ID: ", value: id, x: 10, y: y },
-        { label: "Título: ", value: titulo, x: 50, y: y },
-        { label: "Equipo: ", value: equipo, x: 10, y: y + 5 },
-        { label: "Estado: ", value: estado, x: 50, y: y + 5 },
-        { label: "Falla: ", value: falla, x: 110, y: y + 5 },
-        { label: "Fecha: ", value: fechaEmision, x: 10, y: y + 10 },
-        { label: "Solicitante: ", value: solicitante, x: 50, y: y + 10 },
-        { label: "Descripcion: ", value: descripcion, x: 10, y: y + 15 }
-      ];
-
-      doc.setFontSize(10);
-      doc.setFontStyle("normal");
-      var lineHeight = 5; // Altura de línea
-      var totalHeight = 0;
-      content.forEach(function(item) {
-        doc.setFontStyle("bold"); // Establecer el estilo en negrita
-        doc.text(item.label, item.x, item.y);
-        // Obtener la longitud del label en unidades del PDF
-        var labelWidth = doc.getStringUnitWidth(item.label) * doc.internal.getFontSize() / doc.internal.scaleFactor; 
-        // Verificar si el valor es null o undefined y asignar "N/A" en su lugar
-        var value = (item.value !== null && item.value !== undefined && item.value.trim() !== '') ? item.value : "N/A";
-
-        doc.setFontStyle("normal"); // Restaurar el estilo a normal para el valor
-
-        // Dividir el valor de descripción en varias líneas si es necesario
-        var lines = doc.splitTextToSize(value, 160); // 160 es el ancho máximo de la descripción
-
-        // Mostrar la descripción en la posición correcta
-        lines.forEach(function(line) {
-          doc.text(line, item.x + labelWidth, item.y);
-          item.y += 3; // Incrementar la posición Y para la próxima línea
-          y += 3;
-        });
-
-        // Calcular la altura total de la descripción en unidades del PDF
-        totalHeight = lines.length * lineHeight; 
-
+  
+  function getHistoricos(id) {
+    return new Promise(function(resolve, reject) {
+      $.ajax({
+        url: window.location.protocol + '//' + window.location.host + "/getHistoricos/" + id,
+        method: 'GET',
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(error) {
+          reject(error);
+        }
       });
-      // Verificar si es necesario hacer un salto de página
-      if (y + totalHeight + lineHeight > pageHeight) {
-        doc.addPage(); // Agregar una nueva página al PDF
-        y = 10; // Establecer la posición Y al inicio de la página
-        totalHeight = 0; // Reiniciar la altura total de la descripción en la nueva página
-      }
-      // Agregar una línea divisoria al final de la solicitud
-      doc.setLineWidth(0.5);
-      doc.setDrawColor(0, 0, 0);
-      doc.line(10, y - 5, 200, y - 5);
-    }
-    // Guardar el PDF
-    doc.save('reporte.pdf');
+    });
   }
+
+async function Report() {
+  // Obtener todos los checkboxes seleccionados
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkAll)');
+
+  // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
+  if (checkboxes.length === 0) {
+    alert("Por favor, seleccione al menos una solicitud.");
+    return;
+  }
+
+  // Crear un nuevo documento PDF
+  var doc = new jsPDF('p', 'mm', 'a4');
+  // Definir la variable pageHeight
+  var pageHeight = doc.internal.pageSize.height;
+  // Agregar el título al PDF
+  doc.setFontSize(14);
+  doc.setFontStyle("bold");
+  doc.text("Solicitudes seleccionadas", 10, 10);
+  doc.setLineWidth(0.5); // Establecer el grosor del subrayado
+  doc.line(10, 12, 72, 12); // Dibujar una línea debajo del texto
+
+  // Agregar las solicitudes seleccionadas al PDF
+  var y = 20;
+  doc.setFontSize(10);
+  for (var i = 0; i < checkboxes.length; i++) {
+    var checkbox = checkboxes[i];
+    var row = checkbox.closest('tr');
+    var id = row.querySelector('td:nth-child(2)').textContent.trim();
+    var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
+    var tipo = row.querySelector('td:nth-child(4)').textContent.trim();
+    var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
+    var falla = row.querySelector('td:nth-child(7)').textContent.trim();
+
+    // Ajustar el diseño del contenido del PDF
+    var content = [
+      { label: "ID: ", value: id, x: 10, y: y },
+      { label: "Título: ", value: titulo, x: 50, y: y },
+    ];
+
+    if (tipo == "Especializado") {
+      content.push({ label: "Equipo: ", value: equipo, x: 10, y: y + 5 });
+      content.push({ label: "Falla: ", value: falla, x: 50, y: y + 5 });
+    } else if (tipo == "Edilicio") {
+      content.push({ label: "Falla: ", value: falla, x: 10, y: y + 5 });
+    }
+
+    if (y > pageHeight - 25){
+      y = 20;
+      console.log("Ingresa con y: ", y, " e id: ", id);
+      for (var k = 0; k < content.length; k++) {
+        var item = content[k];
+        doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: "
+        doc.text(item.label, item.x, item.y);
+        doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+        var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+        var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+        doc.text(item.value, valueX, item.y);
+
+      }
+    }
+    
+
+    try {
+      // Obtener los históricos de la solicitud actual
+      var historicos = await getHistoricos(id);
+      // Agregar los históricos al contenido del PDF
+      if (tipo == "Especializado" || tipo == "Edilicio") {
+        var historicoOffset = 10;
+      } else {
+        var historicoOffset = 5;
+      }
+
+      for (var j = 0; j < historicos.length; j++) {
+        var historico = historicos[j];
+        var estado = historico.estado;
+        var fecha = historico.fecha;
+        var nombre = historico.nombre;
+        var descripcion = historico.descripcion;
+        var repuestos = historico.repuestos;
+        
+        var historicoContent = [
+          { label: "Histórico " + (j + 1) + ": ", value: "", x: 10, y: y + historicoOffset },
+          { label: "Fecha: ", value: fecha, x: 20, y: y + historicoOffset + 5 },
+          { label: "Estado: ", value: estado, x: 95, y: y + historicoOffset + 5 },
+          { label: "Nombre: ", value: nombre, x: 20, y: y + historicoOffset + 10 },
+        ];
+
+        if (repuestos) {
+          si = "Si";
+          historicoContent.push({ label: "Repuestos: ", value: si, x: 95, y: y + historicoOffset + 10 });
+        } else {
+          no = "No";
+          historicoContent.push({ label: "Repuestos: ", value: no, x: 95, y: y + historicoOffset + 10 });
+        }
+
+        if (descripcion) {
+          nada = "";
+          historicoContent.push({ label: "Descripción: ", value: nada, x: 20, y: y + historicoOffset + 15 });
+        }
+
+        // Incrementar el desplazamiento para el próximo histórico
+        if (descripcion) {
+          historicoOffset += 20;
+          var lines = doc.splitTextToSize(descripcion, 150); // Dividir la descripción en líneas de 150 unidades de ancho
+          for (var k = 0; k < lines.length; k++) {
+            historicoContent.push({ label: "", value: lines[k], x: 20, y: y + historicoOffset + (k * 5) }); // Añadir cada línea como una entrada separada
+          }
+          historicoOffset += lines.length * 5;
+        } else {
+          historicoOffset += 15;
+        }
+        content = content.concat(historicoContent);
+        console.log(historicoOffset);
+      }
+      doc.setLineWidth(0.5);
+      doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
+
+      // Agregar el contenido al PDF
+      var contador = 0;
+      var bandera = 0;
+      for (var k = 0; k < content.length; k++) {
+        var item = content[k];
+        if(item.y >= pageHeight -10 && bandera == 0){
+          doc.addPage(); // Agregar una nueva página al documento
+          y = 20; // Reiniciar la posición vertical en la nueva página
+          bandera = 1;
+
+          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+          doc.text(item.label, item.x, item.y - 280);
+          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+          doc.text(item.value, valueX, item.y - 280);
+          contador += 5;
+        }else if(item.y >= pageHeight -10 && bandera == 1){
+          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+          //console.log("iteracion", item.label, item.value, item.x, item.y);
+          doc.text(item.label, item.x, item.y - 280);
+          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+          doc.text(item.value, valueX, item.y - 280);
+          contador += 5;
+        }else{
+          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+          //console.log("iteracion", item.label, item.value, item.x, item.y);
+          doc.text(item.label, item.x, item.y);
+          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+          doc.text(item.value, valueX, item.y);
+        }
+        y = item.y + 5;
+      }
+
+      // Incrementar la posición vertical para la próxima solicitud
+    } catch (error) {
+      console.error('Error al obtener los históricos:', error);
+    }
+  }
+  // Guardar el documento PDF después de procesar todas las solicitudes
+  doc.save('reporte.pdf');
+}
 
   $(document).ready(function(){
     $("#id").keyup(function(){
@@ -721,8 +816,7 @@
   });
 
   //modal assing
-  function fnOpenModalAssing(id)
-  {
+  function fnOpenModalAssing(id){
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_assing_solicitud/" + id,

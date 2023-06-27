@@ -10,10 +10,8 @@ Use Session;
 use DB;
 
 
-class Equipo_mantController extends Controller
-{
-    public function index(Request $request)
-    {
+class Equipo_mantController extends Controller{
+    public function index(Request $request){
         $equipos_mant = Equipo_mant::ID($request->get('id_e'))
         ->Relaciones_index($request->get('tipo'), $request->get('id_area'), $request->get('id_localizacion'))
         ->orderBy('id_e')
@@ -34,13 +32,11 @@ class Equipo_mantController extends Controller
             'equipos_mant' => $equipos_mant]);
     }
 
-    public function show_store_equipo_mant()
-    {
+    public function show_store_equipo_mant(){
         return view('equipos_mant.create');       
     }
 
-    public function store_equipo_mant(Request $request)
-    {        
+    public function store_equipo_mant(Request $request){        
         $equipo_mant = new Equipo_mant;
         $equipo_mant->id = $request['id'];
         $equipo_mant->id_tipo = $request['tipo'];
@@ -50,8 +46,7 @@ class Equipo_mantController extends Controller
         $equipo_mant->descripcion = $request['descripcion'];
         $equipo_mant->id_area = $request['area'];
         $equipo_mant->id_localizacion = $request['localizacion'];
-        if($request['uso'])
-        {
+        if($request['uso']){
             $equipo_mant->uso = 1;
         }
         else{$equipo_mant->uso = 0;}
@@ -62,24 +57,19 @@ class Equipo_mantController extends Controller
         return redirect ('equipos_mant');
     }
 
-    public function show_update_equipo_mant($id)
-    {
+    public function show_update_equipo_mant($id){
         $equipoMantModel = new Equipo_mant();
         $equipo_mant = $equipoMantModel->getEquipoMantShowUpdate($id);
 
         return view('equipos_mant.update', ['equipo_mant' => $equipo_mant]);       
     }
 
-    public function update_equipo_mant(Request $request)
-    {
-        if($request['id'] != $request['id_vieja'])
-        {
+    public function update_equipo_mant(Request $request){
+        if($request['id'] != $request['id_vieja']){
             $aux = equipos_mant::getEquipmentToUpdate($request['id']);
 
-            foreach ($aux as $equipo) 
-            {
-                if($request['id'] == $equipo->id)
-                {
+            foreach ($aux as $equipo) {
+                if($request['id'] == $equipo->id){
                     Session::flash('message','El ID ingresado ya se encuentra asignada');
                     Session::flash('alert-class', 'alert-warning');
                     return redirect ('equipos_mant');
@@ -87,8 +77,7 @@ class Equipo_mantController extends Controller
             }
         }
         $uso = 0;
-        if($request['uso'])
-        {
+        if($request['uso']){
             $uso = 1;
         }
         else{$uso = 0;}
@@ -109,13 +98,11 @@ class Equipo_mantController extends Controller
         return redirect('equipos_mant');
     }
 
-    public function select_tipo_equipo()
-    {
+    public function select_tipo_equipo(){
         return DB::table('tipos_equipos')->get();
     }   
 
-    public function select_area_localizacion()
-    {
+    public function select_area_localizacion(){
         return [DB::table('area')->get(), DB::table('localizaciones')->get()];
     }   
  

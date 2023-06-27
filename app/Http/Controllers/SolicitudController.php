@@ -37,7 +37,7 @@ class SolicitudController extends Controller{
             $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-asignadas')) {
             // Empleados - Solicitudes asignadas
-            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->where('id_tipo_solicitud', '!=', 3)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
             // Empleados que pueden asignar
             $solicitudes = $solicitudesQuery->where(function ($query) use ($userAutenticado) {
@@ -83,6 +83,19 @@ class SolicitudController extends Controller{
         ]);
     }
 
+    public static function getHistoricos($solicitud){
+        return DB::table('historico_solicitudes')
+        ->leftJoin('users', 'users.id', 'historico_solicitudes.id_usuario')
+        ->leftJoin('estados', 'estados.id', 'historico_solicitudes.id_estado')
+        ->select('estados.nombre as estado', 
+        'historico_solicitudes.fecha as fecha', 
+        'users.name as nombre', 
+        'historico_solicitudes.descripcion as descripcion', 
+        'historico_solicitudes.repuestos as repuestos')
+        ->where('id_solicitud', $solicitud)
+        ->get();
+    }
+
     public function show_store_solicitud(){
         return view('solicitudes.create');       
     }
@@ -96,6 +109,7 @@ class SolicitudController extends Controller{
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
 
         $solicitud = new Solicitud;
+        $solicitud->id = $aux+1;
         $solicitud->titulo = $request['titulo'];
         if($request['tipo_solicitud'] == 1){
             $solicitud->id_equipo = $request['equipo'];
@@ -248,7 +262,7 @@ class SolicitudController extends Controller{
     }   
 
     public function select_users(){
-        return [ Solicitud::getUsers(),
+        return [Solicitud::getUsers(),
         Solicitud::getModelHasRoles()];
     }  
 

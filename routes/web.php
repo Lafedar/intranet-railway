@@ -361,10 +361,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_solicitud','SolicitudController@store_solicitud')->name('store_solicitud');
 
   Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes')
+    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos')
     ->name('show_assing_solicitud');
   Route::post('assing_solicitud','SolicitudController@assing_solicitud')
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes')
+    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos')
     ->name('assing_solicitud');
 
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])
@@ -385,6 +385,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
   Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
+  Route::get('getHistoricos/{solicitud}', ['uses' => 'SolicitudController@getHistoricos'])->name('getHistoricos');
 });
 
 Route::group(['middleware' => ['auth']], function () 

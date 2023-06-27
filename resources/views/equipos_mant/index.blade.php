@@ -46,7 +46,7 @@
       <div style="display: inline-block; width: 200px;">
         <label for="id_area" style="display: block; margin-bottom: 5px;"><h6>Area:</h6></label>
         <select class="form-control" name="id_area"  id="id_area">
-          <option value="0">{{'Todos'}} </option>
+          <option value="">{{'Todos'}} </option>
           @foreach($areas as $area)
             @if($area->id_a == $id_area)
               <option value="{{$area->id_a}}" selected>{{$area->nombre_a}} </option>
