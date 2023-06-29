@@ -588,8 +588,8 @@ async function Report() {
     }
 
     if (y > pageHeight - 25){
+      doc.addPage(); // Agregar una nueva página al documento
       y = 20;
-      console.log("Ingresa con y: ", y, " e id: ", id);
       for (var k = 0; k < content.length; k++) {
         var item = content[k];
         doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: "
@@ -604,7 +604,6 @@ async function Report() {
       }
     }
     
-
     try {
       // Obtener los históricos de la solicitud actual
       var historicos = await getHistoricos(id);
@@ -655,7 +654,6 @@ async function Report() {
           historicoOffset += 15;
         }
         content = content.concat(historicoContent);
-        console.log(historicoOffset);
       }
       doc.setLineWidth(0.5);
       doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
@@ -666,33 +664,36 @@ async function Report() {
       for (var k = 0; k < content.length; k++) {
         var item = content[k];
         if(item.y >= pageHeight -10 && bandera == 0){
+          console.log("tamaño de pagina:", pageHeight);
           doc.addPage(); // Agregar una nueva página al documento
           y = 20; // Reiniciar la posición vertical en la nueva página
           bandera = 1;
 
           doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          doc.text(item.label, item.x, item.y - 280);
+          doc.text(item.label, item.x, item.y - 287);
           doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
 
           var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
           var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
-          doc.text(item.value, valueX, item.y - 280);
+          doc.text(item.value, valueX, item.y - 287);
           contador += 5;
+          console.log("entra al primero: ", item.value, "item.y: ", item.y);
+          y = item.y - 287;
         }else if(item.y >= pageHeight -10 && bandera == 1){
           doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          //console.log("iteracion", item.label, item.value, item.x, item.y);
-          doc.text(item.label, item.x, item.y - 280);
+          doc.text(item.label, item.x, item.y - 287);
           doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
 
           var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
           var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
-          doc.text(item.value, valueX, item.y - 280);
+          doc.text(item.value, valueX, item.y - 287);
           contador += 5;
+          console.log("entra al segundo: ", item.value, "item.y: ", item.y );
+          y = item.y - 287;
         }else{
           doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          //console.log("iteracion", item.label, item.value, item.x, item.y);
           doc.text(item.label, item.x, item.y);
           doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
 
@@ -700,8 +701,15 @@ async function Report() {
           var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
           doc.text(item.value, valueX, item.y);
+          console.log("entra al tercero: ", item.value, "item.y: ", item.y);
         }
-        y = item.y + 5;
+        doc.text("prueba", 20, 295);
+        console.log("Item y separado: ", item.y);
+        var aux = item.y;
+        while(aux > pageHeight){
+          aux -= pageHeight;
+        }
+        y = aux + 10;
       }
 
       // Incrementar la posición vertical para la próxima solicitud

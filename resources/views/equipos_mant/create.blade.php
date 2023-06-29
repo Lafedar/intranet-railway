@@ -7,7 +7,7 @@
     </div>
     <div class="col">
       <label for="title"><strong>Tipo:</strong></label>
-      <select class="form-control" name="tipo" id="tipo" required></select>
+      <select class="form-control" name="tipo_e" id="tipo_e" required></select>
     </div>
   </div>
   <div class="row">

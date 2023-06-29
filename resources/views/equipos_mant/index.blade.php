@@ -213,8 +213,9 @@
         var html_select = '<option value="">Seleccione </option>'
         for(var i = 1; i<data.length; i ++){
           html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+          
         }
-        $('#tipo').html(html_select);
+        $('#tipo_e').html(html_select);
       });
     });
   }
