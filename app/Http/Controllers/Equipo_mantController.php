@@ -39,7 +39,7 @@ class Equipo_mantController extends Controller{
     public function store_equipo_mant(Request $request){        
         $equipo_mant = new Equipo_mant;
         $equipo_mant->id = $request['id'];
-        $equipo_mant->id_tipo = $request['tipo'];
+        $equipo_mant->id_tipo = $request['tipo_e'];
         $equipo_mant->marca = $request['marca'];
         $equipo_mant->modelo = $request['modelo'];
         $equipo_mant->num_serie = $request['num_serie'];

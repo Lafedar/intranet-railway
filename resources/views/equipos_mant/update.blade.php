@@ -14,7 +14,7 @@
   <div class="row">
     <div class="col">
       <label for="title"><strong>Marca:</strong></label>
-      <input type="text" name="marca" class="form-control" autocomplete="off" id="marca" value="{{ $equipo_mant->marca }}" required>
+      <input type="text" name="marca" class="form-control" autocomplete="off" id="marca" value="{{ $equipo_mant->marca }}">
     </div>
     <div class="col">
       <label for="title"><strong>Modelo:</strong></label>
