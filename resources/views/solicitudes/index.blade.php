@@ -565,6 +565,9 @@ async function Report() {
   // Agregar las solicitudes seleccionadas al PDF
   var y = 20;
   doc.setFontSize(10);
+
+  var content = [];
+
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i];
     var row = checkbox.closest('tr');
@@ -575,10 +578,8 @@ async function Report() {
     var falla = row.querySelector('td:nth-child(7)').textContent.trim();
 
     // Ajustar el diseño del contenido del PDF
-    var content = [
-      { label: "ID: ", value: id, x: 10, y: y },
-      { label: "Título: ", value: titulo, x: 50, y: y },
-    ];
+    content.push({label: "ID: ", value: id, x: 10, y: y })
+    content.push({ label: "Título: ", value: titulo, x: 50, y: y })
 
     if (tipo == "Especializado") {
       content.push({ label: "Equipo: ", value: equipo, x: 10, y: y + 5 });
@@ -587,23 +588,6 @@ async function Report() {
       content.push({ label: "Falla: ", value: falla, x: 10, y: y + 5 });
     }
 
-    if (y > pageHeight - 25){
-      doc.addPage(); // Agregar una nueva página al documento
-      y = 20;
-      for (var k = 0; k < content.length; k++) {
-        var item = content[k];
-        doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: "
-        doc.text(item.label, item.x, item.y);
-        doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-        var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-        var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-        doc.text(item.value, valueX, item.y);
-
-      }
-    }
-    
     try {
       // Obtener los históricos de la solicitud actual
       var historicos = await getHistoricos(id);
@@ -658,63 +642,46 @@ async function Report() {
       doc.setLineWidth(0.5);
       doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
 
-      // Agregar el contenido al PDF
-      var contador = 0;
-      var bandera = 0;
-      for (var k = 0; k < content.length; k++) {
-        var item = content[k];
-        if(item.y >= pageHeight -10 && bandera == 0){
-          console.log("tamaño de pagina:", pageHeight);
-          doc.addPage(); // Agregar una nueva página al documento
-          y = 20; // Reiniciar la posición vertical en la nueva página
-          bandera = 1;
-
-          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          doc.text(item.label, item.x, item.y - 287);
-          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-          doc.text(item.value, valueX, item.y - 287);
-          contador += 5;
-          console.log("entra al primero: ", item.value, "item.y: ", item.y);
-          y = item.y - 287;
-        }else if(item.y >= pageHeight -10 && bandera == 1){
-          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          doc.text(item.label, item.x, item.y - 287);
-          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-          doc.text(item.value, valueX, item.y - 287);
-          contador += 5;
-          console.log("entra al segundo: ", item.value, "item.y: ", item.y );
-          y = item.y - 287;
-        }else{
-          doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-          doc.text(item.label, item.x, item.y);
-          doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-          var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-          var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-          doc.text(item.value, valueX, item.y);
-          console.log("entra al tercero: ", item.value, "item.y: ", item.y);
-        }
-        doc.text("prueba", 20, 295);
-        console.log("Item y separado: ", item.y);
-        var aux = item.y;
-        while(aux > pageHeight){
-          aux -= pageHeight;
-        }
-        y = aux + 10;
-      }
+      y += historicoOffset;
 
       // Incrementar la posición vertical para la próxima solicitud
     } catch (error) {
       console.error('Error al obtener los históricos:', error);
+    }
+  }
+  // Agregar el contenido al PDF
+  var avance = 20;
+  var contador = 1;
+  var auxiliarY = 0;
+  for (var k = 0; k < content.length; k++) {
+    var item = content[k];
+    if(auxiliarY >= ((pageHeight * contador)-20)){
+      doc.addPage();
+      contador += 1;
+      avance += 20;
+      console.log("Agrego pagina, auxiliarY: ", auxiliarY, "/ contador: ", contador);
+    }
+    if(contador > 1){
+      auxiliarY = (item.y-(pageHeight*(contador-1))+avance);
+      doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+      doc.text(item.label, item.x, auxiliarY);
+      doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+      var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+      var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+      doc.text(item.value, valueX, auxiliarY);
+    }else{
+      doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+      doc.text(item.label, item.x, item.y);
+      doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+      var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+      var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+      doc.text(item.value, valueX, item.y);
+      auxiliarY = item.y;
+      console.log("primero item.y: ", item.y);
     }
   }
   // Guardar el documento PDF después de procesar todas las solicitudes
