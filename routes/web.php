@@ -370,9 +370,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])
     ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Ver-Todas-Las-Solicitudes-Y-Proyectos')
     ->name('show_update_solicitud');
-  Route::post('update_solicitud','SolicitudController@update_solicitud')
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Ver-Todas-Las-Solicitudes-Y-Proyectos')
-    ->name('update_solicitud');
+  Route::post('update_solicitud','SolicitudController@update_solicitud')->name('update_solicitud');
+
+  Route::get('show_reclamar_solicitud/{solicitud}',['uses' => 'SolicitudController@show_reclamar_solicitud'])->name('show_reclamar_solicitud');
+  Route::post('reclaim_solicitud','SolicitudController@reclaim_solicitud')->name('reclaim_solicitud');
 
   Route::get('show_mostrar_equipos_mant',['uses' => 'SolicitudController@show_mostrar_equipos_mant'])->name('show_mostrar_equipos_mant');
   Route::post('mostrar_equipos_mant','SolicitudController@mostrar_equipos_mant')->name('mostrar_equipos_mant');

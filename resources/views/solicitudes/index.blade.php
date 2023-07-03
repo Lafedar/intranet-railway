@@ -182,9 +182,12 @@
                     @endif
                   @endcan
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
-                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                    <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
-                  </div>
+                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
+                    </div>
+                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
+                    </div>
                   @endif
                   @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $userAutenticado)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
@@ -264,8 +267,15 @@
   function manejarSeleccion(idEquipo) {
     $('#equipo').val(idEquipo).trigger('change');
   }
+
   var ruta = '{{ route('mostrar_equipos_mant') }}';
+  var ruta_create = '{{ route('store_solicitud') }}';
+  var ruta_update = '{{ route('update_solicitud') }}';
+  var ruta_assing = '{{ route('assing_solicitud') }}';
+  var ruta_reclaim = '{{ route('reclaim_solicitud') }}';
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
   var closeButton3 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
   //modal store
   function fnOpenModalShowEquipos() {
     var myModal3 = new bootstrap.Modal(document.getElementById('show3'));
@@ -301,12 +311,7 @@
       },
     });
   }
-  
-  var ruta_create = '{{ route('store_solicitud') }}';
-  var ruta_update = '{{ route('update_solicitud') }}';
-  var ruta_assing = '{{ route('assing_solicitud') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+
   //modal store
   function fnOpenModalStore() 
   {
@@ -842,6 +847,53 @@ async function Report() {
     });
   }
   
+  function fnOpenModalReclaim(id){
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/show_reclamar_solicitud/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow").empty();
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+
+        // Agregar el botón "Cerrar y Guardar" al footer
+        $("#modalfooter").append(closeButton);
+        $("#modalfooter").append(saveButton);
+
+        // Cambiar la acción del formulario
+        $('#myForm').attr('action', ruta_reclaim);
+
+        // Mostrar el modal
+        myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
+      },
+    });
+  }
+
+  // Obtener el valor del parámetro "idsolicitud" de la URL
+  var urlParams = new URLSearchParams(window.location.search);
+  var idSolicitud = urlParams.get('idsolicitud');
+
+  // Obtener el valor del parámetro "source" de la URL
+  var source = urlParams.get('source');
+
+  // Verificar si el acceso proviene del correo electrónico
+  if (source === 'email') {
+    // Ejecutar la función correspondiente con el valor de "idSolicitud"
+    fnOpenModalReclaim(idSolicitud);
+  }else if(source === 'detalle'){
+    fnOpenModalShow(idSolicitud);
+  }
+
 </script>
 
 @stop

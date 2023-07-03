@@ -217,10 +217,10 @@ class Solicitud extends Model{
         ->where('users.id', $idUser)
         ->first());
     }
-    public static function obtenerMailNombreSolicitante($idSolicitud){
+    public static function obtenerMailNombreTituloSolicitante($idSolicitud){
         $consulta = DB::table('users')
         ->leftJoin('solicitudes', 'solicitudes.id_solicitante', 'users.id')
-        ->select('users.email as email', 'users.name as nombre')
+        ->select('users.email as email', 'users.name as nombre', 'solicitudes.titulo as titulo')
         ->where('solicitudes.id', $idSolicitud)
         ->first();
 

@@ -13,17 +13,19 @@ class cambioDeEstadoSolicitud extends Mailable
     public $nombre;
     public $idSolicitud;
     public $estado;
+    public $titulo;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($nombre, $idSolicitud, $estado)
+    public function __construct($nombre, $idSolicitud, $estado, $titulo)
     {
         $this->nombre = $nombre;
         $this->idSolicitud = $idSolicitud;
         $this->estado = $estado;
+        $this->titulo = $titulo;
     }
 
     /**

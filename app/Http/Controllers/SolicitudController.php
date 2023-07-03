@@ -21,8 +21,7 @@ use DB;
 
 
 class SolicitudController extends Controller{
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         $userAutenticado = Auth::id();
         $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado($userAutenticado);
     
@@ -189,17 +188,19 @@ class SolicitudController extends Controller{
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
-        $mailNombreSolicitante = Solicitud::obtenerMailNombreSolicitante($request['id_solicitud']);
+        $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
         $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
 
         //da error cuando el correo no existe
         if($request['estado'] == 5){
             try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
+                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
             } catch (\Exception $e) {}
         }else{
             try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], 
+                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
             } catch (\Exception $e) {}
         }
         
@@ -237,12 +238,13 @@ class SolicitudController extends Controller{
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
-        $mailNombreSolicitante = Solicitud::obtenerMailNombreSolicitante($request['id_solicitud']);
+        $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
         $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
 
         //da error cuando el correo no existe
         try {
-            Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], $nombreEstadoSolicitud));
+            Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
+                $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
         } catch (\Exception $e) {}
 
         Session::flash('message','Solicitud asignada con éxito');
@@ -288,6 +290,7 @@ class SolicitudController extends Controller{
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
+
     public function aprobar_solicitud($id){
         $solicitud = Solicitud::find($id);
 
@@ -308,6 +311,40 @@ class SolicitudController extends Controller{
         $nuevo_historico->save();
 
         Session::flash('message','Solicitud aprobada con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect('solicitudes');
+    }
+
+    public function show_reclamar_solicitud($id){
+        //migrar a modelo
+        $solicitud = Solicitud::
+            find($id);
+
+        return view('solicitudes.reclaim', [
+            'solicitud' => $solicitud
+        ]);       
+    }
+
+    public function reclaim_solicitud(Request $request){
+        $solicitud = Solicitud::find($request['id_solicitud']);
+
+        $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+        $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
+        Solicitud::updateSoliciutud($request['id_solicitud'], 7, $fechaActual);
+        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+
+        $nuevo_historico = new Historico_solicitudes;
+        $nuevo_historico->id_solicitud = $request['id_solicitud'];
+        $nuevo_historico->id_estado = 7; //id de estado
+        $nuevo_historico->descripcion = $request['descripcion'];
+        $nuevo_historico->repuestos = null;
+        $nuevo_historico->descripcion_repuestos = null;
+        $nuevo_historico->actual = 1;
+        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->fecha = $fechaActual;    
+        $nuevo_historico->save();
+
+        Session::flash('message','Solicitud reclamada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
