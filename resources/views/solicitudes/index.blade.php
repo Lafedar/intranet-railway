@@ -186,11 +186,17 @@
                     <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                   </div>
                   @endif
-                  @can('eliminar-solicitud')
-                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                    <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                  </div>
-                  @endcan
+                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $userAutenticado)
+                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                    </div>
+                  @else
+                    @can('eliminar-solicitud')
+                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                        <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                      </div>
+                    @endcan
+                  @endif
                 </div>
               </div>
             </td>

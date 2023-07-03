@@ -379,7 +379,7 @@ Route::group(['middleware' => ['auth']], function ()
 
   Route::get('show_solicitud/{solicitud}', ['uses' => 'SolicitudController@show_solicitud'])->name('show_solicitud');
   Route::get('aprobar_solicitud/{solicitud}', ['uses' => 'SolicitudController@aprobar_solicitud']);
-  Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud'])->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud']);
 
   Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
