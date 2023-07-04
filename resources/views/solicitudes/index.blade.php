@@ -552,152 +552,190 @@
     });
   }
 
-async function Report() {
-  // Obtener todos los checkboxes seleccionados
-  var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkAll)');
+  async function Report() {
+    // Obtener todos los checkboxes seleccionados
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkAll)');
 
-  // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
-  if (checkboxes.length === 0) {
-    alert("Por favor, seleccione al menos una solicitud.");
-    return;
-  }
-
-  // Crear un nuevo documento PDF
-  var doc = new jsPDF('p', 'mm', 'a4');
-  // Definir la variable pageHeight
-  var pageHeight = doc.internal.pageSize.height;
-  // Agregar el título al PDF
-  doc.setFontSize(14);
-  doc.setFontStyle("bold");
-  doc.text("Solicitudes seleccionadas", 10, 10);
-  doc.setLineWidth(0.5); // Establecer el grosor del subrayado
-  doc.line(10, 12, 72, 12); // Dibujar una línea debajo del texto
-
-  // Agregar las solicitudes seleccionadas al PDF
-  var y = 20;
-  doc.setFontSize(10);
-
-  var content = [];
-
-  for (var i = 0; i < checkboxes.length; i++) {
-    var checkbox = checkboxes[i];
-    var row = checkbox.closest('tr');
-    var id = row.querySelector('td:nth-child(2)').textContent.trim();
-    var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
-    var tipo = row.querySelector('td:nth-child(4)').textContent.trim();
-    var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
-    var falla = row.querySelector('td:nth-child(7)').textContent.trim();
-
-    // Ajustar el diseño del contenido del PDF
-    content.push({label: "ID: ", value: id, x: 10, y: y })
-    content.push({ label: "Título: ", value: titulo, x: 50, y: y })
-
-    if (tipo == "Especializado") {
-      content.push({ label: "Equipo: ", value: equipo, x: 10, y: y + 5 });
-      content.push({ label: "Falla: ", value: falla, x: 50, y: y + 5 });
-    } else if (tipo == "Edilicio") {
-      content.push({ label: "Falla: ", value: falla, x: 10, y: y + 5 });
+    // Si no hay ningún checkbox seleccionado, mostrar un mensaje y salir de la función
+    if (checkboxes.length === 0) {
+      alert("Por favor, seleccione al menos una solicitud.");
+      return;
     }
 
-    try {
-      // Obtener los históricos de la solicitud actual
-      var historicos = await getHistoricos(id);
-      // Agregar los históricos al contenido del PDF
-      if (tipo == "Especializado" || tipo == "Edilicio") {
-        var historicoOffset = 10;
-      } else {
-        var historicoOffset = 5;
+    // Crear un nuevo documento PDF
+    var doc = new jsPDF('p', 'mm', 'a4');
+    // Definir la variable pageHeight
+    var pageHeight = doc.internal.pageSize.height;
+    // Agregar el título al PDF
+    doc.setFontSize(14);
+    doc.setFontStyle("bold");
+    doc.text("Solicitudes seleccionadas", 10, 10);
+    doc.setLineWidth(0.5); // Establecer el grosor del subrayado
+    doc.line(10, 12, 72, 12); // Dibujar una línea debajo del texto
+
+    // Agregar las solicitudes seleccionadas al PDF
+    var y = 20;
+    doc.setFontSize(10);
+
+    var content = [];
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      var checkbox = checkboxes[i];
+      var row = checkbox.closest('tr');
+      var id = row.querySelector('td:nth-child(2)').textContent.trim();
+      var titulo = row.querySelector('td:nth-child(3)').textContent.trim();
+      var tipo = row.querySelector('td:nth-child(4)').textContent.trim();
+      var equipo = row.querySelector('td:nth-child(5)').textContent.trim();
+      var falla = row.querySelector('td:nth-child(7)').textContent.trim();
+
+      // Ajustar el diseño del contenido del PDF
+      content.push({label: "ID: ", value: id, x: 10, y: y })
+      content.push({ label: "Título: ", value: titulo, x: 50, y: y })
+
+      if (tipo == "Especializado") {
+        content.push({ label: "Equipo: ", value: equipo, x: 10, y: y + 5 });
+        content.push({ label: "Falla: ", value: falla, x: 50, y: y + 5 });
+      } else if (tipo == "Edilicio") {
+        content.push({ label: "Falla: ", value: falla, x: 10, y: y + 5 });
       }
 
-      for (var j = 0; j < historicos.length; j++) {
-        var historico = historicos[j];
-        var estado = historico.estado;
-        var fecha = historico.fecha;
-        var nombre = historico.nombre;
-        var descripcion = historico.descripcion;
-        var repuestos = historico.repuestos;
-        
-        var historicoContent = [
-          { label: "Histórico " + (j + 1) + ": ", value: "", x: 10, y: y + historicoOffset },
-          { label: "Fecha: ", value: fecha, x: 20, y: y + historicoOffset + 5 },
-          { label: "Estado: ", value: estado, x: 95, y: y + historicoOffset + 5 },
-          { label: "Nombre: ", value: nombre, x: 20, y: y + historicoOffset + 10 },
-        ];
-
-        if (repuestos) {
-          si = "Si";
-          historicoContent.push({ label: "Repuestos: ", value: si, x: 95, y: y + historicoOffset + 10 });
+      try {
+        // Obtener los históricos de la solicitud actual
+        var historicos = await getHistoricos(id);
+        // Agregar los históricos al contenido del PDF
+        if (tipo == "Especializado" || tipo == "Edilicio") {
+          var historicoOffset = 10;
         } else {
-          no = "No";
-          historicoContent.push({ label: "Repuestos: ", value: no, x: 95, y: y + historicoOffset + 10 });
+          var historicoOffset = 5;
         }
 
-        if (descripcion) {
-          nada = "";
-          historicoContent.push({ label: "Descripción: ", value: nada, x: 20, y: y + historicoOffset + 15 });
-        }
+        for (var j = 0; j < historicos.length; j++) {
+          var historico = historicos[j];
+          var estado = historico.estado;
+          var fecha = historico.fecha;
+          var nombre = historico.nombre;
+          var descripcion = historico.descripcion;
+          var repuestos = historico.repuestos;
+          
+          var historicoContent = [
+            { label: "Histórico " + (j + 1) + ": ", value: "", x: 10, y: y + historicoOffset },
+            { label: "Fecha: ", value: fecha, x: 20, y: y + historicoOffset + 5 },
+            { label: "Estado: ", value: estado, x: 95, y: y + historicoOffset + 5 },
+            { label: "Nombre: ", value: nombre, x: 20, y: y + historicoOffset + 10 },
+          ];
 
-        // Incrementar el desplazamiento para el próximo histórico
-        if (descripcion) {
-          historicoOffset += 20;
-          var lines = doc.splitTextToSize(descripcion, 150); // Dividir la descripción en líneas de 150 unidades de ancho
-          for (var k = 0; k < lines.length; k++) {
-            historicoContent.push({ label: "", value: lines[k], x: 20, y: y + historicoOffset + (k * 5) }); // Añadir cada línea como una entrada separada
+          if (repuestos) {
+            si = "Si";
+            historicoContent.push({ label: "Repuestos: ", value: si, x: 95, y: y + historicoOffset + 10 });
+          } else {
+            no = "No";
+            historicoContent.push({ label: "Repuestos: ", value: no, x: 95, y: y + historicoOffset + 10 });
           }
-          historicoOffset += lines.length * 5;
-        } else {
-          historicoOffset += 15;
+
+          if (descripcion) {
+            nada = "";
+            historicoContent.push({ label: "Descripción: ", value: nada, x: 20, y: y + historicoOffset + 15 });
+          }
+
+          // Incrementar el desplazamiento para el próximo histórico
+          if (descripcion) {
+            historicoOffset += 20;
+            var lines = doc.splitTextToSize(descripcion, 150); // Dividir la descripción en líneas de 150 unidades de ancho
+            for (var k = 0; k < lines.length; k++) {
+              historicoContent.push({ label: "", value: lines[k], x: 20, y: y + historicoOffset + (k * 5) }); // Añadir cada línea como una entrada separada
+            }
+            historicoOffset += lines.length * 5;
+          } else {
+            historicoOffset += 15;
+          }
+          content = content.concat(historicoContent);
         }
-        content = content.concat(historicoContent);
+        doc.setLineWidth(0.5);
+        doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
+
+        y += historicoOffset;
+
+        // Incrementar la posición vertical para la próxima solicitud
+      } catch (error) {
+        console.error('Error al obtener los históricos:', error);
       }
-      doc.setLineWidth(0.5);
-      doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
-
-      y += historicoOffset;
-
-      // Incrementar la posición vertical para la próxima solicitud
-    } catch (error) {
-      console.error('Error al obtener los históricos:', error);
     }
+    // Agregar el contenido al PDF
+    var avance = 0;
+    var contador = 1;
+    var auxiliarY = 0;
+    var idInserted = false;
+    var equipoInserted = false;
+    var fechaInserted = false;
+    var nombreInserted = false;
+    for (var k = 0; k < content.length; k++) {
+      var item = content[k];
+      if(auxiliarY >= (pageHeight - 20) && !idInserted && !equipoInserted && !fechaInserted && !nombreInserted){
+        doc.addPage();
+        contador += 1;
+        avance += 30;
+        console.log("Agrego pagina, auxiliarY: ", auxiliarY, "/ contador: ", contador);
+      }
+      if(contador > 1){
+        auxiliarY = (item.y-(pageHeight*(contador-1))+avance);
+        console.log("datos... item.y: ", item.y, "/pageheight: ", pageHeight, "/contador - 1: ", (contador-1), "/avance: ", avance, "/auxiliarY: ", auxiliarY);
+        doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+        doc.text(item.label, item.x, auxiliarY);
+        doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+        var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+        var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+        if (item.label.includes("ID")) {
+          idInserted = true;
+        }else{idInserted = false;}
+
+        if (item.label.includes("Equipo")) {
+          equipoInserted = true;
+        }else{equipoInserted = false;}
+
+        if (item.label.includes("Fecha")) {
+          fechaInserted = true;
+        }else{fechaInserted = false;}
+
+        if (item.label.includes("Nombre")) {
+          nombreInserted = true;
+        }else{nombreInserted = false;}
+
+        doc.text(item.value, valueX, auxiliarY);
+        console.log("segundo item.y: ", auxiliarY);
+      }else{
+        doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
+        doc.text(item.label, item.x, item.y);
+        doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
+
+        var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
+        var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
+
+        if (item.label.includes("ID")) {
+          idInserted = true;
+        }else{idInserted = false;}
+
+        if (item.label.includes("Equipo")) {
+          equipoInserted = true;
+        }else{equipoInserted = false;}
+
+        if (item.label.includes("Fecha")) {
+          fechaInserted = true;
+        }else{fechaInserted = false;}
+
+        if (item.label.includes("Nombre")) {
+          nombreInserted = true;
+        }else{nombreInserted = false;}
+
+        doc.text(item.value, valueX, item.y);
+        auxiliarY = item.y;
+        console.log("primero item.y: ", item.y);
+      }
+    }
+    // Guardar el documento PDF después de procesar todas las solicitudes
+    doc.save('reporte.pdf');
   }
-  // Agregar el contenido al PDF
-  var avance = 20;
-  var contador = 1;
-  var auxiliarY = 0;
-  for (var k = 0; k < content.length; k++) {
-    var item = content[k];
-    if(auxiliarY >= ((pageHeight * contador)-20)){
-      doc.addPage();
-      contador += 1;
-      avance += 20;
-      console.log("Agrego pagina, auxiliarY: ", auxiliarY, "/ contador: ", contador);
-    }
-    if(contador > 1){
-      auxiliarY = (item.y-(pageHeight*(contador-1))+avance);
-      doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-      doc.text(item.label, item.x, auxiliarY);
-      doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-      var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-      var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-      doc.text(item.value, valueX, auxiliarY);
-    }else{
-      doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
-      doc.text(item.label, item.x, item.y);
-      doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
-
-      var labelWidth = doc.getTextWidth(item.label); // Obtener el ancho del label
-      var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
-
-      doc.text(item.value, valueX, item.y);
-      auxiliarY = item.y;
-      console.log("primero item.y: ", item.y);
-    }
-  }
-  // Guardar el documento PDF después de procesar todas las solicitudes
-  doc.save('reporte.pdf');
-}
 
   $(document).ready(function(){
     $("#id").keyup(function(){
