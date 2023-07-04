@@ -203,6 +203,17 @@ class SolicitudController extends Controller{
                     $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
             } catch (\Exception $e) {}
         }
+
+        $mailsParaRepuestos = Solicitud::obtenerUsersCorreoRepuestos();
+        
+        if($request['rep']){
+            foreach($mailsParaRepuestos as $mail){
+                try {
+                    Mail::to($mail->email)->send(new \App\Mail\avisoDeRepuesto($request['id_solicitud'], $nombreEstadoSolicitud,
+                        $mailNombreSolicitante->titulo, $request['descripcionRep']));
+                } catch (\Exception $e) {}
+            }
+        }
         
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');

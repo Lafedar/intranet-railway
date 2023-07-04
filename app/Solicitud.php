@@ -235,5 +235,16 @@ class Solicitud extends Model{
 
         return $consulta->nombre;
     }
+    public static function obtenerUsersCorreoRepuestos(){
+        $consulta = DB::table('permissions')
+        ->leftjoin('role_has_permissions', 'role_has_permissions.permission_id', 'permissions.id')
+        ->leftjoin('model_has_roles', 'model_has_roles.role_id', 'role_has_permissions.role_id')
+        ->leftjoin('users', 'users.id', 'model_has_roles.model_id')
+        ->select('users.email as email')
+        ->where('permissions.name', 'correo-de-repuestos')
+        ->get();
+
+        return $consulta;
+    }
 }
 ?>
