@@ -650,8 +650,6 @@
           }
           content = content.concat(historicoContent);
         }
-        doc.setLineWidth(0.5);
-        doc.line(10, historicoOffset + y - 4, 200, historicoOffset + y - 4);
 
         y += historicoOffset;
 
@@ -674,11 +672,9 @@
         doc.addPage();
         contador += 1;
         avance += 30;
-        console.log("Agrego pagina, auxiliarY: ", auxiliarY, "/ contador: ", contador);
       }
       if(contador > 1){
         auxiliarY = (item.y-(pageHeight*(contador-1))+avance);
-        console.log("datos... item.y: ", item.y, "/pageheight: ", pageHeight, "/contador - 1: ", (contador-1), "/avance: ", avance, "/auxiliarY: ", auxiliarY);
         doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
         doc.text(item.label, item.x, auxiliarY);
         doc.setFontStyle("normal"); // Establecer estilo de fuente normal para el valor
@@ -687,6 +683,8 @@
         var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
         if (item.label.includes("ID")) {
+          doc.setLineWidth(0.5);
+          doc.line(10, auxiliarY - 4, 200, auxiliarY - 4);
           idInserted = true;
         }else{idInserted = false;}
 
@@ -703,7 +701,6 @@
         }else{nombreInserted = false;}
 
         doc.text(item.value, valueX, auxiliarY);
-        console.log("segundo item.y: ", auxiliarY);
       }else{
         doc.setFontStyle("bold"); // Establecer estilo de fuente en negrita para la etiqueta "ID: " 
         doc.text(item.label, item.x, item.y);
@@ -713,6 +710,8 @@
         var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
         if (item.label.includes("ID")) {
+          doc.setLineWidth(0.5);
+          doc.line(10, auxiliarY + 1, 200, auxiliarY + 1);
           idInserted = true;
         }else{idInserted = false;}
 
@@ -730,7 +729,6 @@
 
         doc.text(item.value, valueX, item.y);
         auxiliarY = item.y;
-        console.log("primero item.y: ", item.y);
       }
     }
     // Guardar el documento PDF después de procesar todas las solicitudes
