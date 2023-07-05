@@ -26,7 +26,7 @@ class InstructivoController extends Controller
     public function store_instructivo(Request $request)
     {        
         $aux = Instructivo::get()->max('id');
-        if($aux==null)
+        if($aux == null)
         {
             $aux = 0;
         }
@@ -35,36 +35,36 @@ class InstructivoController extends Controller
         $instructivo->titulo = $request['titulo'];
         $instructivo->fecha = $request['fecha'];
 
-        if($request->file('pdf'))
+        if($request->file('archivo'))
         {
-            $file = $request->file('pdf');
+            $file = $request->file('archivo');
             $name = str_pad($aux + 1, 5, '0', STR_PAD_LEFT).$file->getClientOriginalName();         
             Storage::disk('public')->put('instructivo/'.$name, \File::get($file));
-            $instructivo->pdf = 'instructivo\\'.$name;
+            $instructivo->archivo = 'instructivo\\'.$name;
         }
 
         $instructivo->save();
 
         Session::flash('message','Archivo agregado con éxito');
         Session::flash('alert-class', 'alert-success');
-        return redirect ('instructivos');
+        return redirect('instructivos');
     }
 
     public function destroy_instructivo($id)
     {
         $instructivo = Instructivo::find($id);
-        if($instructivo->pdf != null){
-            unlink(storage_path('app\\public\\'.$instructivo->pdf));
+        if($instructivo->archivo != null){
+            unlink(storage_path('app\\public\\'.$instructivo->archivo));
         }
 
-        $instructivo -> delete(); 
+        $instructivo->delete(); 
         Session::flash('message','Archivo eliminado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('instructivos');
     }
 
-    public function update_instructivo(Request $request){
-
+    public function update_instructivo(Request $request)
+    {
         if($request['titulo'] or $request['fecha'])
         {
             $instructivo = DB::table('instructivo')
@@ -72,20 +72,20 @@ class InstructivoController extends Controller
             ->update(['titulo' => $request['titulo'], 'fecha' => $request['fecha']]);        
         }
         $aux = Instructivo::find($request['id']);
-        if($request['pdf'] != null)
+        if($request['archivo'] != null)
         {
-            if($request->file('pdf'))
+            if($request->file('archivo'))
             {
-                if ($aux->pdf != null)
+                if ($aux->archivo != null)
                 {
-                    unlink(storage_path('app\\public\\'.$aux->pdf));
+                    unlink(storage_path('app\\public\\'.$aux->archivo));
                 }
-                $file = $request->file('pdf');
+                $file = $request->file('archivo');
                 $name = str_pad($request['id'], 5, '0', STR_PAD_LEFT).$file->getClientOriginalName();
                 Storage::disk('public')->put('instructivo/'.$name, \File::get($file));
                 $instructivo = DB::table('instructivo')
                 ->where('instructivo.id',$request['id'])
-                ->update(['pdf' => 'instructivo\\'.$name,]);
+                ->update(['archivo' => 'instructivo\\'.$name]);
             }
         }
         Session::flash('message','Archivo modificado con éxito');

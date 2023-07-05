@@ -40,8 +40,8 @@
             <td width="100">
               <div class="text-center">
                 <!-- Boton de descargar archivo -->
-                @if($instructivo->pdf != null)
-                  <a href="{{ Storage::url($instructivo->pdf) }}" class="btn btn-primary btn-sm" title="Descargar Archivo" data-position="top" data-delay="50" data-tooltip="Descargar Archivo" download>Descargar</a>
+                @if($instructivo->archivo != null)
+                  <a href="{{ Storage::url($instructivo->archivo) }}" class="btn btn-primary btn-sm" title="Descargar Archivo" data-position="top" data-delay="50" data-tooltip="Descargar Archivo" download>Descargar</a>
                 @else
                   <a class="btn btn-secondary btn-sm" data-position="top" data-delay="50" download >Descargar</a>
                 @endif

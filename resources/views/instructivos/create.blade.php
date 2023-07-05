@@ -15,7 +15,7 @@
                 <input type="date" name="fecha"  class="form-control col-md-5" step="1" min="2019-01-01" value="<?php echo date("Y-m-d");?>">
                 <br>
                 <label for="title"><strong>Instructivo:</strong></label>
-                <input type="file"  name="pdf" accept=".pdf" id="pdf">
+                <input type="file" name="archivo" id="archivo">
               </div> 
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
               <button type="submit" class="btn btn-info">Agregar</button>
