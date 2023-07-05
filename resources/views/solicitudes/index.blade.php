@@ -710,8 +710,10 @@
         var valueX = item.x + labelWidth + 1; // Agregar un pequeño espacio después del label
 
         if (item.label.includes("ID")) {
-          doc.setLineWidth(0.5);
-          doc.line(10, auxiliarY + 1, 200, auxiliarY + 1);
+          if(auxiliarY != 0){
+            doc.setLineWidth(0.5);
+            doc.line(10, auxiliarY + 1, 200, auxiliarY + 1);
+          }
           idInserted = true;
         }else{idInserted = false;}
 
