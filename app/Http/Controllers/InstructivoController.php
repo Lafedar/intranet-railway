@@ -9,34 +9,39 @@ Use Session;
 use DB;
 
 
-class InstructivoController extends Controller
-{
-    public function index(Request $request)
-    {
+class InstructivoController extends Controller{
+
+    public function index(Request $request){
         $instructivos = Instructivo::ID($request->get('id_instructivo'))
-        ->Titulo($request->get('titulo_instructivo'))
-        ->Fecha($request->get('fecha_instructivo'))
+        ->Titulo($request->get('titulo'))
+        ->Relaciones_index($request->get('id_tipo_instructivo'))
         ->paginate(20);
 
-        return view ('instructivos.index', array('instructivos' => $instructivos,'id_instructivo' => $request->get('id_instructivo'),
-        'titulo_instructivo' => $request->get('titulo_instructivo'),'fecha_instructivo' =>
-        $request->get('fecha_instructivo')));
+        $tiposInstructivos = DB::table('tipo_instructivos')->orderBy('nombre','asc')->get();
+
+        return view ('instructivos.index', [
+            'instructivos' => $instructivos,
+            'id_instructivo' => $request->get('id_instructivo'),
+            'titulo' => $request->get('titulo'),
+            'id_tipo_instructivo' => $request->get('id_tipo_instructivo'),
+            'tiposInstructivos' => $tiposInstructivos]);
     }
 
-    public function store_instructivo(Request $request)
-    {        
+    public function show_store_instructivo(){
+        return view('instructivos.create');       
+    }
+
+    public function store_instructivo(Request $request){        
         $aux = Instructivo::get()->max('id');
-        if($aux == null)
-        {
+        if($aux == null){
             $aux = 0;
         }
 
         $instructivo = new Instructivo;
-        $instructivo->titulo = $request['titulo'];
-        $instructivo->fecha = $request['fecha'];
+        $instructivo->titulo = $request['tituloCreate'];
+        $instructivo->tipo = $request['tipo_instructivo'];
 
-        if($request->file('archivo'))
-        {
+        if($request->file('archivo')){
             $file = $request->file('archivo');
             $name = str_pad($aux + 1, 5, '0', STR_PAD_LEFT).$file->getClientOriginalName();         
             Storage::disk('public')->put('instructivo/'.$name, \File::get($file));
@@ -50,8 +55,7 @@ class InstructivoController extends Controller
         return redirect('instructivos');
     }
 
-    public function destroy_instructivo($id)
-    {
+    public function destroy_instructivo($id){
         $instructivo = Instructivo::find($id);
         if($instructivo->archivo != null){
             unlink(storage_path('app\\public\\'.$instructivo->archivo));
@@ -63,21 +67,21 @@ class InstructivoController extends Controller
         return redirect('instructivos');
     }
 
-    public function update_instructivo(Request $request)
-    {
-        if($request['titulo'] or $request['fecha'])
-        {
+    public function show_update_instructivo($id){
+        $instructivo = Instructivo::showInstructivoUpdate($id);
+        return view('instructivos.update', ['instructivo' => $instructivo]);
+    }
+
+    public function update_instructivo(Request $request){
+        if($request['tituloUpdate'] or $request['tipo_instructivo']){
             $instructivo = DB::table('instructivo')
             ->where('instructivo.id',$request['id'])
-            ->update(['titulo' => $request['titulo'], 'fecha' => $request['fecha']]);        
+            ->update(['titulo' => $request['tituloUpdate'], 'tipo' => $request['tipo_instructivo']]);        
         }
         $aux = Instructivo::find($request['id']);
-        if($request['archivo'] != null)
-        {
-            if($request->file('archivo'))
-            {
-                if ($aux->archivo != null)
-                {
+        if($request['archivo'] != null){
+            if($request->file('archivo')){
+                if ($aux->archivo != null){
                     unlink(storage_path('app\\public\\'.$aux->archivo));
                 }
                 $file = $request->file('archivo');
@@ -91,5 +95,9 @@ class InstructivoController extends Controller
         Session::flash('message','Archivo modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('instructivos');
+    }
+
+    public function select_tipo_instructivos(){
+        return Instructivo::getTiposDeInstructivos();
     }
 }

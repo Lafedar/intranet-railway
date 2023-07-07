@@ -208,9 +208,16 @@ Route::post('update_politica','PoliticaController@update_politica')->name('updat
 
 //****************INSTRUCTIVOS**********************
 Route::get('instructivos','InstructivoController@index');
-Route::post('store_instructivo','InstructivoController@store_instructivo')->name('agregar-instructivo');
+Route::get('/instructivos', 'InstructivoController@index')->name('instructivos.index');
+
+Route::get('show_store_instructivo',['uses' => 'InstructivoController@show_store_instructivo'])->name('show_store_instructivo');
+Route::post('store_instructivo','InstructivoController@store_instructivo')->name('store_instructivo');
+
+Route::get('show_update_instructivo/{instructivo}',['uses' => 'InstructivoController@show_update_instructivo'])->name('show_update_instructivo');
+Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivo');
+
 Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo']);
-Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivos');
+Route::get('select_tipo_instructivos', 'InstructivoController@select_tipo_instructivos')->name('select_tipo_instructivos');
 
 //******************QAD-Controller**********************
 Route::group(['middleware' => ['auth']], function () 
