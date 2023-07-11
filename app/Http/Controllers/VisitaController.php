@@ -135,7 +135,7 @@ class VisitaController extends Controller
         ->Visitante($request->get('visitante'))
         ->Fecha($request->get('fecha'))
         ->paginate(20);
-        
+        dd($visitas);
         return view ('visita.consulta', array('visitas'=>$visitas, 'tarjeta'=>$request->get('tarjeta'), 'visita_a'=>$request->get('visita_a'), 'visitante'=>$request->get('visitante'), 'estado'=>$request->get('estado'), 'fecha'=> $request->get('fecha')));
     }
 
