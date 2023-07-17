@@ -215,7 +215,7 @@ class SolicitudController extends Controller{
             }
         }
         
-        Session::flash('message','Archivo modificado con éxito');
+        Session::flash('message','Solicitud modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
@@ -263,8 +263,7 @@ class SolicitudController extends Controller{
         return redirect('solicitudes');
     }
 
-    //trae tabla de tipos de solicitudes 
-    public function select_create(){
+    public function select_tablas(){
         return [Solicitud::getArea(),
         Solicitud::getLocalizaciones(),
         Solicitud::getTipoSolicitudes(),
@@ -358,5 +357,55 @@ class SolicitudController extends Controller{
         Session::flash('message','Solicitud reclamada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
+    }
+
+    public function getSolicitud($idSolicitud){
+        return DB::table('solicitudes')
+            ->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
+            ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
+            ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
+            ->leftJoin('localizaciones as localizacionesEquipos', 'localizacionesEquipos.id', 'equipos_mant.id_localizacion')
+            ->leftJoin('localizaciones as localizacionesEdilicios', 'localizacionesEdilicios.id', 'solicitudes.id_localizacion_edilicio')
+            ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
+            ->select('solicitudes.id as idSolicitud', 
+            'solicitudes.titulo as titulo', 
+            'solicitudes.id_equipo as idEquipo', 
+            'historico_solicitudes.descripcion as descripcion', 
+            'historico_solicitudes.fecha as fecha', 
+            'historico_solicitudes.id_estado as estado',
+            'tipo_solicitudes.nombre as nombreTipoSolicitud',
+            'solicitudes.id_area_proyecto as idAreaProyecto',
+            'equipos_mant.id_area as idAreaEquipo', 
+            'equipos_mant.id_localizacion as idLocalizacionEquipo', 
+            'equipos_mant.descripcion as descripcionEquipo',
+            'solicitudes.id_localizacion_edilicio as idLocalizacionEdilicio',
+            'localizacionesEdilicios.id_area as idAreaEdilicio',
+            'solicitudes.id_falla as idFalla')
+            ->where('solicitudes.id', $idSolicitud)
+            ->where('historico_solicitudes.id_estado', 1)
+            ->orderBy('historico_solicitudes.fecha', 'asc')
+            ->limit(1)
+            ->get();
+    }
+
+    public function show_edit_solicitud($id){
+        $solicitud = Solicitud::showSolicitudUpdate($id);
+        return view('solicitudes.edit', ['solicitud' => $solicitud]);
+    }
+
+    public function edit_solicitud(Request $request){
+        if($request['tipo_solicitud1'] == 1){
+            Solicitud::editSolicitud($request['idSolicitud1'], $request['estado1'], $request['titulo1'], $request['descripcion1'], $request['equipo1'], $request['falla1'], $request['tipo_solicitud1'], null, null);
+        }
+        elseif($request['tipo_solicitud1'] == 2){
+            Solicitud::editSolicitud($request['idSolicitud1'], $request['estado1'], $request['titulo1'], $request['descripcion1'], null, $request['falla1'], $request['tipo_solicitud1'], null, $request['localizacion1']);
+        }
+        elseif($request['tipo_solicitud1'] == 3){
+            Solicitud::editSolicitud($request['idSolicitud1'], $request['estado1'], $request['titulo1'], $request['descripcion1'], null, null, $request['tipo_solicitud1'], $request['area1'], null);
+        }
+       
+        Session::flash('message','Solicitud editada con éxito');
+        Session::flash('alert-class', 'alert-success');
+        return redirect ('solicitudes');
     }
 }

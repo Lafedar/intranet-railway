@@ -30,12 +30,13 @@
         <form action="{{ url('/logout') }}" method="POST" >
           {{ csrf_field() }}
           <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-           Cerrar sesión
-         </button>
-       </form>
-     </ul>
-   </div>
- </nav>
+            Cerrar sesión
+          </button>
+        </form>
+      </ul>
+    </div>
+  </nav>
+  <p></p>	
 </head>
 
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>

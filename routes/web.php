@@ -379,6 +379,9 @@ Route::group(['middleware' => ['auth']], function ()
     ->name('show_update_solicitud');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->name('update_solicitud');
 
+  Route::get('show_edit_solicitud/{solicitud}',['uses' => 'SolicitudController@show_edit_solicitud'])->name('show_edit_solicitud');
+  Route::post('edit_solicitud','SolicitudController@edit_solicitud')->name('edit_solicitud');
+
   Route::get('show_reclamar_solicitud/{solicitud}',['uses' => 'SolicitudController@show_reclamar_solicitud'])->name('show_reclamar_solicitud');
   Route::post('reclaim_solicitud','SolicitudController@reclaim_solicitud')->name('reclaim_solicitud');
 
@@ -389,18 +392,21 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('aprobar_solicitud/{solicitud}', ['uses' => 'SolicitudController@aprobar_solicitud']);
   Route::get('destroy_solicitud/{solicitud}', ['uses' => 'SolicitudController@destroy_solicitud']);
 
-  Route::get('select_create', 'SolicitudController@select_create')->name('select_create');
+  Route::get('select_tablas', 'SolicitudController@select_tablas')->name('select_tablas');
   Route::get('select_estado', 'SolicitudController@select_estado')->name('select_estado');
   Route::get('select_users', 'SolicitudController@select_users')->name('select_users');
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
   Route::get('getHistoricos/{solicitud}', ['uses' => 'SolicitudController@getHistoricos'])->name('getHistoricos');
+  Route::get('getSolicitud/{idSolicitud}', ['uses' => 'SolicitudController@getSolicitud'])->name('getSolicitud');
 });
 
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento|Empleado-Mantenimiento');
+
   Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_store_equipo_mant');
   Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('store_equipo_mant');
+
   Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_update_equipo_mant');
   Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('update_equipo_mant');
 

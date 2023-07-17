@@ -28,8 +28,7 @@ class Solicitud extends Model{
     	    return $query -> where('id_falla','LIKE', "%$id_falla%");
     	}
     }   
-    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha)
-    {
+    public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha){
         $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
             ->leftJoin('fallas', 'fallas.id', 'solicitudes.id_falla')
             ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
@@ -245,6 +244,30 @@ class Solicitud extends Model{
         ->get();
 
         return $consulta;
+    }
+    public static function editSolicitud($id, $estado, $titulo, $descripcion, $equipo, $falla, $tipo, $area, $localizacion){
+        DB::table('solicitudes')
+            ->where('solicitudes.id', $id)
+            ->update([
+                'titulo' => $titulo, 
+                'id_equipo' => $equipo, 
+                'id_falla' => $falla, 
+                'id_tipo_solicitud' => $tipo, 
+                'id_area_proyecto' => $area, 
+                'id_localizacion_edilicio' => $localizacion]);
+        
+        DB::table('historico_solicitudes')
+            ->where('historico_solicitudes.id_solicitud', $id)
+            ->where('historico_solicitudes.id_estado',$estado)
+            ->where('historico_solicitudes.fecha', '=', function ($query) use ($id, $estado) {
+                $query->select('fecha')
+                    ->from('historico_solicitudes')
+                    ->where('historico_solicitudes.id_solicitud', $id)
+                    ->where('historico_solicitudes.id_estado', $estado)
+                    ->orderBy('fecha', 'asc')
+                    ->limit(1);
+            })
+            ->update(['historico_solicitudes.descripcion' => $descripcion]);
     }
 }
 ?>
