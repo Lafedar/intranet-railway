@@ -13,57 +13,59 @@
 @endif
 
 <!-- Barra de busqueda -->
-<div class="col-md-12 ml-auto">
-  <h1>
-    <div class="form-inline pull-right">
-      <form  method="GET">
-        <div class="form-group">
-          <label><h6>ID:</h6></label>
-          <input type="text" name="equipo" class="form-control col-md-1" id="equipo" autocomplete="off" value="{{$equipo}}" >
-          &nbsp
-          <label><h6>Puesto:</h6></label>
-          <input type="text" name="puesto" class="form-control" id="puesto"  autocomplete="off" value="{{$puesto}}" >
-          &nbsp
-          <label><h6>Usuario:</h6></label>
-          <input type="text" name="usuario" class="form-control col-md-1" id="usuario" autocomplete="off" value="{{$usuario}}" >
-          &nbsp
-          <label><h6>Area:</h6></label>
-          <input type="text" name="area" class="form-control" id="area" autocomplete="off" value="{{$area}}" >
-          &nbsp
-          <label><h6>IP:</h6></label>
-          <input type="text" name="ip" class="form-control col-md-1" id="ip" autocomplete="off" value="{{$ip}}" >
-          &nbsp
-          <div class="form-group">
-            <label><h6>Tipo:</h6></label>
-            <select class="form-control" name="tipo"  id="tipo">
-                <option value="0">{{'Todos'}} </option>
-                @foreach($tipo_equipamiento as $tipo_equipamiento)
-                @if($tipo_equipamiento->id == $tipo)
-                <option value="{{$tipo_equipamiento->id}}" selected>{{$tipo_equipamiento->equipamiento}} </option>
-                @endif
-                <option value="{{$tipo_equipamiento->id}}">{{$tipo_equipamiento->equipamiento}} </option>
-                @endforeach
-            </select>
-          </div>
-          &nbsp
-          <div class="form-group">
-            <label><h6>Subred:</h6></label>
-            <select class="form-control" name="subred"  id="subred">
-              <option value="0">{{'Todos'}} </option>
-                @foreach($ips as $ips)
-                @if($ips->id == $subred)
-                <option value="{{$ips->id}}" selected>{{$ips->nombre}} </option>
-                @endif
-                <option value="{{$ips->id}}">{{$ips->nombre}} </option>
-                @endforeach
-            </select>          
-          </div>
-          &nbsp
-          <button type="submit" class="btn btn-default"> Buscar</button>
-        </div>
-      </form>
-    </div>
-  </h1>            
+<div class="col">
+  <div class="form-group">
+    <form  method="GET">
+      <div style="display: inline-block;">
+        <label for="idEquipo" style="display: block; margin-bottom: 5px;"><h6>ID:</h6></label>
+        <input type="text" name="idEquipo" class="form-control" id="idEquipo" autocomplete="off" value="{{$equipo}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="puesto" style="display: block; margin-bottom: 5px;"><h6>Puesto:</h6></label>
+        <input type="text" name="puesto" class="form-control" id="puesto"  autocomplete="off" value="{{$puesto}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="usuario" style="display: block; margin-bottom: 5px;"><h6>Usuario:</h6></label>
+        <input type="text" name="usuario" class="form-control" id="usuario" autocomplete="off" value="{{$usuario}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="area" style="display: block; margin-bottom: 5px;"><h6>Area:</h6></label>
+        <input type="text" name="area" class="form-control" id="area" autocomplete="off" value="{{$area}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="ip" style="display: block; margin-bottom: 5px;"><h6>IP:</h6></label>
+        <input type="text" name="ip" class="form-control" id="ip" autocomplete="off" value="{{$ip}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="tipo" style="display: block; margin-bottom: 5px;"><h6>Tipo:</h6></label>
+        <select class="form-control" name="tipo"  id="tipo">
+          <option value="0">{{'Todos'}} </option>
+          @foreach($tipo_equipamiento as $tipo_equipamiento)
+            @if($tipo_equipamiento->id == $tipo)
+              <option value="{{$tipo_equipamiento->id}}" selected>{{$tipo_equipamiento->equipamiento}} </option>
+            @endif
+              <option value="{{$tipo_equipamiento->id}}">{{$tipo_equipamiento->equipamiento}} </option>
+          @endforeach
+        </select>
+      </div>
+      <div style="display: inline-block;">
+        <label for="subred" style="display: block; margin-bottom: 5px;"><h6>Subred:</h6></label>
+        <select class="form-control" name="subred"  id="subred">
+          <option value="0">{{'Todos'}} </option>
+          @foreach($ips as $ips)
+            @if($ips->id == $subred)
+              <option value="{{$ips->id}}" selected>{{$ips->nombre}} </option>
+            @endif
+            <option value="{{$ips->id}}">{{$ips->nombre}} </option>
+          @endforeach
+        </select> 
+      </div>         
+      &nbsp
+      <div style="display: inline-block;">
+        <button type="submit" class="btn btn-default"> Buscar</button>
+      </div>
+    </form>
+  </div>         
 </div>
 
 <div class="col-md-12">             
