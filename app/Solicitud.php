@@ -256,6 +256,22 @@ class Solicitud extends Model{
                 'id_area_proyecto' => $area, 
                 'id_localizacion_edilicio' => $localizacion]);
         
+        //este codigo se utiliza desarrollo por incompatibilidad en las versiones de la base de datos con la consulta
+        /*$fecha = DB::table('historico_solicitudes')
+            ->select('fecha')
+            ->where('historico_solicitudes.id_solicitud', $id)
+            ->where('historico_solicitudes.id_estado', $estado)
+            ->orderBy('fecha', 'asc')
+            ->limit(1)
+            ->value('fecha');
+
+        DB::table('historico_solicitudes AS hs')
+            ->where('hs.id_solicitud', $id)
+            ->where('hs.id_estado', $estado)
+            ->where('hs.fecha', $fecha)
+            ->update(['descripcion' => $descripcion]);
+        }*/
+
         DB::table('historico_solicitudes')
             ->where('historico_solicitudes.id_solicitud', $id)
             ->where('historico_solicitudes.id_estado',$estado)
