@@ -17,8 +17,8 @@
   <div class="form-group">
     <form  method="GET">
       <div style="display: inline-block;">
-        <label for="idEquipo" style="display: block; margin-bottom: 5px;"><h6>ID:</h6></label>
-        <input type="text" name="idEquipo" class="form-control" id="idEquipo" autocomplete="off" value="{{$equipo}}" >
+        <label for="equipo" style="display: block; margin-bottom: 5px;"><h6>ID:</h6></label>
+        <input type="text" name="equipo" class="form-control" id="equipo" autocomplete="off" value="{{$equipo}}" >
       </div>
       <div style="display: inline-block;">
         <label for="puesto" style="display: block; margin-bottom: 5px;"><h6>Puesto:</h6></label>
