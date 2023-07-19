@@ -56,8 +56,10 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/update_puesto','PuestoController@update_puesto')->middleware('role:administrador');
 
   Route::get('select_area','PuestoController@select_area')->name('select_area');
-
   Route::get('select_persona','PuestoController@select_persona')->name('select_persona');
+  Route::get('select_localizaciones','PuestoController@select_localizaciones')->name('select_localizaciones');
+  Route::get('select_localizaciones_by_area/{areaId}', 'PuestoController@select_localizaciones_by_area')->name('select_localizaciones_by_area');
+  Route::get('select_area_by_localizacion/{localizacionId}', 'PuestoController@select_area_by_localizacion')->name('select_area_by_localizacion');
 });
 
    //****************EQUIPAMIENTO**********************

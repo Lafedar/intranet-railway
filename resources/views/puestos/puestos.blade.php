@@ -26,6 +26,10 @@
                         <input type="text" name="usuario" class="form-control" id="usuario" value="{{$usuario}}" >
                     </div>
                     &nbsp
+                    <div class="form-group"><h6>Localizacion:</h6>
+                        <input type="text" name="localizacion" class="form-control" id="localizacion" value="{{$localizacion}}" >
+                    </div>
+                    &nbsp
                     <div class="form-group"><h6>Area:</h6>
                         <input type="text" name="area" class="form-control" id="area" value="{{$area}}" >
                     </div>
@@ -42,6 +46,7 @@
         <thead>
             <th class="text-center">Nombre</th>
             <th class="text-center">Usuario</th>
+            <th class="text-center">Localizacion</th>
             <th class="text-center">Area</th>
             <th class="text-center">Observación</th>
             @can('editar-puesto')
@@ -54,6 +59,7 @@
                     <tr>
                         <td>{{$puesto->desc_puesto}}</td>
                         <td >{{$puesto->nombre .' '. $puesto->apellido}}</td>
+                        <td >{{$puesto->localizacion}}</td>
                         <td >{{$puesto->area}}</td>
                         <td align="center">{{$puesto->obs}}</td>
                         @can('editar-puesto')

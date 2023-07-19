@@ -21,12 +21,12 @@
         <input type="text" name="equipo" class="form-control" id="equipo" autocomplete="off" value="{{$equipo}}" >
       </div>
       <div style="display: inline-block;">
-        <label for="puesto" style="display: block; margin-bottom: 5px;"><h6>Puesto:</h6></label>
-        <input type="text" name="puesto" class="form-control" id="puesto"  autocomplete="off" value="{{$puesto}}" >
-      </div>
-      <div style="display: inline-block;">
         <label for="usuario" style="display: block; margin-bottom: 5px;"><h6>Usuario:</h6></label>
         <input type="text" name="usuario" class="form-control" id="usuario" autocomplete="off" value="{{$usuario}}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="puesto" style="display: block; margin-bottom: 5px;"><h6>Puesto:</h6></label>
+        <input type="text" name="puesto" class="form-control" id="puesto"  autocomplete="off" value="{{$puesto}}" >
       </div>
       <div style="display: inline-block;">
         <label for="area" style="display: block; margin-bottom: 5px;"><h6>Area:</h6></label>
@@ -72,8 +72,9 @@
   <table class="table table-striped table-bordered ">
     <thead>
       <th class="text-center">ID</th>
-      <th class="text-center">Puesto</th>
       <th class="text-center">Usuario</th>
+      <th class="text-center">Puesto</th>
+      <th class="text-center">Localizacion</th>
       <th class="text-center">Area</th>
       <th class="text-center">Sub Red</th>
       <th class="text-center">IP</th>
@@ -87,8 +88,9 @@
         @foreach($equipamientos as $equipamiento) 
           <tr>
             <td align="center" width="60">{{$equipamiento->id_equipamiento}}</td>
-            <td width="available">{{$equipamiento->puesto}}</td>
             <td>{{$equipamiento->nombre .' '. $equipamiento->apellido}}</td>
+            <td width="available">{{$equipamiento->puesto}}</td>
+            <td>{{$equipamiento->localizacion}}</td>
             <td>{{$equipamiento->area}}</td>
             <td width="110">{{$equipamiento->nombre_subred}}</td>
             <td width="110">{{$equipamiento->ip}}</td>

@@ -8,14 +8,22 @@
          <div class="col-md-12">
           <div class="row">
             <div class="col">
-              <label for="title">Descripción:</label>
+              <label for="title">Nombre de puesto:</label>
               <input type="text" name="desc_puesto" class="form-control" id="desc_puesto" autocomplete="off" required>
             </div>
           </div>
+
           <div class="row">
             <div class="col">
               <label for="title">Area:</label>
               <select class="form-control" name="area"  id="area"></select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="title">Localizacion:</label>
+              <select class="form-control" name="localizacion"  id="localizacion"></select>
             </div>
           </div>
 

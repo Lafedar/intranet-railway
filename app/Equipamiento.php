@@ -22,14 +22,15 @@ class Equipamiento extends Model
             ->leftjoin('ips','equipamientos.subred','ips.id')
             ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
             ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('area','puestos.area','area.id_a')
+            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+            ->leftjoin('area','area.id_a', 'localizaciones.id_area')
             ->orderBy('id_equipamiento','asc')
             ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto' ,'equipamientos.subred as subred',
             'equipamientos.ip as ip','area.nombre_a as area', 'personas.nombre_p as nombre', 'personas.apellido as apellido', 'relaciones.id_r as relacion',
             'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
             'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
             'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred');
+            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
         }
         else if($tipo != 0 and $subred == 0)
         {
@@ -41,7 +42,8 @@ class Equipamiento extends Model
             ->leftjoin('ips','ips.id','equipamientos.subred')
             ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
             ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('area','puestos.area','area.id_a')
+            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+            ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
             ->where('tipo',$tipo)
             ->orderBy('id_equipamiento','asc')
             ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto', 'equipamientos.subred as subred',
@@ -49,7 +51,7 @@ class Equipamiento extends Model
             'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
             'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
             'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred');
+            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
         }
         else if($tipo == 0 and $subred != 0)
         {
@@ -61,7 +63,8 @@ class Equipamiento extends Model
             ->leftjoin('ips','ips.id','equipamientos.subred')
             ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
             ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('area','puestos.area','area.id_a')
+            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+            ->leftjoin('area','area.id_a', 'localizaciones.id_area')
             ->where('subred',$subred)
             ->orderBy('id_equipamiento','asc')
             ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto', 'equipamientos.subred as subred',
@@ -69,7 +72,7 @@ class Equipamiento extends Model
             'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
             'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
             'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred');
+            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
         }
         else if($tipo != 0 and $subred != 0)
         {
@@ -81,7 +84,8 @@ class Equipamiento extends Model
             ->leftjoin('ips','ips.id','equipamientos.subred')
             ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
             ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('area','puestos.area','area.id_a')
+            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+            ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
             ->where('subred',$subred)
             ->where('tipo',$tipo)
             ->orderBy('id_equipamiento','asc')
@@ -90,7 +94,7 @@ class Equipamiento extends Model
             'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
             'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
             'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred');
+            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
         }
     }
 

@@ -49,12 +49,9 @@
 
 <script>
   $('#agregar_equipamiento').on('show.bs.modal', function (event) {
-
-    $.get('select_tipo_equipamiento/',function(data)
-    {
+    $.get('select_tipo_equipamiento/',function(data){
       var html_select = '<option value="">Seleccione </option>'
-      for(var i = 0; i<data.length; i ++)
-      {
+      for(var i = 0; i<data.length; i ++){
         html_select += '<option value ="'+data[i].id+'">'+data[i].equipamiento+'</option>';
       } 
       $('#tipo_equipamiento').html(html_select);
@@ -64,8 +61,7 @@
     {
       var html_select = '<option value="">Seleccione </option>'
       var html_select2 = '<option value="">Seleccione </option>'
-      for(var i = 0; i<data.length; i ++)
-      {
+      for(var i = 0; i<data.length; i ++){
         let ip = data[i].puerta_enlace.split('.');
         html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
         html_select2 += '<option value ="'+data[i].id+'">'+ip[0]+'.'+ip[1]+'.'+ip[2]+'.'+'</option>';
@@ -73,38 +69,72 @@
 
       //al cambiar un dato de un select se cambia en el otro 
       $("#ips").on("change", () => {
-      $("#id_red").val($("#ips").val());
+        $("#id_red").val($("#ips").val());
       });
 
       $("#id_red").on("change", () => {
-      $("#ips").val($("#id_red").val());
+        $("#ips").val($("#id_red").val());
       });
 
       //envia opciones de select a la vista create.blade.php
       $('#ips').html(html_select);
       $('#id_red').html(html_select2);
     });
-
-
   });
 </script>
 
 <script>
   $('#agregar_puesto').on('show.bs.modal', function (event) {
-
     $.get('select_area/',function(data){
-      var html_select = '<option value="">Seleccione area </option>'
+      var html_select = '<option value="">Seleccione</option>'
       for(var i = 0; i<data.length; i ++)
         html_select += '<option value ="'+data[i].id_a+'">'+data[i].nombre_a+'</option>';
       $('#area').html(html_select);
     });
     $.get('select_persona/',function(data){
-      var html_select = '<option value="">Seleccione persona </option>'
+      var html_select = '<option value="">Seleccione</option>'
       for(var i = 0; i<data.length; i ++)
         html_select += '<option value ="'+data[i].id_p+'">'+data[i].apellido+' '+data[i].nombre_p+'</option>';
       $('#persona').html(html_select);
     });
+    $.get('select_localizaciones/',function(data){
+      var html_select = '<option value="">Seleccione</option>'
+      /*for(var i = 0; i<data.length; i ++)
+        html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';*/
+      $('#localizacion').html(html_select);
+    });
 
+     // Variable para almacenar el valor seleccionado de localizacion
+    var selectedLocalizacion = $('#localizacion').val();
+
+    // Al seleccionar un área, cargar las localizaciones correspondientes
+    $('#area').on('change', function() {
+      var areaId = $(this).val();
+      $.get('select_localizaciones_by_area/' + areaId, function(data) {
+        var html_select = '<option value="">Seleccione</option>';
+        for (var i = 0; i < data.length; i++) {
+          html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
+        }
+        $('#localizacion').html(html_select);
+
+        // Restaurar el valor seleccionado de localizacion después de cargar las opciones
+        $('#localizacion').val(selectedLocalizacion);
+      });
+    });
+
+    // Al seleccionar una localización, cargar el área correspondiente
+    $('#localizacion').on('change', function() {
+      var localizacionId = $(this).val();
+      $.get('select_area_by_localizacion/' + localizacionId, function(data) {
+        // Primero, deseleccionamos el área actualmente seleccionada
+        $('#area').val('');
+
+        // Luego, seleccionamos el área correspondiente a la localización
+        if (data.id_a) {
+          $('#area').val(data.id_a);
+        }
+      });
+    });
   });
 </script>
 

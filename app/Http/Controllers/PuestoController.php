@@ -19,41 +19,61 @@ use Illuminate\Routing\Controller;
 use Carbon\Carbon;
 
 
-class PuestoController extends Controller
-{
-   public function puestos(Request $request)
-   {
+class PuestoController extends Controller{
+   public function puestos(Request $request){
         $puestos = Puesto::Relaciones()            
         ->Puesto($request->get('puesto'))
         ->Usuario($request->get('usuario'))
         ->Area($request->get('area'))
+        ->Localizacion($request->get('localizacion'))
         ->orderBy('desc_puesto','asc')
         ->paginate(20);
 
-        return view ('puestos.puestos', array('puestos'=>$puestos, 'puesto'=>$request->get('puesto'),'usuario'=>$request->get('usuario'), 'area'=>$request->get('area')));
+        return view ('puestos.puestos', array('puestos'=>$puestos, 'puesto'=>$request->get('puesto'),'usuario'=>$request->get('usuario'),
+         'area'=>$request->get('area'), 'localizacion'=>$request->get('localizacion')));
     }
 
-    public function select_area()
-    {
+    public function select_localizaciones(){
+        return DB::table('localizaciones')->get();
+    }
+
+    public function select_area(){
         return DB::table('area')->get();
     }
 
-    public function select_persona()
-    {
-
+    public function select_persona(){
         $aux = DB::table('puestos')->where('persona','!=',null)->get();
         foreach ($aux as $aux1) {
             $data[] = $aux1->persona;
         }
-
         return DB::table('personas')->whereNotIn('id_p', $data)->where('personas.activo',1)->orderBy('personas.apellido', 'asc')->get();
     }
 
-    public function store(Request $request)
-    {
+    public function select_localizaciones_by_area($areaId){
+        return DB::table('localizaciones')
+            ->where('id_area', $areaId)
+            ->get();
+    }
+
+    public function select_area_by_localizacion($localizacionId){
+        $localizacion = DB::table('localizaciones')
+            ->where('id', $localizacionId)
+            ->first();
+    
+        if ($localizacion) {
+            $area = DB::table('area')
+                ->where('id_a', $localizacion->id_area)
+                ->first();
+            return response()->json($area);
+        } else {
+            return response()->json(['error' => 'Localización no encontrada'], 404);
+        }
+    }
+
+    public function store(Request $request){
         $puesto= new Puesto;
         $puesto->desc_puesto = $request['desc_puesto'];
-        $puesto->area = $request['area'];
+        $puesto->id_localizacion = $request['localizacion'];
         $puesto->persona = $request['persona'];
         $puesto->obs = $request['obs'];
         $puesto->telefono_ip = $request['telefono_ip'];
@@ -65,23 +85,21 @@ class PuestoController extends Controller
         return redirect('puestos');
     }
 
-    public function edit_puesto($id)
-    {   
+    public function edit_puesto($id){   
         $puestos = DB::table('puestos')
         ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('area','puestos.area','area.id_a')
+        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+        ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
         ->where('puestos.id_puesto',$id)
         ->first();
 
         $areas = DB::table('area')->get();
-
         $personas = DB::table('personas')->get();
 
         return view ('puestos.edit_puesto', array('puesto' => $puestos,'area' => $areas, 'personas' => $personas));
     }
 
-    public function destroy_puesto($id)
-    {
+    public function destroy_puesto($id){
         $activos = 1;
         $relaciones = DB::table('relaciones')
         ->where('relaciones.puesto',$id)
@@ -103,8 +121,7 @@ class PuestoController extends Controller
         return redirect('puestos');
     }
 
-    public function update_puesto(Request $request)
-    {   
+    public function update_puesto(Request $request){   
         $puesto = DB::table('puestos')
         ->where('puestos.id_puesto',$request['id'])
         ->update([
