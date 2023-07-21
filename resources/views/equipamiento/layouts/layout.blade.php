@@ -24,8 +24,6 @@
         @hasrole('administrador')
         <a href="#" class="btn btn-info"  data-toggle="modal" data-target="#agregar_equipamiento" type="submit"> Nuevo equipamiento</a>
         &nbsp
-        <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_puesto" type="submit"> Nuevo puesto</a>
-        &nbsp
         <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_software" type="submit">Nuevo Software</a>
         &nbsp
         @endhasrole
