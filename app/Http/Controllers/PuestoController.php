@@ -42,11 +42,7 @@ class PuestoController extends Controller{
     }
 
     public function select_persona(){
-        $aux = DB::table('puestos')->where('persona','!=',null)->get();
-        foreach ($aux as $aux1) {
-            $data[] = $aux1->persona;
-        }
-        return DB::table('personas')->whereNotIn('id_p', $data)->where('personas.activo',1)->orderBy('personas.apellido', 'asc')->get();
+        return DB::table('personas')->orderBy('personas.id_p', 'asc')->get();
     }
 
     public function select_localizaciones_by_area($areaId){
@@ -70,7 +66,11 @@ class PuestoController extends Controller{
         }
     }
 
-    public function store(Request $request){
+    public function show_store_puesto(){
+        return view('puestos.create');       
+    }
+
+    public function store_puesto(Request $request){
         $puesto= new Puesto;
         $puesto->desc_puesto = $request['desc_puesto'];
         $puesto->id_localizacion = $request['localizacion'];
@@ -85,20 +85,32 @@ class PuestoController extends Controller{
         return redirect('puestos');
     }
 
-    public function edit_puesto($id){   
+    public static function getPuesto($id) {
+        $puesto = Puesto::leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+        ->leftjoin('area','area.id_a', 'localizaciones.id_area')  
+        ->select('puestos.id_puesto as idPuesto', 'puestos.desc_puesto as nombrePuesto', 'puestos.id_localizacion as idLocalizacion',
+        'localizaciones.id_area as idArea', 'puestos.persona as idPersona', 'puestos.obs as observaciones')  
+        ->find($id);
+        return $puesto;
+     }
+
+    public function show_update_puesto($id){
+        $puesto = Puesto::showPuestoUpdate($id);
+        return view('puestos.update', ['puesto' => $puesto]);       
+    }
+
+    /*public function edit_puesto($id){   
         $puestos = DB::table('puestos')
         ->leftjoin('personas','puestos.persona','personas.id_p')
         ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
         ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
         ->where('puestos.id_puesto',$id)
         ->first();
-
         $areas = DB::table('area')->get();
         $personas = DB::table('personas')->get();
-
         return view ('puestos.edit_puesto', array('puesto' => $puestos,'area' => $areas, 'personas' => $personas));
-    }
-
+    }*/
+    
     public function destroy_puesto($id){
         $activos = 1;
         $relaciones = DB::table('relaciones')
@@ -123,13 +135,12 @@ class PuestoController extends Controller{
 
     public function update_puesto(Request $request){   
         $puesto = DB::table('puestos')
-        ->where('puestos.id_puesto',$request['id'])
+        ->where('puestos.id_puesto',$request['id_puesto'])
         ->update([
-        'desc_puesto' => $request['desc_puesto'],
-        'area' => $request['area'],
-        'persona' => $request['persona'],
-        'obs' => $request['obs'],
-        'telefono_ip' => $request['telefono_ip'],
+            'desc_puesto' => $request['desc_puesto'],
+            'id_localizacion' => $request['localizacion'],
+            'persona' => $request['persona'],
+            'obs' => $request['obs'],
         ]);      
 
         Session::flash('message','Puesto modificado con éxito');

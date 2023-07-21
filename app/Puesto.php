@@ -37,5 +37,9 @@ class Puesto extends Model{
     	   return $query ->where('nombre', 'LIKE', "%$localizacion%");
     	}
    }
+   public static function showPuestoUpdate($id) {
+      $puesto = Puesto::find($id);
+      return $puesto;
+   }
 }
 

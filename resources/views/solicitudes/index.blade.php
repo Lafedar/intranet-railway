@@ -313,8 +313,7 @@
 
   var solicitud;
   //modal edit
-  async function fnOpenModalEdit(id) 
-  {
+  async function fnOpenModalEdit(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show4'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_edit_solicitud/" + id,
@@ -599,8 +598,7 @@
   }
 
   //modal store
-  function fnOpenModalStore() 
-  {
+  function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_solicitud/";
     var closeButton2 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
@@ -1044,8 +1042,7 @@
   });
 
   //modal show
-  function fnOpenModalShow(id) 
-  {
+  function fnOpenModalShow(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_solicitud/" + id,
@@ -1074,8 +1071,7 @@
   }
 
   //modal update
-  function fnOpenModalUpdate(id)
-  {
+  function fnOpenModalUpdate(id){
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_solicitud/" + id,

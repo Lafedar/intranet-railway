@@ -44,7 +44,6 @@
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 
 @include('equipamiento.create')
-@include('puestos.create')
 @include('software.create')
 
 <script>

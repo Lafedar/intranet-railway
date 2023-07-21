@@ -47,19 +47,20 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('/puestos', 'PuestoController@puestos')->middleware('role:administrador|ingenieria');
 
-  Route::post('/store','PuestoController@store')->middleware('role:administrador');
-
-  Route::get('edit_puesto/{id_puesto}', 'PuestoController@edit_puesto')->middleware('role:administrador');
-
   Route::get('destroy_puesto/{id_puesto}', 'PuestoController@destroy_puesto')->middleware('role:administrador');
 
-  Route::post('/update_puesto','PuestoController@update_puesto')->middleware('role:administrador');
+  Route::get('show_store_puesto',['uses' => 'PuestoController@show_store_puesto'])->name('show_store_puesto');
+  Route::post('store_puesto','PuestoController@store_puesto')->name('store_puesto');
+
+  Route::get('show_update_puesto/{puesto}',['uses' => 'PuestoController@show_update_puesto'])->name('show_update_puesto');
+  Route::post('update_puesto','PuestoController@update_puesto')->name('update_puesto');
 
   Route::get('select_area','PuestoController@select_area')->name('select_area');
   Route::get('select_persona','PuestoController@select_persona')->name('select_persona');
   Route::get('select_localizaciones','PuestoController@select_localizaciones')->name('select_localizaciones');
   Route::get('select_localizaciones_by_area/{areaId}', 'PuestoController@select_localizaciones_by_area')->name('select_localizaciones_by_area');
   Route::get('select_area_by_localizacion/{localizacionId}', 'PuestoController@select_area_by_localizacion')->name('select_area_by_localizacion');
+  Route::get('getPuesto/{idPuesto}', ['uses' => 'PuestoController@getPuesto'])->name('getPuesto');
 });
 
    //****************EQUIPAMIENTO**********************

@@ -1,17 +1,16 @@
-@extends('equipamiento.layouts.layout')
+@extends('puestos.layouts.layout')
 @section('content')
 
 @if(Session::has('message'))
-<div class="container" id="div.alert">
-  <div class="row">
-<div class="col-1"></div>
-<div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
- {{Session::get('message')}}
-</div>
-</div>
-</div>
+    <div class="container" id="div.alert">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
+                {{Session::get('message')}}
+            </div>
+        </div>
+    </div>
 @endif
-
 
 <div class="col-md-12 ml-auto">
     <h1>
@@ -69,7 +68,8 @@
                                     <a href="{{url('destroy_puesto', $puesto->id_puesto)}}" class="fa-solid fa-xmark eliminar" title="Borrar" 
                                     onclick="return confirm ('¿Está seguro que desea eliminar el puesto?')"data-position="top" data-delay="50" data-tooltip="Borrar"> </a>
                                     <!-- Boton para editar puesto -->
-                                    <a href="{{url('edit_puesto', $puesto->id_puesto)}}" class="fa-solid fa-pen default" title="Editar" data-position="top" data-delay="50" data-tooltip="Editar"></a>  
+                                    <button class="fa-solid fa-pen default" onclick='fnOpenModalUpdate({{$puesto->id_puesto}})' data-toggle="modal" style="outline: none;"></button>
+                                    
                                 </div>    
                             </td>
                         @endcan
