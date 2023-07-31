@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-
-<script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+  <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+  <script src="https://kit.fontawesome.com/b36ad16a06.js" crossorigin="anonymous"></script>
+  <link href="{{ asset('css/acciones.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/estado.css') }}" rel="stylesheet">
+  <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
 
 <head>
 

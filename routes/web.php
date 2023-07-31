@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/novedades','HomeController@novedades')->middleware('role:administrador|rrhh');
 
   Route::post('/store_novedades','HomeController@store_novedades')->middleware('role:administrador|rrhh');
-
+  
   Route::get('destroy_empleado/{id}', 'EmpleadoController@destroy_empleado')->name('destroy_empleado');
 
 });

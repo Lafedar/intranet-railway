@@ -22,7 +22,6 @@ class EmpleadoController extends Controller
 
         return view ('empleado.index', array('empleados' => $empleados));
     }
-
     
     public function store(Request $request)
     {
@@ -72,20 +71,27 @@ class EmpleadoController extends Controller
     
     public function update(Request $request, $id)
     {
+        $activo = ($request['actividad'] == 'on') ? 1 : 0;
 
-         $empleado = DB::table('personas')
-        ->where('personas.id_p',$request['id_p'])
-        ->update([
-            'nombre_p' => $request['nombre'],
-            'apellido' => $request['apellido'],
-            'dni' => $request['dni'],
-            'interno' => $request['interno'],
-            'correo' => $request['correo'],
-            'fe_nac' => $request['fe_nac'],
-            'fe_ing' => $request['fe_ing'],
-            'area' => $request['area'],
-            
-        ]);      
+        if($request['actividad'] != 'on'){
+            DB::table('puestos')
+            ->where('persona', $request['id_p'])
+            ->update(['persona' => null]);    
+        }
+
+        $empleado = DB::table('personas')
+            ->where('personas.id_p',$request['id_p'])
+            ->update([
+                'nombre_p' => $request['nombre'],
+                'apellido' => $request['apellido'],
+                'dni' => $request['dni'],
+                'interno' => $request['interno'],
+                'correo' => $request['correo'],
+                'fe_nac' => $request['fe_nac'],
+                'fe_ing' => $request['fe_ing'],
+                'area' => $request['area'],
+                'activo' => $activo,
+            ]);      
 
         Session::flash('message','Empleado modificado con éxito');
         Session::flash('alert-class', 'alert-success');
