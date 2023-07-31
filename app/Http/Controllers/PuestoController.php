@@ -42,7 +42,7 @@ class PuestoController extends Controller{
     }
 
     public function select_persona(){
-        return DB::table('personas')->orderBy('personas.id_p', 'asc')->get();
+        return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
     }
 
     public function select_localizaciones_by_area($areaId){

@@ -114,8 +114,15 @@
         });
         $.get('select_persona/',function(data){
           var html_select = '<option value="">Seleccione</option>'
-          for(var i = 0; i<data.length; i ++)
-            html_select += '<option value ="'+data[i].id_p+'">'+data[i].apellido+' '+data[i].nombre_p+'</option>';
+          for(var i = 0; i<data.length; i ++){
+            if(data[i].activo == 1){
+              if(data[i].apellido == null){
+                html_select += '<option value ="'+data[i].id_p+'">'+data[i].nombre_p+'</option>';
+              }else{
+                html_select += '<option value ="'+data[i].id_p+'">'+data[i].nombre_p+' '+data[i].apellido+'</option>';
+              }
+            }
+          }
           $('#persona').html(html_select);
         });
         $.get('select_localizaciones/',function(data){
@@ -178,7 +185,6 @@
     async function fnOpenModalUpdate(id){
       try {
         puesto = await getPuesto(id);
-        console.log(puesto);
 
         var myModal = new bootstrap.Modal(document.getElementById('show3'));
         var url = window.location.origin + "/show_update_puesto/" + id;
@@ -221,7 +227,6 @@
         var html_select = '<option value="">Seleccione</option>'
         for(var i = 0; i<data.length; i ++){
           if(puesto.idArea == data[i].id_a){         
-            console.log("INGRESA area: ", puesto.idArea, data[i].id_a);
             html_select += '<option value ="'+data[i].id_a+'" selected>'+data[i].nombre_a+'</option>';
             areaSeleccionada = data[i].id_a;
           }else{
@@ -238,35 +243,44 @@
                 html_select += '<option value="' + data[i].id + '">' + data[i].nombre + '</option>';
               }
             }
-            $('#localizacion').html(html_select);
+            $('#localizacion1').html(html_select);
           });
         }
-        $('#area').html(html_select);
+        $('#area1').html(html_select);
       });
       $.get('select_persona/',function(data){
         var html_select = '<option value="">Seleccione</option>'
         for(var i = 0; i<data.length; i ++){
-          if(puesto.idPersona == data[i].id_p){
-            console.log("INGRESA persona: ", puesto.idPersona, data[i].id_p);
-            html_select += '<option value ="'+data[i].id_p+'" selected>'+data[i].apellido+' '+data[i].nombre_p+'</option>';
-          } else{
-            html_select += '<option value ="'+data[i].id_p+'">'+data[i].apellido+' '+data[i].nombre_p+'</option>';
+          if(data[i].activo == 1){
+            if(puesto.idPersona == data[i].id_p){
+              if(data[i].apellido == null){
+                html_select += '<option value ="'+data[i].id_p+'" selected>'+data[i].nombre_p+'</option>';
+              }else{
+                html_select += '<option value ="'+data[i].id_p+'" selected>'+data[i].nombre_p+' '+data[i].apellido+'</option>';
+              }
+            } else{
+              if(data[i].apellido == null){
+                html_select += '<option value ="'+data[i].id_p+'">'+data[i].nombre_p+'</option>';
+              }else{
+                html_select += '<option value ="'+data[i].id_p+'">'+data[i].nombre_p+' '+data[i].apellido+'</option>';
+              }
+            }
           }
         }
-        $('#persona').html(html_select);
+        $('#persona1').html(html_select);
       });
 
       // Variable para almacenar el valor seleccionado de localizacion
       var selectedLocalizacion = $('#localizacion').val();
 
       // Al seleccionar un área, cargar las localizaciones correspondientes
-      $('#area').on('change', function() {
+      $('#area1').on('change', function() {
         console.log("ingresa change area");
         var areaId = $(this).val();
         if (areaId === "") {
           var html_select = '<option value="">Seleccione</option>';
-          $('#localizacion').html(html_select);
-          $('#localizacion').val("");
+          $('#localizacion1').html(html_select);
+          $('#localizacion1').val("");
         } else {
           $.get('select_localizaciones_by_area/' + areaId, function(data) {
             var html_select = '<option value="">Seleccione</option>';
@@ -277,27 +291,27 @@
                 html_select += '<option value="' + data[i].id + '">' + data[i].nombre + '</option>';
               }
             }
-            $('#localizacion').html(html_select);
+            $('#localizacion1').html(html_select);
           });
         }
       });
 
       // Al seleccionar una localización, cargar el área correspondiente
-      $('#localizacion').on('change', function() {
+      $('#localizacion1').on('change', function() {
         var localizacionId = $(this).val();
         $.get('select_area_by_localizacion/' + localizacionId, function(data) {
           // Primero, deseleccionamos el área actualmente seleccionada
-          $('#area').val('');
+          $('#area1').val('');
 
           // Luego, seleccionamos el área correspondiente a la localización
           if (data.id_a) {
-            $('#area').val(data.id_a);
+            $('#area1').val(data.id_a);
           }
         });
       });
-      $('#desc_puesto').val(puesto.nombrePuesto);
+      $('#desc_puesto1').val(puesto.nombrePuesto);
       if(puesto.observaciones != null){
-        $('#obs').val(puesto.observaciones);
+        $('#obs1').val(puesto.observaciones);
       }
     });
   </script>
