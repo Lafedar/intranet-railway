@@ -242,21 +242,6 @@
     </div>
   </div>
 
-  <div class="modal fade" id="show3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog estilo" role="document">
-      <div class="modal-content">
-        <form id="myForm3" method="POST" enctype="multipart/form-data">
-          {{csrf_field()}}
-          <div id="modalshow3" class="modal-body">
-            <!-- Datos -->
-          </div>
-          <div id="modalfooter3" class="modal-footer">
-            <!-- Footer -->
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   {{ $solicitudes->appends($_GET)->links() }}
 </div>
 
@@ -293,9 +278,18 @@
   var ruta_assing = '{{ route('assing_solicitud') }}';
   var ruta_reclaim = '{{ route('reclaim_solicitud') }}';
   var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var closeButton3 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
+  var saveButton2 = $('<button type="submit" class="btn btn-info" id="saveButton2" onclick="fnSaveSolicitud2()">Guardar</button>');
 
+
+  function fnSaveSolicitud() {
+    $('#saveButton').prop('disabled', true);
+    $('#myForm').submit();
+  }
+  function fnSaveSolicitud2() {
+    $('#saveButton2').prop('disabled', true);
+    $('#myForm4').submit();
+  }
   function getSolicitud(idSolicitud) {
     return new Promise(function(resolve, reject) {
       $.ajax({
@@ -328,7 +322,7 @@
         $("#modalfooter4").empty();
         // Agregar el botón "Cerrar y Guardar" al footer
         $("#modalfooter4").append(closeButton);
-        $("#modalfooter4").append(saveButton);
+        $("#modalfooter4").append(saveButton2);
 
         // Cambiar la acción del formulario
         $('#myForm4').attr('action', ruta_edit);
@@ -577,7 +571,7 @@
         $("#modalfooter3").empty();
 
         // Agregar el botón "Cerrar" al footer del modal interno
-        $("#modalfooter3").append(closeButton3);
+        $("#modalfooter3").append(closeButton);
 
         // Agregar listener al botón "Cerrar" del modal secundario
         closeButton.click(function(event) {
