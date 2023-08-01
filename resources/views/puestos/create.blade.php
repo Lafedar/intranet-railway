@@ -10,14 +10,14 @@
   <div class="row">
     <div class="col">
       <label for="title">Area:</label>
-      <select class="form-control" name="area"  id="area"></select>
+      <select class="form-control" name="area"  id="area" required></select>
     </div>
   </div>
 
   <div class="row">
     <div class="col">
       <label for="title">Localizacion:</label>
-      <select class="form-control" name="localizacion"  id="localizacion"></select>
+      <select class="form-control" name="localizacion"  id="localizacion" required></select>
     </div>
   </div>
 

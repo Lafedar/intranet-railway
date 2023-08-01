@@ -26,7 +26,7 @@
   <div class="row">
     <div class="col">
       <label for="persona" class="form-label"><strong>Persona:</strong></label>
-      <select class="form-control" name="persona1" id="persona1" required></select>
+      <select class="form-control" name="persona1" id="persona1"></select>
     </div>
   </div>
 

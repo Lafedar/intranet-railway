@@ -137,10 +137,10 @@ class PuestoController extends Controller{
         $puesto = DB::table('puestos')
         ->where('puestos.id_puesto',$request['id_puesto'])
         ->update([
-            'desc_puesto' => $request['desc_puesto'],
-            'id_localizacion' => $request['localizacion'],
-            'persona' => $request['persona'],
-            'obs' => $request['obs'],
+            'desc_puesto' => $request['desc_puesto1'],
+            'id_localizacion' => $request['localizacion1'],
+            'persona' => $request['persona1'],
+            'obs' => $request['obs1'],
         ]);      
 
         Session::flash('message','Puesto modificado con éxito');

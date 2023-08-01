@@ -122,12 +122,11 @@
 </script>
 
 <script> 
-    $("document").ready(function(){
-        setTimeout(function(){
-         $("div.alert").fadeOut();
+  $("document").ready(function(){
+    setTimeout(function(){
+      $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
-
-    });
+  });
 </script>
 
 <script>
