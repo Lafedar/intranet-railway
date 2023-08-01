@@ -82,6 +82,11 @@
 
 
 <script>
+  function fnSaveSolicitud() {
+    $('#saveButton').prop('disabled', true);
+    $('#myForm').submit();
+  }
+
   $('#ver').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget) 
@@ -106,9 +111,7 @@
     modal.find('.modal-body #autorizante').val(autorizante);
     modal.find('.modal-body #area').val(area);
   })
-</script>
 
-<script>
   $(document).ready(function(){
     $('#alert').hide();
     $('.btn-borrar').click(function(e){
@@ -131,9 +134,7 @@
         });
     });
 });
-</script>
 
-<script> 
   $("document").ready(function(){
     setTimeout(function(){
      $("div.alert").fadeOut();

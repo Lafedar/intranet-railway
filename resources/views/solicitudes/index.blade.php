@@ -286,10 +286,12 @@
     $('#saveButton').prop('disabled', true);
     $('#myForm').submit();
   }
+
   function fnSaveSolicitud2() {
     $('#saveButton2').prop('disabled', true);
     $('#myForm4').submit();
   }
+  
   function getSolicitud(idSolicitud) {
     return new Promise(function(resolve, reject) {
       $.ajax({

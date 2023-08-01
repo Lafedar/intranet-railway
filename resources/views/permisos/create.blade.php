@@ -1,7 +1,7 @@
 <div class="modal fade" id="agregar_permiso" role="dialog" align="center">
   <div class="modal-dialog">
    <div class="modal-content">           
-    <form action="{{ action('PermisosController@store') }}" method="POST">
+    <form id="myForm" action="{{ action('PermisosController@store') }}" method="POST">
       {{csrf_field()}}
       <div class="modal-body">
         <h4 class="headertekst">Solicitud de permiso</h4>
@@ -70,7 +70,7 @@
           </div>
           <p></p>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-info">Agregar</button>
+          <button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Agregar</button>
         </div>
       </div>
     </div>
