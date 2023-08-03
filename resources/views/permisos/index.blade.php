@@ -83,8 +83,13 @@
 
 <script>
   function fnSaveSolicitud() {
-    $('#saveButton').prop('disabled', true);
-    $('#myForm').submit();
+    var form = document.getElementById('myForm');
+    if (form.checkValidity()) {
+      $('#saveButton').prop('disabled', true);
+      $('#myForm').submit();
+    } else {
+      console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
+    }
   }
 
   $('#ver').on('show.bs.modal', function (event) {

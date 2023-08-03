@@ -283,13 +283,23 @@
 
 
   function fnSaveSolicitud() {
-    $('#saveButton').prop('disabled', true);
-    $('#myForm').submit();
+    var form = document.getElementById('myForm');
+    if (form.checkValidity()) {
+      $('#saveButton').prop('disabled', true);
+      $('#myForm').submit();
+    } else {
+      console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
+    }
   }
 
   function fnSaveSolicitud2() {
-    $('#saveButton2').prop('disabled', true);
-    $('#myForm4').submit();
+    var form = document.getElementById('myForm4');
+    if (form.checkValidity()) {
+      $('#saveButton2').prop('disabled', true);
+      $('#myForm4').submit();
+    } else {
+      console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
+    }
   }
   
   function getSolicitud(idSolicitud) {
