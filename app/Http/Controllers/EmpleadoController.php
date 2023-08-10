@@ -32,6 +32,9 @@ class EmpleadoController extends Controller{
             return redirect()->back()->withInput();
         }
 
+        $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
+        $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
+
         $empleado = new Empleado;
         $empleado->nombre_p = $request['nombre'];
         $empleado->apellido = $request['apellido'];
@@ -41,8 +44,11 @@ class EmpleadoController extends Controller{
         $empleado->fe_nac = $request['fe_nac'];
         $empleado->fe_ing = $request['fe_ing'];
         $empleado->area = $request['area'];
-        $empleado->activo = 1;
+        $empleado->turno = $request['turno'];
+        $empleado->activo = $activo;
+        $empleado->jefe = $jefe;
         $empleado->rango = 3;
+        $empleado->activo = 1;
         $empleado->save();
 
         Session::flash('message','Empleado agregado con éxito');
@@ -66,6 +72,7 @@ class EmpleadoController extends Controller{
     
     public function update(Request $request, $id){
         $activo = ($request['actividad'] == 'on') ? 1 : 0;
+        $jefe = ($request['esJefe'] == 'on') ? 1 : 0;
 
         if($request['actividad'] != 'on'){
             DB::table('puestos')
@@ -84,7 +91,9 @@ class EmpleadoController extends Controller{
                 'fe_nac' => $request['fe_nac'],
                 'fe_ing' => $request['fe_ing'],
                 'area' => $request['area'],
+                'turno' => $request['turnoEdit'],
                 'activo' => $activo,
+                'jefe' => $jefe,
             ]);      
 
         Session::flash('message','Empleado modificado con éxito');

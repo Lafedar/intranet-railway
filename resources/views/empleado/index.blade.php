@@ -75,7 +75,7 @@
                   <a href="#" class="btn btn-info btn-sm mr-1" data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" 
                     data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}" data-fe_nac="{{$empleado->fe_nac}}" 
                     data-fe_ing="{{$empleado->fe_ing}}" data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}" data-activo="{{$empleado->activo}}" 
-                    data-turno="{{$empleado->idTurno}}" data-target="#editar_empleado">Editar
+                    data-turno="{{$empleado->idTurno}}" data-jefe="{{$empleado->jefe}}" data-target="#editar_empleado">Editar
                   </a>
                   @if($empleado->jefe == 1)
                     <button id="jefeArea" class="btn btn-info btn-sm mr-1" onclick='fnOpenModalJefeArea({{$empleado->id_p}})' title="jefeArea">Areas</button>
@@ -274,10 +274,13 @@
     var fe_ing = button.data('fe_ing')
     var correo = button.data('correo')
     var activo = button.data('activo')
+    var jefe = button.data('jefe')
     var actividad = $('#actividad');
+    var esJefe = $('#esJefe');
     var modal = $(this)
     
     actividad.prop('checked', activo == 1);
+    esJefe.prop('checked', jefe == 1);
     modal.find('.modal-body #id_p').val(id);
     modal.find('.modal-body #nombre_p').val(nombre);
     modal.find('.modal-body #apellido').val(apellido);

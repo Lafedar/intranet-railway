@@ -11,22 +11,22 @@
               <div class="row">
                 <div class="col-md-6">
                   <label for="nombre_p"><strong>Nombre:</strong></label>
-                  <input type="text" name="nombre" class="form-control" id="nombre_p" autocomplete="off" value="{{old('nombre_p')}}" min="6" required>
+                  <input type="text" name="nombre" class="form-control" id="nombre_p" autocomplete="off" value="{{old('nombre_p')}}" minlength="3" maxlength="30" required>
                 </div>
                 <div class="col-md-6">
                   <label for="apellido"><strong>Apellido:</strong></label>
-                  <input type="text" name="apellido" class="form-control" id="apellido" autocomplete="off" value="{{old('apellido')}}" min="6" required>
+                  <input type="text" name="apellido" class="form-control" id="apellido" autocomplete="off" value="{{old('apellido')}}" minlength="3" maxlength="30" required>
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-md-6">
                   <label for="dni"><strong>DNI:</strong></label>
-                  <input type="text" name="dni" class="form-control" id="dni" autocomplete="off" value="{{old('dni')}}" min="6" required>
+                  <input type="text" name="dni" class="form-control" id="dni" autocomplete="off" value="{{old('dni')}}" minlength="8" maxlength="11" required>
                 </div>
                 <div class="col-md-6">
                   <label for="interno"><strong>Interno:</strong></label>
-                  <input type="text" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" min="6" >
+                  <input type="text" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" minlength="2" maxlength="5">
                 </div>
               </div>
 
@@ -65,6 +65,10 @@
                 <div class="col-6">
                   <label for="actividad"><strong>En actividad:</strong></label>
                   <input type="checkbox" name="actividad" id="actividad">
+                </div>
+                <div class="col-6">
+                  <label for="esJefe"><strong>Es jefe:</strong></label>
+                  <input type="checkbox" name="esJefe" id="esJefe">
                 </div>
               </div>
 
