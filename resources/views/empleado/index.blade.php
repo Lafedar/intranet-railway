@@ -4,14 +4,14 @@
 <div id="alert" class="alert alert-info" style="display: none"></div>
 
 @if(Session::has('message'))
-<div class="container" id="div.alert">
-  <div class="row">
-    <div class="col-1"></div>
-    <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-       {{Session::get('message')}}
-   </div>
-</div>
-</div>
+  <div class="container" id="div.alert">
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
+        {{Session::get('message')}}
+      </div>
+    </div>
+  </div>
 @endif
 
 <div class="col-md-12 ml-auto">
@@ -28,6 +28,8 @@
       <th class="text-center">Fecha de ingreso</th>
       <th class="text-center">Fecha de nacimiento</th>
       <th class="text-center">Area</th>
+      <th class="text-center">Turno</th>
+      <th class="text-center">Jefe</th>
       <th class="text-center">En actividad</th>
       <th class="text-center">Acciones</th>
     </thead>        
@@ -37,7 +39,7 @@
         @foreach($empleados as $empleado) 
           <tr>
             @if ($empleado->dni != 9999999)
-              <td > {{$empleado->apellido . ' '. $empleado->nombre_p}}</td>
+              <td> {{$empleado->apellido . ' '. $empleado->nombre_p}}</td>
 
               <td align="center">{{$empleado->dni}}</td>
 
@@ -54,6 +56,13 @@
               @endif
 
               <td>{{$empleado->nombre_a}}</td>
+              <td>{{$empleado->nombreTurno}}</td>
+
+              @if($empleado->jefe == 1)
+                <td width="60" style="text-align: center;"><div class="circle_green"></div></td>
+              @else
+                <td width="60" style="text-align: center;"><div class="circle_grey"></div></td>
+              @endif
 
               @if($empleado->activo == 1)
                 <td width="60" style="text-align: center;"><div class="circle_green"></div></td>
@@ -61,26 +70,196 @@
                 <td width="60" style="text-align: center;"><div class="circle_grey"></div></td>
               @endif
 
-              <td align="center" width="110">
-                <form action="{{route('destroy_empleado', $empleado->id_p)}}" method="put">
-                  <a href="#" class="btn btn-info btn-sm"  data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" 
-                  data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}" data-fe_nac="{{$empleado->fe_nac}}" 
-                  data-fe_ing="{{$empleado->fe_ing}}" data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}" data-activo="{{$empleado->activo}}" 
-                  data-target="#editar_empleado">Editar</a>
-                  <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar"> X</button>
-                </form>
+              <td align="center" width="175">
+                <div class="d-inline-flex">
+                  <a href="#" class="btn btn-info btn-sm mr-1" data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" 
+                    data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}" data-fe_nac="{{$empleado->fe_nac}}" 
+                    data-fe_ing="{{$empleado->fe_ing}}" data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}" data-activo="{{$empleado->activo}}" 
+                    data-turno="{{$empleado->idTurno}}" data-target="#editar_empleado">Editar
+                  </a>
+                  @if($empleado->jefe == 1)
+                    <button id="jefeArea" class="btn btn-info btn-sm mr-1" onclick='fnOpenModalJefeArea({{$empleado->id_p}})' title="jefeArea">Areas</button>
+                  @endif
+                  <form id="formDelete" action="{{ route('destroy_empleado', $empleado->id_p) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar"> X</button>
+                  </form>
+                </div>
               </td>
             @endif
           </tr>
-        </tr>
-      @endforeach  
-    @endif  
-  </tbody>
-</table>
+        @endforeach  
+      @endif  
+    </tbody>
+  </table>
 </div>
+
 @include('empleado.edit')
 
+<div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog estilo" role="document">
+    <div class="modal-content">
+      {{csrf_field()}}
+      <div id="modalshow" class="modal-body">
+        <!-- Datos -->
+      </div>
+      <div id="modalfooter" class="modal-footer">
+        <!-- Footer -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="show3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog estilo" role="document">
+    <div class="modal-content">
+      {{csrf_field()}}
+      <div id="modalshow3" class="modal-body">
+        <!-- Datos -->
+      </div>
+      <div id="modalfooter3" class="modal-footer">
+        <!-- Footer -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cerrar</button>');
+  var closeButton2 = $('<button type="button" class="btn btn-secondary" id="closeButton2" data-dismiss="modal">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
+  var idJefe;
+  function fnOpenModalJefeArea(id){
+    var myModal = new bootstrap.Modal(document.getElementById('show2'));
+    idJefe = id;
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/showUpdateAreaXJefe/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow").empty();
+        // Establecer el contenido del modal
+        $("#modalshow").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter").empty();
+
+        // Agregar el botón "Cerrar" al footer
+        $("#modalfooter").append(closeButton);
+
+        // Mostrar el modal
+        myModal.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
+      },
+    });
+  }
+
+  $('#show2').on('show.bs.modal', function (event) {
+    updateSelectOptions();
+  });
+
+  function updateSelectOptions() {
+    $.get('selectAreasTurnos/',function(data){
+      var html_select = '<option value="">Seleccione </option>'
+      for(var i = 0; i<data[0].length; i ++){
+        for(var k = 0; k<data[1].length; k ++){
+          var bandera = false;
+          for(var j = 0; j<data[2].length; j ++){
+            if(data[0][i].id_a == data[2][j].area && data[1][k].id == data[2][j].turno && idJefe == data[2][j].jefe){
+              bandera = true;
+            }
+          }
+          if(!bandera){
+            var ids = idJefe+"-"+data[0][i].id_a+"-"+data[1][k].id;
+            html_select += '<option value="'+ids+'">' + data[0][i].nombre_a + ' - ' + data[1][k].nombre + '</option>';          
+          }
+        }
+      }
+      $('#nuevoPermiso').html(html_select);
+    });
+  } 
+
+  function fnEliminarJefeXArea(idJA, idJefe) {
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/deleteAreaXJefe/" + idJA,
+      type: 'GET',
+      success: function (data) {
+        // Llamar a la función que actualiza el contenido del modal
+        actualizarContenidoModal(idJefe);
+      },
+    });
+  }
+
+  function fnAgregarJefeXArea() {
+    var selectedValue = document.getElementById('nuevoPermiso').value;
+    if (selectedValue === "") {
+      return; // Salir de la función si no hay una opción seleccionada
+    }
+
+    $('#saveButton').prop('disabled', true);
+
+    var parts = selectedValue.split('-');
+    var jefeId = parts[0];
+    var areaId = parts[1];
+    var turnoId = parts[2];
+
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/storeRelacionJefeXArea/" + jefeId + "/" + areaId + "/" + turnoId,
+      type: 'GET',
+      success: function (data) {
+        // Llamar a la función que actualiza el contenido del modal
+        actualizarContenidoModal(jefeId);
+      },
+    });
+  }
+
+  function actualizarContenidoModal(idJefe) {
+    // Realizar una nueva solicitud AJAX para obtener el contenido actualizado de la tabla
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/obtenerNuevoListadoAreaXJefe/" + idJefe, 
+      type: 'GET',
+      success: function (data) {
+        // Actualizar el contenido del modal con los nuevos datos
+        $("#modalshow").html(data);
+        updateSelectOptions();
+      },
+    });
+  }
+  /*function fnOpenModalAgregarRelacion(id) {
+    var myModal3 = new bootstrap.Modal(document.getElementById('show3'));
+    $.ajax({
+      url: window.location.protocol + '//' + window.location.host + "/showStoreAreaXJefe/" + id,
+      type: 'GET',
+      success: function(data) {
+        // Borrar contenido anterior
+        $("#modalshow3").empty();
+        // Establecer el contenido del modal
+        $("#modalshow3").html(data);
+
+        // Borrar contenido anterior
+        $("#modalfooter3").empty();
+
+        // Agregar el botón "Cerrar y Guardar" al footer
+        $("#modalfooter3").append(saveButton);
+        $("#modalfooter3").append(closeButton2);
+
+        // Mostrar el modal
+        myModal3.show();
+
+        // Cambiar el tamaño del modal a "modal-lg"
+        var modalDialog = myModal3._element.querySelector('.modal-dialog');
+        modalDialog.classList.remove('modal-sm');
+        modalDialog.classList.add('modal-lg');
+
+      },
+    });
+  }*/
+
   $('#editar_empleado').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget) 
@@ -88,16 +267,17 @@
     var nombre = button.data('nombre')
     var apellido = button.data('apellido')
     var area = button.data('area')
+    var idTurno = button.data('turno')
     var dni = button.data('dni')
     var interno = button.data('interno')
     var fe_nac = button.data('fe_nac')
     var fe_ing = button.data('fe_ing')
     var correo = button.data('correo')
     var activo = button.data('activo')
-    var checkbox = $('#actividad');
+    var actividad = $('#actividad');
     var modal = $(this)
     
-    checkbox.prop('checked', activo == 1);
+    actividad.prop('checked', activo == 1);
     modal.find('.modal-body #id_p').val(id);
     modal.find('.modal-body #nombre_p').val(nombre);
     modal.find('.modal-body #apellido').val(apellido);
@@ -107,7 +287,7 @@
     modal.find('.modal-body #fe_ing').val(fe_ing);
     modal.find('.modal-body #correo').val(correo);
 
-    $.get('select_area/',function(data){
+    $.get('selectAreaEmpleados/',function(data){
       var html_select = '<option value="">Seleccione </option>'
       for(var i = 0; i<data.length; i ++){
         if(data[i].id_a == area){
@@ -117,6 +297,17 @@
         }
       }
       $('#select_area').html(html_select);
+    });
+    $.get('selectTurnosEmpleados/',function(data){
+      var html_select = '<option value="">Seleccione </option>'
+      for(var i = 0; i<data.length; i ++){
+        if(data[i].id == idTurno){
+          html_select += '<option value ="'+data[i].id+'"selected>'+data[i].nombre+'</option>';
+        }else{
+          html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
+        }
+      }
+      $('#turnoEdit').html(html_select);
     });
   })
 </script>

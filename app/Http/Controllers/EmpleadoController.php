@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Krucas\Notification\Middleware\NotificationMiddleware;
+use Krucas\Notification\Facades\Notification;
+use Illuminate\Routing\Controller;
 use Illuminate\Database\Seeder;
-use App\Persona;
+use Illuminate\Http\Request;
+use App\JefeXArea;
 use App\Empleado;
+use App\Persona;
 use App\User;
+Use Session;
 use Auth;
 use DB;
-Use Session;
-use Illuminate\Routing\Controller;
-use Krucas\Notification\Facades\Notification;
-use Krucas\Notification\Middleware\NotificationMiddleware;
 
-class EmpleadoController extends Controller
-{
-    public function index(Request $request)
-    {
+class EmpleadoController extends Controller{
+
+    public function index(Request $request){
         $empleados = Empleado::Relacion()->get();
 
         return view ('empleado.index', array('empleados' => $empleados));
     }
     
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $aux= DB::table('personas')->where('personas.dni',$request['dni'])->first();
 
         if($aux){
@@ -52,13 +51,9 @@ class EmpleadoController extends Controller
         return redirect('empleado');
     }
     
-    public function show($id)
-    {
+    public function show($id){}
 
-    }
-
-    public function edit($id)
-    {
+    public function edit($id){
         $empleados = DB::table('personas')
         ->leftjoin('area','personas.area','area.id_a')
         ->where('personas.id_p',$id)
@@ -69,8 +64,7 @@ class EmpleadoController extends Controller
         return view ('empleado.edit', ['empleado' => $empleados], ['area' => $area]);
     }
     
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id){
         $activo = ($request['actividad'] == 'on') ? 1 : 0;
 
         if($request['actividad'] != 'on'){
@@ -98,8 +92,7 @@ class EmpleadoController extends Controller
         return redirect('empleado');
     }
 
-    public function destroy_empleado(Request $request, $id)
-    {
+    public function destroy_empleado(Request $request, $id){
         $empleado = Empleado::find($id);
         $empleado->activo = 0;
         $empleado->save();
@@ -107,5 +100,41 @@ class EmpleadoController extends Controller
          return response()->json([
         'message' => 'Empleado eliminado con éxito'
         ]);       
+    }
+
+    public function selectAreaEmpleados(){
+        return DB::table('area')->get();
+    }  
+
+    public function selectTurnosEmpleados(){
+        return DB::table('turnos')->get();
+    }  
+
+    public function selectAreasTurnos(){
+        return [Empleado::selectAreas(),
+            Empleado::selectTurnos(),
+            Empleado::selectJefeXArea()];
+    }
+
+    public function showUpdateAreaXJefe($id){
+        $idsJAs = Empleado::showAreaXJefeUpdate($id);
+        return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
+    }
+
+    public function deleteAreaXJefe($idJA){
+        $deletedRows = DB::table('jefe_area')->where('id_ja', $idJA)->delete();
+    }
+
+    public function storeRelacionJefeXArea($idJefe, $areaId, $turnoId){
+        $jefeXArea = new JefeXArea;
+        $jefeXArea->jefe = $idJefe;
+        $jefeXArea->area = $areaId;
+        $jefeXArea->turno = $turnoId;
+        $jefeXArea->save();
+    }
+
+    public function obtenerNuevoListadoAreaXJefe($id){
+        $idsJAs = Empleado::showAreaXJefeUpdate($id);
+        return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
     }
 }

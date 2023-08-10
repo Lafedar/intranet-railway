@@ -48,9 +48,13 @@
               </div>
 
               <div class="row">
-                <div class="col">
+                <div class="col-6">
                   <label for="area"><strong>Area:</strong></label>
-                  <select class="form-control" name="area"  id="area" required></select>
+                  <select class="form-control" name="area" id="area" required></select>
+                </div>
+                <div class="col-6">
+                  <label for="turno"><strong>Turno:</strong></label>
+                  <select class="form-control" name="turno" id="turno" required></select>
                 </div>
               </div>
 
