@@ -21,11 +21,11 @@
               <div class="row">
                 <div class="col-md-6">
                   <label for="dni"><strong>DNI:</strong></label>
-                  <input type="text" name="dni" class="form-control" id="dni" autocomplete="off" value="{{old('dni')}}" minlength="8" maxlength="11" required>
+                  <input type="number" name="dni" class="form-control" id="dni" autocomplete="off" value="{{old('dni')}}" minlength="8" maxlength="11" required>
                 </div>
                 <div class="col-md-6">
                   <label for="interno"><strong>Interno:</strong></label>
-                  <input type="text" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" minlength="2" maxlength="5">
+                  <input type="number" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" minlength="2" maxlength="5">
                 </div>
               </div>
 
@@ -43,7 +43,7 @@
               <div class="row">
                 <div class="col">
                   <label for="correo"><strong>Correo electrónico:</strong></label>
-                  <input type="text" name="correo" class="form-control" id="correo" value="{{old('correo')}}" >
+                  <input type="email" name="correo" class="form-control" id="correo" value="{{old('correo')}}" >
                 </div>
               </div>
 
