@@ -29,12 +29,15 @@ class Empleado extends Model
     }
 
     public function scopeBusca_personas($query, $persona){
-        return $query ->join('jefe_area','personas.area','jefe_area.area')
-            ->where('personas.activo',1)
-            ->where('jefe_area.jefe',$persona)
-            ->where('personas.id_p','!=',$persona)
-            ->select('personas.id_p','personas.nombre_p','personas.apellido')
-            ->orderBy('apellido','asc');  
+        return $query = DB::table('personas')
+        ->leftJoin('jefe_area', 'personas.area', '=', 'jefe_area.area')
+        ->where('personas.activo', 1)
+        ->where('jefe_area.jefe', $persona)
+        ->where('personas.id_p', '!=', $persona)
+        ->whereColumn('personas.turno', 'jefe_area.turno') // Condición para que los turnos coincidan
+        ->select('personas.id_p', 'personas.nombre_p', 'personas.apellido')
+        ->orderBy('apellido', 'asc')->get();
+        //dd($query);
     }
 
     public function scopeRango ($query){

@@ -115,9 +115,9 @@ class PermisosController extends Controller
     public function select_autorizado(){
 
         $persona = DB::table('personas')->where('personas.usuario', auth()->user()->id )->first();
-
-        if($persona->rango == 1){
-            return Empleado::Busca_personas($persona->id_p)->get();
+        //dd($persona);
+        if($persona->jefe == 1){
+            return Empleado::Busca_personas($persona->id_p);
         }
         else{
             return Empleado::Busca_personas($persona->id_p)
