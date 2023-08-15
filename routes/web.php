@@ -377,14 +377,14 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_solicitud','SolicitudController@store_solicitud')->name('store_solicitud');
 
   Route::get('show_assing_solicitud/{solicitud}',['uses' => 'SolicitudController@show_assing_solicitud'])
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos')
+    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Empleado-Mantenimiento-Ve-Proyectos-Asigna')
     ->name('show_assing_solicitud');
   Route::post('assing_solicitud','SolicitudController@assing_solicitud')
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos')
+    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Empleado-Mantenimiento-Ve-Proyectos-Asigna')
     ->name('assing_solicitud');
 
   Route::get('show_update_solicitud/{solicitud}',['uses' => 'SolicitudController@show_update_solicitud'])
-    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Ver-Todas-Las-Solicitudes-Y-Proyectos')
+    ->middleware('role:administrador|Jefe-Mantenimiento|Empleado-Mantenimiento|Empleado-Mantenimiento-Asigna-Solicitudes|Empleado-Mantenimiento-Ve-Solicitudes|Empleado-Mantenimiento-Ve-Proyectos|Ver-Todas-Las-Solicitudes-Y-Proyectos|Empleado-Mantenimiento-Ve-Proyectos-Asigna')
     ->name('show_update_solicitud');
   Route::post('update_solicitud','SolicitudController@update_solicitud')->name('update_solicitud');
 
