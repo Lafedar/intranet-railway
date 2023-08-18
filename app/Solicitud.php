@@ -230,7 +230,7 @@ class Solicitud extends Model{
     public static function obtenerMailNombreTituloSolicitante($idSolicitud){
         $consulta = DB::table('personas')
         ->leftJoin('solicitudes', 'solicitudes.id_solicitante', 'personas.id_p')
-        ->select('personas.correo as email', DB::raw('CONCAT(personas.nombre, " ", personas.apellido) as nombre'), 'solicitudes.titulo as titulo')
+        ->select('personas.correo as email', DB::raw('CONCAT(personas.nombre_p, " ", personas.apellido) as nombre'), 'solicitudes.titulo as titulo')
         ->where('solicitudes.id', $idSolicitud)
         ->first();
 
