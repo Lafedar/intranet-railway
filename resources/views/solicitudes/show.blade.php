@@ -58,12 +58,12 @@
         </div>
         <div class="col-md-4">
             <strong>Solicitante: </strong>
-            <p>{{$solicitud->nombre_solicitante}}</p>
+            <p>{{$solicitud->nombre_solicitante}} {{$solicitud->apellido_solicitante}}</p>
         </div>
         <div class="col-md-4">
             <strong>Encargado: </strong>
             @if($solicitud->nombre_encargado)
-                <p>{{$solicitud->nombre_encargado}}</p>
+                <p>{{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}}</p>
             @else
                 <p style="color:gainsboro">Sin asignar</p>
             @endif

@@ -159,8 +159,25 @@
     });
   }
 
-  $('#show2').on('show.bs.modal', function (event) {
-    updateSelectOptions();
+  $(document).ready(function () {
+    // Controlador para el checkbox de actividad
+    $('#actividadCreate').on('change', function () {
+      if ($(this).prop('checked')) {
+        // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
+        $('#esJefeCreate').prop('checked', false);
+        $('#esJefeCreate').prop('disabled', false);
+      } else {
+        // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
+        $('#esJefeCreate').prop('disabled', true);
+        $('#esJefeCreate').prop('checked', false);
+      }
+    });
+
+    // Controlador para el modal
+    $('#show2').on('show.bs.modal', function (event) {
+      // Actualizar opciones de selección
+      updateSelectOptions();
+    });
   });
 
   function updateSelectOptions() {
@@ -261,7 +278,6 @@
   }*/
 
   $('#editar_empleado').on('show.bs.modal', function (event) {
-
     var button = $(event.relatedTarget) 
     var id = button.data('id')
     var nombre = button.data('nombre')
@@ -290,6 +306,32 @@
     modal.find('.modal-body #fe_ing').val(fe_ing);
     modal.find('.modal-body #correo').val(correo);
 
+    var actividadCheckbox = $('#actividad');
+    var jefeCheckbox = $('#esJefe');
+
+    var actividadChecked = actividadCheckbox.prop('checked');
+    var jefeChecked = jefeCheckbox.prop('checked');
+
+    if (actividadChecked && jefeChecked) {
+      $('#actividad').prop('checked', true);
+      $('#esJefe').prop('checked', true);
+      $('#esJefe').prop('disabled', false);
+    } else if(actividadChecked && !jefeChecked) {
+      $('#actividad').prop('checked', true);
+      $('#esJefe').prop('checked', false);
+      $('#esJefe').prop('disabled', false);
+    }else if(!actividadChecked && jefeChecked) {
+      console.log("jefe");
+      $('#actividad').prop('checked', false);
+      $('#esJefe').prop('checked', false);
+      $('#esJefe').prop('disabled', true);
+    }else if(!actividadChecked && !jefeChecked) {
+      console.log("ninguno");
+      $('#actividad').prop('checked', false);
+      $('#esJefe').prop('checked', false);
+      $('#esJefe').prop('disabled', true);
+    }
+
     $.get('selectAreaEmpleados/',function(data){
       var html_select = '<option value="">Seleccione </option>'
       for(var i = 0; i<data.length; i ++){
@@ -312,6 +354,26 @@
       }
       $('#turnoEdit').html(html_select);
     });
+
+    // Asigna el evento change al checkbox de actividad
+    $('#actividad').on('change', function(event) {
+      handleActividadChange(event);
+    });
+
+    function handleActividadChange(event) {
+      // Si event está definido, obten el checkbox de actividad
+      var actividadCheckbox = event ? $(event.target) : $('#actividad');
+
+      if (actividadCheckbox.prop('checked')) {
+        // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
+        $('#esJefe').prop('checked', false);
+        $('#esJefe').prop('disabled', false);
+      } else {
+        // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
+        $('#esJefe').prop('disabled', true);
+        $('#esJefe').prop('checked', false);
+      }
+    }
   })
 </script>
 

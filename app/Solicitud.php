@@ -31,8 +31,8 @@ class Solicitud extends Model{
     public function scopeRelaciones_index($query, $id_tipo_solicitud, $id_estado, $id_encargado, $id_solicitante, $fecha){
         $query->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
             ->leftJoin('fallas', 'fallas.id', 'solicitudes.id_falla')
-            ->leftJoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
-            ->leftJoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+            ->leftJoin('personas as usuario_encargado', 'usuario_encargado.id_p', 'solicitudes.id_encargado')
+            ->leftJoin('personas as usuario_solicitante', 'usuario_solicitante.id_p', 'solicitudes.id_solicitante')
             ->leftJoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
             ->leftJoin('estados', 'estados.id', 'solicitudes.id_estado')
             ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
@@ -43,10 +43,12 @@ class Solicitud extends Model{
                 'tipo_solicitudes.nombre as tipo_solicitud',
                 'tipo_solicitudes.id as id_tipo_solicitud',
                 'fallas.nombre as falla',
-                'usuario_encargado.name as nombre_encargado',
-                'usuario_encargado.id as id_encargado',
-                'usuario_solicitante.name as nombre_solicitante',
-                'usuario_solicitante.id as id_solicitante',
+                'usuario_encargado.nombre_p as nombre_encargado',
+                'usuario_encargado.apellido as apellido_encargado',
+                'usuario_encargado.id_p as id_encargado',
+                'usuario_solicitante.nombre_p as nombre_solicitante',
+                'usuario_solicitante.apellido as apellido_solicitante',
+                'usuario_solicitante.id_p as id_solicitante',
                 'solicitudes.id_equipo as id_equipo',
                 'estados.nombre as estado',
                 'solicitudes.fecha_alta as fechaEmision',
@@ -79,8 +81,10 @@ class Solicitud extends Model{
                 'solicitudes.titulo as titulo', 
                 'tipo_solicitudes.nombre as tipo_solicitud', 
                 'fallas.nombre as falla', 
-                'usuario_encargado.name as nombre_encargado', 
-                'usuario_solicitante.name as nombre_solicitante', 
+                'usuario_encargado.nombre_p as nombre_encargado', 
+                'usuario_encargado.apellido as apellido_encargado', 
+                'usuario_solicitante.nombre_p as nombre_solicitante', 
+                'usuario_solicitante.apellido as apellido_solicitante', 
                 'solicitudes.id_equipo as id_equipo', 
                 'estados.nombre as estado', 
                 'area_equipo.nombre_a as area_equipo', 
@@ -91,8 +95,8 @@ class Solicitud extends Model{
             ->leftjoin('fallas', 'fallas.id', 'solicitudes.id_falla')
             ->leftjoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
             ->leftjoin('estados', 'historico_solicitudes.id_estado', 'estados.id')
-            ->leftjoin('users as usuario_encargado', 'usuario_encargado.id', 'solicitudes.id_encargado')
-            ->leftjoin('users as usuario_solicitante', 'usuario_solicitante.id', 'solicitudes.id_solicitante')
+            ->leftjoin('personas as usuario_encargado', 'usuario_encargado.id_p', 'solicitudes.id_encargado')
+            ->leftjoin('personas as usuario_solicitante', 'usuario_solicitante.id_p', 'solicitudes.id_solicitante')
             ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
             ->leftjoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
             ->leftjoin('localizaciones as loc_equipo', 'loc_equipo.id' ,'equipos_mant.id_localizacion')
@@ -215,6 +219,13 @@ class Solicitud extends Model{
         ->select('personas.area as area')
         ->where('users.id', $idUser)
         ->first());
+    }
+    public static function obtenerIdPersonaAutenticada($idUser){
+        return (DB::table('personas')
+        ->select('personas.id_p as id_p')
+        ->where('usuario', $idUser)
+        ->first());
+
     }
     public static function obtenerMailNombreTituloSolicitante($idSolicitud){
         $consulta = DB::table('users')

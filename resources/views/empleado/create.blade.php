@@ -67,7 +67,7 @@
                 </div>
                 <div class="col-6">
                   <label for="esJefeCreate"><strong>Es jefe:</strong></label>
-                  <input type="checkbox" name="esJefeCreate" id="esJefeCreate">
+                  <input type="checkbox" name="esJefeCreate" id="esJefeCreate" disabled>
                 </div>
               </div>
 

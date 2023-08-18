@@ -153,11 +153,11 @@
             @else     
               <!--<td></td>  --> 
             @endif  
-            <td>{{$solicitud->nombre_solicitante}}</td>
+            <td>{{$solicitud->nombre_solicitante}} {{$solicitud->apellido_solicitante}}</td>
             <td style="display: none;">{{$solicitud->descripcion}}</td>
             <td>
               @if($solicitud->nombre_encargado)
-                {{$solicitud->nombre_encargado}}
+                {{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}}
               @else
                 <p style="color:gainsboro">Sin asignar</p>
               @endif
@@ -180,7 +180,7 @@
                       </div>
                     @endif
                   @endcan
-                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $userAutenticado)
+                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                     </div>
@@ -188,7 +188,7 @@
                       <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
                     </div>
                   @endif
-                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $userAutenticado)
+                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
                     </div>
@@ -898,7 +898,6 @@
         } else {
           var historicoOffset = 5;
         }
-
         for (var j = 0; j < historicos.length; j++) {
           var historico = historicos[j];
           var estado = historico.estado;
@@ -1018,7 +1017,7 @@
         if (item.label.includes("Nombre")) {
           nombreInserted = true;
         }else{nombreInserted = false;}
-
+        
         doc.text(item.value, valueX, item.y);
         auxiliarY = item.y;
       }

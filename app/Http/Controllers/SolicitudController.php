@@ -24,7 +24,9 @@ class SolicitudController extends Controller{
     public function index(Request $request){
         $userAutenticado = Auth::id();
         $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado($userAutenticado);
-    
+        $personaAutenticada1 = Solicitud::obtenerIdPersonaAutenticada($userAutenticado);
+        $personaAutenticada = $personaAutenticada1->id_p;
+        
         $solicitudesQuery = Solicitud::ID($request->get('id_solicitud'))
             ->Equipo($request->get('id_equipo'))
             ->Titulo($request->get('titulo'))
@@ -36,11 +38,11 @@ class SolicitudController extends Controller{
             $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-asignadas')) {
             // Empleados - Solicitudes asignadas
-            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->paginate(20);
         } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
             // Empleados que pueden asignar
-            $solicitudes = $solicitudesQuery->where(function ($query) use ($userAutenticado) {
-                $query->where('id_encargado', $userAutenticado)
+            $solicitudes = $solicitudesQuery->where(function ($query) use ($personaAutenticada) {
+                $query->where('id_encargado', $personaAutenticada)
                     ->where('id_tipo_solicitud', '!=', 3)
                     ->orWhereNull('id_encargado');
             })->paginate(20);
@@ -48,12 +50,12 @@ class SolicitudController extends Controller{
             $solicitudes = $solicitudesQuery->paginate(20);
         } elseif (Gate::allows('ver-proyectos')){
             //revisar -----------------
-            $solicitudes = $solicitudesQuery->where('id_encargado', $userAutenticado)->orWhere('id_tipo_solicitud', 3)->where('historico_solicitudes.actual', '=', 1)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->orWhere('id_tipo_solicitud', 3)->where('historico_solicitudes.actual', '=', 1)->paginate(20);
         }else{
             // usuarios
-            $solicitudes = $solicitudesQuery->where(function ($query) use ($areaUserAutenticado, $userAutenticado) {
+            $solicitudes = $solicitudesQuery->where(function ($query) use ($areaUserAutenticado, $personaAutenticada) {
                 $query->where('id_area', $areaUserAutenticado->area)
-                    ->orWhere('id_solicitante', $userAutenticado);
+                    ->orWhere('id_solicitante', $personaAutenticada);
             })->paginate(20);
         }
     
@@ -69,7 +71,7 @@ class SolicitudController extends Controller{
             'estados' => $estados,
             'usuarios' => $usuarios,
             'areaUserAutenticado' => $areaUserAutenticado,
-            'userAutenticado' => $userAutenticado,
+            'personaAutenticada' => $personaAutenticada1,
             'model_as_roles' => $model_as_roles,
             'id_equipo' => $request->get('id_equipo'),
             'id_solicitud' => $request->get('id_solicitud'),
@@ -84,15 +86,15 @@ class SolicitudController extends Controller{
 
     public static function getHistoricos($solicitud){
         return DB::table('historico_solicitudes')
-        ->leftJoin('users', 'users.id', 'historico_solicitudes.id_usuario')
-        ->leftJoin('estados', 'estados.id', 'historico_solicitudes.id_estado')
-        ->select('estados.nombre as estado', 
-        'historico_solicitudes.fecha as fecha', 
-        'users.name as nombre', 
-        'historico_solicitudes.descripcion as descripcion', 
-        'historico_solicitudes.repuestos as repuestos')
-        ->where('id_solicitud', $solicitud)
-        ->get();
+            ->leftJoin('personas', 'personas.id_p', 'historico_solicitudes.id_persona')
+            ->leftJoin('estados', 'estados.id', 'historico_solicitudes.id_estado')
+            ->select('estados.nombre as estado', 
+            'historico_solicitudes.fecha as fecha', 
+            DB::raw("CASE WHEN personas.apellido IS NULL THEN personas.nombre_p ELSE CONCAT(personas.nombre_p, ' ', personas.apellido) END as nombre"), 
+            'historico_solicitudes.descripcion as descripcion', 
+            'historico_solicitudes.repuestos as repuestos')
+            ->where('id_solicitud', $solicitud)
+            ->get();
     }
 
     public function show_store_solicitud(){
@@ -104,8 +106,10 @@ class SolicitudController extends Controller{
         if($aux == null){
             $aux = 0;
         }
-
+        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+
+        
 
         $solicitud = new Solicitud;
         $solicitud->id = $aux+1;
@@ -116,7 +120,7 @@ class SolicitudController extends Controller{
         if($request['tipo_solicitud'] != 3){
             $solicitud->id_falla = $request['falla'];
         }
-        $solicitud->id_solicitante = $request['solicitante'];
+        $solicitud->id_solicitante = $idPersona->id_p;
         $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
         $solicitud->fecha_alta = $fechaActual;
         $solicitud->id_estado = 1;
@@ -134,7 +138,7 @@ class SolicitudController extends Controller{
         $historico_solicitud->id_estado = 1;
         $historico_solicitud->actual = 1;
         $historico_solicitud->descripcion = $request['descripcion'];
-        $historico_solicitud->id_usuario = Auth::id();
+        $historico_solicitud->id_persona = $idPersona->id_p;
         $historico_solicitud->fecha = $fechaActual;    
 
         $historico_solicitud->save();
@@ -170,6 +174,7 @@ class SolicitudController extends Controller{
         $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
         Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
         $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
 
         $nuevo_historico = new Historico_solicitudes;
         $nuevo_historico->id_solicitud = $request['id_solicitud'];
@@ -184,7 +189,7 @@ class SolicitudController extends Controller{
             $nuevo_historico->descripcion_repuestos = "";
         }
         $nuevo_historico->actual = 1;
-        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->id_persona = $idPersona->id_p;
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
@@ -231,8 +236,9 @@ class SolicitudController extends Controller{
     }
 
     public function assing_solicitud(Request $request){
-        $solicitud = Solicitud::assingSolicitud($request['id_solicitud'], $request['user']); 
-
+        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
+        $idEncargado = Solicitud::obtenerIdPersonaAutenticada($request['user']);
+        $solicitud = Solicitud::assingSolicitud($request['id_solicitud'], $idEncargado->id_p); 
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
         $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
         Solicitud::updateSoliciutud($request['id_solicitud'], 2, $fechaActual);
@@ -245,7 +251,7 @@ class SolicitudController extends Controller{
         $nuevo_historico->repuestos = null;
         $nuevo_historico->descripcion_repuestos = null;
         $nuevo_historico->actual = 1;
-        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->id_persona = $idPersona->id_p;
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
@@ -303,7 +309,7 @@ class SolicitudController extends Controller{
 
     public function aprobar_solicitud($id){
         $solicitud = Solicitud::find($id);
-
+        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
         $ultimo_historico = Solicitud::ultimoHistoricoById($solicitud->id);
         Solicitud::updateSoliciutud($solicitud->id, 6, $fechaActual);
@@ -316,7 +322,7 @@ class SolicitudController extends Controller{
         $nuevo_historico->repuestos = null;
         $nuevo_historico->descripcion_repuestos = null;
         $nuevo_historico->actual = 1;
-        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->id_persona = $idPersona->id_p;
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 
@@ -337,7 +343,7 @@ class SolicitudController extends Controller{
 
     public function reclaim_solicitud(Request $request){
         $solicitud = Solicitud::find($request['id_solicitud']);
-
+        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
         $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
         Solicitud::updateSoliciutud($request['id_solicitud'], 7, $fechaActual);
@@ -350,7 +356,7 @@ class SolicitudController extends Controller{
         $nuevo_historico->repuestos = null;
         $nuevo_historico->descripcion_repuestos = null;
         $nuevo_historico->actual = 1;
-        $nuevo_historico->id_usuario = Auth::id();
+        $nuevo_historico->id_persona = $idPersona->id_p;
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
 

@@ -74,10 +74,29 @@ class EmpleadoController extends Controller{
         $activo = ($request['actividad'] == 'on') ? 1 : 0;
         $jefe = ($request['esJefe'] == 'on') ? 1 : 0;
 
-        if($request['actividad'] != 'on'){
+        if(!$activo || !$jefe){
+            //elimino todas las filas en las que la persona era jefe
+            DB::table('jefe_area')
+                ->where('jefe', $request['id_p'])
+                ->delete();
+        }
+
+        if(!$activo) {
+            //elimino todas las filas en las que el usuario tenia permisos 
+            DB::table('model_has_roles')
+                ->leftjoin('users', 'users.id', 'model_has_roles.model_id')
+                ->leftjoin('personas', 'personas.usuario', 'users.id')
+                ->where('personas.id_p', $request['id_p'])
+                ->delete();
+            //elimino usuario si descativo la persona
+            DB::table('users')
+                ->join('personas', 'users.id', '=', 'personas.usuario')
+                ->where('personas.id_p', $request['id_p'])
+                ->delete();
+            //pongo todos los puestos a lo que esta persona pertenecia en null
             DB::table('puestos')
-            ->where('persona', $request['id_p'])
-            ->update(['persona' => null]);    
+                ->where('persona', $request['id_p'])
+                ->update(['persona' => null]);    
         }
 
         $empleado = DB::table('personas')
