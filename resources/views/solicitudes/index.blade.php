@@ -67,10 +67,10 @@
         <select class="form-control" name="id_solicitante"  id="id_solicitante">
           <option value="0">{{'Todos'}} </option>
           @foreach($usuarios as $usuario)
-            @if($usuario->id == $id_solicitante)
-              <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
+            @if($usuario->idPersona == $id_solicitante)
+              <option value="{{$usuario->idPersona}}" selected>{{$usuario->name}} </option>
             @else
-              <option value="{{$usuario->id}}">{{$usuario->name}} </option>
+              <option value="{{$usuario->idPersona}}">{{$usuario->name}} </option>
             @endif
           @endforeach
         </select>
@@ -85,11 +85,11 @@
           <option value="0">{{'Todos'}} </option>
           @foreach($usuarios as $usuario)
             @foreach($model_as_roles as $model_as_rol)
-              @if(($model_as_rol->role_id == 21 || $model_as_rol->role_id == 24 || $model_as_rol->role_id == 25 || $model_as_rol->role_id == 30) and $usuario->id == $model_as_rol->model_id)
-                @if($usuario->id == $id_encargado)
-                  <option value="{{$usuario->id}}" selected>{{$usuario->name}} </option>
+              @if(($model_as_rol->role_id == 21 || $model_as_rol->role_id == 24 || $model_as_rol->role_id == 25 || $model_as_rol->role_id == 30) and $usuario->idUsuario == $model_as_rol->model_id)
+                @if($usuario->idPersona == $id_encargado)
+                  <option value="{{$usuario->idPersona}}" selected>{{$usuario->name}} </option>
                 @else
-                  <option value="{{$usuario->id}}">{{$usuario->name}} </option>
+                  <option value="{{$usuario->idPersona}}">{{$usuario->name}} </option>
                 @endif
               @endif
             @endforeach

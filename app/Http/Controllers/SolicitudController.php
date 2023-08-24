@@ -61,7 +61,12 @@ class SolicitudController extends Controller{
     
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
-        $usuarios = DB::table('users')->orderBy('name','asc')->get();
+        $usuarios = DB::table('users')->orderBy('name','asc')
+            ->leftjoin('personas', 'personas.usuario', 'users.id')
+            ->select('users.id as idUsuario',
+                'users.name as name',
+                'personas.id_p as idPersona')
+            ->get();
         $model_as_roles = DB::table('model_has_roles')->get();
     
 
