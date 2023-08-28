@@ -1,3 +1,35 @@
+
+<script>
+  $(document).ready(function() {
+    $('#fe_nac').on('change', function() {
+      // Obtiene el valor de la fecha del campo
+      let inputValue = $(this).val();
+
+      // Divide la fecha en sus componentes (año, mes, día)
+      let components = inputValue.split('-');
+
+      // Si el año tiene más de 4 caracteres, recorta los extras
+      if (components[0].length > 4) {
+        components[0] = components[0].substring(0, 4);
+        $(this).val(components.join('-'));
+      }
+    });
+    $('#fe_ing').on('change', function() {
+      // Obtiene el valor de la fecha del campo
+      let inputValue = $(this).val();
+
+      // Divide la fecha en sus componentes (año, mes, día)
+      let components = inputValue.split('-');
+
+      // Si el año tiene más de 4 caracteres, recorta los extras
+      if (components[0].length > 4) {
+        components[0] = components[0].substring(0, 4);
+        $(this).val(components.join('-'));
+      }
+    });
+  });
+</script>
+
 <div class="modal fade" id="agregar_empleado" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">           
