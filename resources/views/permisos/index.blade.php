@@ -41,6 +41,7 @@
   <table class="table table-striped table-bordered ">
     <thead>
       <th class="text-center">Empleado</th>
+      <th class="text-center">Area</th>
       <th class="text-center">Fecha solicitud</th>
       <th class="text-center">Fecha desde</th>
       <th class="text-center">Fecha hasta</th>
@@ -53,6 +54,7 @@
         @foreach($permisos as $permiso) 
           <tr>
             <td > {{$permiso->nombre_autorizado.' '. $permiso->apellido_autorizado}}</td>
+            <td > {{$permiso->area}}</td>
             <td class="text-center"> {!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format("d-m-Y") !!}</td>
             <td class="text-center">{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format("d-m-Y") !!}</td>
             @if( $permiso->fecha_hasta != null)
@@ -64,7 +66,12 @@
               <td class="text-center">{{$permiso->motivo}}</td>
               <td align="center" width="95">
               <form action="{{route('destroy_permiso', $permiso->id)}}" method="put">
-                <a href="#" class="btn btn-info btn-sm" data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}" data-fecha_desde="{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format('d-m-Y') !!}" data-fecha_hasta="{!! \Carbon\Carbon::parse($permiso->fecha_hasta)->format('d-m-Y') !!}"  data-horario="{{'de '.$permiso->hora_desde . ' a '. $permiso->hora_hasta}}" data-motivo="{{$permiso->motivo}}" data-descripcion="{{$permiso->descripcion}}" data-solicitante="{{$permiso->nombre_autorizado.' '. $permiso->apellido_autorizado}}" data-area="{{$permiso->area}}" data-autorizante="{{$permiso->nombre_autorizante.' '. $permiso->apellido_autorizante}}" data-toggle="modal" data-target="#ver">Ver</a>   
+                <a href="#" class="btn btn-info btn-sm" data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}" 
+                  data-fecha_desde="{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format('d-m-Y') !!}" data-fecha_hasta="{!! \Carbon\Carbon::parse($permiso->fecha_hasta)->format('d-m-Y') !!}"  
+                  data-horario="{{'de '.$permiso->hora_desde . ' a '. $permiso->hora_hasta}}" data-motivo="{{$permiso->motivo}}" data-descripcion="{{$permiso->descripcion}}" 
+                  data-solicitante="{{$permiso->nombre_autorizado.' '. $permiso->apellido_autorizado}}" data-area="{{$permiso->area}}" 
+                  data-autorizante="{{$permiso->nombre_autorizante.' '. $permiso->apellido_autorizante}}" data-toggle="modal" data-target="#ver">Ver
+                </a>   
                 <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar">X</button>
               </form>
             </td>

@@ -2,46 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controller;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Empleado;
 use App\Persona;
 use App\Permiso;
 use App\User;
-use App\Empleado;
-use Auth;
-use DB;
 Use Session;
+use Auth;
 use Mail;
-use Illuminate\Routing\Controller;
-use Carbon\Carbon;
+use DB;
 
 class PermisosController extends Controller
 {
     public function index(Request $request)
     {
         $tipo_permisos = DB::table('tipo_permiso')->get();
+        $jefe = null;
 
         if( auth()->user()->id == 44)
             $jefe = DB::table('personas')->where('personas.usuario', 19 )->first();
-        
         else{
             $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id )->first();
-            
         }
         
         if($jefe->rango == 1){
-            $permisos = Permiso::Relaciones($jefe->id_p, $request->get('motivo'))
-            ->Empleado($request->get('empleado'))
-            ->paginate(10);
+            
+            $permisosCollection  = Permiso::Relaciones($jefe->id_p, $request->get('motivo'));
         }
-        else{
-            $permisos = Permiso::Relaciones($jefe->id_p, $request->get('motivo'))
-            ->Empleado($request->get('empleado'))
-            ->Jefe()
-            ->paginate(10);
-        }
-        
-        return view ('permisos.index', array('permisos'=>$permisos,'empleado'=>$request->get('empleado'),'tipo_permisos'=>$tipo_permisos));
+
+        // Convertir la colección en un array para poder paginar
+        $permisosArray = $permisosCollection->toArray();
+
+        // Crear una instancia de LengthAwarePaginator para la paginación
+        $perPage = 20; // Número de elementos por página
+        $currentPage = $request->get('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+
+        $permisosPaginados = new LengthAwarePaginator(
+            array_slice($permisosArray, $offset, $perPage, true), // Elementos para la página actual
+            count($permisosArray), // Total de elementos
+            $perPage, // Elementos por página
+            $currentPage, // Página actual
+            ['path' => $request->url(), 'query' => $request->query()] // Otras opciones de URL
+        );
+
+        return view ('permisos.index', [
+            'permisos'=>$permisosPaginados,
+            'empleado'=>$request->get('empleado'),
+            'tipo_permisos'=>$tipo_permisos
+        ]);
     }
 
 

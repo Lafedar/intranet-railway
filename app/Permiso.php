@@ -2,42 +2,54 @@
 
 namespace App;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Permiso extends Model{
     protected $table='permisos';
-	public function scopeRelaciones($query, $jefe,$motivo){
-        if($motivo == 0){
-            return $query->join('personas as p1', 'permisos.autorizado', '=', 'p1.id_p')
-                ->join('personas as p2', 'permisos.autorizante', '=', 'p2.id_p')
-                ->join('tipo_permiso', 'permisos.motivo', '=', 'tipo_permiso.id_tip')
-                ->join('area', 'p1.area', '=', 'area.id_a')
-                ->join('jefe_area as ja1', 'p1.area', '=', 'ja1.area')
-                ->join('turnos', 'p1.turno', '=', 'turnos.id')
-                ->join('jefe_area as ja2', 'p1.turno', '=', 'ja2.turno')
-                ->where('ja1.jefe', $jefe)
-                ->select('p1.nombre_p as nombre_autorizado', 'p1.apellido as apellido_autorizado', 'permisos.created_at as fecha_permiso', 'permisos.fecha_desde as fecha_desde', 'permisos.fecha_hasta as fecha_hasta', 'tipo_permiso.desc as motivo', 'permisos.id as id', 'permisos.hora_desde as hora_desde', 'permisos.hora_hasta as hora_hasta', 'permisos.descripcion as descripcion', 'area.nombre_a as area', 'p2.nombre_p as nombre_autorizante', 'p2.apellido as apellido_autorizante')
-                ->orderBy('fecha_permiso', 'DESC');
+	public function scopeRelaciones($query, $jefe, $motivo) {
+        $jefeAreasTurnos = DB::table('jefe_area')->where('jefe', $jefe)->get();
+        $permisos = collect();
+        
+        foreach ($jefeAreasTurnos as $jefeAreaTurno) {
+            $permisosQuery = DB::table('permisos')
+                ->select('permisos.id as id',
+                    'pAutorizado.nombre_p as nombre_autorizado', 
+                    'pAutorizado.apellido as apellido_autorizado',
+                    'permisos.created_at as fecha_permiso',
+                    'permisos.fecha_desde as fecha_desde',
+                    'permisos.fecha_hasta as fecha_hasta',
+                    'permisos.id as id',
+                    'permisos.hora_desde as hora_desde',
+                    'permisos.hora_hasta as hora_hasta',
+                    'permisos.descripcion as descripcion',
+                    'pAutorizante.nombre_p as nombre_autorizante',
+                    'pAutorizante.apellido as apellido_autorizante',
+                    'tipo_permiso.desc as motivo',
+                    'area.nombre_a as area')
+                ->leftJoin('tipo_permiso', 'tipo_permiso.id_tip', 'permisos.motivo')
+                ->leftJoin('personas AS pAutorizado', 'pAutorizado.id_p', '=', 'permisos.autorizado')
+                ->leftJoin('personas AS pAutorizante', 'pAutorizante.id_p', '=', 'permisos.autorizante')
+                ->leftJoin('jefe_area', function ($join) use ($jefeAreaTurno) {
+                    $join->on('jefe_area.jefe', '=', 'pAutorizante.id_p')
+                        ->on('jefe_area.area', '=', 'pAutorizado.area')
+                        ->on('jefe_area.turno', '=', 'pAutorizado.turno');
+                })
+                ->leftJoin('area', 'area.id_a', 'jefe_area.area')
+                ->where('jefe_area.area', '=', $jefeAreaTurno->area)
+                ->where('jefe_area.turno', '=', $jefeAreaTurno->turno);
+        
+            if ($motivo) {
+                $permisosQuery->where('permisos.motivo', '=', $motivo);
+            }
+        
+            $permisos = $permisos->merge($permisosQuery->get());
         }
-        else{
-            return $query->join('personas as p1','permisos.autorizado','p1.id_p')
-                ->join('personas as p2','permisos.autorizante','p2.id_p')
-                ->join('tipo_permiso','permisos.motivo','tipo_permiso.id_tip')
-                ->join('area','p1.area','area.id_a')
-                ->join('jefe_area','p1.area','jefe_area.area')
-                ->join('turnos','p1.turno','turnos.id')
-                ->join('jefe_area','p1.turno','jefe_area.turno')
-                ->where('jefe_area.jefe',$jefe)
-                ->where('permisos.motivo',$motivo)
-                ->select('p1.nombre_p as nombre_autorizado','p1.apellido as apellido_autorizado' , 'permisos.created_at as fecha_permiso','permisos.fecha_desde as fecha_desde','permisos.fecha_hasta as fecha_hasta','tipo_permiso.desc as motivo', 'permisos.id as id','permisos.hora_desde as hora_desde','permisos.hora_hasta as hora_hasta', 'permisos.descripcion as descripcion','area.nombre_a as area', 'p2.nombre_p as nombre_autorizante', 'p2.apellido as apellido_autorizante')
-                ->orderBy('fecha_permiso','DESC');
-        }
-    }
-    public  function scopeEmpleado ($query, $empleado){
-    	if($empleado){
-    	    return $query -> where(DB::raw("CONCAT(p1.nombre_p,' ',p1.apellido)"), 'LIKE',"%$empleado%");
-    	}
+        $permisos = $permisos->unique('id');
+        $permisos = $permisos->sortByDesc('fecha_permiso');
+
+        return $permisos;
     }
 
     public function scopeJefe ($query){
