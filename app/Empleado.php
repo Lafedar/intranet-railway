@@ -21,6 +21,8 @@ class Empleado extends Model
             'personas.fe_nac as fe_nac',
             'personas.activo as activo',
             'personas.jefe as jefe',
+            'personas.interno as interno',
+            'personas.correo as correo',
             'area.id_a as area',
             'area.nombre_a as nombre_a',
             'turnos.id as idTurno',
