@@ -385,12 +385,14 @@ class EquipamientoController extends Controller
 
    //****************RELACIONES**********************
 
-   public function select_puesto()
-   {
+    public function select_puesto(){
         return DB::table('puestos')
         ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->orderBy('puestos.desc_puesto')->get();
-
+        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+        ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+        ->orderBy('area.nombre_a')
+        ->orderBy('localizaciones.nombre')
+        ->get();
     }
 
     public function store_relacion(Request $request)
