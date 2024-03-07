@@ -16,7 +16,6 @@
                 <select class="form-control" name="tipo_equipamiento" id="tipo_equipamiento" required></select>
               </div>
             </div>
-
             <div class="row">
               <div class="col">
                 <label for="title">Marca:</label>
@@ -42,7 +41,6 @@
                 <input type="number" name="memoria" class="form-control" autocomplete="off" id="memoria" min="0" value="{{old('memoria')}}">
               </div>
             </div>
-
             <div class="row">
               <div class="col-md-6">
                 <label for="title">Procesador:</label>
@@ -57,7 +55,6 @@
                 <input type="text" name="unidad_imagen" class="form-control" id="unidad_imagen" autocomplete="off" value="{{old('unidad_imagen')}}">
               </div>
             </div>
-
             <div class="row">
               <div class="col-md-6">
                 <label for="title">Pulgadas:</label>
@@ -68,7 +65,6 @@
                 <select class="form-control" name="ips" id="ips"></select>
               </div>
             </div>
-
             <div class="row">
               <div class ="col-md-4">
                 <label for="title">ID de red:</label>
@@ -83,14 +79,12 @@
                 <input type="text" name="oc" class="form-control" id="oc" autocomplete="off" value="{{old('oc')}}">
               </div>
             </div>
-
             <div class="row">
               <div class="col">
                 <label for="title">Observación:</label>
-                <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" value="{{old('obs')}}">
+                <input type="text" name="obs" class="form-control" id="obs" autocomplete="off"  value="{{old('obs')}}">
               </div>
             </div>
-
             
             <p></p>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

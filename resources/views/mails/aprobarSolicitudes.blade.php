@@ -41,11 +41,11 @@
             <p>Nos dirigimos a usted para informarle que su solicitud con el ID: {{ $idSolicitud }} ha sido procesada y ahora se encuentra en estado {{ $estado }}.</p>
             <p>Para proceder con la aprobación de la solicitud, haga clic en el botón "Aprobar". Si desea presentar un reclamo, puede utilizar el botón "Reclamar". También puede acceder a los detalles completos de la solicitud haciendo clic en el botón "Detalle".</p>
             <div class="container-button">
-                <a href="http://intranet.lafedar.desa/aprobar_solicitud/{{ $idSolicitud }}" class="button" style="background-color: #007bff;">Aprobar</a>
+                <a href="http://intranet.lafedar/aprobar_solicitud/{{ $idSolicitud }}" class="button" style="background-color: #007bff;">Aprobar</a>
                 <br><br>
-                <a href="http://intranet.lafedar.desa/solicitudes?idsolicitud={{ $idSolicitud }}&source=email" class="button" style="background-color: #e74c3c;">Reclamar</a>
+                <a href="http://intranet.lafedar/solicitudes?idsolicitud={{ $idSolicitud }}&source=email" class="button" style="background-color: #e74c3c;">Reclamar</a>
                 <br><br>
-                <a href="http://intranet.lafedar.desa/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
+                <a href="http://intranet.lafedar/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
             </div>
             <p>Saludos,</p>
             <p>Área de Mantenimiento</p>

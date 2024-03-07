@@ -26,7 +26,7 @@ class SolicitudController extends Controller{
         $areaUserAutenticado = Solicitud::obtenerAreaUserAutenticado($userAutenticado);
         $personaAutenticada1 = Solicitud::obtenerIdPersonaAutenticada($userAutenticado);
         $personaAutenticada = $personaAutenticada1->id_p;
-        
+    
         $solicitudesQuery = Solicitud::ID($request->get('id_solicitud'))
             ->Equipo($request->get('id_equipo'))
             ->Titulo($request->get('titulo'))
@@ -62,11 +62,11 @@ class SolicitudController extends Controller{
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
         $usuarios = DB::table('users')->orderBy('name','asc')
-            ->leftjoin('personas', 'personas.usuario', 'users.id')
-            ->select('users.id as idUsuario',
-                'users.name as name',
-                'personas.id_p as idPersona')
-            ->get();
+        ->leftjoin('personas', 'personas.usuario', 'users.id')
+        ->select('users.id as idUsuario',
+            'users.name as name',
+            'personas.id_p as idPersona')
+        ->get();
         $model_as_roles = DB::table('model_has_roles')->get();
     
 
@@ -111,13 +111,11 @@ class SolicitudController extends Controller{
         if($aux == null){
             $aux = 0;
         }
+
         $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
 
-        
-
         $solicitud = new Solicitud;
-        $solicitud->id = $aux+1;
         $solicitud->titulo = $request['titulo'];
         if($request['tipo_solicitud'] == 1){
             $solicitud->id_equipo = $request['equipo'];
@@ -148,7 +146,7 @@ class SolicitudController extends Controller{
 
         $historico_solicitud->save();
 
-        Session::flash('message','Archivo agregado con éxito');
+        Session::flash('message','Solicitud agregado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect ('solicitudes');
     }
@@ -266,7 +264,7 @@ class SolicitudController extends Controller{
         //da error cuando el correo no existe
         try {
             Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
-                $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+             $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
         } catch (\Exception $e) {}
 
         Session::flash('message','Solicitud asignada con éxito');
@@ -285,7 +283,7 @@ class SolicitudController extends Controller{
     }   
 
     public function select_users(){
-        return [Solicitud::getUsers(),
+        return [ Solicitud::getUsers(),
         Solicitud::getModelHasRoles()];
     }  
 
@@ -369,13 +367,12 @@ class SolicitudController extends Controller{
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
-
     public function getSolicitud($idSolicitud){
-        return DB::table('solicitudes')
+        return DB::table('solicitudes_temp as solicitudes')
             ->leftJoin('historico_solicitudes', 'historico_solicitudes.id_solicitud', 'solicitudes.id')
-            ->leftJoin('equipos_mant', 'equipos_mant.id', 'solicitudes.id_equipo')
-            ->leftJoin('area', 'area.id_a', 'equipos_mant.id_area')
-            ->leftJoin('localizaciones as localizacionesEquipos', 'localizacionesEquipos.id', 'equipos_mant.id_localizacion')
+            ->leftJoin('equipos_mant_temp', 'equipos_mant_temp.id', 'solicitudes.id_equipo')
+            ->leftJoin('area', 'area.id_a', 'equipos_mant_temp.id_area')
+            ->leftJoin('localizaciones as localizacionesEquipos', 'localizacionesEquipos.id', 'equipos_mant_temp.id_localizacion')
             ->leftJoin('localizaciones as localizacionesEdilicios', 'localizacionesEdilicios.id', 'solicitudes.id_localizacion_edilicio')
             ->leftjoin('tipo_solicitudes', 'tipo_solicitudes.id', 'solicitudes.id_tipo_solicitud')
             ->select('solicitudes.id as idSolicitud', 
@@ -386,9 +383,9 @@ class SolicitudController extends Controller{
             'historico_solicitudes.id_estado as estado',
             'tipo_solicitudes.nombre as nombreTipoSolicitud',
             'solicitudes.id_area_proyecto as idAreaProyecto',
-            'equipos_mant.id_area as idAreaEquipo', 
-            'equipos_mant.id_localizacion as idLocalizacionEquipo', 
-            'equipos_mant.descripcion as descripcionEquipo',
+            'equipos_mant_temp.id_area as idAreaEquipo', 
+            'equipos_mant_temp.id_localizacion as idLocalizacionEquipo', 
+            'equipos_mant_temp.descripcion as descripcionEquipo',
             'solicitudes.id_localizacion_edilicio as idLocalizacionEdilicio',
             'localizacionesEdilicios.id_area as idAreaEdilicio',
             'solicitudes.id_falla as idFalla')
@@ -398,12 +395,10 @@ class SolicitudController extends Controller{
             ->limit(1)
             ->get();
     }
-
     public function show_edit_solicitud($id){
         $solicitud = Solicitud::showSolicitudUpdate($id);
         return view('solicitudes.edit', ['solicitud' => $solicitud]);
     }
-
     public function edit_solicitud(Request $request){
         if($request['tipo_solicitud1'] == 1){
             Solicitud::editSolicitud($request['idSolicitud1'], $request['estado1'], $request['titulo1'], $request['descripcion1'], $request['equipo1'], $request['falla1'], $request['tipo_solicitud1'], null, null);

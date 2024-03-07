@@ -1,4 +1,3 @@
-
 <script>
   $(document).ready(function() {
     $('#fe_nac').on('change', function() {

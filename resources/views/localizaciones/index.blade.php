@@ -20,7 +20,7 @@
   </div>
 @endif
 
-<!-- barra para buscar equipos -->
+
 
 <!-- tabla de datos -->
 <div class="col-md-12">             
@@ -40,7 +40,7 @@
         <td>{{$localizacion->nombre}}</td>
         <td>{{$localizacion->interno}}</td>
         <td width="90"><button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$localizacion->id}}")' title="update"
-          data-nombre="{{$localizacion->nombre}}" data-interno="{{$localizacion->interno}}" id="edit">Editar</button></td>
+          data-nombre="{{$localizacion->nombre}} data-interno="{{$localizacion->interno}}" id="edit">Editar</button></td>
         </tr>
       @endforeach
     </tbody>       

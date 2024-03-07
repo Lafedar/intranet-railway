@@ -27,7 +27,6 @@ class cambioDeEstadoSolicitud extends Mailable
         $this->estado = $estado;
         $this->titulo = $titulo;
     }
-
     /**
      * Build the message.
      *

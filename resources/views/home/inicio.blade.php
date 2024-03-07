@@ -52,8 +52,6 @@
 </div>-->
 
 <div class="row">
-    
-    
     <div class="col-md-3">
       <a  href="{{('/sistemas')}}"> <img src="{{ URL::to('/img/sistemas.png') }}" height="120"> </a>
     </div>
@@ -69,9 +67,8 @@
     <div class="col-md-3">
       <a  href="{{('/mantenimiento')}}"> <img src="{{ URL::to('/img/mantenimiento.png') }}" height="128"> </a>
     </div>
-    
-    
-</div>
+</div> 
+
 <br><br>
 <!--<div class="row">
     <div class="col-md-12">
@@ -88,13 +85,13 @@
     <a  href="{{('/empleado')}}"> <img src="{{ URL::to('/img/personal.png') }}" height="120"> </a>
   </div>
 
-  <div class="col-md-3">
-    <a  href="{{('/medico')}}"> <img src="{{ URL::to('/img/medico.png') }}" height="120"> </a>
-  </div>
+    <div class="col-md-3">
+      <a  href="{{('/medico')}}"> <img src="{{ URL::to('/img/medico.png') }}" height="120"> </a>
+    </div>
 
-  <div class="col-md-3">
-    <a  href="{{('/visitas')}}"> <img src="{{ URL::to('/img/guardia.png') }}" height="120"> </a>
-  </div>
+    <div class="col-md-3">
+      <a  href="{{('/visitas')}}"> <img src="{{ URL::to('/img/guardia.png') }}" height="120"> </a>
+    </div>
         
 </div>
   

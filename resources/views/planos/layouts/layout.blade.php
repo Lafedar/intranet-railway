@@ -7,7 +7,9 @@
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
 
+
 <head>
+
   <meta charset="UTF-8">
   <title>Intranet Lafedar</title>
   <link  rel="icon"   href="img/ico.png" type="image/png" />
@@ -39,8 +41,9 @@
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 
 <body>
-  @yield('content')
-</body>
 
+  @yield('content')
+
+</body>
 @include('planos.create')
 </html>

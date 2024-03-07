@@ -16,13 +16,12 @@ use Auth;
 use DB;
 
 class EmpleadoController extends Controller{
-
     public function index(Request $request){
         $empleados = Empleado::Relacion()->get();
 
         return view ('empleado.index', array('empleados' => $empleados));
     }
-    
+
     public function store(Request $request){
         $aux= DB::table('personas')->where('personas.dni',$request['dni'])->first();
 
@@ -34,7 +33,6 @@ class EmpleadoController extends Controller{
 
         $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
         $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
-
         $empleado = new Empleado;
         $empleado->nombre_p = $request['nombre'];
         $empleado->apellido = $request['apellido'];
@@ -75,12 +73,11 @@ class EmpleadoController extends Controller{
         $jefe = ($request['esJefe'] == 'on') ? 1 : 0;
 
         if(!$activo || !$jefe){
-            //elimino todas las filas en las que la persona era jefe
             DB::table('jefe_area')
                 ->where('jefe', $request['id_p'])
                 ->delete();
         }
-
+        
         if(!$activo) {
             //elimino todas las filas en las que el usuario tenia permisos 
             DB::table('model_has_roles')
@@ -98,7 +95,7 @@ class EmpleadoController extends Controller{
                 ->where('persona', $request['id_p'])
                 ->update(['persona' => null]);    
         }
-
+        
         $empleado = DB::table('personas')
             ->where('personas.id_p',$request['id_p'])
             ->update([
@@ -114,7 +111,6 @@ class EmpleadoController extends Controller{
                 'activo' => $activo,
                 'jefe' => $jefe,
             ]);      
-
         Session::flash('message','Empleado modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('empleado');
@@ -129,7 +125,7 @@ class EmpleadoController extends Controller{
         'message' => 'Empleado eliminado con éxito'
         ]);       
     }
-
+    
     public function selectAreaEmpleados(){
         return DB::table('area')->get();
     }  

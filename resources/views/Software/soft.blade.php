@@ -2,34 +2,33 @@
 @section('content')
 
 @if(Session::has('message'))
-<div class="container" id="div.alert">
-  <div class="row">
-<div class="col-1"></div>
-<div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
- {{Session::get('message')}}
-</div>
-</div>
-</div>
+  <div class="container" id="div.alert">
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
+        {{Session::get('message')}}
+      </div>
+    </div>
+  </div>
 @endif
 <div class="col-md-12 ml-auto">
-    <h1>
-     <div class="form-inline pull-right">
+  <h1>
+    <div class="form-inline pull-right">
       <form  method="GET">
         <div class="form-group">
-            <div class="form-group"><h6>Software:</h6>
-                <input type="text" name="software" class="form-control" id="software" value="{{$software}}" >
-            </div>
-             &nbsp
-             <div class="form-group"><h6>Version:</h6>
-                <input type="text" name="version" class="form-control" id="version" value="{{$version}}" >
-            </div>
-
+          <div class="form-group"><h6>Software:</h6>
+            <input type="text" name="software" class="form-control" id="software" value="{{$software}}" >
+          </div>
           &nbsp
-        <button type="submit" class="btn btn-default"> Buscar</button>
-      </div>
-    </form>
-</div>
-</h1>            
+          <div class="form-group"><h6>Version:</h6>
+            <input type="text" name="version" class="form-control" id="version" value="{{$version}}" >
+          </div>  
+          &nbsp
+          <button type="submit" class="btn btn-default"> Buscar</button>
+        </div>
+      </form>
+    </div>
+  </h1>            
 </div>
 <div class="col-sm-12">             
   <table class="table table-striped table-bordered ">
@@ -57,7 +56,7 @@
             <td align="center" width="140">
             <div class="botones">
               <!-- Boton para editar software -->
-              <a href="#" class="fa-solid fa-pen default" title="Editar" data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit"></a>
+              <a href="#" title="Editar" class="fa-solid fa-pen default" title="Editar"  data-toggle="modal" data-id="{{$software->id_s}}" data-software="{{$software->Software}}" data-version="{{$software->Version}}" data-licencia="{{$software->Licencia}}" data-tlicencia="{{$software->t_Licencia}}" data-fecha_inst="{{$software->fecha_inst}}" data-obs="{{$software->Obs}}" data-target="#edit_soft" type="submit"></a>
             </div>
           </tr>
           @endforeach  
@@ -86,6 +85,7 @@
     modal.find('.modal-body #t_Licencia').val(tlicencia);
     modal.find('.modal-body #fecha_inst').val(fecha_inst);
     modal.find('.modal-body #Obs').val(obs);
+    
 /*
     $.get('select_tipo_equipamiento',function(data){
       var html_select = '<option value="">Seleccione </option>'

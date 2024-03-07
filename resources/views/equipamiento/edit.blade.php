@@ -6,7 +6,6 @@
       <div class="modal-body">
        <div class="row">
          <div class="col-md-12">
-
           <div class="row">
             <div class="col-md-6">
               <label for="title">Id equipamiento:</label>
@@ -17,7 +16,6 @@
               <select class="form-control" name="tipo_equipamiento"  id="tipo_equipamiento_editar" required></select>
             </div>
           </div>
-
           <div class="row">
             <div class="col">
               <label for="title">Marca:</label>
@@ -43,7 +41,6 @@
               <input type="number" name="memoria" class="form-control" autocomplete="off" id="memoria" value="{{old('memoria')}}">
             </div>
           </div>
-
           <div class="row">
             <div class="col-md-6">
               <label for="title">Procesador:</label>
@@ -58,7 +55,6 @@
               <input type="text" name="unidad_imagen" class="form-control" id="unidad_imagen" autocomplete="off" value="{{old('unidad_imagen')}}">
             </div>
           </div>
-
           <div class="row">
             <div class="col-md-6">
               <label for="title">Pulgadas:</label>
@@ -69,7 +65,6 @@
               <select class="form-control" name="ips" id="ips_editar"></select>
             </div>
           </div>
-
           <div class="row">
             <div class ="col-md-4">
               <label for="title">ID de red:</label>
@@ -85,14 +80,12 @@
             </div>
           </div>
           
-
           <div class="row">
             <div class="col">
               <label for="title">Observación:</label>
               <input type="text" name="obs" class="form-control" id="obs" autocomplete="off"  value="{{old('obs')}}">
             </div>
           </div>
-
           <p></p>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           <button type="submit" class="btn btn-info">Editar</button>
@@ -103,7 +96,3 @@
 </div>
 </div>
 </div>
-
-<script>
-
-</script>

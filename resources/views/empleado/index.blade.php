@@ -172,7 +172,6 @@
         $('#esJefeCreate').prop('checked', false);
       }
     });
-
     // Controlador para el modal
     $('#show2').on('show.bs.modal', function (event) {
       // Actualizar opciones de selección
@@ -278,6 +277,7 @@
   }*/
 
   $('#editar_empleado').on('show.bs.modal', function (event) {
+
     var button = $(event.relatedTarget) 
     var id = button.data('id')
     var nombre = button.data('nombre')
@@ -354,16 +354,14 @@
       }
       $('#turnoEdit').html(html_select);
     });
-
+    
     // Asigna el evento change al checkbox de actividad
     $('#actividad').on('change', function(event) {
       handleActividadChange(event);
     });
-
     function handleActividadChange(event) {
       // Si event está definido, obten el checkbox de actividad
       var actividadCheckbox = event ? $(event.target) : $('#actividad');
-
       if (actividadCheckbox.prop('checked')) {
         // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
         $('#esJefe').prop('checked', false);

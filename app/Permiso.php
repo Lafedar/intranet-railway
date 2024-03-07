@@ -6,9 +6,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Permiso extends Model{
+class Permiso extends Model
+{
     protected $table='permisos';
-	public function scopeRelaciones($query, $jefe, $motivo) {
+    public function scopeRelaciones($query, $jefe, $motivo) {
         $jefeAreasTurnos = DB::table('jefe_area')->where('jefe', $jefe)->get();
         $permisos = collect();
         
@@ -48,8 +49,12 @@ class Permiso extends Model{
         }
         $permisos = $permisos->unique('id');
         $permisos = $permisos->sortByDesc('fecha_permiso');
-
         return $permisos;
+    }
+    public  function scopeEmpleado ($query, $empleado){
+    	if($empleado){
+    	    return $query -> where(DB::raw("CONCAT(p1.nombre_p,' ',p1.apellido)"), 'LIKE',"%$empleado%");
+    	}
     }
 
     public function scopeJefe ($query){

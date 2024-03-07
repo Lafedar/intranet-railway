@@ -85,12 +85,11 @@
                   @endif
                 </div>
                 <h6></h6>
-                <!-- Boton de editar archivo -->
+                <!-- Boton de editar y eliminar -->
                 <div aling="center">
                   @can('editar-venta')
                     <button class="btn btn-info btn-sm" data-id="{{$venta->id}}" data-titulo="{{$venta->titulo}}" data-fecha="{{$venta->fecha}}" data-obs="{{$venta->obs}}" data-pbix="{{$venta->pbix}}" data-frecuencia="{{$venta->frecuencia}}" data-toggle="modal" data-target="#editar"> Editar</button>
                   @endcan
-                  <!-- Boton de eliminar archivo -->
                   @can('eliminar-venta')
                     <a href="{{url('destroy_venta', $venta->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm ('Está seguro que desea eliminar el archivo?')"data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                   @endcan
