@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    public function usuarios (Request $request){
-
+    public function usuarios (Request $request)
+    {
         $usuarios = DB::table('users')
         ->select('users.id as id', 'users.name as nombre_usuario','users.email as email_usuario')
         ->orderBy('users.name','asc')
@@ -43,6 +43,7 @@ class UsuarioController extends Controller
 
     public function create_usuario(Request $request)
     {
+
         Auth::logout();
 
         return redirect('/register');
@@ -82,38 +83,34 @@ class UsuarioController extends Controller
         return redirect('/usuarios');
     }
 
-    public function store_rol(Request $request){
+    public function store_rol(Request $request)
+    {
         $role = Role::create(['name' => $request['nombre_rol']]);
         Session::flash('message','Rol agregado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('/usuarios');
     }
 
-    public function store_permiso(Request $request){
+    public function store_permiso(Request $request)
+    {
         $permiso = Permission::create(['name'=> $request['nombre_permiso']]);
         Session::flash('message','Permiso agregado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('/usuarios');
     }
 
-    public function store_usuario(Request $request){
-        /*no importa que si se usa nombre_p o correo,
-        ambos tiene el valor de la id de la persona para poder enlazar los dos select*/
+    public function store_usuario(Request $request)
+    {
+        /*no importa si se usa nombre_p o correo,ambos tiene el valor de la id de la persona para poder enlazar los dos select*/
         $nombre = DB::table('personas')->where('personas.id_p', $request['nombre_p'])->value('nombre_p');
         $apellido = DB::table('personas')->where('personas.id_p', $request['nombre_p'])->value('apellido');
         $correo = DB::table('personas')->where('personas.id_p', $request['correo'])->value('correo');
-
         $usuario = User::create(['name'=>$nombre.' '.$apellido, 'email'=>$correo,
         'password'=> Hash::make($request['password'])]);
-
         $id_user = DB::table('users')->where('users.email', $correo)->value('id');
-
         $persona = DB::table('personas')
         ->where('personas.id_p',$request['nombre_p']) //nombre_p contine id
-        ->update([
-            'usuario' => $id_user
-        ]);      
-
+        ->update(['usuario' => $id_user]);      
         Session::flash('message','Usuario agregado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('/usuarios');
@@ -129,6 +126,7 @@ class UsuarioController extends Controller
         ->get();
     }
     
+
     public function select_roles($id)
     {
         $aux1 = DB::table('roles')
@@ -141,23 +139,21 @@ class UsuarioController extends Controller
         {
             return DB::table('roles')->get();
         }
-        else 
+        else {
+        foreach ($aux1 as $aux)
         {
-            foreach ($aux1 as $aux) 
-            {
-                $data[] = $aux->name;
-            }
-            return DB::table('roles')->whereNotIn('roles.name',$data)->orderBy('name','asc')->select('id','name')->get();
+            $data[] = $aux->name;
         }
+        return DB::table('roles')->whereNotIn('roles.name',$data)->orderBy('name','asc')->select('id','name')->get();
     }
+}
 
     public function select_revocar_roles($id)
     {
-        return DB::table('roles')
+        return  DB::table('roles')
         ->leftjoin('model_has_roles','roles.id','model_has_roles.role_id')
         ->where('model_has_roles.model_id',$id)
         ->select('id','name')
         ->get();
     }
 }
-

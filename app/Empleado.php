@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,7 +9,7 @@ class Empleado extends Model
 {
     protected $table='personas';
     protected $primaryKey = 'id_p';
-    
+
     public function scopeRelacion($query){
         return $query->leftjoin('area', 'area.id_a', 'personas.area')
         ->leftjoin('turnos', 'personas.turno', 'turnos.id')
@@ -63,7 +64,7 @@ class Empleado extends Model
     public static function selectTurnos() {
         return DB::table('turnos')->get(); 
     }
-
+    
     public static function selectJefeXArea() {
         return DB::table('jefe_area')->get(); 
     }

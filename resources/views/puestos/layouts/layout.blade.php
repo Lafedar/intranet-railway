@@ -185,6 +185,7 @@
     async function fnOpenModalUpdate(id){
       try {
         puesto = await getPuesto(id);
+        console.log(puesto);
 
         var myModal = new bootstrap.Modal(document.getElementById('show3'));
         var url = window.location.origin + "/show_update_puesto/" + id;
@@ -227,6 +228,7 @@
         var html_select = '<option value="">Seleccione</option>'
         for(var i = 0; i<data.length; i ++){
           if(puesto.idArea == data[i].id_a){         
+            console.log("INGRESA area: ", puesto.idArea, data[i].id_a);
             html_select += '<option value ="'+data[i].id_a+'" selected>'+data[i].nombre_a+'</option>';
             areaSeleccionada = data[i].id_a;
           }else{

@@ -42,9 +42,9 @@
             repuestos con la siguiente descripcion: "{{$descripcionRepuesto}}". Para ver los datalles de esta solicitud hacer clic en el botón "Detalle" o para ver 
             todas las solicitudes puede hacer clic en el boton "Solicitudes"</p>
             <div class="container-button">
-                <a href="http://intranet.lafedar.desa/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
+                <a href="http://intranet.lafedar/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
                 <br><br>
-                <a href="http://intranet.lafedar.desa/solicitudes" class="button">Solicitudes</a>
+                <a href="http://intranet.lafedar/solicitudes" class="button">Solicitudes</a>
             </div>
             <p>Saludos,</p>
             <p>Área de Mantenimiento</p>

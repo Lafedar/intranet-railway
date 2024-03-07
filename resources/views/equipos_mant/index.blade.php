@@ -75,6 +75,7 @@
     </form>          
   </div>
 </div>
+
 <!-- tabla de datos -->
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
@@ -89,8 +90,8 @@
       <th class="text-center">Localizacion</th>
       <th class="text-center">Uso</th>
       @can('editar-equiposmant')
-        <th class="text-center">Acciones</th>    
-      @endcan    
+        <th class="text-center">Acciones</th>
+      @endcan        
     </thead>
     <tbody>
       @foreach($equipos_mant as $equipo_mant)
@@ -213,7 +214,6 @@
         var html_select = '<option value="">Seleccione </option>'
         for(var i = 1; i<data.length; i ++){
           html_select += '<option value ="'+data[i].id+'">'+data[i].nombre+'</option>';
-          
         }
         $('#tipo_e').html(html_select);
       });

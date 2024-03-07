@@ -23,8 +23,8 @@
       <ul class="navbar-nav ml-auto">
         @can('reporte-solicitudes')
           <button id="reporte" class="btn btn-info" onclick='Report()' title="report">Reporte</button>
-          &nbsp&nbsp&nbsp&nbsp
         @endcan
+        &nbsp&nbsp&nbsp&nbsp
         <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_solicitud"> Agregar solicitud</button>
         &nbsp
         <form action="{{ url('/logout') }}" method="POST" >
@@ -36,7 +36,7 @@
       </ul>
     </div>
   </nav>
-  <p></p>	
+  <p></p>
 </head>
 
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>

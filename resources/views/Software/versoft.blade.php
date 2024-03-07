@@ -29,6 +29,7 @@
           <input type="text" name="licen" class="form-control col-md-1" id="licen" autocomplete="off" value="{{$licen}}" >
           &nbsp  
           <button type="submit" class="btn btn-default"> Buscar</button>
+        </div>
       </form>
     </div>
   </h1>            
@@ -57,13 +58,13 @@
               <form action="{{route('destroy_srelacions', $tabla_soft->id)}}" method="put">
                 <div class="botones">
                   <!-- Boton para eliminar asignacion de equipo -->
-                  <button  class="fa-solid fa-xmark eliminar" title="Borrar" data-tooltip="Borrar"></button>
+                  <button class="fa-solid fa-xmark eliminar" title="Borrar" data-tooltip="Borrar"></button>
                 </div>
               </form>
             </tr>
           @endif  
         @endforeach  
-      @endif  
+      @endif   
     </tbody>
   </table>
 </div>

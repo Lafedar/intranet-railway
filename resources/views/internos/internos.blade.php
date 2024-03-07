@@ -11,29 +11,26 @@
 <div class="col-sm-12 ">             
   <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0" cellpadding="2" border="10">
     <thead>
-      <th>Nombre / Localizacion</th>
       <th>Interno</th>
-      <th>Correo electrónico</th>
       <th>Area</th>
-    </thead>		
-    
+      <th>Nombre / Localizacion</th>
+      <th>Correo electrónico</th>
+    </thead>  
     <tbody>
       @foreach ($localizaciones as $localizacion)
         <tr>
-          <td>{{$localizacion->nombre}}</td>
           <td>{{$localizacion->interno}}</td>
-          <td></td>
           <td>{{$localizacion->area}}</td>
-          </tr>
+          <td>{{$localizacion->nombre}}</td>
+          <td></td>
         </tr>
       @endforeach
-      @foreach($personas as $persona)	
+      @foreach($personas as $persona) 
         <tr>
-          <td>{{$persona->nombre . ' '. $persona->apellido}}</td>
           <td>{{$persona->interno}}</td>
+          <td>{{$persona->area}}</td>
+          <td>{{$persona->nombre . ' '. $persona->apellido}}</td>
           <td><a href="mailto:{{$persona->correo}}">{{$persona->correo}}</a></td>
-            <td>{{$persona->area}}</td>
-          </tr>
         </tr>
       @endforeach  
     </tbody>

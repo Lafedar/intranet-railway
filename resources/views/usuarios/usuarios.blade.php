@@ -70,8 +70,10 @@
 @include('usuarios.modal_revocar')
 
 <script> 
-  $("document").ready(function(){
-    setTimeout(function(){
+  $("document").ready(function()
+  {
+    setTimeout(function()
+    {
      $("div.alert").fadeOut();
     }, 5000 ); // 5 secs
 
@@ -79,10 +81,13 @@
 </script>
 
 <script>
- $(document).ready(function(){
-   $("#search").keyup(function(){
+ $(document).ready(function()
+ {
+   $("#search").keyup(function()
+   {
      _this = this;
-     $.each($("#test tbody tr"), function() {
+     $.each($("#test tbody tr"), function()
+     {
        if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
          $(this).hide();
        else
@@ -93,23 +98,28 @@
 </script>
 
 <script>
-  $(document).ready(function(){
+  $(document).ready(function()
+  {
     $('#alert').hide();
-    $('.btn-borrar').click(function(e){
+    $('.btn-borrar').click(function(e)
+    {
         e.preventDefault();
-        if(! confirm("¿Está seguro de eliminar?")){
+        if(! confirm("¿Está seguro de eliminar?"))
+        {
             return false;
         }
         var row = $(this).parents('tr');
         var form = $(this).parents('form');
         var url  = form.attr('action');       
         
-        $.get(url, form.serialize(),function(result){
+        $.get(url, form.serialize(),function(result)
+        {
             row.fadeOut();
             $('#alert').show();
             $('#alert').html(result.message)
             setTimeout(function(){ $('#alert').fadeOut();}, 5000 );
-        }).fail(function(){
+        }).fail(function()
+        {
             $('#alert').show();
             $('#alert').html("Algo salió mal");
         });
@@ -118,8 +128,8 @@
 </script>
 
 <script>
-  $('#asignar_rol').on('show.bs.modal', function (event) {
-
+  $('#asignar_rol').on('show.bs.modal', function (event)
+  {
     var button = $(event.relatedTarget) 
     var id = button.data('id')
     var nombre = button.data('nombre')
@@ -128,7 +138,8 @@
     modal.find('.modal-body #id').val(id);
     modal.find('.modal-body #nombre').val(nombre);
 
-    $.get('select_roles/'+id ,function(data){
+    $.get('select_roles/'+id ,function(data)
+    {
       var html_select = '<option value="">Seleccione rol </option>'
       for(var i = 0; i<data.length; i ++)
         html_select += '<option value ="'+data[i].id+'">'+data[i].name+'</option>';
@@ -175,11 +186,9 @@
       $("#nombre_p").on("change", () => {
       $("#correo").val($("#nombre_p").val());
       });
-
       $("#correo").on("change", () => {
       $("#nombre_p").val($("#correo").val());
       });
-
       $('#nombre_p').html(html_select);
       $('#correo').html(html_select2);
   });

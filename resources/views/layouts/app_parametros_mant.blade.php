@@ -25,6 +25,9 @@
 
 		<div class="collapse navbar-collapse" id="navbar1">
 			<ul class="navbar-nav ml-auto"> &nbsp
+				<div id="notificacion_off" style="display: none">
+					<a> <img  src="{{ URL::to('/img/campana.png') }}"  height="40" ></a>
+				</div>
 
 				<div  id="notificacion_on" style="display: none">
 					<a  href="#" data-toggle="modal" data-target="#novedades"> <img  src="{{ URL::to('/img/CampanaRoja.png') }}" height="40" ></a>
