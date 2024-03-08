@@ -7,9 +7,7 @@
 
     <label for="title"><strong>Tipo:</strong></label>
     <select class="form-control" name="tipo_instructivo" id="tipo_instructivo" required></select>
-    <?php
-    phpinfo();
-    ?>
+    
     <br>
     <label for="title"><strong>Instructivo:</strong></label>
     <input type="file" name="archivo" id="archivo">
