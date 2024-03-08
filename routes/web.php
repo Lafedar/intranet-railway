@@ -476,3 +476,13 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
 });
+
+//***********************************Personas*************************************
+
+Route::group(['middleware' => ['auth']], function () 
+{
+
+  
+});
+Route::get('obtener_personas_web','PersonaController@obtenerPersonas')->name('obtener_personas_web');
+Route::get('obtener_personas_web2', [PersonaController::class, 'obtenerPersonas']);

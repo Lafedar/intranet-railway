@@ -98,4 +98,19 @@ public function destroy_contacto(Request $request, $id)
     ]);
 
 }
+
+public function obtenerPersonas() {
+    // return $resultadoMetodo = $Persona->traerPersonas(); 
+   
+    $personas=DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
+    return view ('eventos.index',  ['personas' => $personas]);
+    
+
+}
+    
+// public function obtenerPersonas() {  //para probar con el modelo
+   
+//         $personaModel = new Persona();
+//         return $personas = $personaModel->traerPersonas();     
+// }
 }

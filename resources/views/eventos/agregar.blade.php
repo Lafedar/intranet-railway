@@ -34,10 +34,16 @@
           </div>
 
 
-        <div class="form-group col-md-8">
-        <label> Solicitado por:</label>
-        <input type="text"  class="form-control" name="txtPedido_por" id="txtPedido_por" autocomplete="off" required>
-        </div>
+          <div style="display: inline-block;">
+  <label for="personas" style="display: block; margin-bottom: 5px;"><h6>Solicitado por:</h6></label>
+    <select class="form-control" name="id_persona" id="id_persona">
+        <option value="0">Selecciona una persona</option>
+        @foreach($personas as $persona)
+            <option value="{{$persona->id_p }}">{{ $persona->nombre_p }}</option>
+        @endforeach
+    </select>
+    
+</div> 
 
         <div class="form-group col-md-4">
         <label> Reserva sala:</label>
