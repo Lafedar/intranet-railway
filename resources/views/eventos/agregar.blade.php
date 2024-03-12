@@ -39,7 +39,7 @@
     <select class="form-control" name="id_persona" id="id_persona">
         <option value="0">Selecciona una persona</option>
         @foreach($personas as $persona)
-            <option value="{{$persona->id_p }}">{{ $persona->nombre_p }}</option>
+            <option value="{{$persona->id_p }}">{{$persona->nombre_p . ' '. $persona->apellido}}</option>
         @endforeach
     </select>
     
