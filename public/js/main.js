@@ -71,9 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
    
     calendar.render();
-     $('#btnAgregar').click(function(){
-    	ObjEvento=recolectarDatosGUI("POST");
-      EviarInformacion(''+$('#txtID').val(),ObjEvento);
+    $('#btnAgregar').click(function () {
+      var ObjEvento = recolectarDatosGUI("POST");
+      if (ObjEvento !== null) {
+          EviarInformacion('' + $('#txtID').val(), ObjEvento);
+      }
     });
       $('#btnBorrar').click(function(){
       ObjEvento=recolectarDatosGUI("DELETE");
@@ -84,32 +86,69 @@ document.addEventListener('DOMContentLoaded', function() {
       EviarInformacion('/'+$('#txtID').val(),ObjEvento);
     });
 
-    function recolectarDatosGUI (method){
+    // function recolectarDatosGUI (method){
 		  
-        colo=($(txtTitulo).val() =='Auditorio')?'#1569C7':'#FFDFDD';
-        colo=($(txtTitulo).val() =='Sala Vidriada')?'#48CCCD':colo;
-        colo=($(txtTitulo).val() =='Sala Protocolar')?'#98AFC7':colo;
-        colo=($(txtTitulo).val() =='Sala Vidridada 2')?'#FFE5B4':colo;
-        $(txtColor).val(colo);
+    //     colo=($(txtTitulo).val() =='Auditorio')?'#1569C7':'#FFDFDD';
+    //     colo=($(txtTitulo).val() =='Sala Vidriada')?'#48CCCD':colo;
+    //     colo=($(txtTitulo).val() =='Sala Protocolar')?'#98AFC7':colo;
+    //     colo=($(txtTitulo).val() =='Sala Vidridada 2')?'#FFE5B4':colo;
+    //     $(txtColor).val(colo);
         
         
-        nuevoEvento={
-    		id:$(txtID).val(),
-    		title:$(txtTitulo).val(),
-    		descripcion:$(txtDescripcion).val(),
-        pedido_por:$(txtPedido_por).val(),
-        sala:$(txtSala).val(),
-        color:$(txtColor).val(),
-    		textColor:'#ffffff',
-    		start:$(txtFecha).val()+" "+$(txtHoras).val(),
-        end:$(txtFecha).val()+" "+$(txtHoraf).val(),
-    		'_token':$("meta[name='csrf-token']").attr("content"),
-    		'_method':method
+    //     nuevoEvento={
+    // 		id:$(txtID).val(),
+    // 		title:$(txtTitulo).val(),
+    // 		descripcion:$(txtDescripcion).val(),
+    //     pedido_por:$(txtPedido_por).val(),
+    //     sala:$(txtSala).val(),
+    //     color:$(txtColor).val(),
+    // 		textColor:'#ffffff',
+    // 		start:$(txtFecha).val()+" "+$(txtHoras).val(),
+    //     end:$(txtFecha).val()+" "+$(txtHoraf).val(),
+    // 		'_token':$("meta[name='csrf-token']").attr("content"),
+    // 		'_method':method
      
+    //   }
+     
+    //  	return(nuevoEvento);
+    // }
+    function recolectarDatosGUI(method) {
+      // Validar que ningún campo esté vacío
+      if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === " " || $('#txtHoraf').val() === " "|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " ")
+      {
+          alert("Por favor, complete todos los campos.");
+          return null; // Devuelve null para indicar que la recolección de datos falló
       }
-     
-     	return(nuevoEvento);
-    }
+  
+      // Validar que la hora de comienzo sea menor a la hora de fin
+      var horaInicioObj = new Date("1970-01-01T" + $('#txtHoras').val());
+      var horaFinObj = new Date("1970-01-01T" + $('#txtHoraf').val());
+  
+      if (horaInicioObj >= horaFinObj) {
+          alert("La hora de comienzo debe ser menor que la hora de fin.");
+          return null; // Devuelve null para indicar que la recolección de datos falló
+      }
+  
+      // Resto del código para recolectar datos
+      var colo = ($('#txtTitulo').val() == 'Auditorio') ? '#1569C7' : '#FFDFDD';
+      colo = ($('#txtTitulo').val() == 'Sala Vidriada') ? '#48CCCD' : colo;
+      colo = ($('#txtTitulo').val() == 'Sala Protocolar') ? '#98AFC7' : colo;
+      colo = ($('#txtTitulo').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
+  
+      return {
+          id: $('#txtID').val(),
+          title: $('#txtTitulo').val(),
+          descripcion: $('#txtDescripcion').val(),
+          pedido_por: $('#txtPedido_por').val(),
+          sala: $('#txtSala').val(),
+          color: colo,
+          textColor: '#ffffff',
+          start: $('#txtFecha').val() + " " + $('#txtHoras').val(),
+          end: $('#txtFecha').val() + " " + $('#txtHoraf').val(),
+          '_token': $("meta[name='csrf-token']").attr("content"),
+          '_method': method
+      };
+  }
     
     	function EviarInformacion(accion,objEvento){
     		
@@ -124,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 calendar.refetchEvents();
                 alert("Evento Guardado con exito");
                },
-    				error: function(error){alert("Hay un problema:" + error);}
+    				error: function(error){alert("Faltan completar campos:" + error);}
     			}
     		);
     	}
