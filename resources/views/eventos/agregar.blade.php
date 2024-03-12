@@ -8,7 +8,7 @@
       <div class="modal-body">
         <input type="text" name="txtID" id="txtID" class="d-none">
         <input type="text" class="form-control d-none" name="txtFecha" id="txtFecha">
-        
+        <input type="color" name="txtColor" id="txtColor" autocomplete="off" class="d-none">
         <div class="form-group">
           <label>Titulo: </label>
           <input type="text" class="form-control" name="txtSala" id="txtSala" autocomplete="off" required>
@@ -27,7 +27,7 @@
 
         <div class="form-group">
           <label for="personas" style="display: block; margin-bottom: 5px;">Solicitado por:</label>
-          <select class="form-control" name="id_persona" id="id_persona">
+          <select class="form-control" name="txtPedido_por" id="txtPedido_por">
             <option value="0">Selecciona una persona</option>
             @foreach($personas as $persona)
               <option value="{{$persona->id_p }}">{{$persona->nombre_p . ' '. $persona->apellido}}</option>
