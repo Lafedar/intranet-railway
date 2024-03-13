@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Evento;
+use DB;
 
 class EventosController extends Controller
 {
@@ -16,9 +17,10 @@ class EventosController extends Controller
      */
     public function index()
     {
-        //
+    
+        $personas=DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
+        return view ('eventos.index',  compact('personas'));
         
-        return view("eventos.index");
     }
 
     /**

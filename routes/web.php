@@ -276,9 +276,7 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
 
  //***********************************fullCalendar**************************************
 
- Route::resource('eventos','EventosController');
-
- Route::get('/eventos','EventosController@index');
+ Route::resource('/eventos','EventosController');
 
  //********************************Almuerzo***********************************************
 
@@ -476,3 +474,12 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
 });
+
+//***********************************Personas*************************************
+
+Route::group(['middleware' => ['auth']], function () 
+{
+
+  
+});
+

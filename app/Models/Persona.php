@@ -21,4 +21,10 @@ public function scopeNombre($query, $nombre){
     }
 }
 
+public function traerPersonas() {
+    // return DB::table('tipos_equipos')->get();
+    // return $resultadoMetodo = $Persona->traerPersonas();   
+    return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
+}
+
 }
