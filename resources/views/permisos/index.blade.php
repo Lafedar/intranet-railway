@@ -13,31 +13,30 @@
 @endif
 
 <div class="col-md-12 ml-auto">
-  <h1>
-   <div class="form-inline pull-right">
-    <form  method="GET" >{{--action="{{ route('permisos.index') }}">--}}
-      <div class="form-group">
-        <div class="form-group"><label>Empleado:</label>
-          <input type="text" name="empleado" class="form-control" id="empleado" value="{{$empleado}}" >
+    <h1>
+        <div class="form-inline pull-right">
+            <form method="GET" class="form-inline">
+                <div class="form-group mr-2">
+                    <label for="search" style="font-size: 20px; margin-right: -5px;">Empleado:</label>
+                    <input type="text" class="form-control mx-2" style="width:60%" id="search" placeholder="Buscar">
+                </div>
+                <div class="form-group mr-2">
+                  <label for="search" style="font-size: 20px; margin-right: 2px">Motivo:</label>
+                    <select class="form-control" name="motivo" id="motivo" value="{{{ isset($tipo_permisos->desc) ? $permisos->motivo : ''}}}">
+                        <option value="0">{{'Sin motivo'}} </option>
+                        @foreach($tipo_permisos as $tipo_permiso)
+                        <option value="{{$tipo_permiso->id_tip}}">{{$tipo_permiso->desc}} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Buscar</button>
+                
+            </form>
         </div>
-        &nbsp
-        <div class="form-group">
-          <select class="form-control" name="motivo"  id="motivo" value="{{{ isset($tipo_permisos->desc) ? $permisos->motivo : ''}}}">
-            <option value="0">{{'Sin motivo'}} </option>
-            @foreach($tipo_permisos as $tipo_permiso)
-              <option value="{{$tipo_permiso->id_tip}}">{{$tipo_permiso->desc}} </option>
-            @endforeach
-          </select>                  
-        </div>
-        &nbsp
-        <button type="submit" class="btn btn-default"> Buscar</button>
-      </form>
-    </div>
-  </h1>            
+    </h1>
 </div>
-
 <div class="col-md-12">             
-  <table class="table table-striped table-bordered ">
+  <table class="table table-striped table-bordered " id="permisos-table">
     <thead>
      <th class="text-center">Empleado</th>
      <th class="text-center">Area</th>
@@ -149,7 +148,26 @@
     }, 5000 ); // 5 secs
 
   });
+
+  
+  
+    $(document).ready(function() {
+        $("#search").keyup(function() {
+            var searchText = $(this).val().toLowerCase();
+            $("#permisos-table tbody tr").each(function() {
+                var rowData = $(this).text().toLowerCase();
+                var isVisible = rowData.indexOf(searchText) !== -1;
+                $(this).toggle(isVisible);
+            });
+        });
+    });
+
+    
+  
+
+
 </script>
+
 
 
 @stop

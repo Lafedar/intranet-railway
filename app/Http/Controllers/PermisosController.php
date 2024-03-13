@@ -22,18 +22,25 @@ class PermisosController extends Controller
     {
         $tipo_permisos = DB::table('tipo_permiso')->get();
         $jefe = null;
-
-        if( auth()->user()->id == 44)
-            $jefe = DB::table('personas')->where('personas.usuario', 19 )->first();
+    
+        if(auth()->user()->id == 44)
+            $jefe = DB::table('personas')->where('personas.usuario', 19)->first();
         else{
-            $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id )->first();
+            $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id)->first();
         }
         
         if($jefe->rango == 1){
+            // Verificar si se está filtrando por nombre
+            $nombreEmpleado = $request->get('empleado');
             
-            $permisosCollection  = Permiso::Relaciones($jefe->id_p, $request->get('motivo'));
+            $permisosCollection = Permiso::Relaciones($jefe->id_p, $request->get('motivo'));
+            
+            // Aplicar filtro por nombre si se proporciona un nombre de empleado
+            if($nombreEmpleado) {
+                $permisosCollection = $permisosCollection->where('autorizado', 'LIKE', "%$nombreEmpleado%");
+            }
         }
-
+    
         // Convertir la colección en un array para poder paginar
         $permisosArray = $permisosCollection->toArray();
 
@@ -41,7 +48,7 @@ class PermisosController extends Controller
         $perPage = 20; // Número de elementos por página
         $currentPage = $request->get('page', 1);
         $offset = ($currentPage - 1) * $perPage;
-
+       
         $permisosPaginados = new LengthAwarePaginator(
             array_slice($permisosArray, $offset, $perPage, true), // Elementos para la página actual
             count($permisosArray), // Total de elementos
