@@ -86,32 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
       EviarInformacion('/'+$('#txtID').val(),ObjEvento);
     });
 
-    // function recolectarDatosGUI (method){
-		  
-    //     colo=($(txtTitulo).val() =='Auditorio')?'#1569C7':'#FFDFDD';
-    //     colo=($(txtTitulo).val() =='Sala Vidriada')?'#48CCCD':colo;
-    //     colo=($(txtTitulo).val() =='Sala Protocolar')?'#98AFC7':colo;
-    //     colo=($(txtTitulo).val() =='Sala Vidridada 2')?'#FFE5B4':colo;
-    //     $(txtColor).val(colo);
-        
-        
-    //     nuevoEvento={
-    // 		id:$(txtID).val(),
-    // 		title:$(txtTitulo).val(),
-    // 		descripcion:$(txtDescripcion).val(),
-    //     pedido_por:$(txtPedido_por).val(),
-    //     sala:$(txtSala).val(),
-    //     color:$(txtColor).val(),
-    // 		textColor:'#ffffff',
-    // 		start:$(txtFecha).val()+" "+$(txtHoras).val(),
-    //     end:$(txtFecha).val()+" "+$(txtHoraf).val(),
-    // 		'_token':$("meta[name='csrf-token']").attr("content"),
-    // 		'_method':method
-     
-    //   }
-     
-    //  	return(nuevoEvento);
-    // }
     function recolectarDatosGUI(method) {
       // Validar que ningún campo esté vacío
       if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === " " || $('#txtHoraf').val() === " "|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " ")

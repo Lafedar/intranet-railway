@@ -276,9 +276,7 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
 
  //***********************************fullCalendar**************************************
 
- Route::resource('eventos','EventosController');
-
- Route::get('/eventos','EventosController@index');
+ Route::resource('/eventos','EventosController');
 
  //********************************Almuerzo***********************************************
 
@@ -484,5 +482,4 @@ Route::group(['middleware' => ['auth']], function ()
 
   
 });
-Route::get('obtener_personas_web','PersonaController@obtenerPersonas')->name('obtener_personas_web');
-Route::get('obtener_personas_web2', [PersonaController::class, 'obtenerPersonas']);
+

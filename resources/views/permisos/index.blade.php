@@ -15,9 +15,9 @@
 <div class="col-md-12 ml-auto">
   <h1>
    <div class="form-inline pull-right">
-    <form  method="GET">
+    <form  method="GET" >{{--action="{{ route('permisos.index') }}">--}}
       <div class="form-group">
-        <div class="form-group"><h6>Empleado:</h6>
+        <div class="form-group"><label>Empleado:</label>
           <input type="text" name="empleado" class="form-control" id="empleado" value="{{$empleado}}" >
         </div>
         &nbsp
@@ -25,7 +25,7 @@
           <select class="form-control" name="motivo"  id="motivo" value="{{{ isset($tipo_permisos->desc) ? $permisos->motivo : ''}}}">
             <option value="0">{{'Sin motivo'}} </option>
             @foreach($tipo_permisos as $tipo_permiso)
-            <option value="{{$tipo_permiso->id_tip}}">{{$tipo_permiso->desc}} </option>
+              <option value="{{$tipo_permiso->id_tip}}">{{$tipo_permiso->desc}} </option>
             @endforeach
           </select>                  
         </div>
