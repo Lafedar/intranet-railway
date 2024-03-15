@@ -16,8 +16,20 @@
 
 <div class="col-md-12 ml-auto">
   <div class="form-group">
-   <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Buscar">
- </div>
+    <div class="input-group">
+      <input type="text" class="form-control col-md-2" id="search" placeholder="Buscar">
+      <div class="input-group-append">
+        <div class="form-check form-check-inline" style="margin-left: 15px">
+          <input class="form-check-input" type="checkbox" id="filtroJefe">
+          <label class="form-check-label" for="filtroJefe" style="font-size: 1.25em; font-weight: bold;" >Jefe</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="filtroActividad">
+          <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;" >En actividad</label>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="col-sm-12">             
@@ -420,7 +432,52 @@
             $('#alert').html("Algo salió mal");
         });
     });
+  });
+</script>
+
+<script> //filtro check boxs
+$(document).ready(function () { 
+  $("#search").keyup(function () {
+    filterTable();
+  });
+
+  $("#filtroJefe, #filtroActividad").change(function () {
+    filterTable();
+  });
 });
+
+function filterTable() {
+  var searchText = $("#search").val().toLowerCase();
+  var filtroJefe = $("#filtroJefe").prop("checked");
+  var filtroActividad = $("#filtroActividad").prop("checked");
+
+  $("#test tbody tr").each(function () {
+    var nombre = $(this).find("td:eq(0)").text().toLowerCase();
+    var esJefe = $(this).find("td:eq(6) .circle_green").length > 0;
+    var enActividad = $(this).find("td:eq(7) .circle_green").length > 0;
+
+    var mostrar = true;
+
+    if (filtroJefe && !esJefe) {
+      mostrar = false;
+    }
+
+    if (filtroActividad && !enActividad) {
+      mostrar = false;
+    }
+
+    if (mostrar && nombre.indexOf(searchText) === -1) {
+      mostrar = false;
+    }
+
+    if (mostrar) {
+      $(this).show();
+    } else {
+      $(this).hide();
+    }
+  });
+}
+
 </script>
 
 

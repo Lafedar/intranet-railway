@@ -149,6 +149,27 @@
     }, 5000 ); // 5 secs
 
   });
+<<<<<<< HEAD
+=======
+
+  
+    //para filtrar por el nombre
+    $(document).ready(function() {
+        $("#search").keyup(function() {
+            var searchText = $(this).val().toLowerCase();
+            $("#permisos-table tbody tr").each(function() {
+                var rowData = $(this).text().toLowerCase();
+                var isVisible = rowData.indexOf(searchText) !== -1;
+                $(this).toggle(isVisible);
+            });
+        });
+    });
+
+    
+  
+
+
+>>>>>>> 20b2fc3 (filtrar personas con checkBox)
 </script>
 
 
