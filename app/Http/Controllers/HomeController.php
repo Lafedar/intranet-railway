@@ -26,7 +26,7 @@ class HomeController extends Controller
     }
     public function mantenimiento()
     {
-        return view('home.mantenimiento');
+        return view('mantenimiento.mantenimiento');
     }
     public function parametros_mantenimiento()
     {
@@ -91,7 +91,7 @@ class HomeController extends Controller
 
     public function sistemas()
     {
-        return view ('home.sistemas');
+        return view ('sistemas.sistemas');
     }
 
     public function documentos ()
@@ -101,6 +101,6 @@ class HomeController extends Controller
     
     public function powerbis ()
     {
-        return view ('home.powerbis');
+        return view ('powerbis.powerbis');
     }
 }
