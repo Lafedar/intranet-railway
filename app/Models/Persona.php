@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
@@ -26,5 +26,7 @@ public function traerPersonas() {
     // return $resultadoMetodo = $Persona->traerPersonas();   
     return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
 }
+
+
 
 }
