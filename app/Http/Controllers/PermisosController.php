@@ -22,45 +22,52 @@ class PermisosController extends Controller
     {
         $tipo_permisos = DB::table('tipo_permiso')->get();
         $jefe = null;
-    
-        if(auth()->user()->id == 44)
+
+        if (auth()->user()->id == 44)
             $jefe = DB::table('personas')->where('personas.usuario', 19)->first();
-        else{
+        else {
             $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id)->first();
         }
-        
-        if($jefe->rango == 1){
-            // Verificar si se está filtrando por nombre
-            $nombreEmpleado = $request->get('empleado');
+
+        //Verificar si el motivo y el nombre de empleado están vacíos
+        $motivo = $request->input('motivo');
+        $nombreEmpleado = $request->input('empleado');
+
+        //Filtrar por motivo solo si se selecciona un motivo válido (distinto de 0)
+        if ($motivo != 0) {
+            $permisosCollection = Permiso::Relaciones($jefe->id_p, $motivo);
+        } else {
             
-            $permisosCollection = Permiso::Relaciones($jefe->id_p, $request->get('motivo'));
-            
-            // Aplicar filtro por nombre si se proporciona un nombre de empleado
-            if($nombreEmpleado) {
-                $permisosCollection = $permisosCollection->where('autorizado', 'LIKE', "%$nombreEmpleado%");
-            }
+            $permisosCollection = Permiso::Relaciones($jefe->id_p, null);
         }
-    
+
+        //Aplicar filtro por nombre si se proporciona un nombre de empleado
+        if (!empty($nombreEmpleado)) {
+            $nombreEmpleado = strtolower($nombreEmpleado);
+            $permisosCollection = $permisosCollection->filter(function ($permiso) use ($nombreEmpleado) {
+                return stripos(strtolower($permiso->nombre_autorizado), $nombreEmpleado) !== false;
+            });
+        }
+
         // Convertir la colección en un array para poder paginar
         $permisosArray = $permisosCollection->toArray();
 
-        // Crear una instancia de LengthAwarePaginator para la paginación
+        //Para la paginación
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 20; // Número de elementos por página
-        $currentPage = $request->get('page', 1);
         $offset = ($currentPage - 1) * $perPage;
-       
         $permisosPaginados = new LengthAwarePaginator(
-            array_slice($permisosArray, $offset, $perPage, true), // Elementos para la página actual
-            count($permisosArray), // Total de elementos
-            $perPage, // Elementos por página
-            $currentPage, // Página actual
-            ['path' => $request->url(), 'query' => $request->query()] // Otras opciones de URL
+            array_slice($permisosArray, $offset, $perPage, true), 
+            count($permisosArray), 
+            $perPage, 
+            $currentPage, 
+            ['path' => $request->url(), 'query' => $request->query()] 
         );
 
-        return view ('permisos.index', [
-            'permisos'=>$permisosPaginados,
-            'empleado'=>$request->get('empleado'),
-            'tipo_permisos'=>$tipo_permisos
+        return view('permisos.index', [
+            'permisos' => $permisosPaginados,
+            'empleado' => $request->input('empleado'),
+            'tipo_permisos' => $tipo_permisos
         ]);
     }
 
