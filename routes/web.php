@@ -88,7 +88,11 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_ips', 'EquipamientoController@select_ips')->name('select_ips');
 
   Route::get('modal_editar_equipamiento/{id}','EquipamientoController@modal_editar_equipamiento')->name('modal_editar_equipamiento')->middleware('role:administrador');
+
+  
+
 });
+
 
    //****************INCIDENTES**********************
 Route::group(['middleware' => ['auth']], function () {
