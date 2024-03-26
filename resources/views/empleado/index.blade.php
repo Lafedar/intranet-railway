@@ -25,7 +25,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="checkbox" id="filtroActividad">
-          <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;" >En actividad</label>
+          <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;" >Solo en actividad</label>
         </div>
       </div>
     </div>
