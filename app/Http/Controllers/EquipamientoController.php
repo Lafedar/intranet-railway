@@ -54,7 +54,7 @@ class EquipamientoController extends Controller
             'subred' => $request->get('subred'),
             'usuario' => $request->get('usuario'),
             'area' => $request->get('area'),
-            'tipo3' => $request->get('tipo3') // Asegúrate de pasar 'tipo3' a la vista
+            'tipo3' => $request->get('tipo3') 
         ]);
        
     }

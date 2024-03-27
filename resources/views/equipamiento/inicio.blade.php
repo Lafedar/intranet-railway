@@ -85,10 +85,8 @@
     <th class="text-center">Modelo</th>
     <th class="text-center">Toner</th>
     <th class="text-center">Unidad de imagen (DR)</th>
-    
-  
-@endif
-<th class="text-center">Acciones</th>
+  @endif
+    <th class="text-center">Acciones</th>
 
 
 @foreach($equipamientos as $equipamiento) 
@@ -116,73 +114,78 @@
             <td class="text-center">{{ $equipamiento->unidad_imagen }}</td>
         @endif
         
-        <td align="center" width="170">
+      <td align="center" width="170">
         
-              <div class="botones">
-              
-                @if ($equipamiento->relacion != null)
-                  <a role="button" class="fa-solid fa-xmark eliminar" href="{{url('destroy_relacion', $equipamiento->relacion)}}" title="Borrar" 
-                  onclick="return confirm ('¿Está seguro que desea eliminar la relación?')" data-position="top" data-delay="50" data-tooltip="Borrar">
-                  </a>
-                @else
-                <!-- Botón para asignar equipo -->
-                  <a role="button" class="fa-solid fa-plus agregar" href="#" title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
-                  data-target="#asignar">
-                  </a>
-                @endif
-
-                <!-- Botón para editar equipo -->
-                <a role="button" class="fa-solid fa-pen default" href="#" title="Editar" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" 
-                  data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" 
-                  data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" 
-                  data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" 
-                  data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-target="#editar_equipamiento">
+          <div class="row justify-content-center align-items-center">
+            @if ($equipamiento->relacion != null)
+            <!-- Boton Borrar -->
+                <a role="button" class="fa-solid fa-xmark eliminar mx-2" href="{{url('destroy_relacion', $equipamiento->relacion)}}" title="Borrar" 
+                onclick="return confirm ('¿Está seguro que desea eliminar la relación?')" data-position="top" data-delay="50" data-tooltip="Borrar">
                 </a>
-                
-                <!-- Botón para agregar software a equipo -->
-                <a role="button" class="fa-solid fa-gear default" href="#" title="Software" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
-                   data-target="#ver_s">
+            @else
+            <!-- Boton Asignar -->
+                <a role="button" class="fa-solid fa-plus agregar mx-2" href="#" title="Asignar" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
+                data-target="#asignar">
                 </a>
-
-               <!-- Botón para agregar un incidente al equipo -->
-                <a role="button" class="fa-solid fa-exclamation default" href="#" title="Incidente" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
-                  data-target="#incidente">
-                </a>
-
-                <!-- Botón para ver observaciones -->
-                <a role="button" class="fa-solid fa-eye default" href="#" 
-            title="{{ $equipamiento->obs ? $equipamiento->obs : 'Sin observación' }}" 
-            data-toggle="tooltip" 
-            data-placement="top">
+            @endif
+            <!-- Boton Editar -->
+            <a role="button" class="fa-solid fa-pen default mx-2" href="#" title="Editar" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" 
+                data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" 
+                data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" 
+                data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" 
+                data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-target="#editar_equipamiento">
             </a>
-       
-              </div>
-            </td>
-          </tr>
+            
+            <!-- Boton Software-->
+            <a role="button" class="fa-solid fa-gear default mx-2" href="#" title="Software" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
+                data-target="#ver_s">
+            </a>
+            
+            <!-- Boton Incidente -->
+            <a role="button" class="fa-solid fa-exclamation default mx-2" href="#" title="Incidente" data-id="{{$equipamiento->id_equipamiento}}" data-toggle="modal" 
+                data-target="#incidente">
+            </a>
+            
+            <!-- Boton Observaciones -->
+            {{--Activo y desactivo los botones de Observaciones--}}
+            @php
+              $observacionClass = ($equipamiento->obs && $equipamiento->obs != 'Sin observación') ? 'btn-default' : 'btn-default disabled';
+              $buttonStyle = ($equipamiento->obs && $equipamiento->obs != 'Sin observación') ? '' : 'pointer-events: none; opacity: 0.5;';
+            @endphp
+            <a role="button" href="#" class="text-decoration-none mx-0" style="{{ $buttonStyle }}"
+              title="{{ $equipamiento->obs ? 'Observaciones' : 'Sin observaciones' }}" 
+              data-toggle="modal" 
+              data-target="#ver_obs"
+              data-obs="{{ $equipamiento->obs }}">
+              <span class="fa-solid fa-eye default mx-2"></span>
+            </a>
+      </td>
+    </tr>
 
-          
-        @endforeach  
+@endforeach  
       
     </tbody>
   </table>
-{{ $equipamientos->appends($_GET)->links() }}
-</div>
-<div class="modal fade" id="ver_obs" tabindex="-1" role="dialog" aria-labelledby="ver_obs_title" aria-hidden="true">
+
+  <!-- Ventana modal Observaciones -->
+  <div class="modal fade" id="ver_obs" tabindex="-1" role="dialog" aria-labelledby="ver_obs_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ver_obs_title">Observaciones</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header text-center">
+                <h5 class="modal-title mx-auto">Observaciones</h5> 
             </div>
-            <div class="modal-body" id="obs_content">
-             
-              {{--$equipamiento->obs--}}
+            <div class="modal-body text-center" id="obs_content">
+            
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+
+{{ $equipamientos->appends($_GET)->links() }}
+
 @include('incidentes.create_incidente')
 
 @include('equipamiento.edit')
@@ -190,6 +193,15 @@
 @include('equipamiento.asignar')
 
 @include('equipamiento.asingn_soft')
+<script> //Mostrar contenido de ventanas modales observaciones
+    $('#ver_obs').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var obs = button.data('obs'); 
+        var modal = $(this);
+
+        modal.find('.modal-body').text(obs);   
+    });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function(){
@@ -374,5 +386,25 @@
    });
  });
 </script>
+<style> /*estilos ventana modal Observaciones*/
+  .modal-title { 
+    color: #333; 
+    font-size: 1.5rem; 
+    font-weight: bold; 
+  }
+
+  
+  .modal-body {
+    color: #666; 
+    font-size: 1.2rem; 
+  }
+
+  
+  .close {
+    color: #aaa; 
+    font-size: 2rem; 
+    opacity: 1; 
+  }
+</style>
 
 @stop
