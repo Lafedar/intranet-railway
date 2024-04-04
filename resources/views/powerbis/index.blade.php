@@ -27,7 +27,7 @@
                             <div class="col-md-4 mb-4">
                                 <a href="/rrhhs"> <img src="{{ URL::to('/img/rrhh.png') }}" height="140"></a>
                             </div>
-                            @break;
+                            @break; 
                         @elseif($rol === 'venta')
                             <div class="col-md-4 mb-4">
                                 <a href="/ventas"> <img src="{{ URL::to('/img/ventas.png') }}" height="140"></a>
