@@ -483,3 +483,10 @@ Route::group(['middleware' => ['auth']], function ()
   
 });
 
+//Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar_recordatorio');
+//Route::get('/enviar-recordatorio/{id_solicitud}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+
+

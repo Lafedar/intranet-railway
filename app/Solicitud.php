@@ -236,6 +236,16 @@ class Solicitud extends Model{
 
         return $consulta;
     }
+
+    public static function obtenerMailNombreTituloEncargado($idSolicitud){
+        $consulta = DB::table('personas')
+        ->leftJoin('solicitudes_temp', 'solicitudes_temp.id_encargado', 'personas.id_p')
+        ->select('personas.correo as email', DB::raw('CONCAT(personas.nombre_p, " ", personas.apellido) as nombre'), 'solicitudes_temp.titulo as titulo')
+        ->where('solicitudes_temp.id', $idSolicitud)
+        ->first();
+
+        return $consulta;
+    }
     public static function obtenerNombreEstadoSolicitud($idSolicitud){
         $consulta = DB::table('estados')
         ->leftJoin('solicitudes_temp', 'solicitudes_temp.id_estado', 'estados.id')
@@ -296,5 +306,12 @@ class Solicitud extends Model{
             })
             ->update(['historico_solicitudes.descripcion' => $descripcion]);
     }
+    
+
+    
+    
+
+ 
 }
+
 ?>

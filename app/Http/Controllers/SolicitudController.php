@@ -178,7 +178,7 @@ class SolicitudController extends Controller{
         Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
         $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
         $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
-
+    
         $nuevo_historico = new Historico_solicitudes;
         $nuevo_historico->id_solicitud = $request['id_solicitud'];
         $nuevo_historico->id_estado = $request['estado']; //id de estado
@@ -195,7 +195,10 @@ class SolicitudController extends Controller{
         $nuevo_historico->id_persona = $idPersona->id_p;
         $nuevo_historico->fecha = $fechaActual;    
         $nuevo_historico->save();
-
+    
+        // Envío de recordatorio
+        $this->enviarRecordatorio($request['id_solicitud']);
+    
         $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
         $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
 
@@ -223,7 +226,8 @@ class SolicitudController extends Controller{
             }
         }
         
-        Session::flash('message','Solicitud modificado con éxito');
+    
+        Session::flash('message','Solicitud modificada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('solicitudes');
     }
@@ -413,5 +417,41 @@ class SolicitudController extends Controller{
         Session::flash('message','Solicitud editada con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect ('solicitudes');
+    }
+
+    // public function enviarRecordatorio($id)
+    // {
+    // $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($id);
+    // $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
+    
+    
+    // try {
+    //     Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+    //     Session::flash('message', 'Recordatorio enviado con éxito');
+    //     Session::flash('alert-class', 'alert-success');
+    // } catch (\Exception $e) {
+    //     Session::flash('message', 'Error al enviar el recordatorio');
+    //     Session::flash('alert-class', 'alert-danger');
+    // }
+
+    // return redirect()->back();
+    // }
+
+
+    public function enviarRecordatorio($id)
+    {
+        $mailDestinatario = Solicitud::obtenerMailNombreTituloEncargado($id); 
+        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
+    
+        try {
+            Mail::to($mailDestinatario->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailDestinatario->titulo));
+            Session::flash('message', 'Recordatorio enviado con éxito');
+            Session::flash('alert-class', 'alert-success');
+        } catch (\Exception $e) {
+            Session::flash('message', 'Error al enviar el recordatorio');
+            Session::flash('alert-class', 'alert-danger');
+        }
+
+            return redirect()->back();
     }
 }

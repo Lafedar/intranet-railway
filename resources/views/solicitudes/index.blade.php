@@ -119,7 +119,7 @@
       <th class="text-center">Fecha de emision</th> 
       <!--<th class="text-center">Fecha de finalizacion</th> -->
       <th class="text-center">Solicitante</th>
-      <th class="text-center">Encargado</th>  
+      <th class="text-center">Encargado</th> 
       <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
@@ -157,10 +157,11 @@
             <td style="display: none;">{{$solicitud->descripcion}}</td>
             <td>
               @if($solicitud->nombre_encargado)
-                {{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}}
+                {{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}} {{$solicitud->id_encargado}}
               @else
                 <p style="color:gainsboro">Sin asignar</p>
               @endif
+             
             </td>
             <td>
               <div class="text-center">
@@ -189,6 +190,7 @@
                       <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
                     </div>
                   @endif
+                 
                   @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
@@ -197,6 +199,17 @@
                       <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                     </div>
                   @else
+                  
+                  <!-- Boton Recordatorios-->
+                  @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
+                    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+                       @csrf
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})">Recordatorio</button>
+                    </form>
+                  @endif 
+
+               
+    
                     @can('eliminar-solicitud')
                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                         <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
@@ -265,8 +278,22 @@
     // Guarda el valor seleccionado en el almacenamiento local (localStorage)
     localStorage.setItem('fechaValue', fechaInput.value);
   });
+  
 </script>
 <script>
+    function confirmarEnvio(id) {
+        if (confirm('¿Estás seguro de enviar un recordatorio?')) {
+            document.getElementById('recordatorioForm' + id).submit();
+            mostrarMensaje('Recordatorio enviado');
+        }
+    }
+
+    function mostrarMensaje(mensaje) {
+        alert(mensaje);
+    }
+</script>
+<script>
+
   function manejarSeleccion(idEquipo) {
     $('#equipo').val(idEquipo).trigger('change');
     $('#equipo1').val(idEquipo).trigger('change');
