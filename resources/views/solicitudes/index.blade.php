@@ -284,7 +284,7 @@
 </script>
 <script>
     function confirmarEnvio(id) {
-        if (confirm('¿Estás seguro de enviar un recordatorio?')) {
+        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de la solicitud?')) {
             document.getElementById('recordatorioForm' + id).submit();
             mostrarMensaje('Recordatorio enviado');
         }
