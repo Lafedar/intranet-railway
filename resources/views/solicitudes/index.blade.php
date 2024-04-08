@@ -157,7 +157,7 @@
             <td style="display: none;">{{$solicitud->descripcion}}</td>
             <td>
               @if($solicitud->nombre_encargado)
-                {{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}} {{$solicitud->id_encargado}}
+                {{$solicitud->nombre_encargado}} {{$solicitud->apellido_encargado}}
               @else
                 <p style="color:gainsboro">Sin asignar</p>
               @endif
@@ -204,14 +204,16 @@
                   @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
                     <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
                        @csrf
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})">Recordatorio</button>
+                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})">Recordatorio</button>
+        </div>
                     </form>
                   @endif 
 
                
     
                     @can('eliminar-solicitud')
-                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <div class="btn-container" style="margin-bottom: 5px; ">
                         <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                       </div>
                     @endcan
@@ -286,10 +288,6 @@
             document.getElementById('recordatorioForm' + id).submit();
             mostrarMensaje('Recordatorio enviado');
         }
-    }
-
-    function mostrarMensaje(mensaje) {
-        alert(mensaje);
     }
 </script>
 <script>

@@ -174,63 +174,63 @@ class SolicitudController extends Controller{
 
     public function update_solicitud(Request $request){
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
-        $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
-        Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
-        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
-        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
-    
-        $nuevo_historico = new Historico_solicitudes;
-        $nuevo_historico->id_solicitud = $request['id_solicitud'];
-        $nuevo_historico->id_estado = $request['estado']; //id de estado
-        $nuevo_historico->descripcion = $request['descripcion'];
-        $nuevo_historico->repuestos = $request['rep'];
-        if($request['rep']){
-            $nuevo_historico->repuestos = $request['rep'];
-            $nuevo_historico->descripcion_repuestos = $request['descripcionRep'];
-        } else{
-            $nuevo_historico->repuestos = 0;
-            $nuevo_historico->descripcion_repuestos = "";
-        }
-        $nuevo_historico->actual = 1;
-        $nuevo_historico->id_persona = $idPersona->id_p;
-        $nuevo_historico->fecha = $fechaActual;    
-        $nuevo_historico->save();
-    
-        // Envío de recordatorio
-        $this->enviarRecordatorio($request['id_solicitud']);
-    
-        $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
-        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
-
-        //da error cuando el correo no existe
-        if($request['estado'] == 5){
-            try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
-                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
-            } catch (\Exception $e) {}
-        }else{
-            try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], 
-                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
-            } catch (\Exception $e) {}
-        }
-
-        $mailsParaRepuestos = Solicitud::obtenerUsersCorreoRepuestos();
+                $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
+                Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
+                $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+                $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         
-        if($request['rep']){
-            foreach($mailsParaRepuestos as $mail){
-                try {
-                    Mail::to($mail->email)->send(new \App\Mail\avisoDeRepuesto($request['id_solicitud'], $nombreEstadoSolicitud,
-                        $mailNombreSolicitante->titulo, $request['descripcionRep']));
-                } catch (\Exception $e) {}
-            }
-        }
+                $nuevo_historico = new Historico_solicitudes;
+                $nuevo_historico->id_solicitud = $request['id_solicitud'];
+                $nuevo_historico->id_estado = $request['estado']; //id de estado
+                $nuevo_historico->descripcion = $request['descripcion'];
+                $nuevo_historico->repuestos = $request['rep'];
+                if($request['rep']){
+                    $nuevo_historico->repuestos = $request['rep'];
+                    $nuevo_historico->descripcion_repuestos = $request['descripcionRep'];
+                } else{
+                    $nuevo_historico->repuestos = 0;
+                    $nuevo_historico->descripcion_repuestos = "";
+                }
+                $nuevo_historico->actual = 1;
+                $nuevo_historico->id_persona = $idPersona->id_p;
+                $nuevo_historico->fecha = $fechaActual;    
+                $nuevo_historico->save();
         
-    
-        Session::flash('message','Solicitud modificada con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('solicitudes');
+                $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
+                $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
+        
+                //da error cuando el correo no existe
+                if($request['estado'] == 5){
+                    try {
+                        Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
+                            $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+                    } catch (\Exception $e) {}
+                }else{
+                    try {
+                        Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], 
+                            $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+                    } catch (\Exception $e) {}
+                }
+        
+                $mailsParaRepuestos = Solicitud::obtenerUsersCorreoRepuestos();
+                
+                if($request['rep']){
+                    foreach($mailsParaRepuestos as $mail){
+                        try {
+                            Mail::to($mail->email)->send(new \App\Mail\avisoDeRepuesto($request['id_solicitud'], $nombreEstadoSolicitud,
+                                $mailNombreSolicitante->titulo, $request['descripcionRep']));
+                        } catch (\Exception $e) {}
+                    }
+                }
+                
+                Session::flash('message','Solicitud modificado con éxito');
+                Session::flash('alert-class', 'alert-success');
+                return redirect('solicitudes');
     }
+        
+            
+            
+    
 
     public function show_assing_solicitud($id){
         //migrar a modelo
@@ -419,7 +419,7 @@ class SolicitudController extends Controller{
         return redirect ('solicitudes');
     }
 
-    // public function enviarRecordatorio($id)
+    // public function enviarRecordatorio($id)  //recordatorio para el solicitante
     // {
     // $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($id);
     // $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
@@ -438,13 +438,29 @@ class SolicitudController extends Controller{
     // }
 
 
-    public function enviarRecordatorio($id)
+    public function enviarRecordatorio($id)  //recordatorio para el encargado
     {
         $mailDestinatario = Solicitud::obtenerMailNombreTituloEncargado($id); 
         $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
+        $solicitante = Solicitud::obtenerSolicitante($id);
+        $encargado = Solicitud::obtenerEncargado($id);
+
+        if ($solicitante) {
+            $nombre_solicitante = $solicitante->nombre_p;
+            $apellido_solicitante = $solicitante->apellido;
+        } else {
+            Session::flash('message', 'No se se encuentra al solicitante');
+        }
+
+        if ($encargado) {
+            $nombre_encargado = $solicitante->nombre_p;
+            $apellido_encargado = $solicitante->apellido;
+        } else {
+            Session::flash('message', 'No se se encuentra al encargado');
+        }
     
         try {
-            Mail::to($mailDestinatario->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailDestinatario->titulo));
+            Mail::to($mailDestinatario->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailDestinatario->titulo, $id, $nombre_solicitante, $apellido_solicitante, $nombre_encargado, $apellido_encargado));
             Session::flash('message', 'Recordatorio enviado con éxito');
             Session::flash('alert-class', 'alert-success');
         } catch (\Exception $e) {

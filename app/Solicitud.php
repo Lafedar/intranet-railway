@@ -306,7 +306,21 @@ class Solicitud extends Model{
             })
             ->update(['historico_solicitudes.descripcion' => $descripcion]);
     }
-    
+    public static function obtenerSolicitante($idSolicitud){
+        return DB::table('solicitudes_temp')
+            ->join('personas', 'solicitudes_temp.id_solicitante', '=', 'personas.id_p')
+            ->select('personas.nombre_p', 'personas.apellido')
+            ->where('solicitudes_temp.id', $idSolicitud)
+            ->first();
+    }
+
+    public static function obtenerEncargado($idSolicitud){
+        return DB::table('solicitudes_temp')
+            ->join('personas', 'solicitudes_temp.id_encargado', '=', 'personas.id_p')
+            ->select('personas.nombre_p', 'personas.apellido')
+            ->where('solicitudes_temp.id', $idSolicitud)
+            ->first();
+    }
 
     
     
