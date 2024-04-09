@@ -35,6 +35,11 @@
             <a  href="/tipos_solicitudes"> <img  src="{{ URL::to('/img/tipos de solicitudes.png') }}" height="140"></a>
             <h3 style="color: #3b557a">Tipos de solicitudes</h3>
         </div>
+        <div class="col-md-4" aling="center">
+            <br>
+            <a  href="/parametros_gen"> <img  src="{{ URL::to('/img/estados.png') }}" height="140"></a>
+            <h3 style="color: #3b557a">Parametros Generales</h3>
+        </div>
 
         <!--<div class="col-md-3" aling="center">
             <br>

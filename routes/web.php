@@ -474,12 +474,14 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
 });
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
+  
+});
 
 //***********************************Personas*************************************
 
-Route::group(['middleware' => ['auth']], function () 
-{
 
-  
-});
+
 
