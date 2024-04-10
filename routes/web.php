@@ -88,7 +88,11 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_ips', 'EquipamientoController@select_ips')->name('select_ips');
 
   Route::get('modal_editar_equipamiento/{id}','EquipamientoController@modal_editar_equipamiento')->name('modal_editar_equipamiento')->middleware('role:administrador');
+
+  
+
 });
+
 
    //****************INCIDENTES**********************
 Route::group(['middleware' => ['auth']], function () {
@@ -307,7 +311,16 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
  Route::put('/cerse','AlmuerzoController@cerrar_semana')->name('cerrarsema');
 
   //***********************************Power BI*************************************
- Route::get('powerbis','HomeController@powerbis');
+  Route::group(['middleware' => ['auth']], function () 
+  {
+    Route::resource('powerbis', 'PowerbisController')->middleware('role:administrador');
+   
+  });
+  
+  //Route::get('nombre','HomeController@nombre');
+  //Route::get('powerbis','HomeController@powerbis');//->middleware('role:administrador');
+   
+  
 
    //****************Ventas**********************
 

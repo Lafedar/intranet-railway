@@ -260,6 +260,15 @@ class Equipamiento extends Model
         ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre', 
         'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
     }
+
+    public function index()
+    {
+        // Filtrar los equipos con IDs 1, 5 y 7
+        $tipo_equipamiento = Equipamiento::whereIn('id', [2, 3])->get();
+
+        // Pasar los datos a la vista
+        return view('equipamiento.inicio', compact('tipo_equipamiento'));
+    }
 }
 
 
