@@ -1,12 +1,14 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="container text-center" >
+
+
+  <div class="container text-center"> 
 
   <br><br><br><br>
   
   <div class="row">    
-
+ 
     <div class="col-md-3" aling="center">
       <a  href='equipamiento'> <img  src="{{ URL::to('/img/equipamiento.png') }}" height="140"></a>
     </div>
@@ -51,7 +53,6 @@
    </div>
 </div>
 
-</div>
 
 <div id="footer-lafedar"></div>
 
