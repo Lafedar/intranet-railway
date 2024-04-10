@@ -16,24 +16,25 @@
   
     <h1>
         <div class="form-inline pull-right">
-            <form method="GET" class="form-inline">
+        <form method="GET" class="form-inline" action="{{ route('permisos.index') }}">
                 <div class="form-group mr-2">
                     <label for="search" style="font-size: 20px; margin-right: -5px;">Empleado:</label>
-                    <input type="text" class="form-control mx-2" style="width:60%" id="search" placeholder="Buscar">
+                    <input type="text" class="form-control mx-2" style="width:60%" id="search" name="empleado" placeholder="Buscar">
                 </div>
                 <div class="form-group mr-2">
                   <label for="search" style="font-size: 20px; margin-right: 2px">Motivo:</label>
-                    <select class="form-control" name="motivo" id="motivo" value="{{{ isset($tipo_permisos->desc) ? $permisos->motivo : ''}}}">
-                        <option value="0">{{'Sin motivo'}} </option>
+                  <select class="form-control" name="motivo" id="motivo">
+                      <option value="0">Sin motivo</option>
                         @foreach($tipo_permisos as $tipo_permiso)
-                        <option value="{{$tipo_permiso->id_tip}}">{{$tipo_permiso->desc}} </option>
+                          <option value="{{ $tipo_permiso->id_tip }}">{{ $tipo_permiso->desc }}</option>
                         @endforeach
-                    </select>
+                  </select>
                 </div>
-                <button type="submit" class="btn btn-default">Buscar</button>
+                <button type="submit" class="btn btn-default" id="buscar">Buscar</button>
+                {{--<button href="{{ route('permisos.index') }}" class="btn btn-default">Limpiar filtros</button> --}}
                 
             </form>
-        </div>
+        
     </h1>
 </div>
 <div class="col-md-12">             
@@ -149,27 +150,7 @@
     }, 5000 ); // 5 secs
 
   });
-<<<<<<< HEAD
-=======
 
-  
-    //para filtrar por el nombre
-    $(document).ready(function() {
-        $("#search").keyup(function() {
-            var searchText = $(this).val().toLowerCase();
-            $("#permisos-table tbody tr").each(function() {
-                var rowData = $(this).text().toLowerCase();
-                var isVisible = rowData.indexOf(searchText) !== -1;
-                $(this).toggle(isVisible);
-            });
-        });
-    });
-
-    
-  
-
-
->>>>>>> 20b2fc3 (filtrar personas con checkBox)
 </script>
 
 
