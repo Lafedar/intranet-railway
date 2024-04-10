@@ -307,7 +307,16 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
  Route::put('/cerse','AlmuerzoController@cerrar_semana')->name('cerrarsema');
 
   //***********************************Power BI*************************************
- Route::get('powerbis','HomeController@powerbis');
+  Route::group(['middleware' => ['auth']], function () 
+  {
+    Route::resource('powerbis', 'PowerbisController')->middleware('role:administrador');
+   
+  });
+  
+  //Route::get('nombre','HomeController@nombre');
+  //Route::get('powerbis','HomeController@powerbis');//->middleware('role:administrador');
+   
+  
 
    //****************Ventas**********************
 
@@ -479,7 +488,13 @@ Route::group(['middleware' => ['auth']], function ()
 
 Route::group(['middleware' => ['auth']], function () 
 {
-
+  
   
 });
+
+
+
+
+
+
 
