@@ -477,11 +477,15 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
-  
+  Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
+  Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
+  Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+ 
 });
 
 //***********************************Personas*************************************
-
+//Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
+//Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
 
 
 

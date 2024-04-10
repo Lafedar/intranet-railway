@@ -22,7 +22,13 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav ml-auto">
-        <button class="btn btn-info" onclick="agregarFila()" data-toggle="modal" data-target="#agregar_tipo_solicitud">Agregar</button>
+        <form>
+        <button type="button" id="agregar" class="btn btn-primary" data-toggle="modal" data-target="#agregarModal">
+            Agregar Parámetro
+        </button>
+
+</form>
+        
           &nbsp
           <form action="{{ url('/logout') }}" method="POST" >
             {{ csrf_field() }}

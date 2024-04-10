@@ -19,123 +19,140 @@
     </div>
   </div>
 @endif
+@if (session('success'))
+    <div class="alert alert-success alert-message">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-message">
+        {{ session('error') }}
+    </div>
+@endif
+
 
 <!-- tabla de datos -->
              
-<div class="col-md-12">
-    <form method="POST" action="{{ route('parametros_gen.store') }}">
-        @csrf
-        <table class="table table-striped table-bordered mx-auto"> <!-- Añadimos la clase mx-auto para centrar horizontalmente la tabla -->
-            <thead>
-                <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Nombre</th>
-                    <th class="text-center">Informacion</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($datos as $dato)
-                    <tr>
-                        <td class="text-center">{{ $dato->Id }}</td>
-                        <td><input type="text" name="Nombre" class="form-control" value="{{ $dato->Nombre }}"></td>
-                        <td><input type="text" name="Informacion " class="form-control" value="{{ $dato->Informacion }}"></td>
-                        <td class="text-center">
-                        <button type="submit" class="btn btn-info">Aceptar</button>
-                            <button type="button" onclick="cancelar(this.parentNode.parentNode)" class="btn btn-danger">Cancelar</button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </form>
+<div class="col-md-12"> 
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Nombre</th>
+                <th class="text-center">Informacion</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach($parametros as $parametro)
+        <tr class="text-center">
+            <td>{{ $parametro->Id }}</td>
+            <td>{{ $parametro->Nombre }}</td>
+            <td>{{ $parametro->Informacion }}</td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Acciones">
+                    <!-- Botón para abrir la modal de edición -->
+                    <form action="{{ route('parametros.update', $parametro->Id) }}" method="POST">
+                        <button class="btn btn-info btn-sm action-button" data-toggle="modal" data-target="#editarModal{{ $parametro->Id }}">Editar</button>
+                    
+                    </form>
+                    
+                    <!-- Botón para eliminar el parámetro -->
+                    <form action="{{ route('parametros.destroy', $parametro->Id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm action-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este parámetro?')">Eliminar</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+    </table>
 </div>
 
-  
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="agregarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="agregarFormulario" action="{{ route('guardar_datos') }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Agregar Parámetro</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="informacion">Información:</label>
+                                <input type="text" class="form-control" id="Informacion" name="Informacion" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal de edicion -->
+        @foreach($parametros as $parametro)
+        <div class="modal fade" id="editarModal{{ $parametro->Id }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ $parametro->Id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="{{ route('parametros.update', ['parametro' => $parametro->Id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarModalLabel{{ $parametro->Id }}">Editar Parámetro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $parametro->Nombre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="informacion">Información:</label>
+                        <input type="text" class="form-control" id="informacion" name="informacion" value="{{ $parametro->Informacion }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+    
+@stop
+<script>
+    function confirmarEliminacion(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar este parámetro?')) {
+            // Realizar la solicitud para eliminar el registro
+            window.location.href = "{{ url('/eliminar_parametro') }}/";
+        }
+    }
+</script>
 <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
+    form{
+        margin: 2px;
     }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
+    /* Estilos para centrar texto en mensajes */
+    .alert-message {
+        text-align: center;
     }
 </style>
-<script>
-    function guardar(fila) {
-        // Lógica para guardar la información de la fila
-        // Por ejemplo:
-        alert('Información guardada: ' + fila.cells[1].querySelector('input').value + ' - ' + fila.cells[2].querySelector('input').value);
-    }
-
-    function cancelar(fila) {
-        // Lógica para cancelar la edición y borrar los datos de la fila
-        // Por ejemplo:
-        fila.cells[1].querySelector('input').value = '';
-        fila.cells[2].querySelector('input').value = '';
-    }
-</script>
-<script>
-    function agregarFila() {
-        var tbody = document.querySelector('table tbody');
-        var rowCount = tbody.rows.length;
-        var newRow = tbody.insertRow(rowCount);
-
-        // Inserta las celdas para cada columna
-        var idCell = newRow.insertCell(0);
-        var nombreCell = newRow.insertCell(1);
-        var datosCell = newRow.insertCell(2);
-        var accionesCell = newRow.insertCell(3);
-
-        // Aplica estilos a las celdas de la nueva fila para centrar el contenido verticalmente
-        idCell.className = "text-center align-middle"; 
-        nombreCell.className = "align-middle"; 
-        datosCell.className = "align-middle"; 
-        accionesCell.className = "text-center align-middle"; 
-
-        // Agrega los campos de entrada en las celdas correspondientes
-        idCell.innerHTML = rowCount + 1; // El ID de la nueva fila
-        nombreCell.innerHTML = '<input type="text" name="nombre" class="form-control">';
-        datosCell.innerHTML = '<input type="text" name="datos" class="form-control">';
-
-        // Agrega los botones de acciones con estilos de Bootstrap
-        accionesCell.innerHTML = '<button onclick="guardar(this.parentNode.parentNode)" class="btn btn-info">Aceptar</button>' +
-                                  '<button onclick="cancelar(this.parentNode.parentNode)" class="btn btn-danger">Cancelar</button>';
-    }
-</script>
-<!-- <script>
-  $(document).ready(function() {
-    $('.btn-aceptar').click(function(event) {
-        event.preventDefault(); // Prevenir el envío del formulario por defecto
-        
-        var fila = $(this).closest('tr'); // Obtener la fila más cercana al botón "Aceptar"
-        var Nombre = fila.find('input[name="Nombre"]').val(); // Obtener el valor del input de nombre
-        var Infomarcion = fila.find('input[name="Informacion"]').val(); // Obtener el valor del input de datos
-
-        // Realizar la solicitud al servidor para guardar la información en la base de datos
-        $.ajax({
-            type: 'POST',
-            url: '{{ route("parametros_gen.store") }}', // Ruta de la acción "store" en el controlador
-            data: {
-                '_token': '{{ csrf_token() }}',
-                'Nombre': Nombre,
-                'Informacion': Informacion
-            },
-            success: function(response) {
-                // Bloquear los inputs después de guardar la información
-                fila.find('input').prop('disabled', true);
-            },
-            error: function(xhr, status, error) {
-                // Manejar errores si la solicitud falla
-                console.error(xhr.responseText);
-            }
-        });
-    });
-});
-</script> -->
-@stop

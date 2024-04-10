@@ -14,11 +14,8 @@ class ParametrosGenController extends Controller
      */
     public function index()
     {
-        // Recuperar los datos de la base de datos
-        $datos = DB::table('parametros_mant')->get(); // Reemplaza 'tu_tabla' con el nombre de tu tabla
-
-        // Pasar los datos a la vista
-        return view('parametros_gen.index', ['datos' => $datos]);
+        $parametros = DB::table('parametros_mant')->get();
+        return view('parametros_gen.index', compact('parametros'));
     }
 
     /**
@@ -39,22 +36,20 @@ class ParametrosGenController extends Controller
      */
     public function store(Request $request)
     {
-         // Valida los datos recibidos del formulario
-    $request->validate([
-        'Nombre' => 'required',
-        'Informacion' => 'required',
-    ]);
+        $request->validate([
+            'Nombre' => 'required',
+            'Informacion' => 'required',
+        ]);
 
-    // Guarda los datos en la base de datos
-    DB::table('parametros_mant')->insert([
-        'Nombre' => $request->Nombre,
-        'Informacion' => $request->Informacion,
-    ]);
+        DB::table('parametros_mant')->insert([
+            'Nombre' => $request->Nombre,
+            'Informacion' => $request->Informacion,
+        ]);
 
-    // Redirige de vuelta al índice con un mensaje de éxito
-    return redirect()->route('parametros_gen.index')->with('success', 'Los datos se han guardado correctamente');
+        return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
     }
 
+    
     
 
     /**
@@ -88,7 +83,25 @@ class ParametrosGenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+       // Validar los datos del formulario
+       $request->validate([
+        'nombre' => 'required|string|max:255',
+        'informacion' => 'required|string|max:255',
+    ]);
+
+    try {
+        // Actualizar el registro en la base de datos
+        DB::table('parametros_mant')->where('Id', $id)->update([
+            'Nombre' => $request->nombre,
+            'Informacion' => $request->informacion,
+        ]);
+
+        // Mensaje de éxito
+        return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
+    } catch (\Exception $e) {
+        // Mensaje de error
+        return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+    }
     }
 
     /**
@@ -99,6 +112,15 @@ class ParametrosGenController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            // Eliminar el parámetro de la base de datos
+            DB::table('parametros_mant')->where('Id', $id)->delete();
+            
+            // Mensaje de éxito
+            return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
+        } catch (\Exception $e) {
+            // Mensaje de error
+            return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
+        }
     }
 }
