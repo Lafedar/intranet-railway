@@ -1,15 +1,12 @@
-@extends('layouts.app')
+@extends('sistemas.layouts.layout')
 @section('content')
 
-
-
   <div class="container text-center"> 
-
 
   <br><br><br><br>
   
   <div class="row">    
- 
+
     <div class="col-md-3" aling="center">
       <a  href='equipamiento'> <img  src="{{ URL::to('/img/equipamiento.png') }}" height="140"></a>
     </div>
@@ -52,9 +49,11 @@
     <br>
      <a  href='/Instalado'> <img  src="{{ URL::to('/img/software instalado.png') }}" height="140"></a>
    </div>
-</div>
+  </div>
 
+  </div>
 
-<div id="footer-lafedar"></div>
+  <div id="footer-lafedar"></div>
 
 @stop
+{{--A esta vista la llamo en HomeController.php--}}
