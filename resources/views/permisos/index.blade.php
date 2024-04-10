@@ -36,9 +36,8 @@
         </div>
     </h1>
 </div>
-
 <div class="col-md-12">             
-  <table class="table table-striped table-bordered ">
+  <table class="table table-striped table-bordered " id="permisos-table">
     <thead>
      <th class="text-center">Empleado</th>
      <th class="text-center">Area</th>
@@ -172,6 +171,7 @@
 
 >>>>>>> 20b2fc3 (filtrar personas con checkBox)
 </script>
+
 
 
 @stop

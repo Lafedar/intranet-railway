@@ -22,38 +22,64 @@ class PermisosController extends Controller
     {
         $tipo_permisos = DB::table('tipo_permiso')->get();
         $jefe = null;
-
-        if( auth()->user()->id == 44)
-            $jefe = DB::table('personas')->where('personas.usuario', 19 )->first();
-        else{
-            $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id )->first();
+    
+        if (auth()->user()->id == 44)
+            $jefe = DB::table('personas')->where('personas.usuario', 19)->first();
+        else {
+            $jefe = DB::table('personas')->where('personas.usuario', auth()->user()->id)->first();
+        }
+    
+        
+        $motivo = $request->input('motivo');
+        $nombreEmpleado = $request->input('empleado');
+    
+        
+        if ($motivo != 0) {
+            $permisosCollection = Permiso::Relaciones($jefe->id_p, $motivo);
+        } else {
+            $permisosCollection = Permiso::Relaciones($jefe->id_p, null);
+        }
+    
+        
+        if (!empty($nombreEmpleado)) {  
+            $nombreEmpleado = strtolower($nombreEmpleado);
+            $nombres = explode(" ", $nombreEmpleado); // Dividir la cadena en palabras separadas
+        
+            $permisosCollection = $permisosCollection->filter(function ($permiso) use ($nombres) {
+                $nombre = strtolower($permiso->nombre_autorizado);
+                $apellido = strtolower($permiso->apellido_autorizado);
+        
+                if (count($nombres) == 1) {
+                    // Buscar solo en el nombre o solo en el apellido
+                    $nombreCompleto = $nombre . ' ' . $apellido;
+                    return $nombre === $nombres[0] || $apellido === $nombres[0] || $nombreCompleto === $nombres[0];
+                } else {
+                    // Buscar en el nombre y el apellido juntos
+                    $nombreCompleto = $nombre . ' ' . $apellido;
+                    $nombreEmpleadoCompleto = implode(" ", $nombres);
+                    return $nombreCompleto === $nombreEmpleadoCompleto;
+                }
+            });
         }
         
-        if($jefe->rango == 1){
-            
-            $permisosCollection  = Permiso::Relaciones($jefe->id_p, $request->get('motivo'));
-        }
-
-        // Convertir la colección en un array para poder paginar
-        $permisosArray = $permisosCollection->toArray();
-
-        // Crear una instancia de LengthAwarePaginator para la paginación
+        $permisosArray = $permisosCollection->toArray(); 
+    
+        // Para la paginación
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 20; // Número de elementos por página
-        $currentPage = $request->get('page', 1);
         $offset = ($currentPage - 1) * $perPage;
-
         $permisosPaginados = new LengthAwarePaginator(
-            array_slice($permisosArray, $offset, $perPage, true), // Elementos para la página actual
-            count($permisosArray), // Total de elementos
-            $perPage, // Elementos por página
-            $currentPage, // Página actual
-            ['path' => $request->url(), 'query' => $request->query()] // Otras opciones de URL
+            array_slice($permisosArray, $offset, $perPage, true),
+            count($permisosArray),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
         );
-
-        return view ('permisos.index', [
-            'permisos'=>$permisosPaginados,
-            'empleado'=>$request->get('empleado'),
-            'tipo_permisos'=>$tipo_permisos
+    
+        return view('permisos.index', [
+            'permisos' => $permisosPaginados,
+            'empleado' => $request->input('empleado'),
+            'tipo_permisos' => $tipo_permisos
         ]);
     }
 
