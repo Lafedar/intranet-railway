@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('qad.layouts.layout')
 @section('content')
 
 <div class="container text-center" >

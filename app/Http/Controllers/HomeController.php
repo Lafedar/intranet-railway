@@ -24,10 +24,7 @@ class HomeController extends Controller
         $date = $date->format('Y-m-d');
         return DB::table('novedades')->where('novedades.fecha_desde','<=',$date)->where('novedades.fecha_hasta','>=',$date)->get();
     }
-    public function mantenimiento()
-    {
-        return view('home.mantenimiento');
-    }
+   
     public function parametros_mantenimiento()
     {
         return view('home.parametros_mantenimiento');
@@ -88,10 +85,14 @@ class HomeController extends Controller
             return redirect()->back()->withInput();
         }
     }
+    public function mantenimiento()
+    {
+        return view('mantenimiento.index');
+    }
 
     public function sistemas()
     {
-        return view ('home.sistemas');
+        return view ('sistemas.index');
     }
 
     public function documentos ()
@@ -101,6 +102,24 @@ class HomeController extends Controller
     
     public function powerbis ()
     {
-        return view ('home.powerbis');
+        return view ('powerbis.index');
     }
+    // public function nombre(Request $request){
+    //     // Verificar si hay un usuario autenticado
+    //     if (Auth::check()) {
+    //     // Obtener el usuario autenticado
+    //         $usuario = Auth::user();
+
+    //     // Pasar los datos a la vista si el usuario existe
+    //     return view('powerbis.index', [
+    //         'nombre_gero' => $usuario->nombre_p,
+    //         'area' => $usuario->area
+    //     ]);
+    //     } else {
+    //     // Si no hay un usuario autenticado, redirigir a la página de inicio de sesión
+    //         return "no funciona";
+    //     }
+    // }
+    
 }
+

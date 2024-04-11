@@ -69,5 +69,5 @@ class Permiso extends Model
         ->where('permisos.id',$id)
         ->select('personas.nombre_p as nombre_autorizado','personas.apellido as apellido_autorizado' , 'permisos.created_at as fecha_permiso','permisos.fecha_desde as fecha_desde', 'permisos.fecha_hasta as fecha_hasta','tipo_permiso.desc as motivo', 'permisos.id as id','permisos.hora_desde as hora_desde','permisos.hora_hasta as hora_hasta','permisos.descripcion as descripcion','area.nombre_a as area');
     }
-
+    
 }
