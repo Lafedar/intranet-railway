@@ -39,32 +39,32 @@
         <thead>
             <tr>
                 <th class="text-center">ID</th>
-                <th class="text-center">Nombre</th>
-                <th class="text-center">Informacion</th>
+                <th class="text-center">Descripcion</th>
+                <th class="text-center">Valor</th>
                 <th class="text-center">Acciones</th>
             </tr>
         </thead>
         <tbody>
     @foreach($parametros as $parametro)
         <tr class="text-center">
-            <td>{{ $parametro->Id }}</td>
-            <td>{{ $parametro->Nombre }}</td>
-            <td>{{ $parametro->Informacion }}</td>
+            <td>{{ $parametro->id_param }}</td>
+            <td>{{ $parametro->descripcion_param }}</td>
+            <td>{{ $parametro->valor_param}}</td>
             <td>
-                <div class="btn-group" role="group" aria-label="Acciones">
-                    <!-- Botón para abrir la modal de edición -->
-                    <form action="{{ route('parametros.update', $parametro->Id) }}" method="POST">
-                        <button class="btn btn-info btn-sm action-button" data-toggle="modal" data-target="#editarModal{{ $parametro->Id }}">Editar</button>
-                    
-                    </form>
-                    
-                    <!-- Botón para eliminar el parámetro -->
-                    <form action="{{ route('parametros.destroy', $parametro->Id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm action-button" onclick="return confirm('¿Estás seguro de que deseas eliminar este parámetro?')">Eliminar</button>
-                    </form>
-                </div>
+            <div class="btn-group" role="group" aria-label="Acciones">
+    <!-- Botón para abrir la modal de edición -->
+    <button class="btn btn-info btn-sm action-button rounded" style="width: 70px;" data-toggle="modal" data-target="#editarModal{{ $parametro->id_param }}">Editar</button>
+    
+    <!-- Enlace para eliminar el parámetro -->
+    <a href="{{ route('parametros.destroy', $parametro->id_param) }}" class="btn btn-danger btn-sm action-button ml-2 rounded" style="width: 70px;" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que deseas eliminar este parámetro?')) { document.getElementById('eliminar-parametro-{{ $parametro->id_param }}').submit(); }">Eliminar</a>
+    
+    <!-- Formulario oculto para eliminar el parámetro -->
+    <form id="eliminar-parametro-{{ $parametro->id_param }}" action="{{ route('parametros.destroy', $parametro->id_param) }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+</div>
+
             </td>
         </tr>
     @endforeach
@@ -87,13 +87,17 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
-                                <label for="nombre">Nombre:</label>
-                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                        <div class="form-group">
+                                <label for="nombre">Id:</label>
+                                <input type="text" class="form-control" id="id_param" name="id_param" required>
                             </div>
                             <div class="form-group">
-                                <label for="informacion">Información:</label>
-                                <input type="text" class="form-control" id="Informacion" name="Informacion" required>
+                                <label for="descripcion_param">Descripcion:</label>
+                                <input type="text" class="form-control" id="descripcion_param" name="descripcion_param" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="valor_param">Valor:</label>
+                                <input type="text" class="form-control" id="valor_param" name="valor_param" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -106,26 +110,26 @@
         </div>
         <!-- Modal de edicion -->
         @foreach($parametros as $parametro)
-        <div class="modal fade" id="editarModal{{ $parametro->Id }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ $parametro->Id }}" aria-hidden="true">
+        <div class="modal fade" id="editarModal{{ $parametro->id_param }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ $parametro->id_param }}" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form action="{{ route('parametros.update', ['parametro' => $parametro->Id]) }}" method="POST">
+                    <form action="{{ route('parametros.update', ['parametro' => $parametro->id_param]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editarModalLabel{{ $parametro->Id }}">Editar Parámetro</h5>
+                    <h5 class="modal-title" id="editarModalLabel{{ $parametro->id_param }}">Editar Parámetro</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $parametro->Nombre }}" required>
+                        <label for="descripcion_param">Descripcion:</label>
+                        <input type="text" class="form-control" id="descripcion_param" name="descripcion_param" value="{{ $parametro->descripcion_param }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="informacion">Información:</label>
-                        <input type="text" class="form-control" id="informacion" name="informacion" value="{{ $parametro->Informacion }}" required>
+                        <label for="valor_param">Valor:</label>
+                        <input type="text" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -155,4 +159,7 @@
     .alert-message {
         text-align: center;
     }
+    .button-container {
+    display: inline-block;
+}
 </style>

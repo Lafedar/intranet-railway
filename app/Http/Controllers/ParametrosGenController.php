@@ -37,13 +37,15 @@ class ParametrosGenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'Nombre' => 'required',
-            'Informacion' => 'required',
+            'id_param' => 'required',
+            'descripcion_param' => 'required',
+            'valor_param' => 'required',
         ]);
 
         DB::table('parametros_mant')->insert([
-            'Nombre' => $request->Nombre,
-            'Informacion' => $request->Informacion,
+            'id_param' => $request->id_param,
+            'descripcion_param' => $request->descripcion_param,
+            'valor_param' => $request->valor_param,
         ]);
 
         return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
@@ -85,15 +87,15 @@ class ParametrosGenController extends Controller
     {
        // Validar los datos del formulario
        $request->validate([
-        'nombre' => 'required|string|max:255',
-        'informacion' => 'required|string|max:255',
+        'descripcion_param' => 'required|string|max:255',
+        'valor_param' => 'required|string|max:255',
     ]);
 
     try {
         // Actualizar el registro en la base de datos
-        DB::table('parametros_mant')->where('Id', $id)->update([
-            'Nombre' => $request->nombre,
-            'Informacion' => $request->informacion,
+        DB::table('parametros_mant')->where('id_param', $id)->update([
+            'descripcion_param' => $request->descripcion_param,
+            'valor_param' => $request->valor_param,
         ]);
 
         // Mensaje de éxito
@@ -114,7 +116,7 @@ class ParametrosGenController extends Controller
     {
         try {
             // Eliminar el parámetro de la base de datos
-            DB::table('parametros_mant')->where('Id', $id)->delete();
+            DB::table('parametros_mant')->where('id_param', $id)->delete();
             
             // Mensaje de éxito
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
