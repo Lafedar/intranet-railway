@@ -24,10 +24,7 @@ class HomeController extends Controller
         $date = $date->format('Y-m-d');
         return DB::table('novedades')->where('novedades.fecha_desde','<=',$date)->where('novedades.fecha_hasta','>=',$date)->get();
     }
-    public function mantenimiento()
-    {
-        return view('mantenimiento.index');
-    }
+   
     public function parametros_mantenimiento()
     {
         return view('home.parametros_mantenimiento');
@@ -87,6 +84,10 @@ class HomeController extends Controller
             Session::flash('alert-class', 'alert-warning');
             return redirect()->back()->withInput();
         }
+    }
+    public function mantenimiento()
+    {
+        return view('mantenimiento.index');
     }
 
     public function sistemas()

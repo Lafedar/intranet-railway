@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('mantenimiento.layouts.layout')
 @section('content')
 
 <div class="container text-center" >
@@ -30,3 +30,4 @@
 <div id="footer-lafedar"></div>
 
 @stop
+{{--A esta vista la llamo en HomeController.php--}}

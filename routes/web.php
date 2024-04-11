@@ -376,9 +376,10 @@ Route::group(['middleware' => ['auth']], function ()
 Route::get('/frecuencias', 'FrecuenciasController@index');
 
    //****************Mantenimiento**********************
-Route::get('mantenimiento','HomeController@mantenimiento');
+   Route::get('mantenimiento','HomeController@mantenimiento');
 Route::group(['middleware' => ['auth']], function () 
 {
+  
   Route::resource('solicitudes','SolicitudController');
   Route::resource('historico_solicitudes','SolicitudController');
 
