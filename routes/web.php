@@ -498,9 +498,7 @@ Route::group(['middleware' => ['auth']], function ()
 });
 
 Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
-//***********************************Personas*************************************
-//Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
-//Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
+
 
 
 

@@ -45,9 +45,6 @@
             <p><strong>Estado de la solicitud:</strong> {{$nombre}}</p>
             <p><strong>Encargado de la solicitud:</strong> {{$nombre_encargado}} {{$apellido_encargado}}</p>
 
-            
-            
-           
             <div class="container-button">
                
             </div>
