@@ -438,36 +438,49 @@ class SolicitudController extends Controller{
     // }
 
 
-    public function enviarRecordatorio($id)  //recordatorio para el encargado
-    {
-        $mailDestinatario = Solicitud::obtenerMailNombreTituloEncargado($id); 
-        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
-        $solicitante = Solicitud::obtenerSolicitante($id);
-        $encargado = Solicitud::obtenerEncargado($id);
+    public function enviarRecordatorio($id)
+{
+    // Obtener el correo de la tabla parametros_mant
+    $correoDestinatario = DB::table('parametros_mant')
+        ->select('valor_param')
+        ->where('id_param', 'PMAIL')
+        ->first();
 
-        if ($solicitante) {
-            $nombre_solicitante = $solicitante->nombre_p;
-            $apellido_solicitante = $solicitante->apellido;
-        } else {
-            Session::flash('message', 'No se se encuentra al solicitante');
-        }
-
-        if ($encargado) {
-            $nombre_encargado = $solicitante->nombre_p;
-            $apellido_encargado = $solicitante->apellido;
-        } else {
-            Session::flash('message', 'No se se encuentra al encargado');
-        }
-    
-        try {
-            Mail::to($mailDestinatario->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailDestinatario->titulo, $id, $nombre_solicitante, $apellido_solicitante, $nombre_encargado, $apellido_encargado));
-            Session::flash('message', 'Recordatorio enviado con éxito');
-            Session::flash('alert-class', 'alert-success');
-        } catch (\Exception $e) {
-            Session::flash('message', 'Error al enviar el recordatorio');
-            Session::flash('alert-class', 'alert-danger');
-        }
-
-            return redirect()->back();
+    if (!$correoDestinatario) {
+        // Si no se encuentra el correo en la tabla, manejar el error
+        Session::flash('message', 'No se encontró el correo destinatario en la base de datos');
+        Session::flash('alert-class', 'alert-danger');
+        return redirect()->back();
     }
+
+    $nombre = Solicitud::obtenerNombreEstadoSolicitud($id);
+    $solicitante = Solicitud::obtenerSolicitante($id);
+    $encargado = Solicitud::obtenerEncargado($id);
+
+    // Manejar la obtención de nombres de solicitante y encargado
+    $nombre_solicitante = $solicitante ? $solicitante->nombre_p : '';
+    $apellido_solicitante = $solicitante ? $solicitante->apellido : '';
+
+    $nombre_encargado = $encargado ? $encargado->nombre_p : '';
+    $apellido_encargado = $encargado ? $encargado->apellido : '';
+
+    try {
+        Mail::to($correoDestinatario->valor_param)->send(new \App\Mail\RecordatorioMail(
+            $nombre, //estado
+            $id,
+            $nombre_solicitante,
+            $apellido_solicitante,
+            $nombre_encargado,
+            $apellido_encargado
+        ));
+        Session::flash('message', 'Recordatorio enviado con éxito');
+        Session::flash('alert-class', 'alert-success');
+    } catch (\Exception $e) {
+        Session::flash('message', 'Error al enviar el recordatorio');
+        Session::flash('alert-class', 'alert-danger');
+    }
+
+    return redirect()->back();
+}
+
 }
