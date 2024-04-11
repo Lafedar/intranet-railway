@@ -174,11 +174,12 @@
                     </div>
                   @endcan
                   @can('asignar-solicitud')
-                    @if(!$solicitud->nombre_encargado)
+    
+                      <!-- if(!$solicitud->nombre_encargado) -->
                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                         <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
                       </div>
-                    @endif
+                    
                   @endcan
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
@@ -207,8 +208,8 @@
             </td>
           </tr>
         @endforeach
-    </tbody>
-  </table>
+    </tbody>       
+  </table>   
   
   <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog estilo" role="document">
@@ -281,7 +282,6 @@
   var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
   var saveButton2 = $('<button type="submit" class="btn btn-info" id="saveButton2" onclick="fnSaveSolicitud2()">Guardar</button>');
 
-
   function fnSaveSolicitud() {
     var form = document.getElementById('myForm');
     if (form.checkValidity()) {
@@ -291,7 +291,6 @@
       console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
     }
   }
-
   function fnSaveSolicitud2() {
     var form = document.getElementById('myForm4');
     if (form.checkValidity()) {
@@ -301,7 +300,7 @@
       console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
     }
   }
-  
+
   function getSolicitud(idSolicitud) {
     return new Promise(function(resolve, reject) {
       $.ajax({
@@ -316,10 +315,10 @@
       });
     });
   }
-
   var solicitud;
   //modal edit
-  async function fnOpenModalEdit(id) {
+  async function fnOpenModalEdit(id) 
+  {
     var myModal = new bootstrap.Modal(document.getElementById('show4'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_edit_solicitud/" + id,
@@ -329,19 +328,15 @@
         $("#modalshow4").empty();
         // Establecer el contenido del modal
         $("#modalshow4").html(data);
-
         // Borrar contenido anterior
         $("#modalfooter4").empty();
         // Agregar el botón "Cerrar y Guardar" al footer
         $("#modalfooter4").append(closeButton);
         $("#modalfooter4").append(saveButton2);
-
         // Cambiar la acción del formulario
         $('#myForm4').attr('action', ruta_edit);
-
         // Mostrar el modal
         myModal.show();
-
         // Cambiar el tamaño del modal a "modal-lg"
         var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
@@ -354,7 +349,6 @@
       console.error('Error al obtener la solicitud:', error);
     }
   }
-
   $('#show4').on('show.bs.modal', function (event){
     $.get('select_tablas/',function(data){
       var divDescripcion = $('#div_descripcion1')
@@ -367,15 +361,12 @@
       var htmlDescripcionEquipo = ''
       // [0]=areas [1]=localizaciones [2]=tipo_solicitudes [3]=equipos_mant 
       // [4]=fallas [5]=tipos_equipos [6]=fallasxtipo
-
       var equipoPrecargado = false;
       var areaPrecargada = false;
       var tipoPrecargado = false;
-
       var tipoSolicitudSelected;
       var equipoSelected;
       var areaSelected;
-
       data[2].forEach(tipo_solicitud => {
         if (tipo_solicitud.nombre === solicitud[0].nombreTipoSolicitud) {
           htmlSelectTipoSolicitud += `<option value="${tipo_solicitud.id}" selected>${tipo_solicitud.nombre}</option>`;
@@ -393,7 +384,6 @@
           htmlSelectArea += `<option value="${item.id_a}">${item.nombre_a}</option>`;
         }
       });
-
       data[3].forEach(equipo => {
         if (equipo.id === solicitud[0].idEquipo) {
           htmlSelectEquipo += `<option value="${equipo.id}" selected>${equipo.id}</option>`;
@@ -402,7 +392,6 @@
           htmlSelectEquipo += `<option value="${equipo.id}">${equipo.id}</option>`;
         }
       });
-
       $('#tipo_solicitud1').on('change', function () {
         tipoSolicitudSelected = $(this).val();
         const divEquipo = $('#div_equipo1');
@@ -441,7 +430,6 @@
               })
             }
           });
-
           $('#falla1').html(htmlSelectFalla);
           document.getElementById("localizacion1").setAttribute("required", "required");
           document.getElementById("falla1").setAttribute("required", "required");
@@ -458,7 +446,6 @@
         $('#localizacion1').prop('disabled', false);
         $('#descripcion_equipo1').prop('disabled', false);
       }); 
-
       $('#equipo1').on('change', function () {
         var equipoSelected = $(this).val();
         if (!equipoSelected) {
@@ -512,23 +499,19 @@
           $('#div_descripcion1').show();
         }
       });
-
       $('#area1').on('change', function () {
         areaSelected = $(this).val();
-
         // Obtener las localizaciones correspondientes al área seleccionada y agregarlas al select correspondiente
         let htmlSelectLocalizacion = '<option value="">Seleccione</option>';
         data[1].forEach(localizacion => {
           if (localizacion.id_area == areaSelected) {
             if ((localizacion.id === solicitud[0].idLocalizacionEquipo) || (localizacion.id === solicitud[0].idLocalizacionEdilicio)){
               htmlSelectLocalizacion += `<option value="${localizacion.id}" selected>${localizacion.nombre}</option>`;
-
             }else{
               htmlSelectLocalizacion += `<option value="${localizacion.id}">${localizacion.nombre}</option>`;
             }
           }
         });
-
         if(!areaSelected){
           $('#div_localizacion1').hide();
         } else{
@@ -551,16 +534,13 @@
       $('#equipo1').html(htmlSelectEquipo); 
       $('#area1').html(htmlSelectArea);
       $('#localizacion1').html(htmlSelectLocalizacion);
-
       if(tipoPrecargado){
         $('#tipo_solicitud1').trigger('change');
       }
-
       if(equipoPrecargado){
         $('#equipo1').trigger('change');
         $('#descripcion_equipo1').val(solicitud[0].descripcionEquipo);
       }
-
       if(areaPrecargada){
         $('#area1').trigger('change');
       }
@@ -784,7 +764,7 @@
       });
     });
   }
-    
+
   function checkAll() {
     // Obtén el estado actual del checkbox "checkAll"
     var checkAllCheckbox = document.getElementById("checkAll");
@@ -826,7 +806,6 @@
       });
     }
   }
-  
   function getHistoricos(id) {
     return new Promise(function(resolve, reject) {
       $.ajax({
@@ -898,6 +877,7 @@
         } else {
           var historicoOffset = 5;
         }
+
         for (var j = 0; j < historicos.length; j++) {
           var historico = historicos[j];
           var estado = historico.estado;
@@ -1017,7 +997,7 @@
         if (item.label.includes("Nombre")) {
           nombreInserted = true;
         }else{nombreInserted = false;}
-        
+
         doc.text(item.value, valueX, item.y);
         auxiliarY = item.y;
       }

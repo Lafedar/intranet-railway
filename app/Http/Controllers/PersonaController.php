@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
-use App\Persona;
+use App\Models\Persona;    //agrego \Models
 use App\Permiso;
 use App\Empleado;
 use App\User;
@@ -98,4 +98,6 @@ public function destroy_contacto(Request $request, $id)
     ]);
 
 }
+
+
 }

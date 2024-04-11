@@ -2,9 +2,7 @@
 <html lang="es">
 
 <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
-
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
@@ -30,15 +28,16 @@
         &nbsp
         <form action="{{ url('/logout') }}" method="POST" >
           {{ csrf_field() }}
-          <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-            Cerrar sesión
-          </button>
+            <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+              Cerrar sesión
+            </button>
         </form>
       </ul>
     </div>
   </nav>
   <p></p>
 </head>
+
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 
 @include('permisos.create_permiso')

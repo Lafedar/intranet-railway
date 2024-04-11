@@ -6,9 +6,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Permiso extends Model{
+class Permiso extends Model
+{
     protected $table='permisos';
-	public function scopeRelaciones($query, $jefe, $motivo) {
+    public function scopeRelaciones($query, $jefe, $motivo) {
         $jefeAreasTurnos = DB::table('jefe_area')->where('jefe', $jefe)->get();
         $permisos = collect();
         
@@ -48,8 +49,12 @@ class Permiso extends Model{
         }
         $permisos = $permisos->unique('id');
         $permisos = $permisos->sortByDesc('fecha_permiso');
-
         return $permisos;
+    }
+    public  function scopeEmpleado ($query, $empleado){
+    	if($empleado){
+    	    return $query -> where(DB::raw("CONCAT(p1.nombre_p,' ',p1.apellido)"), 'LIKE',"%$empleado%");
+    	}
     }
 
     public function scopeJefe ($query){
@@ -64,5 +69,5 @@ class Permiso extends Model{
         ->where('permisos.id',$id)
         ->select('personas.nombre_p as nombre_autorizado','personas.apellido as apellido_autorizado' , 'permisos.created_at as fecha_permiso','permisos.fecha_desde as fecha_desde', 'permisos.fecha_hasta as fecha_hasta','tipo_permiso.desc as motivo', 'permisos.id as id','permisos.hora_desde as hora_desde','permisos.hora_hasta as hora_hasta','permisos.descripcion as descripcion','area.nombre_a as area');
     }
-
+    
 }

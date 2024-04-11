@@ -81,8 +81,8 @@ class Equipo_mantController extends Controller{
             $uso = 1;
         }
         else{$uso = 0;}
-        $equipo_mant = DB::table('equipos_mant')
-        ->where('equipos_mant.id',$request['id_vieja'])
+        $equipo_mant = DB::table('equipos_mant_temp')
+        ->where('equipos_mant_temp.id',$request['id_vieja'])
         ->update([
             'id' => $request['id'],
             'id_tipo' => $request['tipo_equipo_mant_editar'],

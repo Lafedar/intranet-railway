@@ -42,9 +42,9 @@
             <p>Su solicitud ha pasado al estado: {{ $estado }}. Para acceder al detalle de la solicitud le invitamos a hacer clic en el botón "Detalle" 
                 o para ir a var todas sus solicitudes y las de su area puede ir hacer clic en el boton "Solicitudes"</p>
             <div class="container-button">
-                <a href="http://intranet.lafedar.desa/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
+                <a href="http://intranet.lafedar/solicitudes?idsolicitud={{ $idSolicitud }}&source=detalle" class="button" style="background-color: #f39c12;">Detalle</a>
                 <br><br>
-                <a href="http://intranet.lafedar.desa/solicitudes" class="button">Solicitudes</a>
+                <a href="http://intranet.lafedar/solicitudes" class="button">Solicitudes</a>
             </div>
             <p>Saludos,</p>
             <p>Área de Mantenimiento</p>

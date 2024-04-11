@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Equipamiento;
@@ -17,28 +15,47 @@ use Illuminate\Support\Facades\Input;
 Use Session;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
-
 class EquipamientoController extends Controller
 {   
     //crea el index
     public function index(Request $request)
     {
-        $tipo_equipamiento = DB::table('tipo_equipamiento')->orderBy('equipamiento','asc')->get();
+        $tipo_equipamiento = DB::table('tipo_equipamiento')->orderBy('equipamiento', 'asc')->get();
         $ips = DB::table('ips')->orderBy('nombre', 'asc')->get();
         
-        //envia datos enviados por GET en inicio.blade.php en el buscador para recuperar los datos requeridos de la base de datos
         $equipamientos = Equipamiento::Ip($request->get('ip'))
-        ->Equipo($request->get('equipo'))
-        ->Relaciones($request->get('tipo'), $request->get('subred'))
-        ->Puesto($request->get('puesto'))
-        ->Area($request->get('area'))
-        ->Usuario($request->get('usuario'))
+            ->Equipo($request->get('equipo'))
+            ->Relaciones($request->get('tipo'), $request->get('subred'))
+            ->Puesto($request->get('puesto'))
+            ->Area($request->get('area'))
+            ->Usuario($request->get('usuario'));
+    
+       
+        if ($request->get('tipo') == 1) {  //gabinetes
+            $equipamientos->where('tipo', 1);
+        }
+        else if($request->get('tipo') == 2){ //monitores
+            $equipamientos->where('tipo', 2);
+        }
+        else if($request->get('tipo') == 3){ //impresoras
+            $equipamientos->where('tipo', 3);
+        }
+    
+        $equipamientos = $equipamientos->paginate(20);
         
-        ->paginate(20);
-
-        return view ('equipamiento.inicio', array('equipamientos'=>$equipamientos, 'equipo'=>$request->get('equipo'),'puesto'=>$request->get('puesto'),
-        'ip'=>$request->get('ip'),'tipo_equipamiento'=> $tipo_equipamiento, 'tipo'=>$request->get('tipo'), 'ips' => $ips, 'subred' => $request->get('subred'),
-        'usuario'=>$request->get('usuario'), 'area'=>$request->get('area')));
+        return view('equipamiento.inicio', [
+            'equipamientos' => $equipamientos,
+            'equipo' => $request->get('equipo'),
+            'puesto' => $request->get('puesto'),
+            'ip' => $request->get('ip'),
+            'tipo_equipamiento' => $tipo_equipamiento,
+            'tipo' => $request->get('tipo'),
+            'ips' => $ips,
+            'subred' => $request->get('subred'),
+            'usuario' => $request->get('usuario'),
+            'area' => $request->get('area'),
+            'tipo3' => $request->get('tipo3') 
+        ]);
        
     }
     //trae tabla de tipos de equipamientos 
@@ -51,26 +68,22 @@ class EquipamientoController extends Controller
     {
         return DB::table('ips')->orderBy('nombre','asc')->get();
     }
-
     public function subred_busca(){
         $ips = DB::table('ips')->orderBy('nombre', 'asc')->get();
         
         return view('equipamiento.listado_ip', array( 'ips' => $ips, 'subred' => $request->get('subred')));
     }
-
     public function create()
     {
         $tipo_equipamiento = DB::table('tipo_equipamiento')->get();
         $ips = DB::table('ips')->get();
         return view ('equipamiento.create_equipamiento', array('tipo_equipamiento' => $tipo_equipamiento, 'ips' => $ips));
     }
-
     //Agregar equipo
     public function store(Request $request)
     {
         //consulta en bd si existe el id
         $aux_id=DB::table('equipamientos')->where('equipamientos.id_e',$request['id_e'])->first();
-
         //mensaje de id existente
         if($aux_id){
             Session::flash('message','ID ingresado ya se encuentra asignado');
@@ -79,15 +92,12 @@ class EquipamientoController extends Controller
         }
         
         $nueva_ip = null;
-
         //armo la nueva ip con la parte de la id de red traida de la tabla ips y la id de host de lo que ingreso el usuario y consulto en la bd si existe la ip
         if($request['ip'] != null)
         {   
-
             $puerta_enlace = DB::table('ips')->where('ips.id', $request['id_red'])->value('puerta_enlace');
             $pe_separada = explode("." , $puerta_enlace);
             $nueva_ip = $pe_separada[0].".".$pe_separada[1].".".$pe_separada[2].".".$request['ip'];
-
             $aux_ip = DB::table('equipamientos')->where('equipamientos.ip', $nueva_ip)->first();
             
             //mensaje de ip existente
@@ -98,7 +108,6 @@ class EquipamientoController extends Controller
                 return redirect()->back()->withInput();
             }
         }
-
         //crea un nuevo equipamiento y asigna los datos
         $equipamiento = new Equipamiento;
         $equipamiento->id_e = $request['id_e'];
@@ -117,14 +126,11 @@ class EquipamientoController extends Controller
         $equipamiento->unidad_imagen = $request['unidad_imagen'];
         $equipamiento->oc = $request['oc'];
         $equipamiento->save();
-
         //mensaje de equipamiento agregado
         Session::flash('message','Equipamiento agregado con éxito');
         Session::flash('alert-class', 'alert-success');
-
         return redirect('equipamiento');
     }
-
     public function modal_editar_equipamiento (Request $request,$id){
         return DB::table('equipamientos')
         ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
@@ -132,23 +138,18 @@ class EquipamientoController extends Controller
         ->where('equipamientos.id_e',$id)
         ->first();
     }
-
     //modificar equipamiento
     public function update(Request $request)
     {   
         $nueva_ip = null;
-
         //armo la nueva ip con la parte de la id de red traida de la tabla ips y la id de host de lo que ingreso el usuario y consulto en la bd si existe la ip
-        
         if($request['ip'] != null and $request['id_red'] != null)
         {   
             $puerta_enlace = DB::table('ips')->where('ips.id', $request['id_red'])->value('puerta_enlace');
             $pe_separada = explode("." , $puerta_enlace);
             $nueva_ip = $pe_separada[0].".".$pe_separada[1].".".$pe_separada[2].".".$request['ip'];
-
             //traigo de la bd la fila donde se encuentre la misma ip
             $aux_ip = DB::table('equipamientos')->where('equipamientos.ip', $nueva_ip)->first();
-
             //if para que no tome como dato la misma fila que se esta editando ya que dira que la ip esta duplicada
             if($aux_ip)
             {
@@ -157,7 +158,6 @@ class EquipamientoController extends Controller
                     $aux_ip = null;
                 }
             }
-            
             
             //si existe una ip igual
             if($aux_ip)
@@ -184,6 +184,7 @@ class EquipamientoController extends Controller
         {
             $nueva_ip = null;
         }
+
 
        $equipamiento = DB::table('equipamientos')
         ->where('equipamientos.id_e',$request['id_e'])
@@ -215,12 +216,10 @@ class EquipamientoController extends Controller
     {
         //
     }
-
     public function subredes(Request $request)
     {
         
     }
-
     public function listado_ip(Request $request)
     {
         $listado= array();
@@ -379,12 +378,9 @@ class EquipamientoController extends Controller
                 $listado[$i+1524][5] = $equipamiento->nombre_red;
             }
         }
-
        return view ('equipamiento.listado_ip', array('listado'=> $listado));
     }
-
    //****************RELACIONES**********************
-
     public function select_puesto(){
         return DB::table('puestos')
         ->leftjoin('personas','puestos.persona','personas.id_p')
@@ -394,7 +390,6 @@ class EquipamientoController extends Controller
         ->orderBy('localizaciones.nombre')
         ->get();
     }
-
     public function store_relacion(Request $request)
     {
         $relacion= new Relacion;
@@ -402,26 +397,20 @@ class EquipamientoController extends Controller
         $relacion->puesto = $request['puesto'];
         $relacion->estado = 1;
         $relacion->save();
-
         Session::flash('message','Relacion agregada con éxito');
         Session::flash('alert-class', 'alert-success');
-
         return redirect('equipamiento');
-
     }
     public function destroy_relacion(Request $request)
     {
         $relacion = DB::table('relaciones')->where('relaciones.id_r',$request['relacion'])->update(['estado'=> 0]);
-
         Session::flash('message','Relacion eliminada con éxito');
         Session::flash('alert-class', 'alert-success');
     
         return redirect('equipamiento');
     }
-
     public function select_soft()
     {    
         return DB::table('softinst')->orderBy('id_s','asc')->get();  
     }
-
 }

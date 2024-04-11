@@ -1,11 +1,9 @@
 @extends('planos.layouts.layout')
 @section('content')
 
-<!-- alertas -->
-
 <div class="content">
     <div class="row" style="justify-content: center">
-        <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
+      <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
   </div>
 </div>
 
@@ -99,10 +97,14 @@
         @endif                    
     </tbody>
 </table>
+
 @include('planos.edit')
+
+
 {{ $planos->appends($_GET)->links() }}
+
 </div>
-<!-- Duracion de alerta (agregado, elimnado, editado) -->
+
 <script> 
     $("document").ready(function(){
         setTimeout(function(){
