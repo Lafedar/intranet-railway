@@ -49,16 +49,14 @@ class PermisosController extends Controller
                 $nombre = strtolower($permiso->nombre_autorizado);
                 $apellido = strtolower($permiso->apellido_autorizado);
         
-                if (count($nombres) == 1) {
-                    // Buscar solo en el nombre o solo en el apellido
-                    $nombreCompleto = $nombre . ' ' . $apellido;
-                    return $nombre === $nombres[0] || $apellido === $nombres[0] || $nombreCompleto === $nombres[0];
-                } else {
-                    // Buscar en el nombre y el apellido juntos
-                    $nombreCompleto = $nombre . ' ' . $apellido;
-                    $nombreEmpleadoCompleto = implode(" ", $nombres);
-                    return $nombreCompleto === $nombreEmpleadoCompleto;
+                // Comprobar si el nombre o el apellido coincide con alguna parte del nombre ingresado
+                foreach ($nombres as $parteNombre) {
+                    if (strpos($nombre, $parteNombre) !== false || strpos($apellido, $parteNombre) !== false) {
+                        return true;
+                    }
                 }
+        
+                return false;
             });
         }
         
