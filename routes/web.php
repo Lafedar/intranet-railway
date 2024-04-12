@@ -497,6 +497,7 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
+
 Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
 
 
