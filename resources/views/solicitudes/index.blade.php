@@ -205,13 +205,14 @@
                     <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
                        @csrf
                        <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-            <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})">Recordatorio</button>
-        </div>
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" data-bloqueado="false" data-desbloqueo="">Recordatorio</button>
+
+                      </div>
                     </form>
                   @endif 
 
                
-    
+                    <!-- Boton Eliminar-->
                     @can('eliminar-solicitud')
                       <div class="btn-container" style="margin-bottom: 5px; ">
                         <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
@@ -284,11 +285,22 @@
 </script>
 <script>
     function confirmarEnvio(id) {
-        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de la solicitud?')) {
-            document.getElementById('recordatorioForm' + id).submit();
-            mostrarMensaje('Recordatorio enviado');
-        }
+    var boton = document.querySelector('#recordatorioForm' + id + ' button');
+    if (boton.dataset.bloqueado === "true") {
+        mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
+        return;
     }
+
+    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+        document.getElementById('recordatorioForm' + id).submit();
+        boton.dataset.bloqueado = "true";
+        var horas = obtenerHorasDesbloqueo(); // Debes definir esta función para obtener las horas desde la base de datos
+        var tiempoDesbloqueo = new Date();
+        tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+        boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+        mostrarMensaje('Recordatorio enviado');
+    }
+}
 </script>
 <script>
 

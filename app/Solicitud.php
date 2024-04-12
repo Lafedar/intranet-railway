@@ -322,7 +322,12 @@ class Solicitud extends Model{
             ->first();
     }
 
-    
+    public static function ultimoRecordatorio($idSolicitud) {
+        return DB::table('solicitudes_temp')
+            ->where('id', $idSolicitud)
+            ->latest()
+            ->first();
+    }
     
 
  

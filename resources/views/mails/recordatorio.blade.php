@@ -38,7 +38,7 @@
     <body>
         <div class="container">
             <h1>Recordatorio de Solicitud #{{$id}}"</h1>
-            <p>Estimado/a encargado del Area de Mantenimiento
+            <p>Estimado/a encargado/a del Area de Mantenimiento
             
             <p>Nos dirigimos a usted para informarle que el solicitante <strong>{{$nombre_solicitante}} {{$apellido_solicitante}}</strong> ha enviado un recordatorio de su solicitud, ID: <strong>{{$id}}</strong>  </p>
             
