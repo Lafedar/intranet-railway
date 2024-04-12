@@ -169,11 +169,15 @@
                   <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
+
+                  <!--Boton Actualizar-->
                   @can('actualizar-solicitud')
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
                     </div>
                   @endcan
+
+                  <!--Boton Asignar-->
                   @can('asignar-solicitud')
     
                       <!-- if(!$solicitud->nombre_encargado) -->
@@ -182,6 +186,8 @@
                       </div>
                     
                   @endcan
+
+                  <!--Boton Reclamar-->
                   @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
@@ -200,18 +206,17 @@
                     </div>
                   @else
                   
-                  <!-- Boton Recordatorios-->
+                  <!--Boton Recordatorio-->
                   @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
                     <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
-                       @csrf
-                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" data-bloqueado="false" data-desbloqueo="">Recordatorio</button>
-
+                      @csrf
+                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento">Recordatorio</button>
                       </div>
                     </form>
-                  @endif 
+                  @endif
 
-               
+
                     <!-- Boton Eliminar-->
                     @can('eliminar-solicitud')
                       <div class="btn-container" style="margin-bottom: 5px; ">
@@ -285,23 +290,28 @@
 </script>
 <script>
     function confirmarEnvio(id) {
-    var boton = document.querySelector('#recordatorioForm' + id + ' button');
-    if (boton.dataset.bloqueado === "true") {
-        mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
-        return;
-    }
+        var boton = document.querySelector('#recordatorioForm' + id + ' button');
+        var bloqueado = boton.dataset.bloqueado === "true";
+        var tiempoDesbloqueo = parseInt(boton.dataset.desbloqueo);
 
-    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-        document.getElementById('recordatorioForm' + id).submit();
-        boton.dataset.bloqueado = "true";
-        var horas = obtenerHorasDesbloqueo(); // Debes definir esta función para obtener las horas desde la base de datos
-        var tiempoDesbloqueo = new Date();
-        tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
-        boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
-        mostrarMensaje('Recordatorio enviado');
+        if (bloqueado && tiempoDesbloqueo > Date.now()) {
+            mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
+            return;
+        }
+
+        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+            document.getElementById('recordatorioForm' + id).submit();
+            boton.dataset.bloqueado = "true";
+            var horas = obtenerHorasDesbloqueo(); 
+            var tiempoDesbloqueo = new Date();
+            tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+            boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+            boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
+            mostrarMensaje('Recordatorio enviado');
+        }
     }
-}
 </script>
+
 <script>
 
   function manejarSeleccion(idEquipo) {
@@ -1239,3 +1249,23 @@
 </script>
 
 @stop
+
+{{--<script>
+    function confirmarEnvio(id) {
+    var boton = document.querySelector('#recordatorioForm' + id + ' button');
+    if (boton.dataset.bloqueado === "true") {
+        mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
+        return;
+    }
+
+    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+        document.getElementById('recordatorioForm' + id).submit();
+        boton.dataset.bloqueado = "true";
+        var horas = obtenerHorasDesbloqueo(); 
+        var tiempoDesbloqueo = new Date();
+        tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+        boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+        mostrarMensaje('Recordatorio enviado');
+    }
+}
+</script>--}}

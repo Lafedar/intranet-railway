@@ -476,17 +476,21 @@ class SolicitudController extends Controller{
               $nombreEncargado,
               $apellidoEncargado
           ));
+          Session::flash('correo_enviado', true);
+
   
           //Registro del recordatorio enviado
           DB::table('recordatorios')->insert([
               'solicitud_id' => $id,
               'created_at' => now(),
-              'updated_at' => now(),
+              
           ]);
   
           Session::flash('message', 'Recordatorio enviado con éxito');
           Session::flash('alert-class', 'alert-success');
       } catch (\Exception $e) {
+            Session::flash('error_envio_correo', true);
+
           Session::flash('message', 'Error al enviar el recordatorio');
           Session::flash('alert-class', 'alert-danger');
       }
