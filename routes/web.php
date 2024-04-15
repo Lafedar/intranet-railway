@@ -487,7 +487,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
+  Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
 });
+
+
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -497,7 +500,7 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
-Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
 
 
 
