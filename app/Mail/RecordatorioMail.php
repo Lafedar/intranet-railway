@@ -12,17 +12,15 @@ class RecordatorioMail extends Mailable
     use Queueable, SerializesModels;
 
     public $nombre;
-    public $titulo;
     public $id;
     public $nombre_solicitante;
     public $apellido_solicitante;
     public $nombre_encargado;
     public $apellido_encargado;
 
-    public function __construct($nombre, $titulo, $id, $nombre_solicitante, $apellido_solicitante, $nombre_encargado, $apellido_encargado)
+    public function __construct($nombre,$id, $nombre_solicitante, $apellido_solicitante, $nombre_encargado, $apellido_encargado)
     {
         $this->nombre = $nombre;  //estado
-        $this->titulo = $titulo;
         $this->id = $id;
         $this->nombre_solicitante = $nombre_solicitante;
         $this->apellido_solicitante = $apellido_solicitante;

@@ -37,15 +37,14 @@
     </head>
     <body>
         <div class="container">
-            <h1>Recordatorio de Solicitud #{{$id}} "{{$titulo}}"</h1>
-            <p>Estimado/a {{$nombre_encargado}} {{$apellido_encargado}}
+            <h1>Recordatorio de Solicitud #{{$id}}"</h1>
+            <p>Estimado/a encargado/a del Area de Mantenimiento
             
             <p>Nos dirigimos a usted para informarle que el solicitante <strong>{{$nombre_solicitante}} {{$apellido_solicitante}}</strong> ha enviado un recordatorio de su solicitud, ID: <strong>{{$id}}</strong>  </p>
             
             <p><strong>Estado de la solicitud:</strong> {{$nombre}}</p>
-            
-            
-           
+            <p><strong>Encargado de la solicitud:</strong> {{$nombre_encargado}} {{$apellido_encargado}}</p>
+
             <div class="container-button">
                
             </div>
@@ -53,6 +52,7 @@
             <br>
             <p>Saludos,</p>
             <p>Área de Mantenimiento</p>
-        </div>
+        </div> 
+       
     </body>
 </html>
