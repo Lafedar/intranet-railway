@@ -88,7 +88,11 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_ips', 'EquipamientoController@select_ips')->name('select_ips');
 
   Route::get('modal_editar_equipamiento/{id}','EquipamientoController@modal_editar_equipamiento')->name('modal_editar_equipamiento')->middleware('role:administrador');
+
+  
+
 });
+
 
    //****************INCIDENTES**********************
 Route::group(['middleware' => ['auth']], function () {
@@ -307,7 +311,16 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
  Route::put('/cerse','AlmuerzoController@cerrar_semana')->name('cerrarsema');
 
   //***********************************Power BI*************************************
- Route::get('powerbis','HomeController@powerbis');
+  Route::group(['middleware' => ['auth']], function () 
+  {
+    Route::resource('powerbis', 'PowerbisController')->middleware('role:administrador');
+   
+  });
+  
+  //Route::get('nombre','HomeController@nombre');
+  //Route::get('powerbis','HomeController@powerbis');//->middleware('role:administrador');
+   
+  
 
    //****************Ventas**********************
 
@@ -363,9 +376,10 @@ Route::group(['middleware' => ['auth']], function ()
 Route::get('/frecuencias', 'FrecuenciasController@index');
 
    //****************Mantenimiento**********************
-Route::get('mantenimiento','HomeController@mantenimiento');
+   Route::get('mantenimiento','HomeController@mantenimiento');
 Route::group(['middleware' => ['auth']], function () 
 {
+  
   Route::resource('solicitudes','SolicitudController');
   Route::resource('historico_solicitudes','SolicitudController');
 
@@ -474,13 +488,13 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
 });
-
-//***********************************Personas*************************************
-
 Route::group(['middleware' => ['auth']], function () 
 {
-
-  
+  Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
+  Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
+  Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+ 
 });
 
 Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
