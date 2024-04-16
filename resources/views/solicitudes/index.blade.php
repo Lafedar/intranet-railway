@@ -206,15 +206,17 @@
                     </div>
                   @else
                   
-                  <!--Boton Recordatorio-->
+                  
                   @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
-                    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
-                      @csrf
-                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento">Recordatorio</button>
-                      </div>
-                    </form>
-                  @endif
+    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+        @csrf
+        <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento">Recordatorio</button>
+        </div>
+    </form>
+@endif
+
+
 
 
                     <!-- Boton Eliminar-->
@@ -299,18 +301,25 @@
             return;
         }
 
-        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-            document.getElementById('recordatorioForm' + id).submit();
-            boton.dataset.bloqueado = "true";
-            var horas = obtenerHorasDesbloqueo(); 
-            var tiempoDesbloqueo = new Date();
-            tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
-            boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
-            boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
-            mostrarMensaje('Recordatorio enviado');
+        // Si no está bloqueado, muestra el mensaje de confirmación
+        if (!bloqueado || tiempoDesbloqueo <= Date.now()) {
+            if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+                document.getElementById('recordatorioForm' + id).submit();
+                
+                boton.dataset.bloqueado = "true";
+                var horas = obtenerHorasDesbloqueo(); 
+                var tiempoDesbloqueo = new Date();
+                tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+                boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+                boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
+                mostrarMensaje('Recordatorio enviado');
+            }
         }
     }
 </script>
+
+
+
 
 <script>
 

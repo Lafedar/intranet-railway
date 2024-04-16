@@ -420,30 +420,29 @@ class SolicitudController extends Controller{
         return redirect ('solicitudes');
     }
 
-    public function obtenerHorasDesbloqueo() {  //obtengo las horas de parametros_mant en BD
+    public function obtenerDiasDesbloqueo() {  
         $parametro = DB::table('parametros_mant')
-            ->where('id_param', 'PHORA')
-            ->first();
+            ->where('id_param', 'PDIAS')
+            ->value('valor_param');
     
-        return $parametro ? intval($parametro->valor_param) : 0;
+        return $parametro ? intval($parametro) : 0;
     }
     
-   
-  public function enviarRecordatorio($id)
-  {
-      $horasDesbloqueo = $this->obtenerHorasDesbloqueo();
-      $ultimaSolicitud = DB::table('recordatorios')
-                          ->where('solicitud_id', $id)
-                          ->latest()
-                          ->first();
-  
-      if ($ultimaSolicitud && now()->diffInHours(Carbon::parse($ultimaSolicitud->created_at)) < $horasDesbloqueo) {
-          Session::flash('message', 'El recordatorio solo se puede enviar después de ' . $horasDesbloqueo . ' horas.');
-          Session::flash('alert-class', 'alert-danger');
-          return redirect()->back();
-      }
-  
-      $correoDestinatario = DB::table('parametros_mant')
+
+    public function enviarRecordatorio($id)
+{
+    $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
+    $ultimaSolicitud = DB::table('recordatorios')
+                        ->where('solicitud_id', $id)
+                        ->latest()
+                        ->first();
+
+    if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
+        Session::flash('message', 'El recordatorio solo se puede enviar después de ' . $diasDesbloqueo . ' días, desde el ultimo recordatorio.');
+        Session::flash('alert-class', 'alert-danger');
+        return redirect()->back();
+    }
+    $correoDestinatario = DB::table('parametros_mant')
           ->select('valor_param')
           ->where('id_param', 'PMAIL')
           ->first();
@@ -495,7 +494,8 @@ class SolicitudController extends Controller{
       }
   
       return redirect()->back();
-  }
+    
+}
   
 }
 

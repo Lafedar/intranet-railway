@@ -129,7 +129,7 @@
                     </div>
                     <div class="form-group">
                         <label for="valor_param">Valor:</label>
-                        <input type="text" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
+                        <input type="number" min="2" max="7" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
                     </div>
                 </div>
                 <div class="modal-footer">
