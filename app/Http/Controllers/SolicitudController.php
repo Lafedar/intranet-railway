@@ -127,7 +127,7 @@ class SolicitudController extends Controller{
         $solicitud->id_solicitante = $idPersona->id_p;
         $solicitud->id_tipo_solicitud = $request['tipo_solicitud'];
         $solicitud->fecha_alta = $fechaActual;
-        $solicitud->id_estado = 1;
+        $solicitud->id_estado = 8;
         if($request['tipo_solicitud'] == 2){
             $solicitud->id_localizacion_edilicio = $request['localizacion'];
         }
@@ -139,7 +139,7 @@ class SolicitudController extends Controller{
 
         $historico_solicitud = new Historico_solicitudes;
         $historico_solicitud->id_solicitud = $aux+1;
-        $historico_solicitud->id_estado = 1;
+        $historico_solicitud->id_estado = 8;
         $historico_solicitud->actual = 1;
         $historico_solicitud->descripcion = $request['descripcion'];
         $historico_solicitud->id_persona = $idPersona->id_p;
@@ -447,11 +447,11 @@ class SolicitudController extends Controller{
           ->where('id_param', 'PMAIL')
           ->first();
   
-      if (!$correoDestinatario) {
-          Session::flash('message', 'No se encontró el correo destinatario en la base de datos');
-          Session::flash('alert-class', 'alert-danger');
-          return redirect()->back();
-      }
+          if (!$correoDestinatario || !filter_var($correoDestinatario->valor_param, FILTER_VALIDATE_EMAIL)) {
+            Session::flash('message', 'El correo destinatario no es válido o no está configurado correctamente.');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect()->back();
+        }
   
       //obtengo información relacionada con la solicitud
       $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);

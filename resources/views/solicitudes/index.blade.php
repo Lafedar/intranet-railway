@@ -139,7 +139,7 @@
                 <p style="color:gainsboro">N/A</p>
               @endif
             </td>
-            <td>{{$solicitud->estado}}</td>
+            <td>{{$solicitud->estado}}</td> 
             <td>
               @if($solicitud->falla)
                 <p>{{$solicitud->falla}}</p>
@@ -166,9 +166,14 @@
             <td>
               <div class="text-center">
                 <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
+
                   <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
+                  @php 
+                    $estado_solicitud = \App\Solicitud::find($solicitud->id)->id_estado; //obtengo el id del estado de cada solicitud
+                  @endphp
+
 
                   <!--Boton Actualizar-->
                   @can('actualizar-solicitud')
@@ -188,7 +193,8 @@
                   @endcan
 
                   <!--Boton Reclamar-->
-                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  {{--@if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
+                  @if($estado_solicitud == 5 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                     </div>
@@ -197,7 +203,8 @@
                     </div>
                   @endif
                  
-                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
+                  @if($estado_solicitud == 1 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
                     </div>-->
@@ -206,19 +213,17 @@
                     </div>
                   @else
                   
+                   <!-- Boton Recordatorio-->
+                  @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8 )
+                  <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+                    @csrf
+                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                      <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento" >Recordatorio</button>
+                      </div>
+                    </form>
+                    @endif
                   
-                  @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
-    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
-        @csrf
-        <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-            <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento">Recordatorio</button>
-        </div>
-    </form>
-@endif
-
-
-
-
+                
                     <!-- Boton Eliminar-->
                     @can('eliminar-solicitud')
                       <div class="btn-container" style="margin-bottom: 5px; ">
@@ -296,6 +301,7 @@
         var bloqueado = boton.dataset.bloqueado === "true";
         var tiempoDesbloqueo = parseInt(boton.dataset.desbloqueo);
 
+        // Si el botón está bloqueado, muestra solo el mensaje de que el correo ya se envió recientemente
         if (bloqueado && tiempoDesbloqueo > Date.now()) {
             mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
             return;
@@ -306,8 +312,9 @@
             if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
                 document.getElementById('recordatorioForm' + id).submit();
                 
+                // Marca el botón como bloqueado y establece el tiempo de desbloqueo solo después de enviar el recordatorio
                 boton.dataset.bloqueado = "true";
-                var horas = obtenerHorasDesbloqueo(); 
+                var horas = obtenerDiasDesbloqueo(); 
                 var tiempoDesbloqueo = new Date();
                 tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
                 boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
@@ -317,6 +324,7 @@
         }
     }
 </script>
+
 
 
 

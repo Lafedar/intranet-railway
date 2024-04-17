@@ -4,6 +4,7 @@ namespace App;
 use App\Historico_solicitudes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use App\Estado;
 
 class Solicitud extends Model{
     public $table = "solicitudes_temp";
@@ -328,6 +329,11 @@ class Solicitud extends Model{
             ->latest()
             ->first();
     }
+    public function estado()
+{
+    return $this->belongsTo(Estado::class, 'id_estado');
+}
+
     
 
  

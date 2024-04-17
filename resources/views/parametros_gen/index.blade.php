@@ -109,11 +109,11 @@
             </div>
         </div>
         <!-- Modal de edicion -->
-        @foreach($parametros as $parametro)
-        <div class="modal fade" id="editarModal{{ $parametro->id_param }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ $parametro->id_param }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form action="{{ route('parametros.update', ['parametro' => $parametro->id_param]) }}" method="POST">
+@foreach($parametros as $parametro)
+<div class="modal fade" id="editarModal{{ $parametro->id_param }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ $parametro->id_param }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('parametros.update', ['parametro' => $parametro->id_param]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
@@ -129,7 +129,13 @@
                     </div>
                     <div class="form-group">
                         <label for="valor_param">Valor:</label>
-                        <input type="number" min="2" max="7" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
+                        @if($parametro->id_param === 'PDIAS')
+                            <input type="number" min="2" max="7" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
+                        @elseif($parametro->id_param === 'PMAIL')
+                            <input type="email" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
+                        @else
+                            <input type="text" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" required>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -141,6 +147,7 @@
     </div>
 </div>
 @endforeach
+
     
 @stop
 <script>
