@@ -497,8 +497,11 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+  Route::post('/verificar-correo', 'ParametrosGenController@validarMail')->name('verificar-correo');
  
 });
+
+
 
 
 
