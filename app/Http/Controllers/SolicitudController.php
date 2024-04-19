@@ -430,7 +430,8 @@ class SolicitudController extends Controller{
     
 
     public function enviarRecordatorio($id)
-{
+{   
+    
     $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
     $ultimaSolicitud = DB::table('recordatorios')
                         ->where('solicitud_id', $id)
@@ -438,10 +439,12 @@ class SolicitudController extends Controller{
                         ->first();
 
     if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
+        
         Session::flash('message', 'El recordatorio solo se puede enviar después de ' . $diasDesbloqueo . ' días, desde el ultimo recordatorio.');
         Session::flash('alert-class', 'alert-danger');
         return redirect()->back();
     }
+   
     $correoDestinatario = DB::table('parametros_mant')
           ->select('valor_param')
           ->where('id_param', 'PMAIL')
@@ -493,10 +496,11 @@ class SolicitudController extends Controller{
           Session::flash('alert-class', 'alert-danger');
       }
   
-      return redirect()->back();
+       return redirect()->back();
     
 }
-  
+
+
 }
 
 
