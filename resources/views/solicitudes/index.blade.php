@@ -14,11 +14,13 @@
     <div class="row">
       <div class="col-1"></div>
       <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-        {{Session::get('message')}}
+        {!! nl2br(e(Session::get('message'))) !!}
       </div>
     </div>
   </div>
 @endif
+
+
 
 <!-- barra para buscar solicitudes -->
 <div class="col">
@@ -211,17 +213,22 @@
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                     </div>
-                  @else
+                  @endif
+                  
                   
                    <!-- Boton Recordatorio-->
-                  @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8 )
-                  <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
-                    @csrf
-                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento" >Recordatorio</button>
-                      </div>
-                    </form>
+                  
+                   @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8) 
+                      <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+                      @csrf
+                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento" >Recordatorio</button>
+                        </div>
+                       
+                      </form>
                     @endif
+                 
+                  
                   
                 
                     <!-- Boton Eliminar-->
@@ -230,7 +237,7 @@
                         <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                       </div>
                     @endcan
-                  @endif
+                  
                 </div>
               </div>
             </td>
@@ -297,32 +304,36 @@
 </script>
 <script>
     function confirmarEnvio(id) {
-        var boton = document.querySelector('#recordatorioForm' + id + ' button');
-        var bloqueado = boton.dataset.bloqueado === "true";
-        var tiempoDesbloqueo = parseInt(boton.dataset.desbloqueo);
+    var boton = document.querySelector('#recordatorioForm' + id + ' button');
+    var bloqueado = boton.dataset.bloqueado === "true";
+    var tiempoDesbloqueo = parseInt(boton.dataset.desbloqueo);
 
-        // Si el botón está bloqueado, muestra solo el mensaje de que el correo ya se envió recientemente
-        if (bloqueado && tiempoDesbloqueo > Date.now()) {
-            mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
-            return;
-        }
+    // Verifica si el correo ya se ha enviado recientemente
+    var correoEnviadoRecientemente = boton.dataset.correoEnviado === "true";
 
-        // Si no está bloqueado, muestra el mensaje de confirmación
-        if (!bloqueado || tiempoDesbloqueo <= Date.now()) {
-            if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-                document.getElementById('recordatorioForm' + id).submit();
-                
-                // Marca el botón como bloqueado y establece el tiempo de desbloqueo solo después de enviar el recordatorio
-                boton.dataset.bloqueado = "true";
-                var horas = obtenerDiasDesbloqueo(); 
-                var tiempoDesbloqueo = new Date();
-                tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
-                boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
-                boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
-                mostrarMensaje('Recordatorio enviado');
-            }
+    // Si el correo se ha enviado recientemente, no muestra el mensaje de confirmación
+    if (bloqueado && tiempoDesbloqueo > Date.now() && correoEnviadoRecientemente) {
+        mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
+        return;
+    }
+
+    // Si no está bloqueado y el correo no se ha enviado recientemente, muestra el mensaje de confirmación
+    if (!bloqueado || tiempoDesbloqueo <= Date.now() || !correoEnviadoRecientemente) {
+        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+            document.getElementById('recordatorioForm' + id).submit();
+            
+            // Marca el botón como bloqueado y establece el tiempo de desbloqueo solo después de enviar el recordatorio
+            boton.dataset.bloqueado = "true";
+            var horas = obtenerDiasDesbloqueo(); 
+            var tiempoDesbloqueo = new Date();
+            tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+            boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+            boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
+            mostrarMensaje('Recordatorio enviado');
         }
     }
+}
+
 </script>
 
 
