@@ -69,9 +69,11 @@ class SolicitudController extends Controller{
             'personas.id_p as idPersona')
         ->get();
         $model_as_roles = DB::table('model_has_roles')->get();
-    
-
+        $verificacion = session('verificacion');
+       
+        
         return view('solicitudes.index', [
+            'verificacion'=>$verificacion,
             'solicitudes' => $solicitudes,
             'tiposSolicitudes' => $tiposSolicitudes,
             'estados' => $estados,
@@ -438,13 +440,16 @@ class SolicitudController extends Controller{
                         ->latest()
                         ->first();
     
-    
+    $verificacion=true;
+   
     if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
+        $verificacion=false;
         
-        Session::flash('message', "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio.\nUltimo recordatorio enviado: $ultimaSolicitud->created_at");
+        Session::flash('message', "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio.<br> Ultimo recordatorio enviado: $ultimaSolicitud->created_at");
         Session::flash('alert-class', 'alert-danger');
         return redirect()->back();
     }
+    Session::put('verificacion', $verificacion);  //paso el valor al index
     
     $correoDestinatario = DB::table('parametros_mant')
           ->select('valor_param')
@@ -496,7 +501,8 @@ class SolicitudController extends Controller{
           Session::flash('message', 'Error al enviar el recordatorio');
           Session::flash('alert-class', 'alert-danger');
       }
-  
+      
+      
       return redirect()->back();
 
 }
