@@ -240,8 +240,7 @@ Route::get('oc','QADController@oc');
 });
 
 //***************Evento-Calendario-reserva*********************
-Route::get('Calendario/event','CalendarioController@index');
-Route::get('Calendario/event/{mes}','CalendarioController@index_month');
+
 
 // formulario
 // formulario
@@ -487,7 +486,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
-  Route::post('/enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+  Route::post('enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
 });
 
 
@@ -500,6 +499,9 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('/verificar-correo', 'ParametrosGenController@validarMail')->name('verificar-correo');
  
 });
+
+
+
 
 
 
