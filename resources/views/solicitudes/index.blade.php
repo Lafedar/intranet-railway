@@ -20,7 +20,11 @@
   </div>
 @endif
 
-
+@if(session('correo_enviado'))
+    <div class="alert alert-success" role="alert">
+        ¡El correo fue enviado correctamente!
+    </div>
+@endif
 
 <!-- barra para buscar solicitudes -->
 <div class="col">
@@ -105,6 +109,7 @@
     </form>          
   </div>
 </div>
+
 <!-- tabla de datos -->
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
@@ -205,7 +210,7 @@
                     </div>
                   @endif
                  
-                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
+                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
                   @if($estado_solicitud == 1 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
@@ -213,7 +218,7 @@
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                     </div>
-                  @endif
+                  @endif--}}
                   
                   
                    <!-- Boton Recordatorio-->
@@ -226,7 +231,8 @@
                       </div>
                     </form>
                   @endif
-                 
+
+                    
                   <!-- Boton Eliminar-->
                   @can('eliminar-solicitud')
                     <div class="btn-container" style="margin-bottom: 5px; ">
@@ -299,24 +305,56 @@
   
 </script>
 
+
 <script>
-  function confirmarEnvio(id) {
+    function confirmarEnvio(id) {
     var boton = document.getElementById('recordatorioBtn' + id);
     var verificacion = boton.dataset.verificacion === "true";
 
-    if (!verificacion) {
-        boton.disabled = true;
-        document.getElementById('recordatorioForm' + id).submit();
-        return;
-    }
-    
-    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-        document.getElementById('recordatorioForm' + id).submit();
-        boton.disabled = true;
-    }
-} 
+    fetch('/enviar-recordatorio/' + id, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            // Mostrar mensaje de error
+            alert(data.message);
+        } else {
+            var correoEnviado = data.correo_enviado;
+            console.log(correoEnviado);
+            if (correoEnviado) {
+                // Mostrar mensaje de error
+                alert('Error: El correo ya ha sido enviado anteriormente.');
+                return;
+            }
+
+            if (!verificacion || confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+                boton.disabled = true;
+                document.getElementById('recordatorioForm' + id).submit();
+            }
+        }
+        // Redireccionar a alguna página deseada
+        window.location.href = '/solicitudes'; // Cambia la URL a la que deseas redirigir
+    })
+    .catch(error => {
+        console.error('Error al obtener la información sobre el correo enviado:', error);
+        alert('Error en la solicitud AJAX: ' + error.message);
+    });
+}
+
 
 </script>
+
+
+
 
 
 

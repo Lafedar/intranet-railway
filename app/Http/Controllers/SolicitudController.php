@@ -69,11 +69,11 @@ class SolicitudController extends Controller{
             'personas.id_p as idPersona')
         ->get();
         $model_as_roles = DB::table('model_has_roles')->get();
-        $verificacion = session('verificacion');
-       
         
+        $verificacion = Session::get('verificacion');
+       
         return view('solicitudes.index', [
-            'verificacion'=>$verificacion,
+            'verificacion' => $verificacion,
             'solicitudes' => $solicitudes,
             'tiposSolicitudes' => $tiposSolicitudes,
             'estados' => $estados,
@@ -433,79 +433,83 @@ class SolicitudController extends Controller{
 
     public function enviarRecordatorio($id)
 {   
-    
     $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
     $ultimaSolicitud = DB::table('recordatorios')
                         ->where('solicitud_id', $id)
                         ->latest()
                         ->first();
     
-    $verificacion=true;
-   
     if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
-        $verificacion=false;
-        
-        Session::flash('message', "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio.<br> Ultimo recordatorio enviado: $ultimaSolicitud->created_at");
-        Session::flash('alert-class', 'alert-danger');
-        return redirect()->back();
+        $verificacion = false;
+        $response = [
+            'success' => false,
+            'message' => "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio. Ultimo recordatorio enviado: $ultimaSolicitud->created_at",
+            'verificacion' => $verificacion,
+        ];
+        return response()->json($response);
     }
-    Session::put('verificacion', $verificacion);  //paso el valor al index
     
+    $verificacion = true;
+
     $correoDestinatario = DB::table('parametros_mant')
           ->select('valor_param')
           ->where('id_param', 'PMAIL')
           ->first();
-  
-          if (!$correoDestinatario || !filter_var($correoDestinatario->valor_param, FILTER_VALIDATE_EMAIL)) {
-            Session::flash('message', 'El correo destinatario no es válido o no está configurado correctamente.');
-            Session::flash('alert-class', 'alert-danger');
-            return redirect()->back();
-        }
-  
-      //obtengo información relacionada con la solicitud
-      $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
-      $solicitante = Solicitud::obtenerSolicitante($id);
-      $encargado = Solicitud::obtenerEncargado($id);
-  
-      $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
-      $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
-  
-      $nombreEncargado = $encargado ? $encargado->nombre_p : '';
-      $apellidoEncargado = $encargado ? $encargado->apellido : '';
-  
-      try {
-          //envio el correo
-          Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
-              $nombreEstado,
-              $id,
-              $nombreSolicitante,
-              $apellidoSolicitante,
-              $nombreEncargado,
-              $apellidoEncargado
-          ));
-          Session::flash('correo_enviado', true);
 
-  
-          //registro del recordatorio enviado, tabla recordatorios en BD
-          DB::table('recordatorios')->insert([
-              'solicitud_id' => $id,
-              'created_at' => now(),
-              
-          ]);
-  
-          Session::flash('message', 'Recordatorio enviado con éxito');
-          Session::flash('alert-class', 'alert-success');
-      } catch (\Exception $e) {
-            Session::flash('error_envio_correo', true);
+    if (!$correoDestinatario || !filter_var($correoDestinatario->valor_param, FILTER_VALIDATE_EMAIL)) {
+        $response = [
+            'success' => false,
+            'message' => 'El correo destinatario no es válido o no está configurado correctamente.',
+            'verificacion' => $verificacion,
+        ];
+        return response()->json($response);
+    }
 
-          Session::flash('message', 'Error al enviar el recordatorio');
-          Session::flash('alert-class', 'alert-danger');
-      }
-      
-      
-      return redirect()->back();
+    // Obtener información relacionada con la solicitud
+    $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
+    $solicitante = Solicitud::obtenerSolicitante($id);
+    $encargado = Solicitud::obtenerEncargado($id);
 
+    $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
+    $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
+
+    $nombreEncargado = $encargado ? $encargado->nombre_p : '';
+    $apellidoEncargado = $encargado ? $encargado->apellido : '';
+
+    try {
+        // Enviar el correo
+        Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
+            $nombreEstado,
+            $id,
+            $nombreSolicitante,
+            $apellidoSolicitante,
+            $nombreEncargado,
+            $apellidoEncargado
+        ));
+
+        // Registro del recordatorio enviado en la base de datos
+        DB::table('recordatorios')->insert([
+            'solicitud_id' => $id,
+            'created_at' => now(),
+        ]);
+        Session::flash('correo_enviado', true);
+
+        $response = [
+            'success' => true,
+            'message' => 'Recordatorio enviado con éxito',
+            'verificacion' => $verificacion,
+        ];
+    } catch (\Exception $e) {
+        $response = [
+            'success' => false,
+            'message' => 'Error al enviar el recordatorio',
+            'verificacion' => $verificacion,
+        ];
+    }
+    
+    return response()->json($response);
 }
+
 }
 
 
