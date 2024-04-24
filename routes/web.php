@@ -416,6 +416,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
   Route::get('getHistoricos/{solicitud}', ['uses' => 'SolicitudController@getHistoricos'])->name('getHistoricos');
   Route::get('getSolicitud/{idSolicitud}', ['uses' => 'SolicitudController@getSolicitud'])->name('getSolicitud');
+
+  Route::post('enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+  Route::post('/verificar-envio-permitido/{id}', 'SolicitudController@verificarEnvioPermitido')->name('verificar.envio.permitido');
 });
 
 Route::group(['middleware' => ['auth']], function () 
@@ -500,7 +504,9 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
-Route::post('enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+
+
 
 
 
