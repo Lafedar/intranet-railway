@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 
-class ParametrosGenController extends Controller
+class ParametrosGenSistController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -53,9 +53,6 @@ class ParametrosGenController extends Controller
         return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
     }
 
-    
-    
-
     /**
      * Display the specified resource.
      *
@@ -87,7 +84,7 @@ class ParametrosGenController extends Controller
      */
     public function update(Request $request, $id)
     {
-       // Validar los datos del formulario
+        // Validar los datos del formulario
        $request->validate([
         'descripcion_param' => 'required|string|max:255',
         'valor_param' => 'required|string|max:255',

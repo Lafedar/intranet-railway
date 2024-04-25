@@ -1,4 +1,4 @@
-@extends('parametros_gen.layouts.layout')
+@extends('parametros_gen_sistemas.layouts.layout')
 @section('content')
 
 <!-- alertas -->

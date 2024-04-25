@@ -497,6 +497,15 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
+Route::group(['middleware' => ['auth']], function () 
+{
+  Route::resource('parametros_gen_sistemas','ParametrosGenSistController')->middleware('role:administrador|Jefe-Mantenimiento'); //cambiar a sistemas
+  Route::post('guardar-datos-sistemas', 'ParametrosGenSistController@store')->name('guardar_datos');
+  Route::put('parametros/sistemas/{parametro}', 'ParametrosGenSistController@update')->name('parametros.update');
+  Route::delete('/parametros/sistemas/{parametro}', 'ParametrosGenSistController@destroy')->name('parametros.destroy');
+ 
+});
+
 //***********************************Personas*************************************
 //Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
 //Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
