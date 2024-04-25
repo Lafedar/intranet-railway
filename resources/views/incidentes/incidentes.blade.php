@@ -62,13 +62,14 @@
          <button class="btn btn-info btn-sm" data-id=" {{$incidente->id_i}}" data-toggle="modal" data-target="#modalForm">Resolver</button>
          @endif
        </td>
-     </tr>                    
+     </tr>     
+     @include('incidentes.resolver')               
      @endforeach  
      @endif  
    </tbody>
  </table>
 
- @include('incidentes.resolver')
+ 
 
  {{ $incidentes->appends($_GET)->links() }}
 
