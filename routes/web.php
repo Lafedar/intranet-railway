@@ -497,21 +497,15 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index');
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+  Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
 
-Route::group(['middleware' => ['auth']], function () 
-{
-  Route::resource('parametros_gen_sistemas','ParametrosGenSistController')->middleware('role:administrador|Jefe-Mantenimiento'); //cambiar a sistemas
-  Route::post('guardar-datos-sistemas', 'ParametrosGenSistController@store')->name('guardar_datos');
-  Route::put('parametros/sistemas/{parametro}', 'ParametrosGenSistController@update')->name('parametros.update');
-  Route::delete('/parametros/sistemas/{parametro}', 'ParametrosGenSistController@destroy')->name('parametros.destroy');
-  Route::get('obtener-megabytes-maximos', 'ParametrosGenSistController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
- 
-});
+
 
 
 

@@ -16,8 +16,14 @@ class ParametrosGenController extends Controller
     {
         $parametros = DB::table('parametros_mant')->get();
         return view('parametros_gen.index', compact('parametros'));
-    }
 
+        
+    }
+    public function indexSistemas()
+    {
+        $parametros = DB::table('parametros_mant')->get();
+        return view('parametros_gen_sistemas.index', compact('parametros'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -99,7 +105,7 @@ class ParametrosGenController extends Controller
         DB::table('parametros_mant')->where('id_param', $id)->update([
             'descripcion_param' => $request->descripcion_param,
             'valor_param' => $request->valor_param,
-            'origen' => $request->origen,
+            
         ]);
 
         return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
@@ -127,4 +133,14 @@ class ParametrosGenController extends Controller
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }
+
+    
+public function obtenerMegabytesMaximos()
+{
+    $megabytesMaximos = DB::table('parametros_mant')
+                        ->where('id_param', 'PMB')
+                        ->value('valor_param');
+
+    return response()->json(['megabytesMaximos' => $megabytesMaximos]);
+}
 }
