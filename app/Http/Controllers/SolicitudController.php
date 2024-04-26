@@ -69,9 +69,11 @@ class SolicitudController extends Controller{
             'personas.id_p as idPersona')
         ->get();
         $model_as_roles = DB::table('model_has_roles')->get();
-    
-
+        
+        $verificacion = Session::get('verificacion');
+       
         return view('solicitudes.index', [
+            'verificacion' => $verificacion,
             'solicitudes' => $solicitudes,
             'tiposSolicitudes' => $tiposSolicitudes,
             'estados' => $estados,
@@ -420,170 +422,111 @@ class SolicitudController extends Controller{
         return redirect ('solicitudes');
     }
 
-    public function obtenerHorasDesbloqueo() {
+    public function obtenerDiasDesbloqueo() {  //cantidad de dias para enviar mails
         $parametro = DB::table('parametros_mant')
-            ->where('id_param', 'PHORA')
-            ->first();
+            ->where('id_param', 'PDIAS')
+            ->value('valor_param');
     
-        return $parametro ? intval($parametro->valor_param) : 0;
+        return $parametro ? intval($parametro) : 0;
     }
     
-   
-  public function enviarRecordatorio($id)
-  {
-      $horasDesbloqueo = $this->obtenerHorasDesbloqueo();
-      $ultimaSolicitud = DB::table('recordatorios')
-                          ->where('solicitud_id', $id)
-                          ->latest()
-                          ->first();
-  
-      if ($ultimaSolicitud && now()->diffInHours(Carbon::parse($ultimaSolicitud->created_at)) < $horasDesbloqueo) {
-          Session::flash('message', 'El recordatorio solo se puede enviar después de ' . $horasDesbloqueo . ' horas.');
-          Session::flash('alert-class', 'alert-danger');
-          return redirect()->back();
-      }
-  
-      // Realizar el envío del correo
-      $correoDestinatario = DB::table('parametros_mant')
-          ->select('valor_param')
-          ->where('id_param', 'PMAIL')
-          ->first();
-  
-      if (!$correoDestinatario) {
-          Session::flash('message', 'No se encontró el correo destinatario en la base de datos');
-          Session::flash('alert-class', 'alert-danger');
-          return redirect()->back();
-      }
-  
-      // Obtener información relacionada con la solicitud
-      $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
-      $solicitante = Solicitud::obtenerSolicitante($id);
-      $encargado = Solicitud::obtenerEncargado($id);
-  
-      $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
-      $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
-  
-      $nombreEncargado = $encargado ? $encargado->nombre_p : '';
-      $apellidoEncargado = $encargado ? $encargado->apellido : '';
-  
-      try {
-          // Envío del correo
-          Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
-              $nombreEstado,
-              $id,
-              $nombreSolicitante,
-              $apellidoSolicitante,
-              $nombreEncargado,
-              $apellidoEncargado
-          ));
-          Session::flash('correo_enviado', true);
 
-  
-          //Registro del recordatorio enviado
-          DB::table('recordatorios')->insert([
-              'solicitud_id' => $id,
-              'created_at' => now(),
-              
-          ]);
-  
-          Session::flash('message', 'Recordatorio enviado con éxito');
-          Session::flash('alert-class', 'alert-success');
-      } catch (\Exception $e) {
-            Session::flash('error_envio_correo', true);
+    public function enviarRecordatorio($id)  //envio de mails
+    {   
+        $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
+        $ultimaSolicitud = DB::table('recordatorios')
+                        ->where('solicitud_id', $id)
+                        ->latest()
+                        ->first();
+    
+        if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) { //filtro del rango de dias para enviar mails
+            $response = [ //json para no poder enviar correo
+                'success' => false,
+                'message' => "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio. \n \nUltimo recordatorio enviado: $ultimaSolicitud->created_at",
+            ];
+            return response()->json($response);
+        }
+    
+        $correoDestinatario = DB::table('parametros_mant') //obtengo el correo del destinatario
+            ->select('valor_param')
+            ->where('id_param', 'PMAIL')
+            ->first();
 
-          Session::flash('message', 'Error al enviar el recordatorio');
-          Session::flash('alert-class', 'alert-danger');
-      }
-  
-      return redirect()->back();
-  }
-  
+        if (!$correoDestinatario || !filter_var($correoDestinatario->valor_param, FILTER_VALIDATE_EMAIL)) {
+            $response = [
+                'success' => false,
+                'message' => 'El correo destinatario no es válido o no está configurado correctamente.',
+        ];
+        return response()->json($response);
+        }
+
+        
+        $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
+        $solicitante = Solicitud::obtenerSolicitante($id);
+        $encargado = Solicitud::obtenerEncargado($id);
+
+        $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
+        $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
+
+        $nombreEncargado = $encargado ? $encargado->nombre_p : '';
+        $apellidoEncargado = $encargado ? $encargado->apellido : '';
+
+        try {
+            //enviar el correo
+            Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
+                $nombreEstado,
+                $id,
+                $nombreSolicitante,
+                $apellidoSolicitante,
+                $nombreEncargado,
+                $apellidoEncargado
+            ));
+
+            
+            DB::table('recordatorios')->insert([ //registro del recordatorio en la base de datos
+                'solicitud_id' => $id,
+                'created_at' => now(),
+            ]);
+            Session::flash('correo_enviado', true);
+
+            $response = [ //json para poder enviar correo
+                'success' => true,
+                'message' => 'Recordatorio enviado con éxito',
+            
+            ];
+        } catch (\Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => 'Error al enviar el recordatorio',
+            ];
+        }
+    
+        return response()->json($response);
+    }
+    public function verificarEnvioPermitido($id)  //verifico si se pueden enviar mails
+    {
+        $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
+        $ultimaSolicitud = DB::table('recordatorios')
+                        ->where('solicitud_id', $id)
+                        ->latest()
+                        ->first();
+    
+        if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
+            $response = [
+                'success' => false,
+                'message' => "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio. \n \nUltimo recordatorio enviado: $ultimaSolicitud->created_at",
+                'envio_permitido' => false,
+            ];
+        } else {
+            $response = [
+                'success' => true,
+                'message' => 'Envío permitido',
+                'envio_permitido' => true,
+            ];
+        }
+    
+        return response()->json($response);
+    }
 }
 
 
-//public function enviarRecordatorio($id)                           //recordatorio para el solicitante en caso de que se necesite
-    // {
-    // $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($id);
-    // $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($id);
-    
-    
-    // try {
-    //     Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\RecordatorioMail( $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
-    //     Session::flash('message', 'Recordatorio enviado con éxito');
-    //     Session::flash('alert-class', 'alert-success');
-    // } catch (\Exception $e) {
-    //     Session::flash('message', 'Error al enviar el recordatorio');
-    //     Session::flash('alert-class', 'alert-danger');
-    // }
-
-    // return redirect()->back();
-    // }
-
-
-
-
-//     public function enviarRecordatorio($id)      //ENVIAR RECORDATORIO QUE FUNCIONA
-//   {
-//       $horasDesbloqueo = $this->obtenerHorasDesbloqueo();
-//       $ultimaSolicitud = DB::table('recordatorios')
-//                           ->where('solicitud_id', $id)
-//                           ->latest()
-//                           ->first();
-  
-//       if ($ultimaSolicitud && now()->diffInHours(Carbon::parse($ultimaSolicitud->created_at)) < $horasDesbloqueo) {
-//           Session::flash('message', 'El recordatorio solo se puede enviar después de ' . $horasDesbloqueo . ' horas.');
-//           Session::flash('alert-class', 'alert-danger');
-//           return redirect()->back();
-//       }
-  
-//       // Realizar el envío del correo
-//       $correoDestinatario = DB::table('parametros_mant')
-//           ->select('valor_param')
-//           ->where('id_param', 'PMAIL')
-//           ->first();
-  
-//       if (!$correoDestinatario) {
-//           Session::flash('message', 'No se encontró el correo destinatario en la base de datos');
-//           Session::flash('alert-class', 'alert-danger');
-//           return redirect()->back();
-//       }
-  
-//       // Obtener información relacionada con la solicitud
-//       $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
-//       $solicitante = Solicitud::obtenerSolicitante($id);
-//       $encargado = Solicitud::obtenerEncargado($id);
-  
-//       $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
-//       $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
-  
-//       $nombreEncargado = $encargado ? $encargado->nombre_p : '';
-//       $apellidoEncargado = $encargado ? $encargado->apellido : '';
-  
-//       try {
-//           // Envío del correo
-//           Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
-//               $nombreEstado,
-//               $id,
-//               $nombreSolicitante,
-//               $apellidoSolicitante,
-//               $nombreEncargado,
-//               $apellidoEncargado
-//           ));
-  
-//           //Registro del recordatorio enviado
-//           DB::table('recordatorios')->insert([
-//               'solicitud_id' => $id,
-//               'created_at' => now(),
-//               'updated_at' => now(),
-//           ]);
-  
-//           Session::flash('message', 'Recordatorio enviado con éxito');
-//           Session::flash('alert-class', 'alert-success');
-//       } catch (\Exception $e) {
-//           Session::flash('message', 'Error al enviar el recordatorio');
-//           Session::flash('alert-class', 'alert-danger');
-//       }
-  
-//       return redirect()->back();
-//   }
-  

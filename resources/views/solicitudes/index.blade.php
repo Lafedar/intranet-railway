@@ -13,12 +13,19 @@
   <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
-      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-        {{Session::get('message')}}
+      <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert">
+        {!! Session::get('message') !!} 
       </div>
     </div>
   </div>
 @endif
+
+@if(session('correo_enviado'))
+    <div class="alert alert-success text-center" role="alert">
+        ¡El correo fue enviado correctamente!
+    </div>
+@endif
+
 
 <!-- barra para buscar solicitudes -->
 <div class="col">
@@ -103,6 +110,7 @@
     </form>          
   </div>
 </div>
+
 <!-- tabla de datos -->
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
@@ -139,7 +147,7 @@
                 <p style="color:gainsboro">N/A</p>
               @endif
             </td>
-            <td>{{$solicitud->estado}}</td>
+            <td>{{$solicitud->estado}}</td> 
             <td>
               @if($solicitud->falla)
                 <p>{{$solicitud->falla}}</p>
@@ -166,9 +174,14 @@
             <td>
               <div class="text-center">
                 <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
+
                   <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
+                  @php 
+                    $estado_solicitud = \App\Solicitud::find($solicitud->id)->id_estado; //obtengo el id del estado de cada solicitud
+                  @endphp
+
 
                   <!--Boton Actualizar-->
                   @can('actualizar-solicitud')
@@ -188,7 +201,8 @@
                   @endcan
 
                   <!--Boton Reclamar-->
-                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  {{--@if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
+                  @if($estado_solicitud == 5 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                     </div>
@@ -197,33 +211,35 @@
                     </div>
                   @endif
                  
-                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  @if($estado_solicitud == 1 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
                     </div>-->
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                     </div>
-                  @else
+                  @endif--}}
                   
-                  <!--Boton Recordatorio-->
-                  @if($solicitud->estado == "Abierta" || $solicitud->estado == "Aprobada" || $solicitud->estado == "Asignada" || $solicitud->estado == "En proceso" || $solicitud->estado == "Reclamada")
+                  
+                   <!-- Boton Recordatorio-->
+                   @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8) 
                     <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
                       @csrf
                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" title="Enviar mail a Mantenimiento">Recordatorio</button>
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail a Mantenimiento">Recordatorio</button>
                       </div>
                     </form>
                   @endif
 
-
-                    <!-- Boton Eliminar-->
-                    @can('eliminar-solicitud')
-                      <div class="btn-container" style="margin-bottom: 5px; ">
-                        <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                      </div>
-                    @endcan
-                  @endif
+                    
+                  <!-- Boton Eliminar-->
+                  @can('eliminar-solicitud')
+                    <div class="btn-container" style="margin-bottom: 5px; ">
+                      <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                    </div>
+                  @endcan
+                  
                 </div>
               </div>
             </td>
@@ -288,27 +304,66 @@
   });
   
 </script>
+
+
 <script>
     function confirmarEnvio(id) {
-        var boton = document.querySelector('#recordatorioForm' + id + ' button');
-        var bloqueado = boton.dataset.bloqueado === "true";
-        var tiempoDesbloqueo = parseInt(boton.dataset.desbloqueo);
+        var boton = document.getElementById('recordatorioBtn' + id);
+        
+        fetch('/verificar-envio-permitido/' + id, { //solicitud para saber si el envio de mail esta permitido
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.envio_permitido) {
+                if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) { 
 
-        if (bloqueado && tiempoDesbloqueo > Date.now()) {
-            mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
-            return;
-        }
-
-        if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-            document.getElementById('recordatorioForm' + id).submit();
-            boton.dataset.bloqueado = "true";
-            var horas = obtenerHorasDesbloqueo(); 
-            var tiempoDesbloqueo = new Date();
-            tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
-            boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
-            boton.disabled = true; // Deshabilita el botón después de enviar el recordatorio
-            mostrarMensaje('Recordatorio enviado');
-        }
+                    fetch('/enviar-recordatorio/' + id, { //solicitud para enviar el mail
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        
+                        if (data.success) {
+                            boton.disabled = true;
+                            document.getElementById('recordatorioForm' + id).submit(); //envio el formulario
+                            window.location.href = window.location.pathname + window.location.search; //redirijo la pagina asi no muestra el json
+                        } else {
+                            alert(data.message);
+                        }
+                       
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud AJAX para enviar el recordatorio:', error);
+                        alert('Error en la solicitud AJAX para enviar el recordatorio: ' + error.message);
+                    });
+                }
+            } 
+            else {  //muestra el mensaje de que no se pueden enviar mails por cierto tiempo
+                
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error en la solicitud AJAX para verificar el envío:', error);
+            alert('Error en la solicitud AJAX para verificar el envío: ' + error.message);
+        });
     }
 </script>
 
