@@ -47,34 +47,35 @@
         </thead>
         <tbody>
     @foreach($parametros as $parametro)
-        <tr class="text-center">
-            <td>{{ $parametro->id_param }}</td>
-            <td>{{ $parametro->descripcion_param }}</td>
-            <td>{{ $parametro->valor_param}}</td>
-            <td>{{ $parametro->origen}}</td>
-            <td>
-            <div class="btn-group" role="group" aria-label="Acciones">
-    <!-- Botón para abrir la modal de edición -->
-    <button class="btn btn-info btn-sm action-button rounded" style="width: 70px;" data-toggle="modal" data-target="#editarModal{{ $parametro->id_param }}">Editar</button>
-    
-    @if($parametro->id_param !== 'PMAIL' && $parametro->id_param !== 'PDIAS')
-            <!-- Enlace para eliminar el parámetro -->
-    <a href="{{ route('parametros.destroy', $parametro->id_param) }}" class="btn btn-danger btn-sm action-button ml-2 rounded" style="width: 70px;" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que deseas eliminar este parámetro?')) { document.getElementById('eliminar-parametro-{{ $parametro->id_param }}').submit(); }">Eliminar</a>
-    
-    <!-- Formulario oculto para eliminar el parámetro -->
-    <form id="eliminar-parametro-{{ $parametro->id_param }}" action="{{ route('parametros.destroy', $parametro->id_param) }}" method="POST" style="display: none;">
-        @csrf
-        @method('DELETE')
-    </form>
-        @else
-            <td></td> <!-- En lugar del botón, simplemente dejar una celda vacía -->
+        @if($parametro->origen=="Sistemas")
+            <tr class="text-center">
+                <td>{{ $parametro->id_param }}</td>
+                <td>{{ $parametro->descripcion_param }}</td>
+                <td>{{ $parametro->valor_param}}</td>
+                <td>{{ $parametro->origen}}</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Acciones">
+                   
+                    <!-- Botón para abrir la modal de edición -->
+                    <button class="btn btn-info btn-sm action-button rounded" style="width: 70px;" data-toggle="modal" data-target="#editarModal{{ $parametro->id_param }}">Editar</button>
+                    @if($parametro->id_param !="PMB")
+                        <!-- Enlace para eliminar el parámetro -->
+                        <a href="{{ route('parametros.destroy', $parametro->id_param) }}" class="btn btn-danger btn-sm action-button ml-2 rounded" style="width: 70px;" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que deseas eliminar este parámetro?')) { document.getElementById('eliminar-parametro-{{ $parametro->id_param }}').submit(); }">Eliminar</a>
+                
+                        <!-- Formulario oculto para eliminar el parámetro -->
+                        <form id="eliminar-parametro-{{ $parametro->id_param }}" action="{{ route('parametros.destroy', $parametro->id_param) }}" method="POST" style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    @endif
+                </td>
+            </tr>
+        
         @endif
-    
+    @endforeach
 </div>
 
-            </td>
-        </tr>
-    @endforeach
+        
 </tbody>
     </table>
 </div>
@@ -108,7 +109,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="origen">Origen:</label>
-                                <input type="text" class="form-control" id="origen" name="origen" value="Mantenimiento" readonly>
+                                <input type="text" class="form-control" id="origen" name="origen" value="Sistemas" readonly>
                             </div>
 
                         </div>

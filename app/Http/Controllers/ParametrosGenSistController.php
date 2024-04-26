@@ -15,7 +15,7 @@ class ParametrosGenSistController extends Controller
     public function index()
     {
         $parametros = DB::table('parametros_mant')->get();
-        return view('parametros_gen.index', compact('parametros'));
+        return view('parametros_gen_sistemas.index', compact('parametros'));
     }
 
     /**
@@ -84,25 +84,22 @@ class ParametrosGenSistController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validar los datos del formulario
        $request->validate([
         'descripcion_param' => 'required|string|max:255',
         'valor_param' => 'required|string|max:255',
-        
+       
     ]);
 
     try {
-        // Actualizar el registro en la base de datos
         DB::table('parametros_mant')->where('id_param', $id)->update([
             'descripcion_param' => $request->descripcion_param,
             'valor_param' => $request->valor_param,
             
         ]);
 
-        // Mensaje de éxito
         return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
     } catch (\Exception $e) {
-        // Mensaje de error
+        
         return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
     }
     }
@@ -116,14 +113,25 @@ class ParametrosGenSistController extends Controller
     public function destroy($id)
     {
         try {
-            // Eliminar el parámetro de la base de datos
+            
             DB::table('parametros_mant')->where('id_param', $id)->delete();
             
-            // Mensaje de éxito
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
         } catch (\Exception $e) {
-            // Mensaje de error
+            
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }
+
+   
+
+public function obtenerMegabytesMaximos()
+{
+    $megabytesMaximos = DB::table('parametros_mant')
+                        ->where('id_param', 'PMB')
+                        ->value('valor_param');
+
+    return response()->json(['megabytesMaximos' => $megabytesMaximos]);
+}
+
 }

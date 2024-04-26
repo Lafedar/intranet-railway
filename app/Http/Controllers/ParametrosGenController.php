@@ -91,21 +91,20 @@ class ParametrosGenController extends Controller
        $request->validate([
         'descripcion_param' => 'required|string|max:255',
         'valor_param' => 'required|string|max:255',
-        
+       
     ]);
 
     try {
-        // Actualizar el registro en la base de datos
+        
         DB::table('parametros_mant')->where('id_param', $id)->update([
             'descripcion_param' => $request->descripcion_param,
             'valor_param' => $request->valor_param,
-            
+            'origen' => $request->origen,
         ]);
 
-        // Mensaje de éxito
         return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
     } catch (\Exception $e) {
-        // Mensaje de error
+        
         return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
     }
     }
@@ -119,13 +118,12 @@ class ParametrosGenController extends Controller
     public function destroy($id)
     {
         try {
-            // Eliminar el parámetro de la base de datos
+            
             DB::table('parametros_mant')->where('id_param', $id)->delete();
             
-            // Mensaje de éxito
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
         } catch (\Exception $e) {
-            // Mensaje de error
+          
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }

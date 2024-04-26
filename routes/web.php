@@ -209,23 +209,29 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //****************POLITICAS**********************
-Route::get('politicas','PoliticaController@index');
-Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
-Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
-Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
+Route::group(['middleware' => ['auth']], function () {
+  Route::get('politicas','PoliticaController@index');
+  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica')->middleware('role:administrador |politicas');
+  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica'])->middleware('role:administrador|politicas');
+  Route::post('update_politica','PoliticaController@update_politica')->middleware('role:administrador|politicas')->name('update_politicas');
+});
+
 
 //****************INSTRUCTIVOS**********************
-Route::get('instructivos','InstructivoController@index');
-Route::get('/instructivos', 'InstructivoController@index')->name('instructivos.index');
+Route::group(['middleware' => ['auth']], function () {
+  Route::get('instructivos','InstructivoController@index');
+  Route::get('/instructivos', 'InstructivoController@index')->name('instructivos.index');
 
-Route::get('show_store_instructivo',['uses' => 'InstructivoController@show_store_instructivo'])->name('show_store_instructivo');
-Route::post('store_instructivo','InstructivoController@store_instructivo')->name('store_instructivo');
+  Route::get('show_store_instructivo',['uses' => 'InstructivoController@show_store_instructivo'])->name('show_store_instructivo');
+  Route::post('store_instructivo','InstructivoController@store_instructivo')->name('store_instructivo')->middleware('role:administrador|instructivos');
 
-Route::get('show_update_instructivo/{instructivo}',['uses' => 'InstructivoController@show_update_instructivo'])->name('show_update_instructivo');
-Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivo');
+  Route::get('show_update_instructivo/{instructivo}',['uses' => 'InstructivoController@show_update_instructivo'])->name('show_update_instructivo');
+  Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivo')->middleware('role:administrador|instructivos');
 
-Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo']);
-Route::get('select_tipo_instructivos', 'InstructivoController@select_tipo_instructivos')->name('select_tipo_instructivos');
+  Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo'])->middleware('role:administrador|instructivos');
+  Route::get('select_tipo_instructivos', 'InstructivoController@select_tipo_instructivos')->name('select_tipo_instructivos');
+
+});
 
 //******************************QAD-Controller
 
@@ -503,12 +509,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('guardar-datos-sistemas', 'ParametrosGenSistController@store')->name('guardar_datos');
   Route::put('parametros/sistemas/{parametro}', 'ParametrosGenSistController@update')->name('parametros.update');
   Route::delete('/parametros/sistemas/{parametro}', 'ParametrosGenSistController@destroy')->name('parametros.destroy');
+  Route::get('obtener-megabytes-maximos', 'ParametrosGenSistController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
 
-//***********************************Personas*************************************
-//Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
-//Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
 
 
 

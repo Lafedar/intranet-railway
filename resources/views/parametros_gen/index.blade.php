@@ -47,6 +47,7 @@
         </thead>
         <tbody>
     @foreach($parametros as $parametro)
+        @if($parametro->origen=="Mantenimiento")
         <tr class="text-center">
             <td>{{ $parametro->id_param }}</td>
             <td>{{ $parametro->descripcion_param }}</td>
@@ -74,6 +75,7 @@
 
             </td>
         </tr>
+        @endif
     @endforeach
 </tbody>
     </table>
