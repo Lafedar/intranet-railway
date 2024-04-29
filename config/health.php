@@ -58,15 +58,15 @@ return [
          * With this setting, notifications are throttled. By default, you'll
          * only get one notification per hour.
          */
-        'throttle_notifications_for_minutes' => 60,
+        'throttle_notifications_for_minutes' => 30,  //lapso de tiempo (minutos) durante los que no se puede enviar un nuevo mail desde el ultimo enviado
         'throttle_notifications_key' => 'health:latestNotificationSentAt:',
 
         'mail' => [
-            'to' => 'your@example.com',
+            'to' => 'notificaciones@lafedar.com',
 
             'from' => [
-                'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-                'name' => env('MAIL_FROM_NAME', 'Example'),
+                'address' => env('MAIL_FROM_ADDRESS', 'notificaciones@lafedar.com'),
+                'name' => env('MAIL_FROM_NAME', 'Notificaciones Health Check'),
             ],
         ],
 
