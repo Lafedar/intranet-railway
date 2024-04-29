@@ -7,7 +7,7 @@ use Spatie\Health\Facades\Health;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\SecurityAdvisoriesHealthCheck\SecurityAdvisoriesCheck;
 use Spatie\Health\Checks\Checks\DatabaseConnectionCountCheck;
-use Spatie\Health\Checks\Checks\PingCheck;
+use Spatie\Health\Checks\Checks\ScheduleCheck;
 
 
 class HealthCheckServiceProvider extends ServiceProvider
@@ -22,8 +22,6 @@ class HealthCheckServiceProvider extends ServiceProvider
         Health::checks([
             DatabaseCheck::new(),
             SecurityAdvisoriesCheck::new(),
-            
-    
             DatabaseConnectionCountCheck::new()
         ->warnWhenMoreConnectionsThan(50)
         ->failWhenMoreConnectionsThan(100)
