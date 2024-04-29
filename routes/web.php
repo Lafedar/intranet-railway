@@ -1,6 +1,7 @@
 <?php
-
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 Auth::routes();
+
 
    //****************MENU INICIAL**********************
 Route::get('/home', 'HomeController@index');
@@ -497,9 +498,8 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
-//***********************************Personas*************************************
-//Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
-//Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
+//***********************************Health*************************************
+Route::get('health', [HealthCheckResultsController::class, '__invoke']);
 
 
 
