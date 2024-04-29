@@ -499,6 +499,7 @@ Route::group(['middleware' => ['auth']], function ()
 });
 
 //***********************************Health*************************************
+
 Route::get('health', [HealthCheckResultsController::class, '__invoke']);
 
 
