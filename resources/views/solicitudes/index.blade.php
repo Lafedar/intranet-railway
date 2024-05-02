@@ -80,22 +80,15 @@
         <input class="form-control" type="date" id="fecha" name="fecha">
       </div>
       <div style="display: inline-block;">
-        <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
-        <select class="form-control" name="id_encargado" id="id_encargado">
-          <option value="0">{{'Todos'}} </option>
-          @foreach($usuarios as $usuario)
-            @foreach($model_as_roles as $model_as_rol)
-              @if(($model_as_rol->role_id == 21 || $model_as_rol->role_id == 24 || $model_as_rol->role_id == 25 || $model_as_rol->role_id == 30) and $usuario->idUsuario == $model_as_rol->model_id)
-                @if($usuario->idPersona == $id_encargado)
-                  <option value="{{$usuario->idPersona}}" selected>{{$usuario->name}} </option>
-                @else
-                  <option value="{{$usuario->idPersona}}">{{$usuario->name}} </option>
-                @endif
-              @endif
-            @endforeach
-          @endforeach
-        </select>
-      </div>
+    <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
+    <select class="form-control" name="id_encargado" id="id_encargado">
+        <option value="0">{{'Todos'}} </option>
+        @foreach($usuarios as $usuario)
+            <option value="{{$usuario->idPersona}}" @if($usuario->idPersona == $id_encargado) selected @endif>{{$usuario->name}} </option>
+        @endforeach
+    </select>
+</div>
+
       &nbsp
       <div style="display: inline-block;">
         <button type="submit" class="btn btn-default"> Buscar</button>
