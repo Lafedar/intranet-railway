@@ -227,7 +227,7 @@
                     <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
                       @csrf
                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail a Mantenimiento">Recordatorio</button>
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail de recordatorio a Mantenimiento">Recordatorio</button>
                       </div>
                     </form>
                   @endif
@@ -304,67 +304,102 @@
   });
   
 </script>
+<script>
+  window.onload = function() {   //habilita o deshabilita los botones al recargar la pagina 
+      var botones = document.querySelectorAll('[id^="recordatorioBtn"]');
+      
+      botones.forEach(function(boton) {
+          var id = boton.id.replace('recordatorioBtn', '');
+          
+          fetch('/verificar-envio-permitido/' + id, {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (!data.envio_permitido) {
+                  if (data.tiempo_restante > 0) {
+                      //convertir el tiempo restante en segundos a días, horas y minutos
+                      var segundos = data.tiempo_restante;
+                      var dias = Math.floor(segundos / (60 * 60 * 24));
+                      segundos -= dias * (60 * 60 * 24);
+                      var horas = Math.floor(segundos / (60 * 60));
+                      segundos -= horas * (60 * 60);
+                      var minutos = Math.floor(segundos / 60);
 
+                      boton.title = "Recordatorio ya enviado.\nTiempo restante para el proximo: " + dias + " días, " + horas + " horas y " + minutos + " minutos.";
+                  } else {
+                      boton.title = "No se pueden enviar correos hasta después de " + data.dias_desbloqueo + " días.";
+                  }
+                  boton.dataset.tiempoRestante = data.tiempo_restante;
+              }
+              boton.disabled = !data.envio_permitido; //deshabilito el botón
+          })
+          .catch(error => console.error('Error al verificar el envío:', error));
+      });
+  }
+</script>
 
 <script>
     function confirmarEnvio(id) {
-        var boton = document.getElementById('recordatorioBtn' + id);
-        
-        fetch('/verificar-envio-permitido/' + id, { //solicitud para saber si el envio de mail esta permitido
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la solicitud AJAX: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.envio_permitido) {
-                if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) { 
+    var boton = document.getElementById('recordatorioBtn' + id);
 
-                    fetch('/enviar-recordatorio/' + id, { //solicitud para enviar el mail
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error en la solicitud AJAX: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        
-                        if (data.success) {
-                            boton.disabled = true;
-                            document.getElementById('recordatorioForm' + id).submit(); //envio el formulario
-                            window.location.href = window.location.pathname + window.location.search; //redirijo la pagina asi no muestra el json
-                        } else {
-                            alert(data.message);
-                        }
-                       
-                    })
-                    .catch(error => {
-                        console.error('Error en la solicitud AJAX para enviar el recordatorio:', error);
-                        alert('Error en la solicitud AJAX para enviar el recordatorio: ' + error.message);
-                    });
-                }
-            } 
-            else {  //muestra el mensaje de que no se pueden enviar mails por cierto tiempo
-                
-                alert(data.message);
+    fetch('/verificar-envio-permitido/' + id, { //solicitud para saber si el envio de mail esta permitido
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.envio_permitido) {
+            if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) { 
+
+                fetch('/enviar-recordatorio/' + id, { //solicitud para enviar el mail
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    
+                    if (data.success) {
+                        boton.disabled = true;
+                        document.getElementById('recordatorioForm' + id).submit(); //envio el formulario
+                        window.location.href = window.location.pathname + window.location.search; //redirijo la pagina asi no muestra el json
+                    } else {
+                        alert(data.message);
+                    }
+                   
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud AJAX para enviar el recordatorio:', error);
+                    alert('Error en la solicitud AJAX para enviar el recordatorio: ' + error.message);
+                });
             }
-        })
-        .catch(error => {
-            console.error('Error en la solicitud AJAX para verificar el envío:', error);
-            alert('Error en la solicitud AJAX para verificar el envío: ' + error.message);
-        });
-    }
+        } 
+        else {  
+            boton.disabled = true;
+        }
+    })
+    .catch(error => {
+        console.error('Error en la solicitud AJAX para verificar el envío:', error);
+        alert('Error en la solicitud AJAX para verificar el envío: ' + error.message);
+    });
+}
 </script>
 
 <script>

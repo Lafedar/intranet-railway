@@ -439,12 +439,23 @@ class SolicitudController extends Controller{
                         ->latest()
                         ->first();
     
+        $tiempoRestante = null;
+
+        if ($ultimaSolicitud) {
+            $fechaUltimoEnvio = Carbon::parse($ultimaSolicitud->created_at);
+            $fechaPermitida = $fechaUltimoEnvio->addDays($diasDesbloqueo);
+            $tiempoRestante = now()->diffInSeconds($fechaPermitida);
+        }
+                    
+        
         if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) { //filtro del rango de dias para enviar mails
-            $response = [ //json para no poder enviar correo
+            $response = [
                 'success' => false,
-                'message' => "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio. \n \nUltimo recordatorio enviado: $ultimaSolicitud->created_at",
+                'message' => "No se pueden enviar correos hasta después de $diasDesbloqueo días.",
+                'envio_permitido' => false,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => $tiempoRestante,
             ];
-            return response()->json($response);
         }
     
         $correoDestinatario = DB::table('parametros_mant') //obtengo el correo del destinatario
@@ -489,10 +500,12 @@ class SolicitudController extends Controller{
             ]);
             Session::flash('correo_enviado', true);
 
-            $response = [ //json para poder enviar correo
+            $response = [
                 'success' => true,
-                'message' => 'Recordatorio enviado con éxito',
-            
+                'message' => 'Envío permitido',
+                'envio_permitido' => true,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => null,
             ];
         } catch (\Exception $e) {
             $response = [
@@ -511,17 +524,30 @@ class SolicitudController extends Controller{
                         ->latest()
                         ->first();
     
+        $tiempoRestante = null;
+
+        if ($ultimaSolicitud) {
+            $fechaUltimoEnvio = Carbon::parse($ultimaSolicitud->created_at);
+            $fechaPermitida = $fechaUltimoEnvio->addDays($diasDesbloqueo);
+            $tiempoRestante = now()->diffInSeconds($fechaPermitida);
+        }
+        
         if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
             $response = [
                 'success' => false,
-                'message' => "El recordatorio solo se puede enviar después de $diasDesbloqueo días, desde el último recordatorio. \n \nUltimo recordatorio enviado: $ultimaSolicitud->created_at",
+                'message' => "No se pueden enviar correos hasta después de $diasDesbloqueo días.",
                 'envio_permitido' => false,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => $tiempoRestante,
+                
             ];
         } else {
             $response = [
                 'success' => true,
                 'message' => 'Envío permitido',
                 'envio_permitido' => true,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => null,
             ];
         }
     
