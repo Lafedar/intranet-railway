@@ -57,7 +57,7 @@ class HomeController extends Controller
     {
         if(strlen($request['descripcion'])<=200){
 
-        $personas = DB::table('personas')->select('correo')->where('personas.rango',1)->orwhere('personas.rango',2)->orderBy('nombre_p')->get();
+        $personas = DB::table('personas')->select('correo')->where('personas.jefe',1)->orwhere('personas.jefe',0)->orderBy('nombre_p')->get();
 
         $novedad= new Novedad;
         $novedad->descripcion = $request['descripcion'];
