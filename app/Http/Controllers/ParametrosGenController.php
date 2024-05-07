@@ -16,8 +16,14 @@ class ParametrosGenController extends Controller
     {
         $parametros = DB::table('parametros_mant')->get();
         return view('parametros_gen.index', compact('parametros'));
-    }
 
+        
+    }
+    public function indexSistemas()
+    {
+        $parametros = DB::table('parametros_mant')->get();
+        return view('parametros_gen_sistemas.index', compact('parametros'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -40,12 +46,14 @@ class ParametrosGenController extends Controller
             'id_param' => 'required',
             'descripcion_param' => 'required',
             'valor_param' => 'required',
+            'origen' => 'required',
         ]);
 
         DB::table('parametros_mant')->insert([
             'id_param' => $request->id_param,
             'descripcion_param' => $request->descripcion_param,
             'valor_param' => $request->valor_param,
+            'origen' => $request->origen,
         ]);
 
         return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
@@ -84,37 +92,29 @@ class ParametrosGenController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {       
+
+    {
+       // Validar los datos del formulario
+       $request->validate([
+        'descripcion_param' => 'required|string|max:255',
+        'valor_param' => 'required|string|max:255',
+       
+    ]);
+
+    try {
         
-        $request->validate([
-            'descripcion_param' => 'required|string|max:255',
-            'valor_param' => ($id === 'PMAIL') ? 'required|string|email|max:255' : 'required|string|max:255',
+        DB::table('parametros_mant')->where('id_param', $id)->update([
+            'descripcion_param' => $request->descripcion_param,
+            'valor_param' => $request->valor_param,
+            
         ]);
+
+        return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
+    } catch (\Exception $e) {
         
-        if ($id === 'PMAIL') {
-            $correo = $request->input('valor_param');
-            $correoExiste = $this->validarMail($correo);
-        
-            if (!$correoExiste) {
-                return back()->withErrors(['correo_no_existe' => 'El correo ingresado no existe en la base de datos.'])->withInput();
-            }
-        }
-        
-        try {
-                //actualizo el registro en la base de datos
-                DB::table('parametros_mant')->where('id_param', $id)->update([
-                'descripcion_param' => $request->descripcion_param,
-                'valor_param' => $request->valor_param,
-                ]);
-        
-                
-                return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
-        } catch (\Exception $e) {
-               
-                return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
-            }
-        
-        
+        return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+    }
+
     }
 
     /**
@@ -126,17 +126,28 @@ class ParametrosGenController extends Controller
     public function destroy($id)
     {
         try {
+
+           
             DB::table('parametros_mant')->where('id_param', $id)->delete();
+            
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
+        
         } catch (\Exception $e) {
             
+
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }
 
-    private function validarMail($correo)
-    {
-        $correoExiste = DB::table('personas')->where('correo', $correo)->exists();
-        return $correoExiste;
-    }
+
+    
+public function obtenerMegabytesMaximos()
+{
+    $megabytesMaximos = DB::table('parametros_mant')
+                        ->where('id_param', 'PMB')
+                        ->value('valor_param');
+
+    return response()->json(['megabytesMaximos' => $megabytesMaximos]);
+}
+
 }

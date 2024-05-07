@@ -51,6 +51,13 @@
     <br>
      <a  href='/Instalado'> <img  src="{{ URL::to('/img/software instalado.png') }}" height="140"></a>
    </div>
+   
+   
+   <div class="col-md-3" aling="center">
+    <br>
+     <a  href="/parametros_gen_sistemas"> <img  src="{{ URL::to('/img/estados.png') }}" height="105"></a>
+     <h5 style="color: #3b557a">Parametros</h5>
+   </div>
 </div>
 
 
