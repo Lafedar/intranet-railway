@@ -240,8 +240,7 @@ Route::get('oc','QADController@oc');
 });
 
 //***************Evento-Calendario-reserva*********************
-Route::get('Calendario/event','CalendarioController@index');
-Route::get('Calendario/event/{mes}','CalendarioController@index_month');
+
 
 // formulario
 // formulario
@@ -417,6 +416,10 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
   Route::get('getHistoricos/{solicitud}', ['uses' => 'SolicitudController@getHistoricos'])->name('getHistoricos');
   Route::get('getSolicitud/{idSolicitud}', ['uses' => 'SolicitudController@getSolicitud'])->name('getSolicitud');
+
+  Route::post('enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+  Route::post('/verificar-envio-permitido/{id}', 'SolicitudController@verificarEnvioPermitido')->name('verificar.envio.permitido');
 });
 
 Route::group(['middleware' => ['auth']], function () 
@@ -487,19 +490,33 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
+  
 });
+
+
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+  Route::post('/verificar-correo', 'ParametrosGenController@validarMail')->name('verificar-correo');
  
 });
 
-//***********************************Personas*************************************
-//Route::get('/parametos_gen', [ParametrosGenController::class, 'index'])->name('parametos_gen');
-//Route::post('/guardar-datos', [ParametrosGenController::class, 'store'])->name('guardar_datos');
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

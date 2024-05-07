@@ -84,26 +84,37 @@ class ParametrosGenController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-       // Validar los datos del formulario
-       $request->validate([
-        'descripcion_param' => 'required|string|max:255',
-        'valor_param' => 'required|string|max:255',
-    ]);
-
-    try {
-        // Actualizar el registro en la base de datos
-        DB::table('parametros_mant')->where('id_param', $id)->update([
-            'descripcion_param' => $request->descripcion_param,
-            'valor_param' => $request->valor_param,
+    {       
+        
+        $request->validate([
+            'descripcion_param' => 'required|string|max:255',
+            'valor_param' => ($id === 'PMAIL') ? 'required|string|email|max:255' : 'required|string|max:255',
         ]);
-
-        // Mensaje de éxito
-        return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
-    } catch (\Exception $e) {
-        // Mensaje de error
-        return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
-    }
+        
+        if ($id === 'PMAIL') {
+            $correo = $request->input('valor_param');
+            $correoExiste = $this->validarMail($correo);
+        
+            if (!$correoExiste) {
+                return back()->withErrors(['correo_no_existe' => 'El correo ingresado no existe en la base de datos.'])->withInput();
+            }
+        }
+        
+        try {
+                //actualizo el registro en la base de datos
+                DB::table('parametros_mant')->where('id_param', $id)->update([
+                'descripcion_param' => $request->descripcion_param,
+                'valor_param' => $request->valor_param,
+                ]);
+        
+                
+                return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
+        } catch (\Exception $e) {
+               
+                return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+            }
+        
+        
     }
 
     /**
@@ -115,14 +126,17 @@ class ParametrosGenController extends Controller
     public function destroy($id)
     {
         try {
-            // Eliminar el parámetro de la base de datos
             DB::table('parametros_mant')->where('id_param', $id)->delete();
-            
-            // Mensaje de éxito
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
         } catch (\Exception $e) {
-            // Mensaje de error
+            
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
+    }
+
+    private function validarMail($correo)
+    {
+        $correoExiste = DB::table('personas')->where('correo', $correo)->exists();
+        return $correoExiste;
     }
 }
