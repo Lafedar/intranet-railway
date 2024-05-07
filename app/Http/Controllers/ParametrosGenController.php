@@ -92,6 +92,7 @@ class ParametrosGenController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
+
     {
        // Validar los datos del formulario
        $request->validate([
@@ -113,6 +114,7 @@ class ParametrosGenController extends Controller
         
         return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
     }
+
     }
 
     /**
@@ -124,15 +126,19 @@ class ParametrosGenController extends Controller
     public function destroy($id)
     {
         try {
-            
+
+           
             DB::table('parametros_mant')->where('id_param', $id)->delete();
             
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
+        
         } catch (\Exception $e) {
-          
+            
+
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }
+
 
     
 public function obtenerMegabytesMaximos()
@@ -143,4 +149,5 @@ public function obtenerMegabytesMaximos()
 
     return response()->json(['megabytesMaximos' => $megabytesMaximos]);
 }
+
 }

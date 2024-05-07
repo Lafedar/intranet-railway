@@ -43,9 +43,9 @@ class Empleado extends Model
         //dd($query);
     }
 
-    public function scopeRango ($query){
-        return $query -> where('personas.rango','!=',1);    
-    }
+    // public function scopeRango ($query){
+    //     return $query -> where('personas.rango','!=',1);    
+    // }
     
     public static function showAreaXJefeUpdate($id_ja) {
         return self::query()
