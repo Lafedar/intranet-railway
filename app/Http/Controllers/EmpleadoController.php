@@ -45,7 +45,6 @@ class EmpleadoController extends Controller{
         $empleado->turno = $request['turno'];
         $empleado->activo = $activo;
         $empleado->jefe = $jefe;
-        $empleado->rango = 3;
         $empleado->activo = 1;
         $empleado->save();
 
