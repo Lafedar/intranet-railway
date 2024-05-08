@@ -143,7 +143,7 @@
                     @if($parametro->id_param =="PMB")
                         <div class="form-group">
                             <label for="valor_param">Valor:</label>
-                            <input type="number" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" step="0.01" min="0" max="200" required>
+                            <input type="number" class="form-control" id="valor_param" name="valor_param" value="{{ $parametro->valor_param }}" step="0.01" min="0" required>
                         </div>
                     @else
                         <div class="form-group">
