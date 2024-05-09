@@ -127,25 +127,8 @@
                     </form>
 
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="nombre">Id:</label>
-                            <input type="text" class="form-control" id="id_param" name="id_param" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion_param">Descripcion:</label>
-                        <input type="text" class="form-control" id="descripcion_param" name="descripcion_param" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_param">Valor:</label>
-                        <input type="text" class="form-control" id="valor_param" name="valor_param" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Aceptar</button>
-                </div>
-            </form>
+                
+            
         </div>
     </div>
 </div>
