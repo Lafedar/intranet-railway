@@ -49,15 +49,22 @@ class ParametrosGenController extends Controller
             'origen' => 'required',
         ]);
 
-        DB::table('parametros_mant')->insert([
-            'id_param' => $request->id_param,
-            'descripcion_param' => $request->descripcion_param,
-            'valor_param' => $request->valor_param,
-            'origen' => $request->origen,
-        ]);
+        $existe = DB::table('parametros_mant')->where('id_param', $request->id_param)->exists();
 
-        return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
+        if ($existe) {
+            return redirect()->back()->with('error', 'El ID ya existe en la tabla. No se puede ingresar nuevamente.');
+        } else {
+            DB::table('parametros_mant')->insert([
+                'id_param' => $request->id_param,
+                'descripcion_param' => $request->descripcion_param,
+                'valor_param' => $request->valor_param,
+                'origen' => $request->origen,
+            ]);
+
+            return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
+        }
     }
+
 
     
     

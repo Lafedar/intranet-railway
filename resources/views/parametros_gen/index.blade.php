@@ -19,15 +19,16 @@
     </div>
   </div>
 @endif
-@if(session('success'))
-            <div class="alert alert-success text-center" id="mensaje-exito">
-                {{ session('success') }}
-            </div>
-        @endif
-@if(session('error'))
-            <div class="alert alert-danger" id="mensaje-error">
-                {{ session('error') }}
-            </div>
+@if (session('success'))
+    <div class="alert alert-success alert-message">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-message">
+        {{ session('error') }}
+    </div>
 @endif
 @if ($errors->has('correo_no_existe'))
     <div class="alert alert-danger text-center">
@@ -49,44 +50,38 @@
             </tr>
         </thead>
         <tbody>
-
-    @foreach($parametros as $parametro)
-        @if($parametro->origen=="Mantenimiento")
-            <tr class="text-center">
-                <td>{{ $parametro->id_param }}</td>
-                <td>{{ $parametro->descripcion_param }}</td>
-                <td>{{ $parametro->valor_param}}</td>
-                <td>{{ $parametro->origen}}</td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="Acciones">
-                    <!-- Botón para abrir la modal de edición -->
-                    <button class="btn btn-info btn-sm action-button rounded" style="width: 70px;" data-toggle="modal" data-target="#editarModal{{ $parametro->id_param }}">Editar</button>
+                @foreach($parametros as $parametro)
+                    @if($parametro->origen=="Mantenimiento")
+                        <tr class="text-center">
+                            <td>{{ $parametro->id_param }}</td>
+                            <td>{{ $parametro->descripcion_param }}</td>
+                            <td>{{ $parametro->valor_param}}</td>
+                            <td>{{ $parametro->origen}}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Acciones">
+                                <!-- Botón para abrir la modal de edición -->
+                                <button class="btn btn-info btn-sm action-button rounded" style="width: 70px;" data-toggle="modal" data-target="#editarModal{{ $parametro->id_param }}">Editar</button>
+                                
+                                @if($parametro->id_param !== 'PMAIL' && $parametro->id_param !== 'PDIAS')
+                                        <!-- Enlace para eliminar el parámetro -->
+                                    <a href="{{ route('parametros.destroy', $parametro->id_param) }}" class="btn btn-danger btn-sm action-button ml-2 rounded" style="width: 70px;" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que deseas eliminar este parámetro?')) { document.getElementById('eliminar-parametro-{{ $parametro->id_param }}').submit(); }">Eliminar</a>
+                               
+                                
+                                    <!-- Formulario oculto para eliminar el parámetro -->
+                                    <form id="eliminar-parametro-{{ $parametro->id_param }}" action="{{ route('parametros.destroy', $parametro->id_param) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                @endif
+                                
+                            </td>
+                        </tr>
                     
-                    @if($parametro->id_param !== 'PMAIL' && $parametro->id_param !== 'PDIAS')
-                            <!-- Enlace para eliminar el parámetro -->
-                    <a href="{{ route('parametros.destroy', $parametro->id_param) }}" class="btn btn-danger btn-sm action-button ml-2 rounded" style="width: 70px;" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que deseas eliminar este parámetro?')) { document.getElementById('eliminar-parametro-{{ $parametro->id_param }}').submit(); }">Eliminar</a>
-                    
-                    <!-- Formulario oculto para eliminar el parámetro -->
-                    <form id="eliminar-parametro-{{ $parametro->id_param }}" action="{{ route('parametros.destroy', $parametro->id_param) }}" method="POST" style="display: none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                    
-                </td>
-            </tr>
-        
-        @endif
-    
+                    @endif
+                @endforeach
+        </tbody>
+    </table>        
 </div>
-
-            
-        
-        @endif
-    @endforeach
-</tbody>
-    </table>
-</div>
-
 
 
         <!-- Modal -->
@@ -127,25 +122,8 @@
                     </form>
 
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="nombre">Id:</label>
-                            <input type="text" class="form-control" id="id_param" name="id_param" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion_param">Descripcion:</label>
-                        <input type="text" class="form-control" id="descripcion_param" name="descripcion_param" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_param">Valor:</label>
-                        <input type="text" class="form-control" id="valor_param" name="valor_param" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Aceptar</button>
-                </div>
-            </form>
+                
+            
         </div>
     </div>
 </div>
