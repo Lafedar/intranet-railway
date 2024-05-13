@@ -90,8 +90,8 @@
     <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
     <select class="form-control" name="id_encargado" id="id_encargado">
         <option value="0">{{'Todos'}} </option>
-        @foreach($usuarios as $usuario)
-            <option value="{{$usuario->idPersona}}" @if($usuario->idPersona == $id_encargado) selected @endif>{{$usuario->name}} </option>
+        @foreach($encargados as $encargado)
+            <option value="{{$encargado->idPersona}}" @if($encargado->idPersona == $id_encargado) selected @endif>{{$encargado->name}} </option>
         @endforeach
     </select>
 </div>
