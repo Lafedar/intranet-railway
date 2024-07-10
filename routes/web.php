@@ -512,6 +512,9 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
+use Illuminate\Support\Facades\Route;
+
+Route::post('password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 
 
 
