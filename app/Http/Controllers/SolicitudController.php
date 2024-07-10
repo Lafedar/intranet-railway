@@ -63,17 +63,31 @@ class SolicitudController extends Controller{
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
         $usuariosConSolicitudes = DB::table('solicitudes_temp')
-    ->select('id_encargado')
-    ->distinct()
-    ->pluck('id_encargado')
-    ->toArray();
+            ->select('id_solicitante')
+            ->distinct()
+            ->pluck('id_solicitante')
+            ->toArray();
+   
+        $usuariosEncargados = DB::table('solicitudes_temp')
+        ->select('id_encargado')
+        ->distinct()
+        ->pluck('id_encargado')
+        ->toArray();
 
-$usuarios = DB::table('users')
-    ->leftJoin('personas', 'personas.usuario', 'users.id')
-    ->select('users.id as idUsuario', 'users.name as name', 'personas.id_p as idPersona')
-    ->whereIn('personas.id_p', $usuariosConSolicitudes)
-    ->orderBy('users.name', 'asc')
-    ->get();
+        $usuarios = DB::table('users')
+        ->leftJoin('personas', 'personas.usuario', 'users.id')
+        ->select('users.id as idUsuario', 'users.name as name', 'personas.id_p as idPersona')
+        ->whereIn('personas.id_p', $usuariosConSolicitudes)
+        ->orderBy('users.name', 'asc')
+        ->get();
+
+        $encargados = DB::table('users')
+        ->leftJoin('personas', 'personas.usuario', 'users.id')
+        ->select('users.id as idUsuario', 'users.name as name', 'personas.id_p as idPersona')
+        ->whereIn('personas.id_p', $usuariosEncargados)
+        ->orderBy('users.name', 'asc')
+        ->get();
+
 
         $model_as_roles = DB::table('model_has_roles')->get();
         
@@ -85,6 +99,7 @@ $usuarios = DB::table('users')
             'tiposSolicitudes' => $tiposSolicitudes,
             'estados' => $estados,
             'usuarios' => $usuarios,
+            'encargados' => $encargados,
             'areaUserAutenticado' => $areaUserAutenticado,
             'personaAutenticada' => $personaAutenticada1,
             'model_as_roles' => $model_as_roles,

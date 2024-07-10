@@ -101,26 +101,31 @@ class ParametrosGenController extends Controller
     public function update(Request $request, $id)
 
     {
-       // Validar los datos del formulario
        $request->validate([
         'descripcion_param' => 'required|string|max:255',
         'valor_param' => 'required|string|max:255',
-       
     ]);
+        try {
+            $mailExiste = DB::table('personas')->where('correo', $request->valor_param)->exists();
 
-    try {
-        
-        DB::table('parametros_mant')->where('id_param', $id)->update([
-            'descripcion_param' => $request->descripcion_param,
-            'valor_param' => $request->valor_param,
+            if($id == "PMAIL" && !$mailExiste){ 
+                return redirect()->back()->withErrors(['correo_no_existe' => 'El correo no existe en la base de datos']);
+            }
+            else{
+                DB::table('parametros_mant')->where('id_param', $id)->update([
+                    'descripcion_param' => $request->descripcion_param,
+                    'valor_param' => $request->valor_param,
+                    
+                ]);
+
+                return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
+            }
             
-        ]);
-
-        return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
-    } catch (\Exception $e) {
-        
-        return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
-    }
+            
+        } catch (\Exception $e) {
+            
+            return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+        }
 
     }
 
