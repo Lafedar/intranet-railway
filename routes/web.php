@@ -512,13 +512,23 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
-use App\Http\Controllers\Auth\ForgotPasswordController;
 
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/send-test-email', function () {
+  Mail::raw('This is a test email', function ($message) {
+      $message->to('geronimo.alles@lafedar.com')
+              ->subject('Test Email');
+  });
+  return 'Email Sent';
+});
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
+Route::get('/', function () {
+    return view('welcome');
+});
 
-
+Auth::routes(['reset' => true]);
 
 
 
