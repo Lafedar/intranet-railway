@@ -513,22 +513,7 @@ Route::group(['middleware' => ['auth']], function ()
 });
 
 
-Route::get('/send-test-email', function () {
-  Mail::raw('This is a test email', function ($message) {
-      $message->to('geronimo.alles@lafedar.com')
-              ->subject('Test Email');
-  });
-  return 'Email Sent';
-});
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Auth::routes(['reset' => true]);
 
 
 
