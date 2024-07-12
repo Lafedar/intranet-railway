@@ -69,22 +69,25 @@
             @endif
         </div>
     </div>
-    <div class="row">
-        <label for="title"><strong>Historico:</strong></label>
+    div class="row">
+    <label for="title"><strong>Historico:</strong></label>
+    <div class="table-responsive">
         <table class="table table-striped table-bordered">
             <thead>
-                <th class="text-center">Fecha</th>
-                <th class="text-center">Estado</th>
-                <th class="text-center">Descripcion</th>
-                <th class="text-center">Repuesto</th>
-                <th class="text-center">Desc. repuesto</th>
+                <tr>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Descripcion</th>
+                    <th class="text-center">Repuesto</th>
+                    <th class="text-center">Desc. repuesto</th>
+                </tr>
             </thead>
             <tbody>
                 @foreach($historico_solicitudes as $historico)
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($historico->fecha)->format('d/m/Y H:i') }}</td>
                         <td>{{ $historico->estado }}</td>
-                        <td>{{ $historico->descripcion }}</td>
+                        <td class="descripcion">{{ $historico->descripcion }}</td>
                         @if($historico->rep)
                             <td>Si</td>
                         @else
@@ -97,3 +100,13 @@
         </table>
     </div>
 </div>
+
+<style>
+    .table td {
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    .table .descripcion {
+        max-width: 200px; 
+    }
+</style>
