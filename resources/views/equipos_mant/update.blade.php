@@ -4,7 +4,7 @@
     <div class="col">
       <label for="title"><strong>ID:</strong></label>
       <input type="hidden" name="id_vieja" id="id_vieja" value="{{ $equipo_mant->id }}">
-      <input type="text" name="id" class="form-control" id="id" autocomplete="off" value="{{$equipo_mant->id}}" min="5" max="5" required>
+      <input type="text" name="id" class="form-control" id="id" autocomplete="off" value="{{$equipo_mant->id}}" min="5" max="5" readOnly>
     </div>
     <div class="col">
       <label for="title"><strong>Tipo: </strong></label>
@@ -25,7 +25,7 @@
   <input type="text" name="num_serie" class="form-control" autocomplete="off" id="num_serie" value="{{ $equipo_mant->num_serie }}">
                   
   <label for="title"><strong>Descripcion:</strong></label>
-  <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion">{{ $equipo_mant->descripcion }}</textarea>
+  <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" maxlength="990">{{ $equipo_mant->descripcion }}</textarea>
 
   <div class="row">
     <div class="col-6">

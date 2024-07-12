@@ -36,26 +36,34 @@ class Equipo_mantController extends Controller{
         return view('equipos_mant.create');       
     }
 
-    public function store_equipo_mant(Request $request){        
-        $equipo_mant = new Equipo_mant;
-        $equipo_mant->id = $request['id'];
-        $equipo_mant->id_tipo = $request['tipo_e'];
-        $equipo_mant->marca = $request['marca'];
-        $equipo_mant->modelo = $request['modelo'];
-        $equipo_mant->num_serie = $request['num_serie'];
-        $equipo_mant->descripcion = $request['descripcion'];
-        $equipo_mant->id_area = $request['area'];
-        $equipo_mant->id_localizacion = $request['localizacion'];
-        if($request['uso']){
-            $equipo_mant->uso = 1;
-        }
-        else{$equipo_mant->uso = 0;}
-        $equipo_mant->save();
-
-        Session::flash('message','Equipo agregado con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect ('equipos_mant');
+    public function store_equipo_mant(Request $request)
+{        
+    // Verificar si el ID ya existe
+    if (Equipo_mant::where('id', $request['id'])->exists()) {
+        // Si el ID ya existe, mostrar mensaje de error
+        Session::flash('message', 'El ID ingresado ya existe. No se pudo agregar el equipo.');
+        Session::flash('alert-class', 'alert-danger');
+        return redirect('equipos_mant');
     }
+
+    // Si el ID no existe, proceder a guardar el equipo mantenido
+    $equipo_mant = new Equipo_mant;
+    $equipo_mant->id = $request['id'];
+    $equipo_mant->id_tipo = $request['tipo_e'];
+    $equipo_mant->marca = $request['marca'];
+    $equipo_mant->modelo = $request['modelo'];
+    $equipo_mant->num_serie = $request['num_serie'];
+    $equipo_mant->descripcion = $request['descripcion'];
+    $equipo_mant->id_area = $request['area'];
+    $equipo_mant->id_localizacion = $request['localizacion'];
+    $equipo_mant->uso = $request['uso'] ? 1 : 0;
+    $equipo_mant->save();
+
+    // Mensaje de éxito
+    Session::flash('message', 'Equipo agregado con éxito');
+    Session::flash('alert-class', 'alert-success');
+    return redirect('equipos_mant');
+}
 
     public function show_update_equipo_mant($id){
         $equipoMantModel = new Equipo_mant();
