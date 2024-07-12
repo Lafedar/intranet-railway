@@ -23,7 +23,7 @@
   <label for="title"><strong>Numero de Serie:</strong></label>
   <input type="text" name="num_serie" class="form-control" autocomplete="off" id="num_serie" value="{{old('num_serie')}}"> 
   <label for="title"><strong>Descripcion:</strong></label>
-  <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion"></textarea>
+  <textarea rows="3" type="text" class="form-control" name="descripcion" id="descripcion" maxlength="990"></textarea>
   <div class="row">
     <div class="col-6">
       <label for="title"><strong>Area:</strong></label>

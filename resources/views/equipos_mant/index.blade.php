@@ -100,7 +100,7 @@
           <td width="200">{{$equipo_mant->nombre_tipo}}</td>
           <td width="160">{{$equipo_mant->marca}}</td>
           <td width="160">{{$equipo_mant->modelo}}</td>
-          <td>{{$equipo_mant->descripcion}}</td>
+          <td class="descripcion">{{$equipo_mant->descripcion}}</td>
           <td>{{$equipo_mant->num_serie}}</td>
           <td>{{$equipo_mant->area}}</td>
           <td>{{$equipo_mant->localizacion}}</td>
@@ -136,6 +136,13 @@
   </div>
   {{ $equipos_mant->appends($_GET)->links() }}
 </div>
+<style>
+  .descripcion {
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    max-width: 900px; 
+  }
+</style>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
   $("equipo_mant").ready(function(){
