@@ -226,27 +226,27 @@
     var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
     var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
-      type: 'GET',
-      success: function(data) {
-        // Borrar contenido anterior
-        $("#modalshow").empty();
-        // Establecer el contenido del modal
-        $("#modalshow").html(data);
+  url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
+  type: 'GET',
+  success: function(data) {
+    // Borrar contenido anterior
+    $("#modalshow").empty();
+    // Establecer el contenido del modal
+    $("#modalshow").html(data);
 
-        // Borrar contenido anterior
-        $("#modalfooter").empty();
-        // Agregar el botón "Cerrar y Guardar" al footer
-        $("#modalfooter").append(closeButton);
-        $("#modalfooter").append(saveButton);
+    // Borrar contenido anterior
+    $("#modalfooter").empty();
+    // Agregar el botón "Cerrar y Guardar" al footer
+    $("#modalfooter").append(closeButton);
+    $("#modalfooter").append(saveButton);
 
-        // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_update);
+    // Cambiar la acción del formulario
+    $('#myForm').attr('action', ruta_update);
 
-        // Mostrar el modal
-        myModal.show();
-      },
-    });
+    // Mostrar el modal
+    myModal.show();
+  },
+});
     $('#show2').on('show.bs.modal', function (event){
       $.get('select_tipo_equipo',function(data){
         var html_select = '<option value="">Seleccione </option>'
