@@ -46,7 +46,7 @@ class VisitaController extends Controller
             $visita->activa = 1;
             $visita->save();
     
-            DB::table('externos')->where('dni', $request['externo'])->update(['activo' => 0]);
+            DB::table('externos')->where('dni', $request['externo'])->update(['activo' => 0]);  //aca desactivo al externo cuando esta asignado en una tarjeta activa
     
             Session::flash('message', 'Tarjeta asignada con éxito');
             Session::flash('alert-class', 'alert-success');
@@ -111,10 +111,18 @@ class VisitaController extends Controller
             if ($visita) {//desactivo la visita
                 $visita->activa = 0;
                 $visita->save();
-            }
 
+                
+                $externoDNI = $visita->externo;//obtengo el dni del externo asociado a esta visita
+
+                DB::table('externos')->where('dni', $externoDNI)->update(['activo' => 1]); //activo nuevamente al externo al dar de baja la tarjeta
+                
+            }
+            
             $tarjeta->libre = 1; //actualizo la tarjeta a libre
             $tarjeta->save();
+
+            
 
             Session::flash('message', 'Tarjeta dada de baja con éxito');
             Session::flash('alert-class', 'alert-success');
