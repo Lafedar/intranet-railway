@@ -210,12 +210,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************POLITICAS**********************
 Route::group(['middleware' => ['auth']], function () {
-  Route::get('politicas','PoliticaController@index')->middleware('role:administrador|politicas');
+  
   Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica')->middleware('role:administrador|politicas');
   Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica'])->middleware('role:administrador|politicas');
   Route::post('update_politica','PoliticaController@update_politica')->middleware('role:administrador|politicas')->name('update_politicas');
 });
-
+Route::get('politicas','PoliticaController@index');//->middleware('role:administrador|politicas');
 
 //****************INSTRUCTIVOS**********************
 Route::group(['middleware' => ['auth']], function () {
