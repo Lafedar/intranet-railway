@@ -1,6 +1,7 @@
 <?php
-
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 Auth::routes();
+
 
    //****************MENU INICIAL**********************
 Route::get('/home', 'HomeController@index');
@@ -511,22 +512,6 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
