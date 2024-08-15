@@ -13,12 +13,19 @@
   <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
-      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-        {{Session::get('message')}}
+      <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert">
+        {!! Session::get('message') !!} 
       </div>
     </div>
   </div>
 @endif
+
+@if(session('correo_enviado'))
+    <div class="alert alert-success text-center" role="alert">
+        ¡El correo fue enviado correctamente!
+    </div>
+@endif
+
 
 <!-- barra para buscar solicitudes -->
 <div class="col">
@@ -80,22 +87,15 @@
         <input class="form-control" type="date" id="fecha" name="fecha">
       </div>
       <div style="display: inline-block;">
-        <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
-        <select class="form-control" name="id_encargado" id="id_encargado">
-          <option value="0">{{'Todos'}} </option>
-          @foreach($usuarios as $usuario)
-            @foreach($model_as_roles as $model_as_rol)
-              @if(($model_as_rol->role_id == 21 || $model_as_rol->role_id == 24 || $model_as_rol->role_id == 25 || $model_as_rol->role_id == 30) and $usuario->idUsuario == $model_as_rol->model_id)
-                @if($usuario->idPersona == $id_encargado)
-                  <option value="{{$usuario->idPersona}}" selected>{{$usuario->name}} </option>
-                @else
-                  <option value="{{$usuario->idPersona}}">{{$usuario->name}} </option>
-                @endif
-              @endif
-            @endforeach
-          @endforeach
-        </select>
-      </div>
+    <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
+    <select class="form-control" name="id_encargado" id="id_encargado">
+        <option value="0">{{'Todos'}} </option>
+        @foreach($encargados as $encargado)
+            <option value="{{$encargado->idPersona}}" @if($encargado->idPersona == $id_encargado) selected @endif>{{$encargado->name}} </option>
+        @endforeach
+    </select>
+</div>
+
       &nbsp
       <div style="display: inline-block;">
         <button type="submit" class="btn btn-default"> Buscar</button>
@@ -103,6 +103,7 @@
     </form>          
   </div>
 </div>
+
 <!-- tabla de datos -->
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
@@ -119,7 +120,7 @@
       <th class="text-center">Fecha de emision</th> 
       <!--<th class="text-center">Fecha de finalizacion</th> -->
       <th class="text-center">Solicitante</th>
-      <th class="text-center">Encargado</th>  
+      <th class="text-center">Encargado</th> 
       <th class="text-center">Acciones</th>        
     </thead>
     <tbody>
@@ -139,7 +140,7 @@
                 <p style="color:gainsboro">N/A</p>
               @endif
             </td>
-            <td>{{$solicitud->estado}}</td>
+            <td>{{$solicitud->estado}}</td> 
             <td>
               @if($solicitud->falla)
                 <p>{{$solicitud->falla}}</p>
@@ -161,18 +162,28 @@
               @else
                 <p style="color:gainsboro">Sin asignar</p>
               @endif
+             
             </td>
             <td>
               <div class="text-center">
                 <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
+
                   <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                     <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
                   </div>
+                  @php 
+                    $estado_solicitud = \App\Solicitud::find($solicitud->id)->id_estado; //obtengo el id del estado de cada solicitud
+                  @endphp
+
+
+                  <!--Boton Actualizar-->
                   @can('actualizar-solicitud')
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
                     </div>
                   @endcan
+
+                  <!--Boton Asignar-->
                   @can('asignar-solicitud')
     
                       <!-- if(!$solicitud->nombre_encargado) -->
@@ -181,7 +192,10 @@
                       </div>
                     
                   @endcan
-                  @if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+
+                  <!--Boton Reclamar-->
+                  {{--@if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
+                  @if($estado_solicitud == 5 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
                     </div>
@@ -189,20 +203,36 @@
                       <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
                     </div>
                   @endif
-                  @if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                 
+                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
+                  @if($estado_solicitud == 1 && $solicitud->id_solicitante == $personaAutenticada->id_p)
                     <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
                     </div>-->
                     <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
                       <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
                     </div>
-                  @else
-                    @can('eliminar-solicitud')
+                  @endif--}}
+                  
+                  
+                   <!-- Boton Recordatorio-->
+                   @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8) 
+                    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+                      @csrf
                       <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail de recordatorio a Mantenimiento">Recordatorio</button>
                       </div>
-                    @endcan
+                    </form>
                   @endif
+
+                    
+                  <!-- Boton Eliminar-->
+                  @can('eliminar-solicitud')
+                    <div class="btn-container" style="margin-bottom: 5px; ">
+                      <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                    </div>
+                  @endcan
+                  
                 </div>
               </div>
             </td>
@@ -265,8 +295,108 @@
     // Guarda el valor seleccionado en el almacenamiento local (localStorage)
     localStorage.setItem('fechaValue', fechaInput.value);
   });
+  
 </script>
 <script>
+  window.onload = function() {   //habilita o deshabilita los botones al recargar la pagina 
+      var botones = document.querySelectorAll('[id^="recordatorioBtn"]');
+      
+      botones.forEach(function(boton) {
+          var id = boton.id.replace('recordatorioBtn', '');
+          
+          fetch('/verificar-envio-permitido/' + id, {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (!data.envio_permitido) {
+                  if (data.tiempo_restante > 0) {
+                      //convertir el tiempo restante en segundos a días, horas y minutos
+                      var segundos = data.tiempo_restante;
+                      var dias = Math.floor(segundos / (60 * 60 * 24));
+                      segundos -= dias * (60 * 60 * 24);
+                      var horas = Math.floor(segundos / (60 * 60));
+                      segundos -= horas * (60 * 60);
+                      var minutos = Math.floor(segundos / 60);
+
+                      boton.title = "Recordatorio ya enviado.\nTiempo restante para el proximo: " + dias + " días, " + horas + " horas y " + minutos + " minutos.";
+                  } else {
+                      boton.title = "No se pueden enviar correos hasta después de " + data.dias_desbloqueo + " días.";
+                  }
+                  boton.dataset.tiempoRestante = data.tiempo_restante;
+              }
+              boton.disabled = !data.envio_permitido; //deshabilito el botón
+          })
+          .catch(error => console.error('Error al verificar el envío:', error));
+      });
+  }
+</script>
+
+<script>
+    function confirmarEnvio(id) {
+    var boton = document.getElementById('recordatorioBtn' + id);
+
+    fetch('/verificar-envio-permitido/' + id, { //solicitud para saber si el envio de mail esta permitido
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.envio_permitido) {
+            if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) { 
+
+                fetch('/enviar-recordatorio/' + id, { //solicitud para enviar el mail
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud AJAX: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    
+                    if (data.success) {
+                        boton.disabled = true;
+                        document.getElementById('recordatorioForm' + id).submit(); //envio el formulario
+                        window.location.href = window.location.pathname + window.location.search; //redirijo la pagina asi no muestra el json
+                    } else {
+                        alert(data.message);
+                    }
+                   
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud AJAX para enviar el recordatorio:', error);
+                    alert('Error en la solicitud AJAX para enviar el recordatorio: ' + error.message);
+                });
+            }
+        } 
+        else {  
+            boton.disabled = true;
+        }
+    })
+    .catch(error => {
+        console.error('Error en la solicitud AJAX para verificar el envío:', error);
+        alert('Error en la solicitud AJAX para verificar el envío: ' + error.message);
+    });
+}
+</script>
+
+<script>
+
   function manejarSeleccion(idEquipo) {
     $('#equipo').val(idEquipo).trigger('change');
     $('#equipo1').val(idEquipo).trigger('change');
@@ -1202,3 +1332,23 @@
 </script>
 
 @stop
+
+{{--<script>
+    function confirmarEnvio(id) {
+    var boton = document.querySelector('#recordatorioForm' + id + ' button');
+    if (boton.dataset.bloqueado === "true") {
+        mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
+        return;
+    }
+
+    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
+        document.getElementById('recordatorioForm' + id).submit();
+        boton.dataset.bloqueado = "true";
+        var horas = obtenerHorasDesbloqueo(); 
+        var tiempoDesbloqueo = new Date();
+        tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
+        boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
+        mostrarMensaje('Recordatorio enviado');
+    }
+}
+</script>--}}

@@ -4,6 +4,7 @@ namespace App;
 use App\Historico_solicitudes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use App\Estado;
 
 class Solicitud extends Model{
     public $table = "solicitudes_temp";
@@ -236,6 +237,16 @@ class Solicitud extends Model{
 
         return $consulta;
     }
+
+    public static function obtenerMailNombreTituloEncargado($idSolicitud){
+        $consulta = DB::table('personas')
+        ->leftJoin('solicitudes_temp', 'solicitudes_temp.id_encargado', 'personas.id_p')
+        ->select('personas.correo as email', DB::raw('CONCAT(personas.nombre_p, " ", personas.apellido) as nombre'), 'solicitudes_temp.titulo as titulo')
+        ->where('solicitudes_temp.id', $idSolicitud)
+        ->first();
+
+        return $consulta;
+    }
     public static function obtenerNombreEstadoSolicitud($idSolicitud){
         $consulta = DB::table('estados')
         ->leftJoin('solicitudes_temp', 'solicitudes_temp.id_estado', 'estados.id')
@@ -296,5 +307,36 @@ class Solicitud extends Model{
             })
             ->update(['historico_solicitudes.descripcion' => $descripcion]);
     }
+    public static function obtenerSolicitante($idSolicitud){
+        return DB::table('solicitudes_temp')
+            ->join('personas', 'solicitudes_temp.id_solicitante', '=', 'personas.id_p')
+            ->select('personas.nombre_p', 'personas.apellido')
+            ->where('solicitudes_temp.id', $idSolicitud)
+            ->first();
+    }
+
+    public static function obtenerEncargado($idSolicitud){
+        return DB::table('solicitudes_temp')
+            ->join('personas', 'solicitudes_temp.id_encargado', '=', 'personas.id_p')
+            ->select('personas.nombre_p', 'personas.apellido')
+            ->where('solicitudes_temp.id', $idSolicitud)
+            ->first();
+    }
+
+    public static function ultimoRecordatorio($idSolicitud) {
+        return DB::table('solicitudes_temp')
+            ->where('id', $idSolicitud)
+            ->latest()
+            ->first();
+    }
+    public function estado()
+{
+    return $this->belongsTo(Estado::class, 'id_estado');
 }
+
+    
+
+ 
+}
+
 ?>

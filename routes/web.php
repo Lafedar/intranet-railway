@@ -210,23 +210,29 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //****************POLITICAS**********************
-Route::get('politicas','PoliticaController@index');
-Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica');
-Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica']);
-Route::post('update_politica','PoliticaController@update_politica')->name('update_politicas');
+Route::group(['middleware' => ['auth']], function () {
+  
+  Route::post('store_politica','PoliticaController@store_politica')->name('agregar-politica')->middleware('role:administrador|politicas');
+  Route::get('destroy_politica/{politica}', ['uses' => 'PoliticaController@destroy_politica'])->middleware('role:administrador|politicas');
+  Route::post('update_politica','PoliticaController@update_politica')->middleware('role:administrador|politicas')->name('update_politicas');
+});
+Route::get('politicas','PoliticaController@index');//->middleware('role:administrador|politicas');
 
 //****************INSTRUCTIVOS**********************
-Route::get('instructivos','InstructivoController@index');
-Route::get('/instructivos', 'InstructivoController@index')->name('instructivos.index');
+Route::group(['middleware' => ['auth']], function () {
+  Route::get('instructivos','InstructivoController@index');
+  Route::get('/instructivos', 'InstructivoController@index')->name('instructivos.index');
 
-Route::get('show_store_instructivo',['uses' => 'InstructivoController@show_store_instructivo'])->name('show_store_instructivo');
-Route::post('store_instructivo','InstructivoController@store_instructivo')->name('store_instructivo');
+  Route::get('show_store_instructivo',['uses' => 'InstructivoController@show_store_instructivo'])->name('show_store_instructivo');
+  Route::post('store_instructivo','InstructivoController@store_instructivo')->name('store_instructivo')->middleware('role:administrador|instructivos');
 
-Route::get('show_update_instructivo/{instructivo}',['uses' => 'InstructivoController@show_update_instructivo'])->name('show_update_instructivo');
-Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivo');
+  Route::get('show_update_instructivo/{instructivo}',['uses' => 'InstructivoController@show_update_instructivo'])->name('show_update_instructivo');
+  Route::post('update_instructivo','InstructivoController@update_instructivo')->name('update_instructivo')->middleware('role:administrador|instructivos');
 
-Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo']);
-Route::get('select_tipo_instructivos', 'InstructivoController@select_tipo_instructivos')->name('select_tipo_instructivos');
+  Route::get('destroy_instructivo/{instructivo}', ['uses' => 'InstructivoController@destroy_instructivo'])->middleware('role:administrador|instructivos');
+  Route::get('select_tipo_instructivos', 'InstructivoController@select_tipo_instructivos')->name('select_tipo_instructivos');
+
+});
 
 //******************************QAD-Controller
 
@@ -241,8 +247,7 @@ Route::get('oc','QADController@oc');
 });
 
 //***************Evento-Calendario-reserva*********************
-Route::get('Calendario/event','CalendarioController@index');
-Route::get('Calendario/event/{mes}','CalendarioController@index_month');
+
 
 // formulario
 // formulario
@@ -418,15 +423,19 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_equipos', 'SolicitudController@select_equipos')->name('select_equipos');
   Route::get('getHistoricos/{solicitud}', ['uses' => 'SolicitudController@getHistoricos'])->name('getHistoricos');
   Route::get('getSolicitud/{idSolicitud}', ['uses' => 'SolicitudController@getSolicitud'])->name('getSolicitud');
+
+  Route::post('enviar-recordatorio/{id}', 'SolicitudController@enviarRecordatorio')->name('enviar.recordatorio');
+
+  Route::post('/verificar-envio-permitido/{id}', 'SolicitudController@verificarEnvioPermitido')->name('verificar.envio.permitido');
 });
 
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento|Empleado-Mantenimiento');
-  Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_store_equipo_mant');
-  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('store_equipo_mant');
-  Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('show_update_equipo_mant');
-  Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad')->name('update_equipo_mant');
+  Route::get('show_store_equipo_mant',['uses' => 'Equipo_mantController@show_store_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('show_store_equipo_mant');
+  Route::post('store_equipo_mant','Equipo_mantController@store_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('store_equipo_mant');
+  Route::get('show_update_equipo_mant/{equipo_mant}',['uses' => 'Equipo_mantController@show_update_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('show_update_equipo_mant');
+  Route::post('update_equipo_mant','Equipo_mantController@update_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('update_equipo_mant');
 
   Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
@@ -471,11 +480,11 @@ Route::group(['middleware' => ['auth']], function ()
 {
   Route::resource('tipos_equipos','Tipo_EquipoController')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::get('show_store_tipo_equipo',['uses' => 'Tipo_EquipoController@show_store_tipo_equipo'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_tipo_equipo');
-  Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo');
-  Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo');
-  Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo');
+  Route::post('store_tipo_equipo','Tipo_EquipoController@store_tipo_equipo')->name('store_tipo_equipo')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('show_update_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_update_tipo_equipo'])->name('show_update_tipo_equipo')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::post('update_tipo_equipo','Tipo_EquipoController@update_tipo_equipo')->name('update_tipo_equipo')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::get('show_delete_falla_te/{falla}',['uses' => 'Tipo_EquipoController@show_delete_falla_te'])->name('show_delete_falla_te');
-  Route::post('delete_falla_te','Tipo_EquipoController@delete_falla_te')->name('delete_falla_te');
+  Route::post('delete_falla_te','Tipo_EquipoController@delete_falla_te')->name('delete_falla_te')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::get('show_assing_tipo_equipo/{tipo_equipo}',['uses' => 'Tipo_EquipoController@show_assing_tipo_equipo'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_assing_tipo_equipo');
   Route::post('assing_tipo_equipo','Tipo_EquipoController@assing_tipo_equipo')->middleware('role:administrador|Jefe-Mantenimiento')->name('assing_tipo_equipo');
 
@@ -488,19 +497,22 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('store_tipo_solicitud','Tipo_SolicitudController@store_tipo_solicitud')->name('store_tipo_solicitud');
   Route::get('show_update_tipo_solicitud/{tipo_solicitud}',['uses' => 'Tipo_SolicitudController@show_update_tipo_solicitud'])->name('show_update_tipo_solicitud');
   Route::post('update_tipo_solicitud','Tipo_SolicitudController@update_tipo_solicitud')->name('update_tipo_solicitud');
+  
 });
+
+
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index');
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+
+  Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
 
-//***********************************Health*************************************
-
-Route::get('health', [HealthCheckResultsController::class, '__invoke']);
 
 
 

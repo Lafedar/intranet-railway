@@ -27,4 +27,33 @@
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>//filtro de tamaño de archivos
+    $(document).ready(function() {
+        
+        $.ajax({ //obtengo los mg maximos
+            url: "{{ route('obtener_megabytes_maximos') }}",
+            type: "GET",
+            success: function(response) {
+                var megabytesMaximos = response.megabytesMaximos || 0;
+
+                $('#agregar form').submit(function(event) {
+                    var archivos = $(this).find('input[type="file"]');
+                    archivos.each(function() {
+                        var archivo = this.files[0];
+                        if (archivo && archivo.size / (1024 * 1024) > megabytesMaximos) {
+                            var tipoArchivo = $(this).attr('accept');
+                            alert("El tamaño del archivo " + tipoArchivo + " excede el límite permitido de " + megabytesMaximos + " MB");
+                            event.preventDefault(); //detener el envío del formulario
+                        }
+                    });
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error al obtener los megabytes máximos:", error);
+            }
+        });
+    });
+</script>
+
 

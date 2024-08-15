@@ -16,8 +16,14 @@ class ParametrosGenController extends Controller
     {
         $parametros = DB::table('parametros_mant')->get();
         return view('parametros_gen.index', compact('parametros'));
-    }
 
+        
+    }
+    public function indexSistemas()
+    {
+        $parametros = DB::table('parametros_mant')->get();
+        return view('parametros_gen_sistemas.index', compact('parametros'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -40,16 +46,25 @@ class ParametrosGenController extends Controller
             'id_param' => 'required',
             'descripcion_param' => 'required',
             'valor_param' => 'required',
+            'origen' => 'required',
         ]);
 
-        DB::table('parametros_mant')->insert([
-            'id_param' => $request->id_param,
-            'descripcion_param' => $request->descripcion_param,
-            'valor_param' => $request->valor_param,
-        ]);
+        $existe = DB::table('parametros_mant')->where('id_param', $request->id_param)->exists();
 
-        return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
+        if ($existe) {
+            return redirect()->back()->with('error', 'El ID ya existe en la tabla. No se puede ingresar nuevamente.');
+        } else {
+            DB::table('parametros_mant')->insert([
+                'id_param' => $request->id_param,
+                'descripcion_param' => $request->descripcion_param,
+                'valor_param' => $request->valor_param,
+                'origen' => $request->origen,
+            ]);
+
+            return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
+        }
     }
+
 
     
     
@@ -84,26 +99,34 @@ class ParametrosGenController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
+
     {
-       // Validar los datos del formulario
        $request->validate([
         'descripcion_param' => 'required|string|max:255',
         'valor_param' => 'required|string|max:255',
     ]);
+        try {
+            $mailExiste = DB::table('personas')->where('correo', $request->valor_param)->exists();
 
-    try {
-        // Actualizar el registro en la base de datos
-        DB::table('parametros_mant')->where('id_param', $id)->update([
-            'descripcion_param' => $request->descripcion_param,
-            'valor_param' => $request->valor_param,
-        ]);
+            if($id == "PMAIL" && !$mailExiste){ 
+                return redirect()->back()->withErrors(['correo_no_existe' => 'El correo no existe en la base de datos']);
+            }
+            else{
+                DB::table('parametros_mant')->where('id_param', $id)->update([
+                    'descripcion_param' => $request->descripcion_param,
+                    'valor_param' => $request->valor_param,
+                    
+                ]);
 
-        // Mensaje de éxito
-        return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
-    } catch (\Exception $e) {
-        // Mensaje de error
-        return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
-    }
+                return redirect()->back()->with('success', 'Parámetro actualizado correctamente');
+            }
+            
+            
+        } catch (\Exception $e) {
+            
+            return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+        }
+
     }
 
     /**
@@ -115,14 +138,28 @@ class ParametrosGenController extends Controller
     public function destroy($id)
     {
         try {
-            // Eliminar el parámetro de la base de datos
+
+           
             DB::table('parametros_mant')->where('id_param', $id)->delete();
             
-            // Mensaje de éxito
             return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
+        
         } catch (\Exception $e) {
-            // Mensaje de error
+            
+
             return redirect()->back()->with('error', 'Error al eliminar el parámetro: ' . $e->getMessage());
         }
     }
+
+
+    
+public function obtenerMegabytesMaximos()
+{
+    $megabytesMaximos = DB::table('parametros_mant')
+                        ->where('id_param', 'PMB')
+                        ->value('valor_param');
+
+    return response()->json(['megabytesMaximos' => $megabytesMaximos]);
+}
+
 }

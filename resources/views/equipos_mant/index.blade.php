@@ -100,7 +100,7 @@
           <td width="200">{{$equipo_mant->nombre_tipo}}</td>
           <td width="160">{{$equipo_mant->marca}}</td>
           <td width="160">{{$equipo_mant->modelo}}</td>
-          <td>{{$equipo_mant->descripcion}}</td>
+          <td class="descripcion">{{$equipo_mant->descripcion}}</td>
           <td>{{$equipo_mant->num_serie}}</td>
           <td>{{$equipo_mant->area}}</td>
           <td>{{$equipo_mant->localizacion}}</td>
@@ -136,6 +136,13 @@
   </div>
   {{ $equipos_mant->appends($_GET)->links() }}
 </div>
+<style>
+  .descripcion {
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    max-width: 900px; 
+  }
+</style>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)
   $("equipo_mant").ready(function(){
@@ -226,27 +233,27 @@
     var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
     var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
-      type: 'GET',
-      success: function(data) {
-        // Borrar contenido anterior
-        $("#modalshow").empty();
-        // Establecer el contenido del modal
-        $("#modalshow").html(data);
+  url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
+  type: 'GET',
+  success: function(data) {
+    // Borrar contenido anterior
+    $("#modalshow").empty();
+    // Establecer el contenido del modal
+    $("#modalshow").html(data);
 
-        // Borrar contenido anterior
-        $("#modalfooter").empty();
-        // Agregar el botón "Cerrar y Guardar" al footer
-        $("#modalfooter").append(closeButton);
-        $("#modalfooter").append(saveButton);
+    // Borrar contenido anterior
+    $("#modalfooter").empty();
+    // Agregar el botón "Cerrar y Guardar" al footer
+    $("#modalfooter").append(closeButton);
+    $("#modalfooter").append(saveButton);
 
-        // Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_update);
+    // Cambiar la acción del formulario
+    $('#myForm').attr('action', ruta_update);
 
-        // Mostrar el modal
-        myModal.show();
-      },
-    });
+    // Mostrar el modal
+    myModal.show();
+  },
+});
     $('#show2').on('show.bs.modal', function (event){
       $.get('select_tipo_equipo',function(data){
         var html_select = '<option value="">Seleccione </option>'

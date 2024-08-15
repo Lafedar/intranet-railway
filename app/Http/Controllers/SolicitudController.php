@@ -18,6 +18,7 @@ use App\Falla;
 use App\User;
 Use Session;
 use DB;
+use App\Mail\RecordatorioMail;
 
 
 class SolicitudController extends Controller{
@@ -61,20 +62,44 @@ class SolicitudController extends Controller{
     
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
-        $usuarios = DB::table('users')->orderBy('name','asc')
-        ->leftjoin('personas', 'personas.usuario', 'users.id')
-        ->select('users.id as idUsuario',
-            'users.name as name',
-            'personas.id_p as idPersona')
-        ->get();
-        $model_as_roles = DB::table('model_has_roles')->get();
-    
+        $usuariosConSolicitudes = DB::table('solicitudes_temp')
+            ->select('id_solicitante')
+            ->distinct()
+            ->pluck('id_solicitante')
+            ->toArray();
+   
+        $usuariosEncargados = DB::table('solicitudes_temp')
+        ->select('id_encargado')
+        ->distinct()
+        ->pluck('id_encargado')
+        ->toArray();
 
+        $usuarios = DB::table('users')
+        ->leftJoin('personas', 'personas.usuario', 'users.id')
+        ->select('users.id as idUsuario', 'users.name as name', 'personas.id_p as idPersona')
+        ->whereIn('personas.id_p', $usuariosConSolicitudes)
+        ->orderBy('users.name', 'asc')
+        ->get();
+
+        $encargados = DB::table('users')
+        ->leftJoin('personas', 'personas.usuario', 'users.id')
+        ->select('users.id as idUsuario', 'users.name as name', 'personas.id_p as idPersona')
+        ->whereIn('personas.id_p', $usuariosEncargados)
+        ->orderBy('users.name', 'asc')
+        ->get();
+
+
+        $model_as_roles = DB::table('model_has_roles')->get();
+        
+        $verificacion = Session::get('verificacion');
+       
         return view('solicitudes.index', [
+            'verificacion' => $verificacion,
             'solicitudes' => $solicitudes,
             'tiposSolicitudes' => $tiposSolicitudes,
             'estados' => $estados,
             'usuarios' => $usuarios,
+            'encargados' => $encargados,
             'areaUserAutenticado' => $areaUserAutenticado,
             'personaAutenticada' => $personaAutenticada1,
             'model_as_roles' => $model_as_roles,
@@ -174,59 +199,63 @@ class SolicitudController extends Controller{
 
     public function update_solicitud(Request $request){
         $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
-        $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
-        Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
-        $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
-        $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
-
-        $nuevo_historico = new Historico_solicitudes;
-        $nuevo_historico->id_solicitud = $request['id_solicitud'];
-        $nuevo_historico->id_estado = $request['estado']; //id de estado
-        $nuevo_historico->descripcion = $request['descripcion'];
-        $nuevo_historico->repuestos = $request['rep'];
-        if($request['rep']){
-            $nuevo_historico->repuestos = $request['rep'];
-            $nuevo_historico->descripcion_repuestos = $request['descripcionRep'];
-        } else{
-            $nuevo_historico->repuestos = 0;
-            $nuevo_historico->descripcion_repuestos = "";
-        }
-        $nuevo_historico->actual = 1;
-        $nuevo_historico->id_persona = $idPersona->id_p;
-        $nuevo_historico->fecha = $fechaActual;    
-        $nuevo_historico->save();
-
-        $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
-        $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
-
-        //da error cuando el correo no existe
-        if($request['estado'] == 5){
-            try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
-                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
-            } catch (\Exception $e) {}
-        }else{
-            try {
-                Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], 
-                    $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
-            } catch (\Exception $e) {}
-        }
-
-        $mailsParaRepuestos = Solicitud::obtenerUsersCorreoRepuestos();
+                $ultimo_historico = Solicitud::ultimoHistoricoById($request['id_solicitud']);
+                Solicitud::updateSoliciutud($request['id_solicitud'], $request['estado'], $fechaActual);
+                $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+                $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
         
-        if($request['rep']){
-            foreach($mailsParaRepuestos as $mail){
-                try {
-                    Mail::to($mail->email)->send(new \App\Mail\avisoDeRepuesto($request['id_solicitud'], $nombreEstadoSolicitud,
-                        $mailNombreSolicitante->titulo, $request['descripcionRep']));
-                } catch (\Exception $e) {}
-            }
-        }
+                $nuevo_historico = new Historico_solicitudes;
+                $nuevo_historico->id_solicitud = $request['id_solicitud'];
+                $nuevo_historico->id_estado = $request['estado']; //id de estado
+                $nuevo_historico->descripcion = $request['descripcion'];
+                $nuevo_historico->repuestos = $request['rep'];
+                if($request['rep']){
+                    $nuevo_historico->repuestos = $request['rep'];
+                    $nuevo_historico->descripcion_repuestos = $request['descripcionRep'];
+                } else{
+                    $nuevo_historico->repuestos = 0;
+                    $nuevo_historico->descripcion_repuestos = "";
+                }
+                $nuevo_historico->actual = 1;
+                $nuevo_historico->id_persona = $idPersona->id_p;
+                $nuevo_historico->fecha = $fechaActual;    
+                $nuevo_historico->save();
         
-        Session::flash('message','Solicitud modificado con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('solicitudes');
+                $mailNombreSolicitante = Solicitud::obtenerMailNombreTituloSolicitante($request['id_solicitud']);
+                $nombreEstadoSolicitud = Solicitud::obtenerNombreEstadoSolicitud($request['id_solicitud']);
+        
+                //da error cuando el correo no existe
+                if($request['estado'] == 5){
+                    try {
+                        Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\aprobarSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'],
+                            $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+                    } catch (\Exception $e) {}
+                }else{
+                    try {
+                        Mail::to($mailNombreSolicitante->email)->send(new \App\Mail\cambioDeEstadoSolicitud($mailNombreSolicitante->nombre, $request['id_solicitud'], 
+                            $nombreEstadoSolicitud, $mailNombreSolicitante->titulo));
+                    } catch (\Exception $e) {}
+                }
+        
+                $mailsParaRepuestos = Solicitud::obtenerUsersCorreoRepuestos();
+                
+                if($request['rep']){
+                    foreach($mailsParaRepuestos as $mail){
+                        try {
+                            Mail::to($mail->email)->send(new \App\Mail\avisoDeRepuesto($request['id_solicitud'], $nombreEstadoSolicitud,
+                                $mailNombreSolicitante->titulo, $request['descripcionRep']));
+                        } catch (\Exception $e) {}
+                    }
+                }
+                
+                Session::flash('message','Solicitud modificado con éxito');
+                Session::flash('alert-class', 'alert-success');
+                return redirect('solicitudes');
     }
+        
+            
+            
+    
 
     public function show_assing_solicitud($id){
         //migrar a modelo
@@ -414,4 +443,138 @@ class SolicitudController extends Controller{
         Session::flash('alert-class', 'alert-success');
         return redirect ('solicitudes');
     }
+
+    public function obtenerDiasDesbloqueo() {  //cantidad de dias para enviar mails
+        $parametro = DB::table('parametros_mant')
+            ->where('id_param', 'PDIAS')
+            ->value('valor_param');
+    
+        return $parametro ? intval($parametro) : 0;
+    }
+    
+
+    public function enviarRecordatorio($id)  //envio de mails
+    {   
+        $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
+        $ultimaSolicitud = DB::table('recordatorios')
+                        ->where('solicitud_id', $id)
+                        ->latest()
+                        ->first();
+    
+        $tiempoRestante = null;
+
+        if ($ultimaSolicitud) {
+            $fechaUltimoEnvio = Carbon::parse($ultimaSolicitud->created_at);
+            $fechaPermitida = $fechaUltimoEnvio->addDays($diasDesbloqueo);
+            $tiempoRestante = now()->diffInSeconds($fechaPermitida);
+        }
+                    
+        
+        if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) { //filtro del rango de dias para enviar mails
+            $response = [
+                'success' => false,
+                'message' => "No se pueden enviar correos hasta después de $diasDesbloqueo días.",
+                'envio_permitido' => false,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => $tiempoRestante,
+            ];
+        }
+    
+        $correoDestinatario = DB::table('parametros_mant') //obtengo el correo del destinatario
+            ->select('valor_param')
+            ->where('id_param', 'PMAIL')
+            ->first();
+
+        if (!$correoDestinatario || !filter_var($correoDestinatario->valor_param, FILTER_VALIDATE_EMAIL)) {
+            $response = [
+                'success' => false,
+                'message' => 'El correo destinatario no es válido o no está configurado correctamente.',
+        ];
+        return response()->json($response);
+        }
+
+        
+        $nombreEstado = Solicitud::obtenerNombreEstadoSolicitud($id);
+        $solicitante = Solicitud::obtenerSolicitante($id);
+        $encargado = Solicitud::obtenerEncargado($id);
+
+        $nombreSolicitante = $solicitante ? $solicitante->nombre_p : '';
+        $apellidoSolicitante = $solicitante ? $solicitante->apellido : '';
+
+        $nombreEncargado = $encargado ? $encargado->nombre_p : '';
+        $apellidoEncargado = $encargado ? $encargado->apellido : '';
+
+        try {
+            //enviar el correo
+            Mail::to($correoDestinatario->valor_param)->send(new RecordatorioMail(
+                $nombreEstado,
+                $id,
+                $nombreSolicitante,
+                $apellidoSolicitante,
+                $nombreEncargado,
+                $apellidoEncargado
+            ));
+
+            
+            DB::table('recordatorios')->insert([ //registro del recordatorio en la base de datos
+                'solicitud_id' => $id,
+                'created_at' => now(),
+            ]);
+            Session::flash('correo_enviado', true);
+
+            $response = [
+                'success' => true,
+                'message' => 'Envío permitido',
+                'envio_permitido' => true,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => null,
+            ];
+        } catch (\Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => 'Error al enviar el recordatorio',
+            ];
+        }
+    
+        return response()->json($response);
+    }
+    public function verificarEnvioPermitido($id)  //verifico si se pueden enviar mails
+    {
+        $diasDesbloqueo = $this->obtenerDiasDesbloqueo();
+        $ultimaSolicitud = DB::table('recordatorios')
+                        ->where('solicitud_id', $id)
+                        ->latest()
+                        ->first();
+    
+        $tiempoRestante = null;
+
+        if ($ultimaSolicitud) {
+            $fechaUltimoEnvio = Carbon::parse($ultimaSolicitud->created_at);
+            $fechaPermitida = $fechaUltimoEnvio->addDays($diasDesbloqueo);
+            $tiempoRestante = now()->diffInSeconds($fechaPermitida);
+        }
+        
+        if ($ultimaSolicitud && now()->diffInDays(Carbon::parse($ultimaSolicitud->created_at)) < $diasDesbloqueo) {
+            $response = [
+                'success' => false,
+                'message' => "No se pueden enviar correos hasta después de $diasDesbloqueo días.",
+                'envio_permitido' => false,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => $tiempoRestante,
+                
+            ];
+        } else {
+            $response = [
+                'success' => true,
+                'message' => 'Envío permitido',
+                'envio_permitido' => true,
+                'dias_desbloqueo' => $diasDesbloqueo,
+                'tiempo_restante' => null,
+            ];
+        }
+    
+        return response()->json($response);
+    }
 }
+
+
