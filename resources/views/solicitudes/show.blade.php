@@ -69,7 +69,6 @@
             @endif
         </div>
     </div>
-    div class="row">
     <label for="title"><strong>Historico:</strong></label>
     <div class="table-responsive">
         <table class="table table-striped table-bordered">

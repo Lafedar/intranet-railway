@@ -184,7 +184,7 @@
     </div>
 </div>
 
-{{ $equipamientos->appends($_GET)->links() }}
+{{ $equipamientos->links('pagination::bootstrap-4') }}
 
 @include('incidentes.create_incidente')
 

@@ -67,7 +67,8 @@
       </div>
     </div>
   </div>
-  {{ $tipos_equipos->appends($_GET)->links() }}
+  
+  {{ $tipos_equipos->links('pagination::bootstrap-4') }}
 </div>
 <script> 
   //Duracion de alerta (agregado, elimnado, editado)

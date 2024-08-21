@@ -273,7 +273,8 @@
     </div>
   </div>
 
-  {{ $solicitudes->appends($_GET)->links() }}
+  
+  {{ $solicitudes->links('pagination::bootstrap-4') }}  <!--paginacion-->
 </div>
 
 <!-- Incluir archivos CSS de Select2 -->

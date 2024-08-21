@@ -134,7 +134,8 @@
       </div>
     </div>
   </div>
-  {{ $equipos_mant->appends($_GET)->links() }}
+  
+  {{ $equipos_mant->links('pagination::bootstrap-4') }} 
 </div>
 <style>
   .descripcion {
