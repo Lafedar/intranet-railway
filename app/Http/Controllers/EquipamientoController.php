@@ -48,6 +48,7 @@ class EquipamientoController extends Controller
             'equipo' => $request->get('equipo'),
             'puesto' => $request->get('puesto'),
             'ip' => $request->get('ip'),
+            'activo' => $request->get('activo'),
             'tipo_equipamiento' => $tipo_equipamiento,
             'tipo' => $request->get('tipo'),
             'ips' => $ips,

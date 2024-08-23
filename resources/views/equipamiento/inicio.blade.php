@@ -61,12 +61,14 @@
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
+    
       <th class="text-center">ID</th>
       <th class="text-center">Usuario</th>
       <th class="text-center">Puesto</th>
       <th class="text-center">Localizacion</th>
       <th class="text-center">Area</th>
       <th class="text-center">IP</th>
+      <th class="text-center">Activo</th>
       
         
   @if($tipo === '1')
@@ -91,12 +93,25 @@
 
 @foreach($equipamientos as $equipamiento) 
     <tr>
+    
+    
         <td class="text-center" width="60">{{$equipamiento->id_equipamiento}}</td>
         <td class="text-center">{{$equipamiento->nombre .' '. $equipamiento->apellido}}</td>
         <td width="available" class="text-center">{{$equipamiento->puesto}}</td>
         <td class="text-center">{{$equipamiento->localizacion}}</td>
         <td class="text-center">{{$equipamiento->area}}</td>
         <td width="110" class="text-center">{{$equipamiento->ip}}</td>
+        <td width="110" class="text-center">
+        @if($equipamiento->activo == 1)
+              <span class="activo-1">&#8226;</span> 
+              {{ $equipamiento->activo }}
+
+            @else
+              <span class="activo-0">&#8226;</span> 
+              {{ $equipamiento->activo }}
+
+            @endif
+          </td>
         
         @if($tipo === '1')
             <td class="text-center">{{ $equipamiento->marca }}</td>
@@ -193,6 +208,20 @@
 @include('equipamiento.asignar')
 
 @include('equipamiento.asingn_soft')
+<style>
+    .activo-1 {
+        color: green;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .activo-0 {
+        color: red;
+        font-size: 30px;
+        text-align: center;
+    }
+</style>
+
 <script> //Mostrar contenido de ventanas modales observaciones
     $('#ver_obs').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); 
