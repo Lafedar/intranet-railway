@@ -81,6 +81,16 @@
             </div>
             <div class="row">
               <div class="col">
+                <label for="title">Activo:</label>
+                <select name="activo" id="activo" class="form-control">
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="1" {{ request('activo') == '1' ? 'selected' : '' }}>Activo</option>
+                    <option value="0" {{ request('activo') == '0' ? 'selected' : '' }}>Inactivo</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
                 <label for="title">Observación:</label>
                 <input type="text" name="obs" class="form-control" id="obs" autocomplete="off"  value="{{old('obs')}}">
               </div>

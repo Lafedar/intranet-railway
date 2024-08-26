@@ -37,6 +37,17 @@
         <input type="text" name="ip" class="form-control" id="ip" autocomplete="off" value="{{$ip}}" >
       </div>
       <div style="display: inline-block;">
+      <label for="activo" style="display: block; margin-bottom: 5px;"><h6>Activo:</h6></label>
+      <select id="activo" class="form-control">
+        <option value="">Todos</option>
+        <option value="1">Activo</option>
+        <option value="0">Inactivo</option>
+    </select>
+</div>
+     
+ 
+    
+      <div style="display: inline-block;">
         <label for="tipo" style="display: block; margin-bottom: 5px;"><h6>Tipo equipamiento:</h6></label>
         <select class="form-control" name="tipo" id="tipo">
     <option value="0">{{'Todos'}} </option>
@@ -93,25 +104,23 @@
 
 @foreach($equipamientos as $equipamiento) 
     <tr>
-    
-    
+
         <td class="text-center" width="60">{{$equipamiento->id_equipamiento}}</td>
         <td class="text-center">{{$equipamiento->nombre .' '. $equipamiento->apellido}}</td>
         <td width="available" class="text-center">{{$equipamiento->puesto}}</td>
         <td class="text-center">{{$equipamiento->localizacion}}</td>
         <td class="text-center">{{$equipamiento->area}}</td>
         <td width="110" class="text-center">{{$equipamiento->ip}}</td>
-        <td width="110" class="text-center">
-        @if($equipamiento->activo == 1)
-              <span class="activo-1">&#8226;</span> 
-              {{ $equipamiento->activo }}
+        <td class="activo text-center"> 
 
+            @if (is_null($equipamiento->activo))
+                Nulo
+            @elseif ($equipamiento->activo == 1)
+                Activo
             @else
-              <span class="activo-0">&#8226;</span> 
-              {{ $equipamiento->activo }}
-
-            @endif
-          </td>
+                Inactivo
+            @endif 
+        </td>
         
         @if($tipo === '1')
             <td class="text-center">{{ $equipamiento->marca }}</td>
@@ -198,6 +207,7 @@
         </div>
     </div>
 </div>
+
 
 {{ $equipamientos->links('pagination::bootstrap-4') }}
 
