@@ -36,28 +36,28 @@ class SolicitudController extends Controller{
             ->orderBy('id_solicitud', 'desc');
         if (Gate::allows('ver-todas-las-solicitudes')) {
             // Jefe
-            $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20)->withQueryString();
         } elseif (Gate::allows('ver-solicitudes-asignadas')) {
             // Empleados - Solicitudes asignadas
-            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->paginate(20)->withQueryString();
         } elseif (Gate::allows('ver-solicitudes-sin-asignar')) {
             // Empleados que pueden asignar
             $solicitudes = $solicitudesQuery->where(function ($query) use ($personaAutenticada) {
                 $query->where('id_encargado', $personaAutenticada)
                     ->where('id_tipo_solicitud', '!=', 3)
                     ->orWhereNull('id_encargado');
-            })->paginate(20);
+            })->paginate(20)->withQueryString();
         } elseif (Gate::allows('ver-todas-las-solicitudes-y-proyectos')){
-            $solicitudes = $solicitudesQuery->paginate(20);
+            $solicitudes = $solicitudesQuery->paginate(20)->withQueryString();
         } elseif (Gate::allows('ver-proyectos')){
             //revisar -----------------
-            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->orWhere('id_tipo_solicitud', 3)->where('historico_solicitudes.actual', '=', 1)->paginate(20);
+            $solicitudes = $solicitudesQuery->where('id_encargado', $personaAutenticada)->orWhere('id_tipo_solicitud', 3)->where('historico_solicitudes.actual', '=', 1)->paginate(20)->withQueryString();
         }else{
             // usuarios
             $solicitudes = $solicitudesQuery->where(function ($query) use ($areaUserAutenticado, $personaAutenticada) {
                 $query->where('id_area', $areaUserAutenticado->area)
                     ->orWhere('id_solicitante', $personaAutenticada);
-            })->paginate(20);
+            })->paginate(20)->withQueryString();
         }
     
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
