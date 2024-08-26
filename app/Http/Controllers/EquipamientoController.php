@@ -41,7 +41,8 @@ class EquipamientoController extends Controller
             $equipamientos->where('tipo', 3);
         }
     
-        $equipamientos = $equipamientos->paginate(20);
+        $equipamientos = $equipamientos->paginate(20)
+        ->withQueryString();  //para aplicar el filtro en la paginacion
         
         return view('equipamiento.inicio', [
             'equipamientos' => $equipamientos,
