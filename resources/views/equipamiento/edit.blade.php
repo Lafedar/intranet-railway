@@ -83,7 +83,7 @@
               <div class="col">
                 <label for="title">Activo:</label>
                 <select name="activo" id="activo" class="form-control" autocomplete="off" value="{{old('activo')}}">
-                    
+
                     <option value="1" {{ request('activo') == '1' ? 'selected' : '' }}>Activo</option>
                     <option value="0" {{ request('activo') == '0' ? 'selected' : '' }}>Inactivo</option>
                 </select>
@@ -105,3 +105,5 @@
 </div>
 </div>
 </div>
+
+

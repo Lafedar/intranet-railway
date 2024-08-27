@@ -41,6 +41,15 @@ class EquipamientoController extends Controller
         $equipamientos->where('tipo', 3);
     }
 
+
+    $activo = $request->get('activo');
+    if ($activo === '1') {
+        $equipamientos->where('equipamientos.activo', 1);
+    } elseif ($activo === '0') {
+        $equipamientos->where('equipamientos.activo', 0);
+    }
+    
+    
     $equipamientos = $equipamientos->paginate(20);
 
     return view('equipamiento.inicio', [
@@ -54,7 +63,8 @@ class EquipamientoController extends Controller
         'subred' => $request->get('subred'),
         'usuario' => $request->get('usuario'),
         'area' => $request->get('area'),
-        'tipo3' => $request->get('tipo3')
+        'tipo3' => $request->get('tipo3'),
+        'activo' => $request->get('activo')
     ]);
 }
 
