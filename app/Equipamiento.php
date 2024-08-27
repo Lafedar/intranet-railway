@@ -11,92 +11,63 @@ class Equipamiento extends Model
     protected $primaryKey = 'id_e';
 
     public function scopeRelaciones($query, $tipo, $subred)
-    {
-    	if($tipo == 0 and $subred == 0)
-        {
-            return  $query -> leftjoin('relaciones', function($join)
-            {
-                $join->on('equipamientos.id_e','relaciones.equipamiento'); //une las dos tablas
-                $join->on('relaciones.estado',DB::raw("1")); //de la tabla relaciones solo toma los estados activos de las relacione ya que guarda un historico de la ubicacion de los equipos
-            })
-            ->leftjoin('ips','equipamientos.subred','ips.id')
-            ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-            ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-            ->leftjoin('area','area.id_a', 'localizaciones.id_area')
-            ->orderBy('id_equipamiento','asc')
-            ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto' ,'equipamientos.subred as subred',
-            'equipamientos.ip as ip','area.nombre_a as area', 'personas.nombre_p as nombre', 'personas.apellido as apellido', 'relaciones.id_r as relacion',
-            'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
-            'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
-            'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
-        }
-        else if($tipo != 0 and $subred == 0)
-        {
-            return  $query -> leftjoin('relaciones', function($join)
-            {
-                $join->on('equipamientos.id_e','relaciones.equipamiento');
-                $join->on('relaciones.estado',DB::raw("1"));
-            })
-            ->leftjoin('ips','ips.id','equipamientos.subred')
-            ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-            ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-            ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
-            ->where('tipo',$tipo)
-            ->orderBy('id_equipamiento','asc')
-            ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto', 'equipamientos.subred as subred',
-            'equipamientos.ip as ip','area.nombre_a as area', 'personas.nombre_p as nombre', 'personas.apellido as apellido', 'relaciones.id_r as relacion',
-            'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
-            'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
-            'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
-        }
-        else if($tipo == 0 and $subred != 0)
-        {
-            return  $query -> leftjoin('relaciones', function($join)
-            {
-                $join->on('equipamientos.id_e','relaciones.equipamiento');
-                $join->on('relaciones.estado',DB::raw("1"));
-            })
-            ->leftjoin('ips','ips.id','equipamientos.subred')
-            ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-            ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-            ->leftjoin('area','area.id_a', 'localizaciones.id_area')
-            ->where('subred',$subred)
-            ->orderBy('id_equipamiento','asc')
-            ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto', 'equipamientos.subred as subred',
-            'equipamientos.ip as ip','area.nombre_a as area', 'personas.nombre_p as nombre', 'personas.apellido as apellido', 'relaciones.id_r as relacion',
-            'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
-            'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
-            'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
-        }
-        else if($tipo != 0 and $subred != 0)
-        {
-            return  $query -> leftjoin('relaciones', function($join)
-            {
-                $join->on('equipamientos.id_e','relaciones.equipamiento');
-                $join->on('relaciones.estado',DB::raw("1"));
-            })
-            ->leftjoin('ips','ips.id','equipamientos.subred')
-            ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-            ->leftjoin('personas','puestos.persona','personas.id_p')
-            ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-            ->leftjoin('area','area.id_a', 'localizaciones.id_area')            
-            ->where('subred',$subred)
-            ->where('tipo',$tipo)
-            ->orderBy('id_equipamiento','asc')
-            ->select('equipamientos.id_e as id_equipamiento','puestos.desc_puesto as puesto', 'equipamientos.subred as subred',
-            'equipamientos.ip as ip','area.nombre_a as area', 'personas.nombre_p as nombre', 'personas.apellido as apellido', 'relaciones.id_r as relacion',
-            'equipamientos.obs as obs','equipamientos.marca as marca','equipamientos.modelo as modelo','equipamientos.tipo as tipo',
-            'equipamientos.num_serie as num_serie','equipamientos.procesador as procesador','equipamientos.disco as disco','equipamientos.memoria as memoria',
-            'equipamientos.pulgadas as pulgadas','equipamientos.toner as toner', 'equipamientos.unidad_imagen as unidad_imagen','equipamientos.obs as obs',
-            'equipamientos.oc as oc', 'ips.nombre as nombre_subred', 'localizaciones.nombre as localizacion');
-        }
+{
+    // Base de la consulta
+    $query = $query
+        ->leftjoin('relaciones', function($join) {
+            $join->on('equipamientos.id_e', 'relaciones.equipamiento')
+                ->on('relaciones.estado', DB::raw("1")); // Solo toma los estados activos
+        })
+        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
+        ->leftjoin('puestos', 'puestos.id_puesto', 'relaciones.puesto')
+        ->leftjoin('personas', 'puestos.persona', 'personas.id_p')
+        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
+        ->leftjoin('area', 'area.id_a', 'localizaciones.id_area');
+
+    // Agregar condiciones específicas
+    if ($tipo == 0 && $subred == 0) {
+        // No se filtra por tipo ni subred
+    } elseif ($tipo != 0 && $subred == 0) {
+        $query->where('tipo', $tipo);
+    } elseif ($tipo == 0 && $subred != 0) {
+        $query->where('subred', $subred);
+    } elseif ($tipo != 0 && $subred != 0) {
+        $query->where('subred', $subred)
+              ->where('tipo', $tipo);
     }
+
+    // Seleccionar campos
+    $query->orderBy('equipamientos.id_e', 'asc')
+        ->select(
+            'equipamientos.id_e as id_equipamiento',
+            'equipamientos.activo', // Asegúrate de incluir la columna activo
+            'puestos.desc_puesto as puesto',
+            'equipamientos.subred as subred',
+            'equipamientos.ip as ip',
+            'area.nombre_a as area',
+            'personas.nombre_p as nombre',
+            'personas.apellido as apellido',
+            'relaciones.id_r as relacion',
+            'equipamientos.obs as obs',
+            'equipamientos.marca as marca',
+            'equipamientos.modelo as modelo',
+            'equipamientos.tipo as tipo',
+            'equipamientos.num_serie as num_serie',
+            'equipamientos.procesador as procesador',
+            'equipamientos.disco as disco',
+            'equipamientos.memoria as memoria',
+            'equipamientos.pulgadas as pulgadas',
+            'equipamientos.toner as toner',
+            'equipamientos.unidad_imagen as unidad_imagen',
+            'equipamientos.obs as obs',
+            'equipamientos.oc as oc',
+            'ips.nombre as nombre_subred',
+            'localizaciones.nombre as localizacion'
+        );
+
+    return $query;
+}
+
 
     public  function scopePuesto ($query, $puesto)
     {
@@ -105,6 +76,7 @@ class Equipamiento extends Model
     	    return $query -> where('desc_puesto','LIKE', "%$puesto%");
     	}
     }
+  
     public  function scopeArea ($query, $area)
     {
     	if($area)

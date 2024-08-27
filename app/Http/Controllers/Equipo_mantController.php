@@ -15,7 +15,7 @@ class Equipo_mantController extends Controller{
         $equipos_mant = Equipo_mant::ID($request->get('id_e'))
         ->Relaciones_index($request->get('tipo'), $request->get('id_area'), $request->get('id_localizacion'))
         ->orderBy('id_e')
-        ->paginate(50)->withQueryString();
+        ->paginate(50);
 
         $tiposEquipos = DB::table('tipos_equipos')->orderBy('nombre','asc')->get();
         $areas = DB::table('area')->orderBy('nombre_a','asc')->get();

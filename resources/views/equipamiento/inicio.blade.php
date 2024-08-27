@@ -13,60 +13,67 @@
 @endif
 
 <!-- Barra de búsqueda -->
+<!-- Barra de búsqueda -->
 <div class="col">
   <div class="form-group">
     <form method="GET" action="{{ route('equipamiento.index') }}">
       <div style="display: inline-block;">
         <label for="equipo" style="display: block; margin-bottom: 5px;"><h6>ID:</h6></label>
-        <input type="text" name="equipo" class="form-control" id="equipo" autocomplete="off" value="{{$equipo}}" >
+        <input type="text" name="equipo" class="form-control" id="equipo" autocomplete="off" value="{{ request('equipo') }}" >
       </div>
       <div style="display: inline-block;">
         <label for="usuario" style="display: block; margin-bottom: 5px;"><h6>Usuario:</h6></label>
-        <input type="text" name="usuario" class="form-control" id="usuario" autocomplete="off" value="{{$usuario}}" >
+        <input type="text" name="usuario" class="form-control" id="usuario" autocomplete="off" value="{{ request('usuario') }}" >
       </div>
       <div style="display: inline-block;">
         <label for="puesto" style="display: block; margin-bottom: 5px;"><h6>Puesto:</h6></label>
-        <input type="text" name="puesto" class="form-control" id="puesto"  autocomplete="off" value="{{$puesto}}" >
+        <input type="text" name="puesto" class="form-control" id="puesto" autocomplete="off" value="{{ request('puesto') }}" >
       </div>
       <div style="display: inline-block;">
         <label for="area" style="display: block; margin-bottom: 5px;"><h6>Area:</h6></label>
-        <input type="text" name="area" class="form-control" id="area" autocomplete="off" value="{{$area}}" >
+        <input type="text" name="area" class="form-control" id="area" autocomplete="off" value="{{ request('area') }}" >
       </div>
       <div style="display: inline-block;">
         <label for="ip" style="display: block; margin-bottom: 5px;"><h6>IP:</h6></label>
-        <input type="text" name="ip" class="form-control" id="ip" autocomplete="off" value="{{$ip}}" >
+        <input type="text" name="ip" class="form-control" id="ip" autocomplete="off" value="{{ request('ip') }}" >
+      </div>
+      <div style="display: inline-block;">
+        <label for="activo" style="display: block; margin-bottom: 5px;"><h6>Activo:</h6></label>
+        <select name="activo" id="activo" class="form-control">
+          <option value="">Todos</option>
+          <option value="1" {{ request('activo') == '1' ? 'selected' : '' }}>Activo</option>
+          <option value="0" {{ request('activo') == '0' ? 'selected' : '' }}>Inactivo</option>
+        </select>
       </div>
       <div style="display: inline-block;">
         <label for="tipo" style="display: block; margin-bottom: 5px;"><h6>Tipo equipamiento:</h6></label>
         <select class="form-control" name="tipo" id="tipo">
-    <option value="0">{{'Todos'}} </option>
-    @foreach($tipo_equipamiento as $tipo_eq)
-        @if($tipo_eq->id == $tipo)
-            <option value="{{$tipo_eq->id}}" selected>{{$tipo_eq->equipamiento}}</option>
-        @else
-            <option value="{{$tipo_eq->id}}">{{$tipo_eq->equipamiento}}</option>
-        @endif
-    @endforeach
-</select>
+          <option value="0">{{ 'Todos' }}</option>
+          @foreach($tipo_equipamiento as $tipo_eq)
+            <option value="{{ $tipo_eq->id }}" {{ request('tipo') == $tipo_eq->id ? 'selected' : '' }}>{{ $tipo_eq->equipamiento }}</option>
+          @endforeach
+        </select>
       </div>
-    
       &nbsp
       <div style="display: inline-block;">
-        <button type="submit" class="btn btn-default"> Buscar</button>
+        <button type="submit" class="btn btn-default">Buscar</button>
       </div>
     </form>
   </div>         
 </div>
 
+
 <div class="col-md-12">             
   <table class="table table-striped table-bordered ">
     <thead>
+    
       <th class="text-center">ID</th>
       <th class="text-center">Usuario</th>
       <th class="text-center">Puesto</th>
       <th class="text-center">Localizacion</th>
       <th class="text-center">Area</th>
       <th class="text-center">IP</th>
+      
       
         
   @if($tipo === '1')
@@ -86,17 +93,20 @@
     <th class="text-center">Toner</th>
     <th class="text-center">Unidad de imagen (DR)</th>
   @endif
+    <th class="text-center">Activo</th>
     <th class="text-center">Acciones</th>
 
 
 @foreach($equipamientos as $equipamiento) 
     <tr>
+
         <td class="text-center" width="60">{{$equipamiento->id_equipamiento}}</td>
         <td class="text-center">{{$equipamiento->nombre .' '. $equipamiento->apellido}}</td>
         <td width="available" class="text-center">{{$equipamiento->puesto}}</td>
         <td class="text-center">{{$equipamiento->localizacion}}</td>
         <td class="text-center">{{$equipamiento->area}}</td>
         <td width="110" class="text-center">{{$equipamiento->ip}}</td>
+        
         
         @if($tipo === '1')
             <td class="text-center">{{ $equipamiento->marca }}</td>
@@ -113,7 +123,16 @@
             <td class="text-center">{{ $equipamiento->toner }}</td>
             <td class="text-center">{{ $equipamiento->unidad_imagen }}</td>
         @endif
-        
+        <td class="activo text-center activo-col "> 
+
+            @if (is_null($equipamiento->activo))
+                Nulo
+            @elseif ($equipamiento->activo == 1)
+            <span class="punto activo-1"></span>
+            @else
+            <span class="punto activo-0"></span>
+            @endif 
+        </td>
       <td align="center" width="170">
         
           <div class="row justify-content-center align-items-center">
@@ -132,7 +151,7 @@
             <a role="button" class="fa-solid fa-pen default mx-2" href="#" title="Editar" data-toggle="modal" data-id="{{$equipamiento->id_equipamiento}}" 
                 data-ip="{{$equipamiento->ip}}" data-marca="{{$equipamiento->marca}}" data-modelo="{{$equipamiento->modelo}}" data-tipo="{{$equipamiento->tipo}}" 
                 data-num_serie="{{$equipamiento->num_serie}}" data-procesador="{{$equipamiento->procesador}}" data-disco="{{$equipamiento->disco}}" 
-                data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}" 
+                data-memoria="{{$equipamiento->memoria}}" data-pulgadas="{{$equipamiento->pulgadas}}" data-toner="{{$equipamiento->toner}}"  data-activo="{{ $equipamiento->activo }}"
                 data-unidad_imagen="{{$equipamiento->unidad_imagen}}" data-obs="{{$equipamiento->obs}}" data-subred="{{$equipamiento->subred}}" data-target="#editar_equipamiento">
             </a>
             
@@ -184,6 +203,7 @@
     </div>
 </div>
 
+
 {{ $equipamientos->links('pagination::bootstrap-4') }}
 
 @include('incidentes.create_incidente')
@@ -193,6 +213,30 @@
 @include('equipamiento.asignar')
 
 @include('equipamiento.asingn_soft')
+<style>
+    td {
+        text-align: center; 
+        padding: 0; 
+    }
+    .activo-col {
+    width: 50px; 
+}
+    .punto {
+        display: inline-block; 
+        width: 20px; 
+        height: 20px; 
+        border-radius: 50%; 
+    }
+
+    .activo-1 {
+        background-color: green; 
+    }
+
+    .activo-0 {
+        background-color: red; 
+    }
+</style>
+
 <script> //Mostrar contenido de ventanas modales observaciones
     $('#ver_obs').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); 
@@ -262,7 +306,7 @@
 })
 </script>
 
-<script>
+<script> //editar 
   $('#editar_equipamiento').on('show.bs.modal', function (event) 
   {
     var button = $(event.relatedTarget) 
@@ -281,6 +325,7 @@
     var unidad_imagen = button.data('unidad_imagen')
     var obs = button.data('obs')
     var oc = button.data('oc')
+    var activo = button.data('activo');
     var modal = $(this)
 
     let ip_dividida = ip.split('.');
@@ -299,6 +344,8 @@
     modal.find('.modal-body #unidad_imagen').val(unidad_imagen);
     modal.find('.modal-body #obs').val(obs);
     modal.find('.modal-body #oc').val(oc);
+
+    modal.find('.modal-body #activo').val(activo);
     //desplegar select de tipo de equipo en editar equipamiento 
     $.get('select_tipo_equipamiento',function(data)
     {
@@ -386,6 +433,8 @@
    });
  });
 </script>
+
+
 <style> /*estilos ventana modal Observaciones*/
   .modal-title { 
     color: #333; 

@@ -20,27 +20,36 @@ class EquipamientoController extends Controller
     //crea el index
     public function index(Request $request)
     {
-        $tipo_equipamiento = DB::table('tipo_equipamiento')->orderBy('equipamiento', 'asc')->get();
-        $ips = DB::table('ips')->orderBy('nombre', 'asc')->get();
-        
-        $equipamientos = Equipamiento::Ip($request->get('ip'))
-            ->Equipo($request->get('equipo'))
-            ->Relaciones($request->get('tipo'), $request->get('subred'))
-            ->Puesto($request->get('puesto'))
-            ->Area($request->get('area'))
-            ->Usuario($request->get('usuario'));
+    // Obtener tipo de equipamiento e ips
+    $tipo_equipamiento = DB::table('tipo_equipamiento')->orderBy('equipamiento', 'asc')->get();
+    $ips = DB::table('ips')->orderBy('nombre', 'asc')->get();
     
+    // Realiza la consulta con las condiciones y agrega la columna 'activo'
+    $equipamientos = Equipamiento::Ip($request->get('ip'))
+        ->Equipo($request->get('equipo'))
+        ->Relaciones($request->get('tipo'), $request->get('subred'))
+        ->Puesto($request->get('puesto'))
+        ->Area($request->get('area'))
+        ->Usuario($request->get('usuario'));
        
-        if ($request->get('tipo') == 1) {  //gabinetes
-            $equipamientos->where('tipo', 1);
-        }
-        else if($request->get('tipo') == 2){ //monitores
-            $equipamientos->where('tipo', 2);
-        }
-        else if($request->get('tipo') == 3){ //impresoras
-            $equipamientos->where('tipo', 3);
-        }
+
+    if ($request->get('tipo') == 1) {  //gabinetes
+        $equipamientos->where('tipo', 1);
+    } elseif ($request->get('tipo') == 2) { //monitores
+        $equipamientos->where('tipo', 2);
+    } elseif ($request->get('tipo') == 3) { //impresoras
+        $equipamientos->where('tipo', 3);
+    }
+
+
+    $activo = $request->get('activo');  //filtro para activo
+    if ($activo === '1') {
+        $equipamientos->where('equipamientos.activo', 1);
+    } elseif ($activo === '0') {
+        $equipamientos->where('equipamientos.activo', 0);
+    }
     
+
         $equipamientos = $equipamientos->paginate(20)
         ->withQueryString();  //para aplicar el filtro en la paginacion
         
@@ -55,7 +64,8 @@ class EquipamientoController extends Controller
             'subred' => $request->get('subred'),
             'usuario' => $request->get('usuario'),
             'area' => $request->get('area'),
-            'tipo3' => $request->get('tipo3') 
+            'tipo3' => $request->get('tipo3'),
+            'activo' => $request->get('activo')
         ]);
        
     }
@@ -93,6 +103,7 @@ class EquipamientoController extends Controller
         }
         
         $nueva_ip = null;
+        
         //armo la nueva ip con la parte de la id de red traida de la tabla ips y la id de host de lo que ingreso el usuario y consulto en la bd si existe la ip
         if($request['ip'] != null)
         {   
@@ -124,6 +135,7 @@ class EquipamientoController extends Controller
         $equipamiento->memoria = $request['memoria'];
         $equipamiento->tipo = $request['tipo_equipamiento'];
         $equipamiento->toner = $request['toner'];
+        $equipamiento->activo = $request['activo'];
         $equipamiento->unidad_imagen = $request['unidad_imagen'];
         $equipamiento->oc = $request['oc'];
         $equipamiento->save();
@@ -203,6 +215,7 @@ class EquipamientoController extends Controller
             'memoria' => $request['memoria'],
             'tipo' => $request['tipo_equipamiento'],
             'toner' => $request['toner'],
+            'activo' => $request['activo'],
             'unidad_imagen' => $request['unidad_imagen'],
             'oc' => $request['oc']
         ]);      
