@@ -73,7 +73,7 @@
       <th class="text-center">Localizacion</th>
       <th class="text-center">Area</th>
       <th class="text-center">IP</th>
-      <th class="text-center">Activo</th>
+      
       
         
   @if($tipo === '1')
@@ -93,6 +93,7 @@
     <th class="text-center">Toner</th>
     <th class="text-center">Unidad de imagen (DR)</th>
   @endif
+    <th class="text-center">Activo</th>
     <th class="text-center">Acciones</th>
 
 
@@ -105,16 +106,7 @@
         <td class="text-center">{{$equipamiento->localizacion}}</td>
         <td class="text-center">{{$equipamiento->area}}</td>
         <td width="110" class="text-center">{{$equipamiento->ip}}</td>
-        <td class="activo text-center"> 
-
-            @if (is_null($equipamiento->activo))
-                Nulo
-            @elseif ($equipamiento->activo == 1)
-                Activo
-            @else
-                Inactivo
-            @endif 
-        </td>
+        
         
         @if($tipo === '1')
             <td class="text-center">{{ $equipamiento->marca }}</td>
@@ -131,7 +123,16 @@
             <td class="text-center">{{ $equipamiento->toner }}</td>
             <td class="text-center">{{ $equipamiento->unidad_imagen }}</td>
         @endif
-        
+        <td class="activo text-center activo-col "> 
+
+            @if (is_null($equipamiento->activo))
+                Nulo
+            @elseif ($equipamiento->activo == 1)
+            <span class="punto activo-1"></span>
+            @else
+            <span class="punto activo-0"></span>
+            @endif 
+        </td>
       <td align="center" width="170">
         
           <div class="row justify-content-center align-items-center">
@@ -213,16 +214,26 @@
 
 @include('equipamiento.asingn_soft')
 <style>
+    td {
+        text-align: center; 
+        padding: 0; 
+    }
+    .activo-col {
+    width: 50px; 
+}
+    .punto {
+        display: inline-block; 
+        width: 20px; 
+        height: 20px; 
+        border-radius: 50%; 
+    }
+
     .activo-1 {
-        color: green;
-        font-size: 30px;
-        text-align: center;
+        background-color: green; 
     }
 
     .activo-0 {
-        color: red;
-        font-size: 30px;
-        text-align: center;
+        background-color: red; 
     }
 </style>
 

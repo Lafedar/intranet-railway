@@ -42,32 +42,33 @@ class EquipamientoController extends Controller
     }
 
 
-    $activo = $request->get('activo');
+    $activo = $request->get('activo');  //filtro para activo
     if ($activo === '1') {
         $equipamientos->where('equipamientos.activo', 1);
     } elseif ($activo === '0') {
         $equipamientos->where('equipamientos.activo', 0);
     }
     
-    
-    $equipamientos = $equipamientos->paginate(20);
 
-    return view('equipamiento.inicio', [
-        'equipamientos' => $equipamientos,
-        'equipo' => $request->get('equipo'),
-        'puesto' => $request->get('puesto'),
-        'ip' => $request->get('ip'),
-        'tipo_equipamiento' => $tipo_equipamiento,
-        'tipo' => $request->get('tipo'),
-        'ips' => $ips,
-        'subred' => $request->get('subred'),
-        'usuario' => $request->get('usuario'),
-        'area' => $request->get('area'),
-        'tipo3' => $request->get('tipo3'),
-        'activo' => $request->get('activo')
-    ]);
-}
-
+        $equipamientos = $equipamientos->paginate(20)
+        ->withQueryString();  //para aplicar el filtro en la paginacion
+        
+        return view('equipamiento.inicio', [
+            'equipamientos' => $equipamientos,
+            'equipo' => $request->get('equipo'),
+            'puesto' => $request->get('puesto'),
+            'ip' => $request->get('ip'),
+            'tipo_equipamiento' => $tipo_equipamiento,
+            'tipo' => $request->get('tipo'),
+            'ips' => $ips,
+            'subred' => $request->get('subred'),
+            'usuario' => $request->get('usuario'),
+            'area' => $request->get('area'),
+            'tipo3' => $request->get('tipo3'),
+            'activo' => $request->get('activo')
+        ]);
+       
+    }
     //trae tabla de tipos de equipamientos 
     public function select_tipo_equipamiento()
     {
