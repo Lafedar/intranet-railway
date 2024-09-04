@@ -17,9 +17,39 @@ use DB;
 
 class EmpleadoController extends Controller{
     public function index(Request $request){
-        $empleados = Empleado::Relacion()->get();
+        /*$empleados = Empleado::Relacion()->get();
 
-        return view ('empleado.index', array('empleados' => $empleados));
+        return view ('empleado.index', array('empleados' => $empleados));*/
+        $search = $request->input('search', '');
+        $filtroJefe = $request->has('filtroJefe');
+        $filtroActividad = $request->has('filtroActividad');
+    
+        $query = Empleado::Relacion();
+    
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('apellido', 'like', "%{$search}%")
+                  ->orWhere('nombre_p', 'like', "%{$search}%");
+            });
+        }
+    
+        if ($filtroJefe) {
+            $query->where('jefe', 1);
+        }
+    
+        if ($filtroActividad) {
+            $query->where('activo', 1);
+        }
+    
+        $perPage = $request->input('per_page', 20);
+        $empleados = $query->paginate($perPage)->withQueryString();
+    
+        return view('empleado.index', [
+            'empleados' => $empleados,
+            'search' => $search,
+            'filtroJefe' => $filtroJefe,
+            'filtroActividad' => $filtroActividad
+        ]);
     }
 
     public function store(Request $request){

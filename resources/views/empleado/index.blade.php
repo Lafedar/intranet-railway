@@ -14,23 +14,28 @@
   </div>
 @endif
 
-<div class="col-md-12 ml-auto">
-  <div class="form-group">
-    <div class="input-group">
-      <input type="text" class="form-control col-md-2" id="search" placeholder="Buscar">
-      <div class="input-group-append">
-        <div class="form-check form-check-inline" style="margin-left: 15px">
-          <input class="form-check-input" type="checkbox" id="filtroJefe">
-          <label class="form-check-label" for="filtroJefe" style="font-size: 1.25em; font-weight: bold;" >Jefe</label>
+<form method="GET" action="{{ route('empleado.index') }}">
+    <div class="col-md-12 ml-auto">
+        <div class="form-group">
+            <div class="input-group">
+                <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar">
+                <div class="input-group-append">
+                    <div class="form-check form-check-inline" style="margin-left: 15px">
+                        <input class="form-check-input" type="checkbox" id="filtroJefe" name="filtroJefe" {{ request('filtroJefe') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="filtroJefe" style="font-size: 1.25em; font-weight: bold;">Jefe</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="filtroActividad" name="filtroActividad" {{ request('filtroActividad') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;">Solo en actividad</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                </div>
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="filtroActividad">
-          <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;" >Solo en actividad</label>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
+</form>
+
+
 
 <div class="col-sm-12">             
   <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0" cellpadding="2" border="10">
@@ -47,41 +52,34 @@
     </thead>        
     
     <tbody>
-      @if(count($empleados))
+      @if($empleados->count())
         @foreach($empleados as $empleado) 
           <tr>
             @if ($empleado->dni != 9999999)
               <td> {{$empleado->apellido . ' '. $empleado->nombre_p}}</td>
-
               <td align="center">{{$empleado->dni}}</td>
-
               @if ($empleado->fe_ing != '')
                 <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_ing)->format("d-m-Y") !!}</td>
               @else
                 <td align="center"></td>
               @endif
-
               @if ($empleado->fe_nac != '')
                 <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_nac)->format("d-m-Y") !!}</td>
               @else
                 <td align="center"></td>
               @endif
-
               <td>{{$empleado->nombre_a}}</td>
               <td>{{$empleado->nombreTurno}}</td>
-
               @if($empleado->jefe == 1)
                 <td width="60" style="text-align: center;"><div class="circle_green"></div></td>
               @else
                 <td width="60" style="text-align: center;"><div class="circle_grey"></div></td>
               @endif
-
               @if($empleado->activo == 1)
                 <td width="60" style="text-align: center;"><div class="circle_green"></div></td>
               @else
                 <td width="60" style="text-align: center;"><div class="circle_grey"></div></td>
               @endif
-
               <td align="center" width="175">
                 <div class="d-inline-flex">
                   <a href="#" class="btn btn-info btn-sm mr-1" data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}" 
@@ -105,6 +103,11 @@
       @endif  
     </tbody>
   </table>
+
+  <!-- Agregar enlaces de paginación -->
+  <div class="pagination-wrapper">
+  {{ $empleados->links('pagination::bootstrap-4') }}
+  </div>
 </div>
 
 @include('empleado.edit')
@@ -395,7 +398,7 @@
   });
 </script>
 
-<script>
+<!--<script>
  $(document).ready(function(){
    $("#search").keyup(function(){
      _this = this;
@@ -407,7 +410,7 @@
      });
    });
  });
-</script>
+</script>-->
 
 
 <script>
@@ -435,7 +438,7 @@
   });
 </script>
 
-<script> //filtro check boxs
+<!--<script> //filtro check boxs
 $(document).ready(function () { 
   $("#search").keyup(function () {
     filterTable();
@@ -478,8 +481,44 @@ function filterTable() {
   });
 }
 
-</script>
+</script>-->
+<script>
+  $(document).ready(function(){
+    // Filtros y búsqueda
+    
+    function filterTable() {
+      var searchText = $("#search").val().toLowerCase();
+      var filtroJefe = $("#filtroJefe").prop("checked");
+      var filtroActividad = $("#filtroActividad").prop("checked");
 
+      $("#test tbody tr").each(function () {
+        var nombre = $(this).find("td:eq(0)").text().toLowerCase();
+        var esJefe = $(this).find("td:eq(6) .circle_green").length > 0;
+        var enActividad = $(this).find("td:eq(7) .circle_green").length > 0;
+
+        var mostrar = true;
+
+        if (filtroJefe && !esJefe) {
+          mostrar = false;
+        }
+
+        if (filtroActividad && !enActividad) {
+          mostrar = false;
+        }
+
+        if (mostrar && nombre.indexOf(searchText) === -1) {
+          mostrar = false;
+        }
+
+        if (mostrar) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+  });
+</script>
 
 @endsection
 
