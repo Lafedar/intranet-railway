@@ -78,7 +78,7 @@
             @endif  
         </tbody>
     </table>
-    {{ $puestos->appends($_GET)->links() }}
+    {{ $puestos->links('pagination::bootstrap-4') }}
 </div>
 
 <script> 
