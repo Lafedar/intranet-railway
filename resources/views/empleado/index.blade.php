@@ -28,7 +28,7 @@
                         <input class="form-check-input" type="checkbox" id="filtroActividad" name="filtroActividad" {{ request('filtroActividad') ? 'checked' : '' }}>
                         <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;">Solo en actividad</label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
                 </div>
             </div>
         </div>
