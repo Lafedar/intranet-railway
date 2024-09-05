@@ -20,18 +20,25 @@ use Carbon\Carbon;
 
 
 class PuestoController extends Controller{
-   public function puestos(Request $request){
+    public function puestos(Request $request){
         $puestos = Puesto::Relaciones()            
-        ->Puesto($request->get('puesto'))
-        ->Usuario($request->get('usuario'))
-        ->Area($request->get('area'))
-        ->Localizacion($request->get('localizacion'))
-        ->orderBy('desc_puesto','asc')
-        ->paginate(20);
-
-        return view ('puestos.puestos', array('puestos'=>$puestos, 'puesto'=>$request->get('puesto'),'usuario'=>$request->get('usuario'),
-         'area'=>$request->get('area'), 'localizacion'=>$request->get('localizacion')));
+            ->Puesto($request->get('puesto'))
+            ->Usuario($request->get('usuario'))
+            ->Area($request->get('area'))
+            ->Localizacion($request->get('localizacion'))
+            ->orderBy('desc_puesto', 'asc')
+            ->paginate(20)
+            ->withQueryString();  
+    
+        return view('puestos.puestos', [
+            'puestos' => $puestos,
+            'puesto' => $request->get('puesto'),
+            'usuario' => $request->get('usuario'),
+            'area' => $request->get('area'),
+            'localizacion' => $request->get('localizacion')
+        ]);
     }
+
 
     public function select_localizaciones(){
         return DB::table('localizaciones')->get();
