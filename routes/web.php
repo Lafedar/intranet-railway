@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('modal_editar_equipamiento/{id}','EquipamientoController@modal_editar_equipamiento')->name('modal_editar_equipamiento')->middleware('role:administrador');
 
-  
+  Route::get('/listado-ip', 'EquipamientoController@listado_ip')->name('listado_ip');
 
 });
 

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Input;
 Use Session;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 class EquipamientoController extends Controller
 {   
     //crea el index
@@ -234,7 +236,7 @@ class EquipamientoController extends Controller
     {
         
     }
-    public function listado_ip(Request $request)
+    /*public function listado_ip(Request $request)     //BUSCA IP ANTERIOR
     {
         $listado= array();
         for($i=1; $i<255;$i++)
@@ -393,7 +395,90 @@ class EquipamientoController extends Controller
             }
         }
        return view ('equipamiento.listado_ip', array('listado'=> $listado));
+    }*/
+
+    public function listado_ip(Request $request)
+    {
+        $search = $request->input('search', '');
+
+        $listado = collect();  //convierto el array en una coleccion
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpLan($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.20.$i", 'Lan'));
+        }
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpPLC($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.30.$i", 'PLC'));
+        }
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpImp($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.40.$i", 'Impresoras'));
+        }
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpWifiInv($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.50.$i", 'Wifi Invitados'));
+        }
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpWifiInt($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.60.$i", 'Wifi Interno'));
+        }
+
+        for ($i = 1; $i < 255; $i++) {
+            $equipamiento = Equipamiento::ListadoIpMant($i)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "10.41.70.$i", 'Terceros Mantenimiento'));
+        }
+
+        for ($i = 1; $i < 6; $i++) {
+            $aux = $i + 144;
+            $equipamiento = Equipamiento::ListadoIpWan($aux)->first();
+            $listado->push($this->formatEquipamiento($equipamiento, "181.30.186.$aux", 'Wan Firtel'));
+        }
+
+        
+        if ($search) {//filtrar los datos para buscar
+            $listado = $listado->filter(function ($item) use ($search) {
+                return strpos($item[0], $search) !== false || 
+                    strpos($item[1], $search) !== false || 
+                    strpos($item[2], $search) !== false || 
+                    strpos($item[3], $search) !== false || 
+                    strpos($item[4], $search) !== false || 
+                    strpos($item[5], $search) !== false;
+            });
+        }
+
+        
+        $perPage = 20; 
+        $currentPage = $request->get('page', 1); 
+        $currentItems = $listado->slice(($currentPage - 1) * $perPage, $perPage)->values()->all();
+        
+        $paginator = new LengthAwarePaginator($currentItems, $listado->count(), $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath(),
+            'query' => ['search' => $search],
+        ]);
+
+        return view('equipamiento.listado_ip', ['listado' => $paginator, 'search' => $search]);
     }
+
+    private function formatEquipamiento($equipamiento, $ip, $type)  //formatea los datos para devolverlos en una sola fila con la info
+    {
+        if ($equipamiento == null) {
+            return [$ip, 'Libre', '', '', '', $type];
+        }
+        return [
+            $ip,
+            $equipamiento->id_equipamiento,
+            $equipamiento->tipo,
+            $equipamiento->nombre . ' ' . $equipamiento->apellido,
+            $equipamiento->obs,
+            $equipamiento->nombre_red
+        ];
+    }
+    
    //****************RELACIONES**********************
     public function select_puesto(){
         return DB::table('puestos')

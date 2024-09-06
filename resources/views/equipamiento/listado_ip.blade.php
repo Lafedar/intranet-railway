@@ -1,10 +1,10 @@
 @extends('equipamiento.layouts.layout')
 @section('content')
 
-<div class="col-md-12 ml-auto">
+<!--<div class="col-md-12 ml-auto">
     <h1>
       <div class="form-inline pull-right">
-        <div class="form-group">
+        <div class="form-group">-->
         <!-- <label><h6>Subred:</h6></label>
           <select class="form-control col-md-3" name="ips" id="search2">
             <option value=""> Seleccionar </option>
@@ -17,12 +17,26 @@
             <option value="Wan Fibertel"> Wan Fibertel </option>
           </select>
           &nbsp -->
-        <label><h6>Busqueda general:</h6></label>
+        <!--<label><h6>Busqueda general:</h6></label>
       <input type="text" class="form-control col-md-6" id="search1"  autocomplete="off" placeholder="Buscar">
     </div>
   </div>
   </h1>
+</div>-->
+<div class="col-md-12 ml-auto">
+    <h1>
+        <div class="form-inline pull-right">
+        <form method="GET" action="{{ route('listado_ip') }}" class="form-inline">
+    <div class="form-group">
+        <label><h6>Busqueda general:</h6></label>
+        <input type="text" name="search" class="form-control col-md-6" id="search1" autocomplete="off" placeholder="Buscar" value="{{ $search }}">
+    </div>
+    <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+</form>
+        </div>
+    </h1>
 </div>
+
 
 <div class="col-sm-12">             
   <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0" cellpadding="2" border="10">
@@ -36,7 +50,7 @@
     </thead>        
 
     <tbody>
-      @for($i=1;$i<1530;$i++) 
+      {{--@for($i=1;$i<1530;$i++) 
         <tr>
           <td align="center">{{$listado[$i][0]}}</td>
           <td align="center">{{$listado[$i][5]}}</td>
@@ -49,26 +63,42 @@
           <td align="center">{{$listado[$i][3]}}</td>
           <td align="center">{{$listado[$i][4]}}</td>
         </tr>                    
-      @endfor 
+      @endfor--}}
+      @foreach($listado as $item)
+                <tr>
+                    <td align="center">{{ $item[0] ?? 'N/A' }}</td>
+                    <td align="center">{{ $item[5] ?? 'N/A' }}</td>
+                    @if(($item[1] ?? '') == 'Libre')
+                        <td style="color:blue" align="center"><strong>{{ $item[1] ?? 'Libre' }}</strong></td>
+                    @else
+                        <td align="center">{{ $item[1] ?? 'N/A' }}</td>
+                    @endif
+                    <td align="center">{{ $item[2] ?? 'N/A' }}</td>
+                    <td align="center">{{ $item[3] ?? 'N/A' }}</td>
+                    <td align="center">{{ $item[4] ?? 'N/A' }}</td>
+                </tr>
+            @endforeach
     </tbody>
   </table>
 </div>
 
+{{$listado->links('pagination::bootstrap-4')}}
+
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 
-<script>
+{{--<script>
    $(document).ready(function(){
-     $("#search1").keyup(function(){
+     $("#search").keyup(function(){
        _this = this;
        $.each($("#test tbody tr"), function() {
          if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
            $(this).hide();
-       else
+         else
            $(this).show();
+       });
+     });
    });
-   });
- });
-</script>
+</script>--}}
 
 <!--
 <script>
