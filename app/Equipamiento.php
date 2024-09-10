@@ -12,7 +12,7 @@ class Equipamiento extends Model
 
     public function scopeRelaciones($query, $tipo, $subred)
 {
-    // Base de la consulta
+   
     $query = $query
         ->leftjoin('relaciones', function($join) {
             $join->on('equipamientos.id_e', 'relaciones.equipamiento')
@@ -24,9 +24,9 @@ class Equipamiento extends Model
         ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
         ->leftjoin('area', 'area.id_a', 'localizaciones.id_area');
 
-    // Agregar condiciones específicas
+    
     if ($tipo == 0 && $subred == 0) {
-        // No se filtra por tipo ni subred
+        
     } elseif ($tipo != 0 && $subred == 0) {
         $query->where('tipo', $tipo);
     } elseif ($tipo == 0 && $subred != 0) {
@@ -36,11 +36,11 @@ class Equipamiento extends Model
               ->where('tipo', $tipo);
     }
 
-    // Seleccionar campos
+    
     $query->orderBy('equipamientos.id_e', 'asc')
         ->select(
             'equipamientos.id_e as id_equipamiento',
-            'equipamientos.activo', // Asegúrate de incluir la columna activo
+            'equipamientos.activo', 
             'puestos.desc_puesto as puesto',
             'equipamientos.subred as subred',
             'equipamientos.ip as ip',
@@ -113,126 +113,7 @@ class Equipamiento extends Model
         }
     }*/
 
-    public function scopeListadoIpLan($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.20.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpPLC($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.30.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpImp($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.40.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpWifiInv($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.50.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpWifiInt($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.60.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpMant($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->where('ip','10.41.70.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red','personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-    public function scopeListadoIpWan($query, $i)
-    {
-    	return  $query -> leftjoin('relaciones', function($join)
-        {
-            $join->on('equipamientos.id_e','relaciones.equipamiento');
-            $join->on('relaciones.estado',DB::raw("1"));
-        })
-        ->leftjoin('puestos','puestos.id_puesto','relaciones.puesto')
-        ->leftjoin('personas','puestos.persona','personas.id_p')
-        ->leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')      
-        ->leftjoin('tipo_equipamiento','equipamientos.tipo','tipo_equipamiento.id')
-        ->leftjoin('ips', 'equipamientos.subred', 'ips.id')
-        ->Where('ip','181.30.186.'.$i)
-        ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre', 
-        'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
-    }
-
+    
     public function index()
     {
         // Filtrar los equipos con IDs 1, 5 y 7
@@ -240,6 +121,23 @@ class Equipamiento extends Model
 
         // Pasar los datos a la vista
         return view('equipamiento.inicio', compact('tipo_equipamiento'));
+    }
+
+    public static function scopeListadoEquipamientos($query, $rangoIps) //devuelve todos los ip
+    {
+        return $query->leftJoin('relaciones', function($join) {
+                $join->on('equipamientos.id_e', '=', 'relaciones.equipamiento')
+                    ->where('relaciones.estado', '=', 1);
+            })
+            ->leftJoin('puestos', 'puestos.id_puesto', '=', 'relaciones.puesto')
+            ->leftJoin('personas', 'puestos.persona', '=', 'personas.id_p')
+            ->leftJoin('localizaciones', 'localizaciones.id', '=', 'puestos.id_localizacion')
+            ->leftJoin('area', 'area.id_a', '=', 'localizaciones.id_area')
+            ->leftJoin('tipo_equipamiento', 'equipamientos.tipo', '=', 'tipo_equipamiento.id')
+            ->leftJoin('ips', 'equipamientos.subred', '=', 'ips.id')
+            ->whereIn('ip', $rangoIps)
+            ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre',
+                    'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
     }
 }
 
