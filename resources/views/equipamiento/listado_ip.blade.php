@@ -28,17 +28,21 @@
     </thead>        
 
     <tbody>
-            @foreach ($equipamientos as $equipamiento)
-                <tr>
-                    <td align="center">{{ $equipamiento->ip }}</td>
-                    <td align="center">{{ $equipamiento->nombre_red }}</td>
-                    <td align="center">{{ $equipamiento->id_equipamiento }}</td>
-                    <td align="center">{{ $equipamiento->tipo }}</td>
-                    <td align="center">{{ $equipamiento->nombre . ' ' . $equipamiento->apellido }}</td>
-                    <td align="center">{{ $equipamiento->obs }}</td>
-            
-                </tr>
-            @endforeach
+    @foreach($equipamientos as $item)
+            <tr>
+                <td class="text-center">{{ $item['ip'] }}</td>
+                <td class="text-center">{{ $item['nombre_red'] }}</td>
+                <td class="text-center">@if ($item['id_equipamiento'] === 'Libre')
+                        <strong style="color: blue;">{{ $item['id_equipamiento'] }}</strong>
+                    @else
+                        {{ $item['id_equipamiento'] }}
+                    @endif</td>
+                <td class="text-center">{{ $item['tipo'] }}</td>
+                <td class="text-center">{{ $item['nombre'] }}</td>
+                <td class="text-center">{{ $item['obs'] }}</td>
+                
+            </tr>
+        @endforeach
     </tbody>
   </table>
 </div>

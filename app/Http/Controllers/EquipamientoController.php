@@ -229,37 +229,86 @@ class EquipamientoController extends Controller
         return redirect('equipamiento');
     }
     
-    public function show($id)
-    {
-        //
-    }
-    public function subredes(Request $request)
-    {
-        
-    }
     
-    public function listado_ip(Request $request)
+    public function listado_ip(Request $request )
     {
+        $searchTerm = strtolower($request->input('search', ''));
+   
+        $ipsPosibles = $this->generarIpsPosibles(); //genero las ip posibles
 
-        $searchTerm = $request->input('search');
-    
-        $query = Equipamiento::listadoEquipamientos();//paso los rangos al modelo
+        $equipamientos = Equipamiento::listadoEquipamientos()->get(); //traigo las ip asignadas
 
-        if ($searchTerm) { //filtros de busqueda
-            $query->where(function($query) use ($searchTerm) {
-                $query->where('equipamientos.ip', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('personas.nombre_p', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('equipamientos.id_e', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('personas.apellido', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('tipo_equipamiento.equipamiento', 'LIKE', "%{$searchTerm}%");
+        $ipsEnUso = $equipamientos->pluck('ip')->toArray();//array para ip asignadas
+
+        $listado = [];//array donde pongo todo y paso a la vista
+
+        foreach ($ipsPosibles as $ip) {
+            if (in_array($ip, $ipsEnUso)) {
+                //IP está en uso
+                $equipamiento = $equipamientos->firstWhere('ip', $ip);
+                $listado[] = [
+                    'ip' => $ip,
+                    'estado' => $equipamiento->nombre_red,
+                    'id_equipamiento' => $equipamiento->id_equipamiento,
+                    'tipo' => $equipamiento->tipo,
+                    'nombre' => $equipamiento->nombre. " " .$equipamiento->apellido,
+                    'obs' => $equipamiento->obs,
+                    'nombre_red' => $equipamiento->nombre_red
+                ];
+            } else {
+                //IP está libre
+                $listado[] = [
+                    'ip' => $ip,
+                    'estado' => '',
+                    'id_equipamiento' => 'Libre',
+                    'tipo' => '',
+                    'nombre' => '',
+                    'apellido' => '',
+                    'obs' => '',
+                    'nombre_red' => ''
+                ];
+            }
+        }
+
+        if ($searchTerm ) { //filtro de busqueda
+            $searchTerm = strtolower($searchTerm);
+            $listado = array_filter($listado, function($item) use ($searchTerm) {
+                return stripos(strtolower($item['ip']), $searchTerm) !== false ||
+                       stripos(strtolower($item['nombre']), $searchTerm) !== false ||
+                       stripos(strtolower($item['id_equipamiento']), $searchTerm) !== false ||
+                       stripos(strtolower($item['tipo']), $searchTerm) !== false;
             });
         }
 
-        $equipamientos = $query->paginate(20)->withQueryString();
-
-        return view('equipamiento.listado_ip', ['equipamientos' => $equipamientos]);
-    }
+        $listado = collect($listado);//convierto el array a una colección para paginar
     
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $listado->slice(($currentPage - 1) * 20, 20)->all();
+        $paginatedList = new LengthAwarePaginator($currentPageItems, $listado->count(), 20, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'query' => $request->query()//para mantener el filtro al cambiar de pagina
+        ]);
+
+        return view('equipamiento.listado_ip', [
+            'equipamientos' => $paginatedList
+        ]);
+        
+    }
+
+    
+    public function generarIpsPosibles()
+    {
+        $mascaras = ['10.41.20', '10.41.30', '10.41.40', '10.41.50', '10.41.60', '10.41.70'];
+        $ipsPosibles = [];
+    
+        foreach ($mascaras as $mascara) {
+            for ($i = 1; $i <= 254; $i++) {
+                $ipsPosibles[] = "{$mascara}.{$i}";
+            }
+        }
+    
+        return $ipsPosibles;
+    }
     
    //****************RELACIONES**********************
     public function select_puesto(){

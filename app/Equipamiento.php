@@ -104,13 +104,6 @@ class Equipamiento extends Model
     	    return $query -> where(DB::raw("CONCAT(nombre_p,' ',apellido)"), 'LIKE',"%$usuario%");
     	}
     }
-    /*public function scopteSubred ($query, $subred)
-    {
-        if($subred)
-        {
-            return $query -> where('nombre', 'LIKE', "%$subred");
-        }
-    }*/
 
     
     public function index()
@@ -135,11 +128,12 @@ class Equipamiento extends Model
             ->leftJoin('tipo_equipamiento', 'equipamientos.tipo', '=', 'tipo_equipamiento.id')
             ->leftJoin('ips', 'equipamientos.subred', '=', 'ips.id')
             ->whereNotNull('equipamientos.subred')
-            //->whereIn('ip', $rangoIps)
             ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre',
                     'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo')
             ->orderBy('equipamientos.ip', 'asc');
     }
+
+    
 }
 
 
