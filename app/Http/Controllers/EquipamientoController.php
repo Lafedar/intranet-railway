@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Input;
 Use Session;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection; 
 class EquipamientoController extends Controller
 {   
     //crea el index
@@ -234,166 +237,30 @@ class EquipamientoController extends Controller
     {
         
     }
+    
     public function listado_ip(Request $request)
     {
-        $listado= array();
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpLan($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i][0] = "10.41.20.".$i;
-                $listado[$i][1] = 'Libre';
-                $listado[$i][2] = '';
-                $listado[$i][3] = '';
-                $listado[$i][4] = '';
-                $listado[$i][5] = 'Lan';
-            }
-            else
-            {
-                $listado[$i][0] = "10.41.20.".$i;
-                $listado[$i][1] = $equipamiento->id_equipamiento;
-                $listado[$i][2] = $equipamiento->tipo;
-                $listado[$i][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i][4] = $equipamiento->obs;
-                $listado[$i][5] = $equipamiento->nombre_red;
-            }
+
+        $searchTerm = $request->input('search');
+    
+        $query = Equipamiento::listadoEquipamientos();//paso los rangos al modelo
+
+        if ($searchTerm) { //filtros de busqueda
+            $query->where(function($query) use ($searchTerm) {
+                $query->where('equipamientos.ip', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('personas.nombre_p', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('equipamientos.id_e', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('personas.apellido', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('tipo_equipamiento.equipamiento', 'LIKE', "%{$searchTerm}%");
+            });
         }
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpPLC($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+254][0] = "10.41.30.".$i;
-                $listado[$i+254][1] = 'Libre';
-                $listado[$i+254][2] = '';
-                $listado[$i+254][3] = '';
-                $listado[$i+254][4] = '';
-                $listado[$i+254][5] = 'PLC';
-            }
-            else
-            {
-                $listado[$i+254][0] = "10.41.30.".$i;
-                $listado[$i+254][1] = $equipamiento->id_equipamiento;
-                $listado[$i+254][2] = $equipamiento->tipo;
-                $listado[$i+254][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+254][4] = $equipamiento->obs;
-                $listado[$i+254][5] = $equipamiento->nombre_red;
-            }
-        }
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpImp($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+508][0] = "10.41.40.".$i;
-                $listado[$i+508][1] = 'Libre';
-                $listado[$i+508][2] = '';
-                $listado[$i+508][3] = '';
-                $listado[$i+508][4] = '';
-                $listado[$i+508][5] = 'Impresoras';
-            }
-            else
-            {
-                $listado[$i+508][0] = "10.41.40.".$i;
-                $listado[$i+508][1] = $equipamiento->id_equipamiento;
-                $listado[$i+508][2] = $equipamiento->tipo;
-                $listado[$i+508][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+508][4] = $equipamiento->obs;
-                $listado[$i+508][5] = $equipamiento->nombre_red;
-            }
-        }
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpWifiInv($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+762][0] = "10.41.50.".$i;
-                $listado[$i+762][1] = 'Libre';
-                $listado[$i+762][2] = '';
-                $listado[$i+762][3] = '';
-                $listado[$i+762][4] = '';
-                $listado[$i+762][5] = 'Wifi Invitados';
-            }
-            else
-            {
-                $listado[$i+762][0] = "10.41.50.".$i;
-                $listado[$i+762][1] = $equipamiento->id_equipamiento;
-                $listado[$i+762][2] = $equipamiento->tipo;
-                $listado[$i+762][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+762][4] = $equipamiento->obs;
-                $listado[$i+762][5] = $equipamiento->nombre_red;
-            }
-        }
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpWifiInt($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+1016][0] = "10.41.60.".$i;
-                $listado[$i+1016][1] = 'Libre';
-                $listado[$i+1016][2] = '';
-                $listado[$i+1016][3] = '';
-                $listado[$i+1016][4] = '';
-                $listado[$i+1016][5] = 'Wifi Interno';
-            }
-            else
-            {
-                $listado[$i+1016][0] = "10.41.60.".$i;
-                $listado[$i+1016][1] = $equipamiento->id_equipamiento;
-                $listado[$i+1016][2] = $equipamiento->tipo;
-                $listado[$i+1016][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+1016][4] = $equipamiento->obs;
-                $listado[$i+1016][5] = $equipamiento->nombre_red;
-            }
-        }
-        for($i=1; $i<255;$i++)
-        {          
-            $equipamiento = Equipamiento::ListadoIpMant($i)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+1270][0] = "10.41.70.".$i;
-                $listado[$i+1270][1] = 'Libre';
-                $listado[$i+1270][2] = '';
-                $listado[$i+1270][3] = '';
-                $listado[$i+1270][4] = '';
-                $listado[$i+1270][5] = 'Terceros Mantenimiento';
-            }
-            else
-            {
-                $listado[$i+1270][0] = "10.41.70.".$i;
-                $listado[$i+1270][1] = $equipamiento->id_equipamiento;
-                $listado[$i+1270][2] = $equipamiento->tipo;
-                $listado[$i+1270][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+1270][4] = $equipamiento->obs;
-                $listado[$i+1270][5] = $equipamiento->nombre_red;
-            }
-        }
-        for($i=1; $i<6;$i++)
-        {   
-            $aux = $i+144;
-            $equipamiento = Equipamiento::ListadoIpWan($aux)->first();
-            if($equipamiento == null)
-            {
-                $listado[$i+1524][0] = "181.30.186.".$aux;
-                $listado[$i+1524][1] = 'Libre';
-                $listado[$i+1524][2] = '';
-                $listado[$i+1524][3] = '';
-                $listado[$i+1524][4] = '';
-                $listado[$i+1524][5] = 'Wan Firtel';
-            }
-            else
-            {
-                $listado[$i+1524][0] = "181.30.186.".$aux;
-                $listado[$i+1524][1] = $equipamiento->id_equipamiento;
-                $listado[$i+1524][2] = $equipamiento->tipo;
-                $listado[$i+1524][3] = $equipamiento->nombre.' '.$equipamiento->apellido;
-                $listado[$i+1524][4] = $equipamiento->obs;
-                $listado[$i+1524][5] = $equipamiento->nombre_red;
-            }
-        }
-       return view ('equipamiento.listado_ip', array('listado'=> $listado));
+
+        $equipamientos = $query->paginate(20)->withQueryString();
+
+        return view('equipamiento.listado_ip', ['equipamientos' => $equipamientos]);
     }
+    
+    
    //****************RELACIONES**********************
     public function select_puesto(){
         return DB::table('puestos')
