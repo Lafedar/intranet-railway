@@ -25,9 +25,8 @@ class Equipamiento extends Model
         ->leftjoin('area', 'area.id_a', 'localizaciones.id_area');
 
     
-    if ($tipo == 0 && $subred == 0) {
-        
-    } elseif ($tipo != 0 && $subred == 0) {
+
+    if ($tipo != 0 && $subred == 0) {
         $query->where('tipo', $tipo);
     } elseif ($tipo == 0 && $subred != 0) {
         $query->where('subred', $subred);
@@ -123,7 +122,7 @@ class Equipamiento extends Model
         return view('equipamiento.inicio', compact('tipo_equipamiento'));
     }
 
-    public static function scopeListadoEquipamientos($query, $rangoIps) //devuelve todos los ip
+    public static function scopeListadoEquipamientos($query) //devuelve todos los ip
     {
         return $query->leftJoin('relaciones', function($join) {
                 $join->on('equipamientos.id_e', '=', 'relaciones.equipamiento')
@@ -135,9 +134,11 @@ class Equipamiento extends Model
             ->leftJoin('area', 'area.id_a', '=', 'localizaciones.id_area')
             ->leftJoin('tipo_equipamiento', 'equipamientos.tipo', '=', 'tipo_equipamiento.id')
             ->leftJoin('ips', 'equipamientos.subred', '=', 'ips.id')
-            ->whereIn('ip', $rangoIps)
+            ->whereNotNull('equipamientos.subred')
+            //->whereIn('ip', $rangoIps)
             ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre',
-                    'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo');
+                    'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo')
+            ->orderBy('equipamientos.ip', 'asc');
     }
 }
 

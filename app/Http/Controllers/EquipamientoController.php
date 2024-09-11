@@ -240,25 +240,10 @@ class EquipamientoController extends Controller
     
     public function listado_ip(Request $request)
     {
-        $rangoIps = [];
 
         $searchTerm = $request->input('search');
-        
-        for ($i = 1; $i < 255; $i++) {//obtengo todos los rangos de ip
-            $rangoIps[] = "10.41.20.$i";
-            $rangoIps[] = "10.41.30.$i";
-            $rangoIps[] = "10.41.40.$i";
-            $rangoIps[] = "10.41.50.$i";
-            $rangoIps[] = "10.41.60.$i";
-            $rangoIps[] = "10.41.70.$i";
-        }
-
-        for ($i = 1; $i < 6; $i++) {
-            $aux = $i + 144;
-            $rangoIps[] = "181.30.186.$aux";
-        }
-
-        $query = Equipamiento::listadoEquipamientos($rangoIps);//paso los rangos al modelo
+    
+        $query = Equipamiento::listadoEquipamientos();//paso los rangos al modelo
 
         if ($searchTerm) { //filtros de busqueda
             $query->where(function($query) use ($searchTerm) {
