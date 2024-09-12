@@ -230,10 +230,10 @@ class EquipamientoController extends Controller
     }
     
     
-    public function listado_ip(Request $request )
+    public function listIp(Request $request )
     {
         $searchTerm = $request->input('search', '');
-        $listado = Equipamiento::obtenerListado($searchTerm);
+        $listado = Equipamiento::getAllIp($searchTerm);
 
         
         $currentPage = LengthAwarePaginator::resolveCurrentPage(); //paginar

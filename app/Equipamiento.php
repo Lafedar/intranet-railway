@@ -133,7 +133,7 @@ class Equipamiento extends Model
             ->orderBy('equipamientos.ip', 'asc');
     }
 
-    public static function obtenerListado($searchTerm = '')
+    public static function getAllIp($searchTerm = '')
     {
         $ipsPosibles = self::generarIpsPosibles();
         $equipamientos = self::listadoEquipamientos()->get();

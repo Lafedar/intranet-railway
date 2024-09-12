@@ -76,7 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::resource('equipamiento', 'EquipamientoController')->middleware('role:administrador|ingenieria');
 
-  Route::get('listado_ip', 'EquipamientoController@listado_ip')->middleware('role:administrador|ingenieria');
+  Route::get('listado_ip', 'EquipamientoController@listIp')->middleware('role:administrador|ingenieria');
 
   Route::get('select_puesto','EquipamientoController@select_puesto')->name('select_puesto');
 
@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('modal_editar_equipamiento/{id}','EquipamientoController@modal_editar_equipamiento')->name('modal_editar_equipamiento')->middleware('role:administrador');
 
-  Route::get('/listado-ip', 'EquipamientoController@listado_ip')->name('listado_ip');
+  Route::get('/listado-ip', 'EquipamientoController@listIp')->name('listado_ip');
 
 });
 
