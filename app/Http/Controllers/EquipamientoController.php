@@ -229,37 +229,27 @@ class EquipamientoController extends Controller
         return redirect('equipamiento');
     }
     
-    public function show($id)
+    
+    public function listIp(Request $request )
     {
-        //
-    }
-    public function subredes(Request $request)
-    {
+        $searchTerm = $request->input('search', '');
+        $listado = Equipamiento::getAllIp($searchTerm);
+
         
+        $currentPage = LengthAwarePaginator::resolveCurrentPage(); //paginar
+        $currentPageItems = $listado->slice(($currentPage - 1) * 20, 20)->all();
+        $paginatedList = new LengthAwarePaginator($currentPageItems, $listado->count(), 20, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'query' => $request->query() //para mantener el filtro al cambiar de página
+        ]);
+
+        return view('equipamiento.listado_ip', [
+            'equipamientos' => $paginatedList
+        ]);
     }
+
     
-    public function listado_ip(Request $request)
-    {
 
-        $searchTerm = $request->input('search');
-    
-        $query = Equipamiento::listadoEquipamientos();//paso los rangos al modelo
-
-        if ($searchTerm) { //filtros de busqueda
-            $query->where(function($query) use ($searchTerm) {
-                $query->where('equipamientos.ip', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('personas.nombre_p', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('equipamientos.id_e', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('personas.apellido', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('tipo_equipamiento.equipamiento', 'LIKE', "%{$searchTerm}%");
-            });
-        }
-
-        $equipamientos = $query->paginate(20)->withQueryString();
-
-        return view('equipamiento.listado_ip', ['equipamientos' => $equipamientos]);
-    }
-    
     
    //****************RELACIONES**********************
     public function select_puesto(){

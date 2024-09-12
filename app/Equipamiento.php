@@ -104,13 +104,6 @@ class Equipamiento extends Model
     	    return $query -> where(DB::raw("CONCAT(nombre_p,' ',apellido)"), 'LIKE',"%$usuario%");
     	}
     }
-    /*public function scopteSubred ($query, $subred)
-    {
-        if($subred)
-        {
-            return $query -> where('nombre', 'LIKE', "%$subred");
-        }
-    }*/
 
     
     public function index()
@@ -135,11 +128,74 @@ class Equipamiento extends Model
             ->leftJoin('tipo_equipamiento', 'equipamientos.tipo', '=', 'tipo_equipamiento.id')
             ->leftJoin('ips', 'equipamientos.subred', '=', 'ips.id')
             ->whereNotNull('equipamientos.subred')
-            //->whereIn('ip', $rangoIps)
             ->select('equipamientos.id_e as id_equipamiento', 'equipamientos.ip as ip', 'ips.nombre as nombre_red', 'personas.nombre_p as nombre',
                     'personas.apellido as apellido', 'equipamientos.obs as obs', 'tipo_equipamiento.equipamiento as tipo')
             ->orderBy('equipamientos.ip', 'asc');
     }
+
+    public static function getAllIp($searchTerm = '')
+    {
+        $ipsPosibles = self::generarIpsPosibles();
+        $equipamientos = self::listadoEquipamientos()->get();
+        $ipsEnUso = $equipamientos->pluck('ip')->toArray();
+
+        $listado = [];
+
+        foreach ($ipsPosibles as $ip) {
+            if (in_array($ip, $ipsEnUso)) {
+                $equipamiento = $equipamientos->firstWhere('ip', $ip);
+                $listado[] = [
+                    'ip' => $ip,
+                    'estado' => $equipamiento->nombre_red,
+                    'id_equipamiento' => $equipamiento->id_equipamiento,
+                    'tipo' => $equipamiento->tipo,
+                    'nombre' => $equipamiento->nombre . " " . $equipamiento->apellido,
+                    'obs' => $equipamiento->obs,
+                    'nombre_red' => $equipamiento->nombre_red
+                ];
+            } else {
+                $listado[] = [
+                    'ip' => $ip,
+                    'estado' => '',
+                    'id_equipamiento' => 'Libre',
+                    'tipo' => '',
+                    'nombre' => '',
+                    'apellido' => '',
+                    'obs' => '',
+                    'nombre_red' => ''
+                ];
+            }
+        }
+
+        
+        if ($searchTerm) {//filtrar las ip
+            $searchTerm = strtolower($searchTerm);
+            $listado = array_filter($listado, function($item) use ($searchTerm) {
+                return stripos(strtolower($item['ip']), $searchTerm) !== false ||
+                       stripos(strtolower($item['nombre']), $searchTerm) !== false ||
+                       stripos(strtolower($item['id_equipamiento']), $searchTerm) !== false ||
+                       stripos(strtolower($item['tipo']), $searchTerm) !== false;
+            });
+        }
+
+        return collect($listado);
+    }
+
+    public static function generarIpsPosibles()
+    {
+        $mascaras = ['10.41.20', '10.41.30', '10.41.40', '10.41.50', '10.41.60', '10.41.70'];
+        $ipsPosibles = [];
+    
+        foreach ($mascaras as $mascara) {
+            for ($i = 1; $i <= 254; $i++) {
+                $ipsPosibles[] = "{$mascara}.{$i}";
+            }
+        }
+    
+        return $ipsPosibles;
+    }
+
+    
 }
 
 
