@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+
 class Equipamiento extends Model
 {
     protected $table='equipamientos';
@@ -133,9 +134,10 @@ class Equipamiento extends Model
             ->orderBy('equipamientos.ip', 'asc');
     }
 
-    public static function getAllIp($searchTerm = '')
+    public static function getAllIp($searchTerm)
     {
-        $ipsPosibles = self::generarIpsPosibles();
+        
+        $ipsPosibles = self::generatePossibleIPs();
         $equipamientos = self::listadoEquipamientos()->get();
         $ipsEnUso = $equipamientos->pluck('ip')->toArray();
 
@@ -181,7 +183,7 @@ class Equipamiento extends Model
         return collect($listado);
     }
 
-    public static function generarIpsPosibles()
+    public static function generatePossibleIPs()
     {
         $mascaras = ['10.41.20', '10.41.30', '10.41.40', '10.41.50', '10.41.60', '10.41.70'];
         $ipsPosibles = [];
