@@ -15,67 +15,7 @@ use App\Persona;
 
 class EventController extends Controller
 {
-    public function form(){
- 	 return view("evento/form");
-	
-	}
-
-	public function create(Request $request){
-
-		 // guardar evento
-      Event::insert([
-        'titulo'       => $request->input("titulo"),
-        'descripcion'  => $request->input("descripcion"),
-        'fecha'        => $request->input("fecha"),
-        'hora'         => $request->input("hora"),
-        'ubicacion'    => $request ->input("ubicacion"), 
-        'solicitado'   => $request ->input("solicitado") ,
-        'activo'       => $request->input("activo")
-            ]);
-       
-        Session::flash('message','Evento Creado con éxito');
-        Session::flash('alert-class', 'alert-success');
-
-           return redirect('/Evento');
-
-     //return back()->with('success', 'Enviado exitosamente!');
-
-    }
-
-    public function quien_reserva(){
-        
-
-        $solicita = DB::table('persona')->get();
-
-        return view ('evento.form', array('perona' => $solicita));
-    }
-
-    public function details($id){
-
-      $evento = Event::find($id);
-
-      return view("evento/evento",[
-        "evento" => $evento
-      ]);
-
-    }
-
-    public function updates (Request $request)
-    {
-    	$evento = DB::table('evento')->where('evento.id',$request['id'])
-      ->update([
-            
-            'activo' => 0
-
-  
-          ]); 
-          
-             
-
-        Session::flash('message','Evento cancelado con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('/Evento');
-    }
+    
 //===========================Calendario==========================
 
     public function index(){

@@ -8,102 +8,45 @@ use DB;
 
 class EventosController extends Controller
 {
-    //
-     //
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
     
-        $personas=DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
-        return view ('eventos.index',  compact('personas'));
+       $personas=Evento::getPersons();
+       $salas = Evento::getSalas();
+        return view('eventos.index', compact('personas', 'salas'));
         
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         
-        $datosEvento=request()->except(['_token','_method']);
-        
+        $datosEvento = $request->except(['_token', '_method']);
+        $evento = Evento::createEvento($datosEvento);
+        return response()->json($evento);
 
-        Evento::insert($datosEvento);
-        print_r($datosEvento);
-
-
-      
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show()
     {
-        //
         $data['eventos']=Evento::all();
         return response()->json($data['eventos']);
 
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, $id)
     {
-    //
-        $datosEvento=request()->except(['_token','_method']);
+        $datosEvento = $request->except(['_token', '_method']);
+        $evento = Evento::findOrFail($id);
+        $evento->updateEvento($datosEvento);
 
-        $respuesta=Evento::where('id','=',$id)->update($datosEvento);
-        return response()->json($respuesta);
-
+        return response()->json($evento);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
-        $eventos = Evento::findOrFail($id);
-        Evento::destroy($id);
-        return response()->json($id);
+        $evento = Evento::findOrFail($id);
+        $evento->deleteEvento();
+        return response()->json(['message' => 'Evento eliminado correctamente']);
     }
 }
+
