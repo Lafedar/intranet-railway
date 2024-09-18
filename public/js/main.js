@@ -29,13 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     eventClick: function(info){
 
-      $("#btnAgregar").prop("disabled",true);
-      $("#btnModificar").prop("disabled",false);
-      $("#btnBorrar").prop("disabled",false);
-      $('#txtID').val(info.event.id);
-      $('#txtSala').val(info.event.extendedProps.sala); 
-      $('#txtTitulo').val(info.event.extendedProps.titulo);
-      $('#txtPedido_por').val(info.event.extendedProps.pedido_por);
+        $("#btnAgregar").prop("disabled",true);
+        $("#btnModificar").prop("disabled",false);
+        $("#btnBorrar").prop("disabled",false);
+        $('#txtID').val(info.event.id);
+        $('#txtTitulo').val(info.event.extendedProps.titulo);
+        $('#txtPedido_por').val(info.event.extendedProps.pedido_por);
+        $('#txtSala').val(info.event.extendedProps.sala);      
+
+
       
       
       mes = (info.event.start.getMonth()+1);
@@ -95,10 +97,13 @@ $('#btnModificar').click(function() {
 
 
 function recolectarDatosGUI(method) {
-  if ($('#txtSala').val() === "" || $('#txtHoras').val() === "" || $('#txtHoraf').val() === "" || $('#txtPedido_por').val() === "" || $('#txtNombre').val() === "") {
-      alert("Por favor, complete todos los campos.");
-      return null;
-  }
+    // Validar que ningún campo esté vacío
+    if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === " " || $('#txtHoraf').val() === " "|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " "|| $('#txtSala').val() === " ")
+    {
+        alert("Por favor, complete todos los campos.");
+        return null; // Devuelve null para indicar que la recolección de datos falló
+    }
+
 
   var horaInicioObj = new Date("1970-01-01T" + $('#txtHoras').val());
   var horaFinObj = new Date("1970-01-01T" + $('#txtHoraf').val());
@@ -108,16 +113,16 @@ function recolectarDatosGUI(method) {
       return null;
   }
 
-  var colo = ($('#txtSala').val() == 'Auditorio') ? '#1569C7' : '#FFDFDD';
-  colo = ($('#txtSala').val() == 'Sala Vidriada') ? '#48CCCD' : colo;
-  colo = ($('#txtSala').val() == 'Sala Protocolar') ? '#98AFC7' : colo;
-  colo = ($('#txtSala').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
+  var colo = ($('#txtTitulo').val() == 'Auditorio') ? '#1569C7' : '#FFDFDD';
+  colo = ($('#txtTitulo').val() == 'Sala Vidriada') ? '#48CCCD' : colo;
+  colo = ($('#txtTitulo').val() == 'Sala Protocolar') ? '#98AFC7' : colo;
+  colo = ($('#txtTitulo').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
 
   var evento = {
-      sala: $('#txtSala').val(),
+        titulo: $('#txtSala').val(),
+      sala: $('#txtTitulo').val(),
       descripcion: $('#txtDescripcion').val(),
       pedido_por: $('#txtPedido_por').val(),
-      titulo: $('#txtTitulo').val(),
       color: colo,
       textColor: '#ffffff',
       start: $('#txtFecha').val() + " " + $('#txtHoras').val(),

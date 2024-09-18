@@ -11,7 +11,7 @@
         <input type="color" name="txtColor" id="txtColor" autocomplete="off" class="d-none">
         <div class="form-group">
           <label>Titulo: </label>
-          <input type="text" class="form-control" name="txtTitulo" id="txtTitulo" autocomplete="off" required>
+          <input type="text" class="form-control" name="txtSala" id="txtSala" autocomplete="off" required>
         </div>
 
         <div class="form-row">
@@ -37,12 +37,11 @@
 
         <div class="form-group">
           <label> Reserva sala:</label>
-          <select name="txtSala" class="form-control" id="txtSala" required>
+          <select name="txtTitulo" class="form-control" id="txtTitulo" required>
             <option value="" disabled selected>Selecciona una sala</option>
             @foreach($salas as $sala)
               <option value="{{$sala->nombre}}">{{$sala->nombre}}</option>
             @endforeach
-
           </select>
         </div>
 
@@ -61,5 +60,4 @@
 
     </div>
   </div>
-</div>
 </div>
