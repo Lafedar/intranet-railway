@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
 
     displayEventTime: false,
-    navLinks: true, // can click day/week names to navigate views
-    //selectable: true,
+    navLinks: true, 
     selectMirror: true,
     editable: true,
     dayMaxEvents: true,
@@ -33,12 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
         $("#btnModificar").prop("disabled",false);
         $("#btnBorrar").prop("disabled",false);
         $('#txtID').val(info.event.id);
-        $('#txtTitulo').val(info.event.title);
+        $('#txtSala').val(info.event.extendedProps.sala);
         $('#txtPedido_por').val(info.event.extendedProps.pedido_por);
-        $('#txtSala').val(info.event.extendedProps.sala);      
-
-
-      
+        $('#txtTitulo').val(info.event.extendedProps.titulo);      
       
       mes = (info.event.start.getMonth()+1);
       dia =(info.event.start.getDate());
@@ -97,11 +93,10 @@ $('#btnModificar').click(function() {
 
 
 function recolectarDatosGUI(method) {
-    // Validar que ningún campo esté vacío
     if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === " " || $('#txtHoraf').val() === " "|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " "|| $('#txtSala').val() === " ")
     {
         alert("Por favor, complete todos los campos.");
-        return null; // Devuelve null para indicar que la recolección de datos falló
+        return null; 
     }
 
 
@@ -113,14 +108,15 @@ function recolectarDatosGUI(method) {
       return null;
   }
 
-  var colo = ($('#txtTitulo').val() == 'Auditorio') ? '#1569C7' : '#FFDFDD';
-  colo = ($('#txtTitulo').val() == 'Sala Vidriada') ? '#48CCCD' : colo;
-  colo = ($('#txtTitulo').val() == 'Sala Protocolar') ? '#98AFC7' : colo;
-  colo = ($('#txtTitulo').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
+  var colo = ($('#txtSala').val() == 'Auditorio') ? '#1569C7' : '#FFDFDD';
+  colo = ($('#txtSala').val() == 'Sala Vidriada') ? '#48CCCD' : colo;
+  colo = ($('#txtSala').val() == 'Sala Protocolar') ? '#98AFC7' : colo;
+  colo = ($('#txtSala').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
 
   var evento = {
-        title: $('#txtTitulo').val(),
-      sala: $('#txtSala').val(),
+    
+        sala: $('#txtSala').val(),
+      titulo: $('#txtTitulo').val(),
       descripcion: $('#txtDescripcion').val(),
       pedido_por: $('#txtPedido_por').val(),
       color: colo,
@@ -130,7 +126,8 @@ function recolectarDatosGUI(method) {
       '_token': $("meta[name='csrf-token']").attr("content"),
       '_method': method
   };
-
+  console.log('Sala:', evento.sala);
+  console.log('titulo:', evento.titulo);
   if (method !== "POST") {
       evento.id = $('#txtID').val();
   }
@@ -158,14 +155,16 @@ $.ajax({
 }
     function limpiarFormulario(info){
       $('#txtID').val("");
-      $('#txtSala').val("");
-      $('#txtPedido_por').val("");
       $('#txtTitulo').val("");
+      $('#txtSala').val("");
+      $('#txtDescripcion').val("");
+      $('#txtPedido_por').val("");
+      $('#txtColor').val("");
       $('#txtHoras').val("");
       $('#txtFecha').val("");
       $('#txtHoraf').val("");
-      $('#txtColor').val("");
-      $('#txtDescripcion').val("");
+     
+      
 
     }
 });

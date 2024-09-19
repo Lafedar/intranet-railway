@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    protected $table= 'evento';
+    /*protected $table= 'evento';
     protected $primaryKey ='id';
 
     //
@@ -14,5 +14,5 @@ class Event extends Model
         'titulo', 'descripcion', 'fecha', 'hora', 'ubicacion','solicitado','activo'
     ];
 
-    public $timestamps = false;
+    public $timestamps = false;*/
 }

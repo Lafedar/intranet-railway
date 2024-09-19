@@ -10,27 +10,39 @@ class EventosController extends Controller
 {
     public function index()
     {
-    
-       $personas=Evento::getPersons();
-       $salas = Evento::getSalas();
+        $personas=Evento::getPersons();
+        $salas = Evento::getSalas();
         return view('eventos.index', compact('personas', 'salas'));
         
     }
 
     public function store(Request $request)
     {
-        
         $datosEvento = $request->except(['_token', '_method']);
         $evento = Evento::createEvento($datosEvento);
-        return response()->json($evento);
 
     }
 
     public function show()
     {
-        $data['eventos']=Evento::all();
-        return response()->json($data['eventos']);
-
+        $eventos = Evento::all()->map(function ($evento) {
+            return [
+                'id' => $evento->id,
+                'title' => $evento->sala, 
+                'start' => $evento->start,
+                'titulo' => $evento->titulo,
+                'end' => $evento->end,
+                'descripcion' => $evento->descripcion,
+                'pedido_por' => $evento->pedido_por,
+                'color' => $evento->color,
+                'textColor' => $evento->textColor,
+                'sala' => $evento->sala,
+                
+            ];
+        });
+    
+        return response()->json($eventos);
+    
     }
     
     public function update(Request $request, $id)
@@ -38,15 +50,13 @@ class EventosController extends Controller
         $datosEvento = $request->except(['_token', '_method']);
         $evento = Evento::findOrFail($id);
         $evento->updateEvento($datosEvento);
-
-        return response()->json($evento);
     }
 
     public function destroy($id)
     {
         $evento = Evento::findOrFail($id);
         $evento->deleteEvento();
-        return response()->json(['message' => 'Evento eliminado correctamente']);
+        
     }
 }
 
