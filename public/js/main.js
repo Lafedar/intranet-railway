@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $("#btnModificar").prop("disabled",false);
         $("#btnBorrar").prop("disabled",false);
         $('#txtID').val(info.event.id);
-        $('#txtTitulo').val(info.event.extendedProps.titulo);
+        $('#txtTitulo').val(info.event.title);
         $('#txtPedido_por').val(info.event.extendedProps.pedido_por);
         $('#txtSala').val(info.event.extendedProps.sala);      
 
@@ -119,8 +119,8 @@ function recolectarDatosGUI(method) {
   colo = ($('#txtTitulo').val() == 'Sala Vidridada 2') ? '#FFE5B4' : colo;
 
   var evento = {
-        titulo: $('#txtSala').val(),
-      sala: $('#txtTitulo').val(),
+        title: $('#txtTitulo').val(),
+      sala: $('#txtSala').val(),
       descripcion: $('#txtDescripcion').val(),
       pedido_por: $('#txtPedido_por').val(),
       color: colo,

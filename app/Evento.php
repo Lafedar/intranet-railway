@@ -12,10 +12,10 @@ class Evento extends Model
     
     // Campos que pueden ser llenados masivamente
     protected $fillable = [
-        'titulo',
+        'title',
+        'sala',
         'descripcion',
         'pedido_por',
-        'sala',
         'color',
         'textColor',
         'start',
@@ -38,8 +38,8 @@ class Evento extends Model
     public static function validate(array $data)
     {
         $rules = [
+            'title'       => 'required|string',
             'sala'        => 'required|string',
-            'titulo'       => 'required|string',
             'descripcion' => 'nullable|string',
             'pedido_por'  => 'required|string|max:255',
             'color'       => 'required|string',
@@ -57,6 +57,7 @@ class Evento extends Model
 
     
         return $validator->validated();
+        
         
         
     }
