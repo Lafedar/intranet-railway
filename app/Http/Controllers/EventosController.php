@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Evento;
 use DB;
+use Illuminate\Support\Facades\Validator; 
+use Illuminate\Validation\ValidationException;
 
 class EventosController extends Controller
 {
@@ -18,8 +20,10 @@ class EventosController extends Controller
 
     public function store(Request $request)
     {
+        
         $datosEvento = $request->except(['_token', '_method']);
-        $evento = Evento::createEvento($datosEvento);
+        $validatedData = $this->validateEvento($datosEvento);
+        $evento = Evento::create($validatedData);
 
     }
 
@@ -47,9 +51,11 @@ class EventosController extends Controller
     
     public function update(Request $request, $id)
     {
+    
         $datosEvento = $request->except(['_token', '_method']);
+        $validatedData = $this->validateEvento($datosEvento);
         $evento = Evento::findOrFail($id);
-        $evento->updateEvento($datosEvento);
+        $evento->update($validatedData);
     }
 
     public function destroy($id)
@@ -57,6 +63,27 @@ class EventosController extends Controller
         $evento = Evento::findOrFail($id);
         $evento->deleteEvento();
         
+    }
+    public function validateEvento(array $data)
+    {
+        $rules = [
+            'sala'       => 'required|string|max:50',
+            'titulo'     => 'required|string|max:255',
+            'descripcion'=> 'nullable|string|max:255',
+            'pedido_por' => 'required|string|max:255',
+            'color'      => 'required|string',
+            'textColor'  => 'required|string',
+            'start'      => 'required',
+            'end'        => 'required'
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        return $validator->validated();
     }
 }
 

@@ -35,30 +35,6 @@ class Evento extends Model
         return $this;
     }
 
-    public static function validate(array $data)
-    {
-        $rules = [
-            'sala'       => 'required|string|max:50',
-            'titulo'        => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:255',
-            'pedido_por'  => 'required|string|max:255',
-            'color'       => 'required|string',
-            'textColor'   => 'required|string',
-            'start'       => 'required',
-            'end'         => 'required'
-        ];
-    
-        
-        $validator = Validator::make($data, $rules);
-    
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        return $validator->validated();
-        
-    }
-
     public function deleteEvento()
     {
         $this->delete();

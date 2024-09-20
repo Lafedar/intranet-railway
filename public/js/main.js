@@ -93,7 +93,7 @@ $('#btnModificar').click(function() {
 
 
 function recolectarDatosGUI(method) {
-    if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === " " || $('#txtHoraf').val() === " "|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " "|| $('#txtSala').val() === " ")
+    if ($('#txtTitulo').val() === " " || $('#txtHoras').val() === "" || $('#txtHoraf').val() === ""|| $('#txtPedido_por').val() === " " || $('#txtID').val() === " "|| $('#txtSala').val() === " ")
     {
         alert("Por favor, complete todos los campos.");
         return null; 
@@ -126,8 +126,7 @@ function recolectarDatosGUI(method) {
       '_token': $("meta[name='csrf-token']").attr("content"),
       '_method': method
   };
-  console.log('Sala:', evento.sala);
-  console.log('titulo:', evento.titulo);
+  
   if (method !== "POST") {
       evento.id = $('#txtID').val();
   }
