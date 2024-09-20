@@ -143,7 +143,7 @@ $.ajax({
         console.log(msg);
         $('#exampleModal').modal("toggle");
         calendar.refetchEvents();
-        alert("Evento Guardado con éxito");
+        alert("Operación realizada con éxito");
     },
     error: function(xhr) {
         alert("Error: " + xhr.responseText);
