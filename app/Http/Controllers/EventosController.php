@@ -5,105 +5,85 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Evento;
 use DB;
+use Illuminate\Support\Facades\Validator; 
+use Illuminate\Validation\ValidationException;
 
 class EventosController extends Controller
 {
-    //
-     //
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-    
-        $personas=DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
-        return view ('eventos.index',  compact('personas'));
+        $personas=Evento::getPersons();
+        $salas = Evento::getSalas();
+        return view('eventos.index', compact('personas', 'salas'));
         
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         
-        $datosEvento=request()->except(['_token','_method']);
-        
+        $datosEvento = $request->except(['_token', '_method']);
+        $validatedData = $this->validateEvento($datosEvento);
+        $evento = Evento::create($validatedData);
 
-        Evento::insert($datosEvento);
-        print_r($datosEvento);
-
-
-      
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show()
     {
-        //
-        $data['eventos']=Evento::all();
-        return response()->json($data['eventos']);
-
+        $eventos = Evento::all()->map(function ($evento) {
+            return [
+                'id' => $evento->id,
+                'title' => $evento->sala, 
+                'start' => $evento->start,
+                'titulo' => $evento->titulo,
+                'end' => $evento->end,
+                'descripcion' => $evento->descripcion,
+                'pedido_por' => $evento->pedido_por,
+                'color' => $evento->color,
+                'textColor' => $evento->textColor,
+                'sala' => $evento->sala,
+                
+            ];
+        });
+    
+        return response()->json($eventos);
+    
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, $id)
     {
-    //
-        $datosEvento=request()->except(['_token','_method']);
-
-        $respuesta=Evento::where('id','=',$id)->update($datosEvento);
-        return response()->json($respuesta);
-
+    
+        $datosEvento = $request->except(['_token', '_method']);
+        $validatedData = $this->validateEvento($datosEvento);
+        $evento = Evento::findOrFail($id);
+        $evento->update($validatedData);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
-        $eventos = Evento::findOrFail($id);
-        Evento::destroy($id);
-        return response()->json($id);
+        $evento = Evento::findOrFail($id);
+        $evento->deleteEvento();
+        
+    }
+    public function validateEvento(array $data)
+    {
+        $rules = [
+            'sala'       => 'required|string|max:50',
+            'titulo'     => 'required|string|max:255',
+            'descripcion'=> 'nullable|string|max:255',
+            'pedido_por' => 'required|string|max:255',
+            'color'      => 'required|string',
+            'textColor'  => 'required|string',
+            'start'      => 'required',
+            'end'        => 'required'
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        return $validator->validated();
     }
 }
+
