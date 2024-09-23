@@ -58,7 +58,12 @@
      <a  href="/parametros_gen_sistemas"> <img  src="{{ URL::to('/img/estados.png') }}" height="105"></a>
      <h5 style="color: #3b557a">Parametros</h5>
    </div>
+
+  
 </div>
+
+
+
 
 
 <div id="footer-lafedar"></div>
