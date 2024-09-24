@@ -328,13 +328,7 @@ class SolicitudController extends Controller{
 
     public function destroy_solicitud($id){
         $solicitud = Solicitud::find($id);
-
-        $historico_solicitudes = Solicitud::getHistoricosDeUnaSolicitud($id);
-
-        foreach ($historico_solicitudes as $historico_solicitud) {
-            Solicitud::deleteHistorico($historico_solicitud->id_solicitud); 
-        }
-
+        
         if ($solicitud) {
             $solicitud->id_estado = 8; //cancelada
             $solicitud->save(); 
