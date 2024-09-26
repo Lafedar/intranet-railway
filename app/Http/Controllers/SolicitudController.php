@@ -29,11 +29,11 @@ class SolicitudController extends Controller{
         $personaAutenticada = $personaAutenticada1->id_p;
     
         $solicitudesQuery = Solicitud::ID($request->get('id_solicitud'))
-            ->Equipo($request->get('id_equipo'))
-            ->Titulo($request->get('titulo'))
-            ->Falla($request->get('id_falla'))
-            ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
-            ->orderBy('id_solicitud', 'desc');
+        ->Equipo($request->get('id_equipo'))
+        ->Titulo($request->get('titulo'))
+        ->Falla($request->get('id_falla'))
+        ->Relaciones_index($request->get('id_tipo_solicitud'), $request->get('id_estado'), $request->get('id_encargado'), $request->get('id_solicitante'), $request->get('fecha'))
+        ->orderBy('id_solicitud', 'desc');
         if (Gate::allows('ver-todas-las-solicitudes')) {
             // Jefe
             $solicitudes = $solicitudesQuery->where('id_tipo_solicitud', '!=', 3)->paginate(20)->withQueryString();;
@@ -59,6 +59,7 @@ class SolicitudController extends Controller{
                     ->orWhere('id_solicitante', $personaAutenticada);
             })->paginate(20)->withQueryString();
         }
+        
     
         $tiposSolicitudes = DB::table('tipo_solicitudes')->orderBy('nombre','asc')->get();
         $estados = DB::table('estados')->orderBy('nombre','asc')->get();
@@ -88,7 +89,7 @@ class SolicitudController extends Controller{
         ->orderBy('users.name', 'asc')
         ->get();
 
-
+        
         $model_as_roles = DB::table('model_has_roles')->get();
         
         $verificacion = Session::get('verificacion');
@@ -113,6 +114,7 @@ class SolicitudController extends Controller{
             'id_solicitante' => $request->get('id_solicitante'),
         ]);
     }
+
 
     public static function getHistoricos($solicitud){
         return DB::table('historico_solicitudes')
@@ -324,18 +326,34 @@ class SolicitudController extends Controller{
         return Solicitud::getEquiposMantenimiento();
     } 
 
-    public function destroy_solicitud($id){
+    public function destroy_solicitud($id) {
         $solicitud = Solicitud::find($id);
-
-        $historico_solicitudes = Solicitud::getHistoricosDeUnaSolicitud($id);
-
-        foreach ($historico_solicitudes as $historico_solicitud) {
-            Solicitud::deleteHistorico($historico_solicitud->id_solicitud); 
+    
+        if ($solicitud) {
+            $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+            $ultimo_historico = Solicitud::ultimoHistoricoById($solicitud->id);
+            Solicitud::updateSoliciutud($solicitud->id, 8, $fechaActual);
+            $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+            $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
+    
+            $nuevo_historico = new Historico_solicitudes;
+            $nuevo_historico->id_solicitud = $solicitud->id;
+            $nuevo_historico->id_estado = 8; // id de estado
+            $nuevo_historico->descripcion = "Solicitud cancelada";
+            $nuevo_historico->repuestos = 0;
+            $nuevo_historico->actual = 1;
+            $nuevo_historico->id_persona = $idPersona->id_p;
+            $nuevo_historico->fecha = $fechaActual;    
+            $nuevo_historico->save();
+    
+            Session::flash('message', 'Solicitud cancelada con éxito');
+            Session::flash('alert-class', 'alert-success');
+        } else {
+            Session::flash('message', 'Solicitud no encontrada');
+            Session::flash('alert-class', 'alert-danger');
         }
-
-        $solicitud -> delete(); 
-        Session::flash('message','Solicitud eliminada con éxito');
-        Session::flash('alert-class', 'alert-success');
+    
+        
         return redirect('solicitudes');
     }
 
