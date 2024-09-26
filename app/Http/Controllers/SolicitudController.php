@@ -326,12 +326,25 @@ class SolicitudController extends Controller{
         return Solicitud::getEquiposMantenimiento();
     } 
 
-    public function destroy_solicitud($id){
+    public function destroy_solicitud($id) {
         $solicitud = Solicitud::find($id);
-        
+    
         if ($solicitud) {
-            $solicitud->id_estado = 8; //cancelada
-            $solicitud->save(); 
+            $fechaActual = Carbon::now()->format('Y-m-d H:i:s');
+            $ultimo_historico = Solicitud::ultimoHistoricoById($solicitud->id);
+            Solicitud::updateSoliciutud($solicitud->id, 8, $fechaActual);
+            $actualizo_ult = Solicitud::updateHistorico($ultimo_historico->id_solicitud, $ultimo_historico->id_estado, $ultimo_historico->fecha);
+            $idPersona = Solicitud::obtenerIdPersonaAutenticada(Auth::id());
+    
+            $nuevo_historico = new Historico_solicitudes;
+            $nuevo_historico->id_solicitud = $solicitud->id;
+            $nuevo_historico->id_estado = 8; // id de estado
+            $nuevo_historico->descripcion = "Solicitud cancelada";
+            $nuevo_historico->repuestos = 0;
+            $nuevo_historico->actual = 1;
+            $nuevo_historico->id_persona = $idPersona->id_p;
+            $nuevo_historico->fecha = $fechaActual;    
+            $nuevo_historico->save();
     
             Session::flash('message', 'Solicitud cancelada con éxito');
             Session::flash('alert-class', 'alert-success');
@@ -340,6 +353,7 @@ class SolicitudController extends Controller{
             Session::flash('alert-class', 'alert-danger');
         }
     
+        
         return redirect('solicitudes');
     }
 
