@@ -108,7 +108,7 @@ header {
     background-color: white; 
 }
 
-/*CONTAINER LOGIN Y NOVEDADES*/
+/* CONTAINER LOGIN Y NOVEDADES */
 .container {
     display: flex; 
     justify-content: space-between; 
@@ -116,11 +116,11 @@ header {
     margin: 40px 20px; 
 }
 
-/*BARRA DE BUSQUEDA*/
+/* BARRA DE BUSQUEDA */
 .search-bar {
     background-color: #1E78C8;
     margin: 0px 60px; 
-    margin-left:110px;
+    margin-left: 110px;
     padding: 10px; 
     border: none; 
     border-radius: 10px;
@@ -133,14 +133,13 @@ header {
 
 .search-bar::placeholder {
     color: white;
-    
 }
 
 header .logo img {
     max-width: 400px;
 }
 
-/*NAV CON BOTONES*/
+/* NAV CON BOTONES */
 nav {
     display: flex;
     flex-direction: column;
@@ -162,13 +161,13 @@ nav {
     text-align: center;
     box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
 }
+
 .nav-btn:hover {
     background-color: white;
     color: #004a99;
 }
 
-/*LOGIN*/   
-
+/* LOGIN */   
 .login {
     background-color: #E0E0E0BF;
     padding: 20px;
@@ -178,24 +177,19 @@ nav {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     height: 350px;
-    margin-top:-10px;
 }
 
 .login h2 {
     text-align: center;  
     margin-bottom: 20px; 
     font-size: 25px;     
-    white-space: nowrap; 
-    overflow: hidden;    
-    text-overflow: ellipsis; 
-    color:#1C547C;
+    color: #1C547C;
     font-weight: bold;
 }
 
 .login label {
     display: block;
     margin-bottom: 5px;
-   
 }
 
 .login input {
@@ -220,15 +214,7 @@ nav {
     background-color: #003a7a;
 }
 
-.login img{
-  max-width: 30px;
-  display:flex;
-  align-items:center;
-  margin:0px;
-  
-}
-
-/*NOVEDADES*/
+/* NOVEDADES */
 .novedades {
     display: flex;
     flex-direction: column; 
@@ -238,12 +224,13 @@ nav {
     width: 100%; 
     max-width: 800px; 
 }
+
 .novedades h1 {
     margin-top: 0; 
     margin-bottom: 20px; 
-    color:#196AB2;
+    color: #196AB2;
     font-weight: 1000;
-    font-size:40px;
+    font-size: 40px;
     margin-left: 370px;
 }
 
@@ -251,7 +238,7 @@ nav {
     display: flex;              
     justify-content: space-between;  
     flex-wrap: nowrap;         
-    gap: 70px; /*espacio entre las tarjetas*/               
+    gap: 70px; /* espacio entre las tarjetas */               
     margin-top: 10px;   
     margin-left: 400px;       
 }
@@ -264,15 +251,14 @@ nav {
     overflow: hidden;         
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .card img {
     max-width: 300px;           
     height: 170px;             
 }
 
-
-/*FOOTER*/
-footer{
-  
+/* FOOTER */
+footer {
     background-color: #1E78C8; 
     color: white; 
     text-align: center; 
@@ -282,15 +268,33 @@ footer{
     bottom: 0; 
     font-family: 'Inter', sans-serif; 
     font-weight: 200; 
-    
 }
 
 footer p {
     margin: 0; 
-    padding:0;
+    padding: 0;
 }
 
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .login {
+        width: 90%; /* Aumentar el ancho del contenedor de login */
+        margin: 20px 0; /* Espacio vertical */
+    }
 
+    .nav-btn {
+        width: 90%; /* Botones ocupan el 90% del ancho */
+    }
+}
 
+@media (max-width: 480px) {
+    .search-bar {
+        font-size: 16px; /* Reducir tamaño de fuente */
+    }
+
+    .login {
+        padding: 10px; /* Ajustar el padding */
+    }
+}
 
 </style>
