@@ -4,54 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Laboratorios Lafedar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
+  <header>
     <div class="logo">
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     <input type="text" class="search-bar" placeholder=" Buscar por palabra clave">
-</header>
+  </header>
 
     <nav>
       
         <button class="nav-btn">Internos</button>
         <button class="nav-btn">Solicitudes</button>
         <button class="nav-btn">Documentos</button>
+       
     </nav>
 
-    <section class="login">
-      <img src="{{ asset('storage/Imagenes principal-nueva/LOGIN.png') }}" alt="Logo de la empresa">
-        <h2>Inicio de Sesión</h2>
+    <section class="container">
+    <div class="login">
+        <h2>INICIO DE SESION</h2>
         <form action="login.php" method="post">
-            <label for="usuario">Usuario</label>
+        <label for="usuario"><strong>Usuario</strong></label>
             <input type="text" id="usuario" name="usuario" required>
 
-            <label for="contrasena">Contraseña</label>
+            <label for="contrasena"><strong>Contraseña</strong></label>
             <input type="password" id="contrasena" name="contrasena" required>
 
             <button type="submit">Ingresar</button>
         </form>
-    </section>
+    </div>
 
     <div class="novedades">
-    <h2>NOVEDADES</h2>
-    <div class="novedad-container">
-        <div class="novedad-item">
+        <h1>NOVEDADES</h1>
+        <div class="cards-contenedor">
+            <div class="card">
+                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Novedad 1</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Ver mas</a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Novedad 2</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Ver mas</a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Novedad 3</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Ver mas</a>
+                </div>
+            </div>
+            
             
         </div>
-        <div class="novedad-item">
-            
-        </div>
-        <div class="novedad-item">
-            
-        </div>
-       
-        
     </div>
-</div>
+</section>
+  
     <footer >
         <p>​Laboratorios Lafedar S.A.<br>
               Paraná, Entre Rios.<br>
@@ -78,32 +97,34 @@ body {
 header {
     display: flex; 
     align-items: center; 
-    padding: 20px; /* Espaciado alrededor del header */
+    padding: 20px; 
     background-color: white; 
+}
+
+/*CONTAINER LOGIN Y NOVEDADES*/
+.container {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin: 40px 20px; 
 }
 
 /*BARRA DE BUSQUEDA*/
 .search-bar {
-    background-color:#1E78C8;
-    margin-left: 20px;
+    background-color: #1E78C8;
+    margin: 0px 60px; 
     padding: 10px; 
-    border: 1px solid #ccc; 
-    border-radius: 10px 10px 10px 10px;
+    border: none; 
+    border-radius: 10px;
     font-family: 'Inter', sans-serif; 
     font-size: 30px; 
     flex: 1; 
     color: white; 
-    width: 898px;
     height: 60px;
-    top: 55px;
-    left: 313px;
-    gap: 0px;
-    opacity: 0px;
-
 }
 
 .search-bar::placeholder {
-    color: white;/* Color del placeholder, blanco con un poco de opacidad */
+    color: white;
     
 }
 
@@ -115,50 +136,58 @@ header .logo img {
 nav {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinea a la izquierda */
+    align-items: flex-start; 
     margin: 20px 0;
 }
 
 .nav-btn {
     background-color: #004a99;
     color: white;
-    border-radius: 10px 10px 10px 10px;
-    border:none;
+    border-radius: 10px;
+    border: none;
     padding: 10px 20px;
-    margin: 20px 40px; /* Margen vertical para separarlos */
+    margin: 20px 30px; 
+    margin-left: 57px; 
     cursor: pointer;
     width: 250px; 
     height: 50px;
     text-align: center;
-     box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
-    
-   
+    box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
 }
-
 .nav-btn:hover {
     background-color: white;
     color: #004a99;
 }
 
+/*LOGIN*/   
+
 .login {
     background-color: #E0E0E0BF;
     padding: 20px;
-    max-width: 300px;
-    margin: 50px 0px; 
-    margin-left: 20px; 
+    max-width: 300px; 
+    margin-right: 20px; 
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    height: 350px;
+    margin-top:-10px;
 }
 
 .login h2 {
-    text-align: center;
-    margin-bottom: 20px;
+    text-align: center;  
+    margin-bottom: 20px; 
+    font-size: 25px;     
+    white-space: nowrap; 
+    overflow: hidden;    
+    text-overflow: ellipsis; 
+    color:#1C547C;
+    font-weight: bold;
 }
 
 .login label {
     display: block;
     margin-bottom: 5px;
+   
 }
 
 .login input {
@@ -184,60 +213,54 @@ nav {
 }
 
 .login img{
-  max-width: 60px;
+  max-width: 30px;
+  display:flex;
+  align-items:center;
+  margin:0px;
   
 }
 
 /*NOVEDADES*/
 .novedades {
-    margin: 0; 
-    padding: 0; 
-    position: relative;
-    top: -480px; 
-    text-align: center;  
-    margin-top: 60px; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center;      
+    justify-content: flex-start;
+    margin-top: -90px; 
+    width: 100%; 
+    max-width: 800px; 
+}
+.novedades h1 {
+    margin-top: 0; 
+    margin-bottom: 20px; 
+    color:#196AB2;
+    font-weight: 1000;
+    font-size:40px;
 }
 
-.novedad-container {
-    display: flex; 
-    flex-wrap: wrap; /* Permite que los elementos se ajusten a la siguiente fila si no hay suficiente espacio */
-    justify-content: center; 
-    margin: 20px 0; 
+.cards-contenedor {
+    display: flex;              
+    justify-content: space-between;  
+    flex-wrap: nowrap;         
+    gap: 60px; /*espacio entre las tarjetas*/               
+    margin-top: 10px;          
 }
 
-.novedad-item {
-    background-image: url('storage/Imagenes principal-nueva/NOVEDAD.png'); 
-    padding: 20px;
-   
-    width: 350px; 
-    height: 335px; 
-    margin: 35px; 
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    opacity: 1; 
+.card {
+    width: 300px; 
+    height: 350px; 
+    border: 1px solid #ddd;   
+    border-radius: 10px;      
+    overflow: hidden;         
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card img {
+    max-width: 300px;           
+    height: 170px;             
 }
 
-.novedad-item img {
-    max-width: 100%;
-    border-radius: 10px;
-}
-
-.novedad-item p {
-    margin: 30px 0; 
-}
-
-
-.novedad-item a {
-    color: #004a99;
-    text-decoration: none;
-}
-
-.novedad-item a:hover {
-    text-decoration: underline;
-}
 
 /*FOOTER*/
-
 footer{
   
     background-color: #1E78C8; 
@@ -254,6 +277,7 @@ footer{
 
 footer p {
     margin: 0; 
+    padding:0;
 }
 
 
