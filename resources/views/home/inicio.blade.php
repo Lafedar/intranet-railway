@@ -39,7 +39,7 @@
     </div>
 
     <div class="novedades">
-        <h1>NOVEDADES</h1>
+        <h1>____________________NOVEDADES____________________</h1>
         <div class="cards-contenedor">
             <div class="card">
                 <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
@@ -65,7 +65,14 @@
                     <a href="#" class="btn btn-primary">Ver mas</a>
                 </div>
             </div>
-            
+            <div class="card">
+                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Novedad 4</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Ver mas</a>
+                </div>
+            </div>
             
         </div>
     </div>
@@ -113,6 +120,7 @@ header {
 .search-bar {
     background-color: #1E78C8;
     margin: 0px 60px; 
+    margin-left:110px;
     padding: 10px; 
     border: none; 
     border-radius: 10px;
@@ -236,14 +244,16 @@ nav {
     color:#196AB2;
     font-weight: 1000;
     font-size:40px;
+    margin-left: 370px;
 }
 
 .cards-contenedor {
     display: flex;              
     justify-content: space-between;  
     flex-wrap: nowrap;         
-    gap: 60px; /*espacio entre las tarjetas*/               
-    margin-top: 10px;          
+    gap: 70px; /*espacio entre las tarjetas*/               
+    margin-top: 10px;   
+    margin-left: 400px;       
 }
 
 .card {
