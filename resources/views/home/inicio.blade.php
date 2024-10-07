@@ -16,11 +16,20 @@
     </div>
     
     <input type="text" class="search-bar" placeholder="Buscar por palabra clave" id="search-input">
+    <div class="btn-cerrar-sesion">
+            <form action="{{ url('/logout') }}" method="POST" >
+                    {{ csrf_field() }}
+                    <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
   </header>
   
     <div id="results-dropdown" class="results-dropdown" style="display: none;">
         <ul id="results-list"></ul>
     </div>
+    
     
     <nav>
       
@@ -36,6 +45,10 @@
         
         <div id="toast" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
             <span id="toast-message"></span>
+        </div>
+            
+        <div id="toast-success" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4CAF50; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
+            <span id="toast-message-success"></span>
         </div>
         
         <form method="POST" action="{{ route('login') }}">
@@ -60,6 +73,7 @@
             <div class="btn-iniciar-sesion">
                 <button type="submit" style="color:white">INICIAR SESION</button>
             </div>
+            
         </form>
     </div>
     </div>
@@ -113,13 +127,26 @@
 </body>
 </html>
 
-<script> //mensaje de error login
+<script>
+    // Mensaje de error
     @if ($errors->any())
         document.getElementById('toast-message').innerText = "{{ $errors->first('email') ?: $errors->first('password') ?: __('Las credenciales son incorrectas.') }}";
         document.getElementById('toast').style.display = 'block';
         setTimeout(function() {
             document.getElementById('toast').style.display = 'none';
-        }, 3000); // El mensaje se ocultará después de 3 segundos
+        }, 3000);
+    @endif
+
+    // Mensaje de éxito
+    @if (session('success'))
+        document.getElementById('toast-message-success').innerText = "{{ session('success') }}";
+        document.getElementById('toast-success').style.display = 'block';
+        setTimeout(function() {
+            document.getElementById('toast-success').style.display = 'none';
+        }, 3000);
+        
+        // Limpiar el mensaje de éxito de la sesión
+        {{ session()->forget('success') }};
     @endif
 </script>
 
@@ -208,6 +235,14 @@ header {
     padding: 20px; 
     background-color: white; 
 }
+.btn-cerrar-sesion {
+    font-size: 16px; 
+    height: 65px; 
+    width: 90px; 
+    border-radius: 5px; 
+    border: none; 
+    cursor: pointer; 
+}
 
 /* CONTAINER LOGIN Y NOVEDADES */
 .container {
@@ -228,7 +263,7 @@ header {
 /* BARRA DE BUSQUEDA */
 .search-bar {
     background-color: #1E78C8;
-    margin: 0px 60px; 
+    margin: 0px 20px; 
     margin-left: 110px;
     padding: 10px; 
     border: none; 

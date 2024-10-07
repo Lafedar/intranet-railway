@@ -441,11 +441,12 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
 });
 
-Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento');
+
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('areas','AreaController')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::get('show_store_area',['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_area');
+  Route::get('parametros_mantenimiento','HomeController@parametros_mantenimiento')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::post('store_area','AreaController@store_area')->name('store_area');
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
@@ -504,7 +505,7 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
-  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index');
+  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index')->middleware('role:administrador');;
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
