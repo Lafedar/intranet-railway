@@ -3,41 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Laboratorios Lafedar</title>
-    <link rel="stylesheet" href="style.css">
+   
 </head>
 <body>
   <header>
     <div class="logo">
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
-    <input type="text" class="search-bar" placeholder=" Buscar por palabra clave">
+    
+    <input type="text" class="search-bar" placeholder="Buscar por palabra clave" id="search-input">
   </header>
-
+  
+    <div id="results-dropdown" class="results-dropdown" style="display: none;">
+        <ul id="results-list"></ul>
+    </div>
+    
     <nav>
       
-        <button class="nav-btn">Internos</button>
-        <button class="nav-btn">Solicitudes</button>
-        <button class="nav-btn">Documentos</button>
-       
+        <a href="/internos" class="nav-btn" style="text-decoration: none;">Internos</a>
+        <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes</a>
+        <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos</a>
+        
     </nav>
 
     <section class="container">
     <div class="login">
         <h2>INICIO DE SESION</h2>
-        <form action="login.php" method="post">
-        <label for="usuario"><strong>Usuario</strong></label>
-            <input type="text" id="usuario" name="usuario" required>
+        
+        <div id="toast" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
+            <span id="toast-message"></span>
+        </div>
+        
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="icono_usuario">
+                <label>Usuario</label>
+            </div>
+            <div class="input_usuario">
+                <input type="email" id="email" name="email" required>
+            </div>
 
-            <label for="contrasena"><strong>Contraseña</strong></label>
-            <input type="password" id="contrasena" name="contrasena" required>
+            <div class="icono_contraseña">
+                <label>Contraseña</label>
+            </div>
+            <div class="input_contraseña">
+                <input type="password" id="password" name="password" required>
+                <a href="{{ route('password.request') }}" style="color:blue;">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
 
-            <button type="submit">Ingresar</button>
+            <div class="btn-iniciar-sesion">
+                <button type="submit" style="color:white">INICIAR SESION</button>
+            </div>
         </form>
     </div>
-
+    </div>
+    
     <div class="novedades">
         <h1>____________________NOVEDADES____________________</h1>
         <div class="cards-contenedor">
@@ -87,6 +113,81 @@
 </body>
 </html>
 
+<script> //mensaje de error login
+    @if ($errors->any())
+        document.getElementById('toast-message').innerText = "{{ $errors->first('email') ?: $errors->first('password') ?: __('Las credenciales son incorrectas.') }}";
+        document.getElementById('toast').style.display = 'block';
+        setTimeout(function() {
+            document.getElementById('toast').style.display = 'none';
+        }, 3000); // El mensaje se ocultará después de 3 segundos
+    @endif
+</script>
+
+<script> //filtro general
+    const searchInput = document.getElementById('search-input');
+    const resultsDropdown = document.getElementById('results-dropdown');
+    const resultsList = document.getElementById('results-list');
+
+    const shortcuts = [
+        { name: 'Internos', url: '/internos' },
+        { name: 'Permisos', url: '/permisos' },
+        { name: 'Documentos', url: '/documentos' },
+        { name: 'Recepcion', url: '/persona' },
+        { name: 'Sistemas', url: '/sistemas' },
+        { name: 'QAD', url: '/qad' },
+        { name: 'Eventos', url: '/eventos' },
+        { name: 'Mantenimiento', url: '/mantenimiento' },
+        { name: 'PowerBI', url: '/powerbis' },
+        { name: 'Empleado', url: '/empleado' },
+        { name: 'Medico', url: '/medico' },
+        { name: 'Visitas', url: '/visitas' },
+        { name: 'Parametros Mantenimiento', url: '/parametros_mantenimiento' },
+        { name: 'Equipos', url: '/equipos_mant' },
+        { name: 'Solicitudes', url: '/solicitudes' },
+        { name: 'Usuarios', url: '/usuarios' },
+        { name: 'Roles', url: '/roles' },
+        { name: 'Busca IP', url: '/listado_ip' },
+        { name: 'Parametros Sistemas', url: '/parametros_gen_sistemas' },
+        { name: 'Puestos de trabajo', url: '/puestos' },
+        { name: 'Incidentes', url: '/incidentes' },
+        { name: 'Software', url: '/Software' },
+        { name: 'Software Instalado', url: '/Instalado' },
+    ];
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        resultsList.innerHTML = ''; // Limpiar resultados previos
+
+        if (searchTerm) {
+            const filteredShortcuts = shortcuts.filter(shortcut =>
+                shortcut.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredShortcuts.length > 0) {
+                filteredShortcuts.forEach(shortcut => {
+                    const li = document.createElement('li');
+                    li.textContent = shortcut.name;
+                    li.onclick = () => {
+                        window.location.href = shortcut.url; // Navegar al enlace al hacer clic
+                    };
+                    resultsList.appendChild(li);
+                });
+                resultsDropdown.style.display = 'block'; // Mostrar el dropdown
+            } else {
+                resultsDropdown.style.display = 'none'; // Ocultar si no hay resultados
+            }
+        } else {
+            resultsDropdown.style.display = 'none'; // Ocultar si el input está vacío
+        }
+    });
+
+    // Ocultar el dropdown si se hace clic fuera de él
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !resultsDropdown.contains(event.target)) {
+            resultsDropdown.style.display = 'none';
+        }
+    });
+</script>
 
 <style>
   * {
@@ -114,6 +215,14 @@ header {
     justify-content: space-between; 
     align-items: flex-start; 
     margin: 40px 20px; 
+}
+
+/*MENSAJE DE ERROR LOGIN*/
+#toast {
+    transition: opacity 0.5s ease;
+    text-align: center; 
+    width: auto; 
+    max-width: 90%; 
 }
 
 /* BARRA DE BUSQUEDA */
@@ -208,7 +317,7 @@ nav {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top:20px;
+    margin-top:5px;
 }
 
 .login button:hover {
@@ -284,6 +393,37 @@ footer p {
     margin: 0; 
     padding: 0;
 }
+
+
+/*DESPLEGABLE BARRA DE BUSQUEDA*/
+.results-dropdown {
+    position: absolute; 
+    background: white; 
+    border: 1px solid #ccc; 
+    z-index: 1000; 
+    width: 100%; 
+    max-width: calc(100% - 2px); 
+}
+
+.results-dropdown ul {
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+.results-dropdown li {
+    padding: 10px; 
+    cursor: pointer; 
+}
+
+.results-dropdown li:hover {
+    background-color: #f0f0f0; 
+}
+
+
+
+
+
 
 
 
