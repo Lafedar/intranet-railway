@@ -45,7 +45,7 @@
                 <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">Novedad 1</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">Some quick </p>
                     <a href="#" class="btn btn-primary">Ver mas</a>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                 <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">Novedad 2</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">Some quick </p>
                     <a href="#" class="btn btn-primary">Ver mas</a>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">Novedad 3</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">Some quick</p>
                     <a href="#" class="btn btn-primary">Ver mas</a>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">Novedad 4</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">Some quick </p>
                     <a href="#" class="btn btn-primary">Ver mas</a>
                 </div>
             </div>
@@ -98,7 +98,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: white;
-    overflow: hidden; /* Saco el scroll */
+    /*overflow: hidden; /* Saco el scroll */
 }
 
 header {
@@ -176,7 +176,7 @@ nav {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    height: 350px;
+    height: 330px;
 }
 
 .login h2 {
@@ -208,6 +208,7 @@ nav {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top:20px;
 }
 
 .login button:hover {
@@ -225,13 +226,22 @@ nav {
     max-width: 800px; 
 }
 
-.novedades h1 {
+/*.novedades h1 {
     margin-top: 0; 
     margin-bottom: 20px; 
     color: #196AB2;
     font-weight: 1000;
     font-size: 40px;
     margin-left: 370px;
+}*/
+.novedades h1 {
+    margin-top: 0; 
+    margin-bottom: 20px; 
+    color: #196AB2;
+    font-weight: 1000;
+    font-size: 40px;
+    text-align: center; /* Asegúrate de que esté centrado */
+    width: 100%; /* Asegúrate de que ocupe el 100% para centrar */
 }
 
 .cards-contenedor {
@@ -275,26 +285,221 @@ footer p {
     padding: 0;
 }
 
-/* Media Queries para pantallas más pequeñas */
-@media (max-width: 768px) {
-    .login {
-        width: 90%; /* Aumentar el ancho del contenedor de login */
-        margin: 20px 0; /* Espacio vertical */
+
+
+
+
+/*RESPONSIVE*/
+/*Pantallas 1366x768 */
+@media (max-width: 1366px) {
+    .container {
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; /* Alinea a la izquierda */
+        margin: 40px 20px; 
+    }
+
+    .search-bar {
+        width: 90%; 
+        font-size: 18px; 
+        margin: 10px 50px; 
+    }
+
+    nav {
+        position: absolute; 
+        left: -7px; 
+        top: 100px; 
+        display: flex; /*Flex para apilar botones */
+        flex-direction: column; 
+        align-items: flex-start; 
+        margin-bottom: 20px; 
     }
 
     .nav-btn {
-        width: 90%; /* Botones ocupan el 90% del ancho */
-    }
-}
-
-@media (max-width: 480px) {
-    .search-bar {
-        font-size: 16px; /* Reducir tamaño de fuente */
+        width: 250px; 
+        margin-bottom: 10px; 
     }
 
     .login {
-        padding: 10px; /* Ajustar el padding */
+        position: absolute; 
+        left: 20px; 
+        top: 400px; 
     }
+
+    .novedades {
+        width: 100%; 
+        text-align: center; 
+        margin: 200px 350px 100px;
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .novedades h1 {
+        font-size: 28px; 
+    }
+
+    .cards-contenedor {
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 20px; 
+        max-width: 1000px; 
+        margin: 0 auto; 
+        margin-bottom: 40px;
+    }
+    
+    .card {
+        width: calc(45% - 20px); 
+        max-width: 300px; 
+        margin: 10px; 
+    }
+
+    .footer{
+        position: relative;
+    }
+}
+
+/*Pantallas 1360x768 */
+@media (max-width: 1360px) {
+    .container {
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; /* Alinea a la izquierda */
+        margin: 40px 20px; 
+    }
+
+    .search-bar {
+        width: 90%; 
+        font-size: 18px; 
+        margin: 10px 50px; 
+    }
+
+    nav {
+        position: absolute; 
+        left: -7px; 
+        top: 100px; 
+        display: flex; /*Flex para apilar botones */
+        flex-direction: column; 
+        align-items: flex-start; 
+        margin-bottom: 20px; 
+    }
+
+    .nav-btn {
+        width: 250px; 
+        margin-bottom: 10px; 
+    }
+
+    .login {
+        position: absolute; 
+        left: 20px; 
+        top: 400px; 
+    }
+
+    .novedades {
+        width: 100%; 
+        text-align: center; 
+        margin: 200px 350px 100px;
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .novedades h1 {
+        font-size: 28px; 
+    }
+
+    .cards-contenedor {
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 20px; 
+        max-width: 1000px; 
+        margin: 0 auto; 
+        margin-bottom: 40px;
+    }
+    
+    .card {
+        width: calc(45% - 20px); 
+        max-width: 300px; 
+        margin: 10px; 
+    }
+
+    .footer{
+        position: relative;
+    }
+}
+
+/*Pantallas 1280x720 */
+@media (max-width: 1280px) {
+    .container {
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; 
+        margin: 40px 20px; 
+    }
+
+    .search-bar {
+        width: 90%; 
+        font-size: 18px; 
+        margin: 10px 50px; 
+    }
+
+    nav {
+        position: absolute; 
+        left: -7px; 
+        top: 100px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: flex-start; 
+        margin-bottom: 20px; 
+    }
+
+    .nav-btn {
+        width: 250px; 
+        margin-bottom: 10px; 
+    }
+
+    .login {
+        position: absolute; 
+        left: 20px; 
+        top: 400px; 
+        
+    }
+
+    .novedades {
+        width: 100%; 
+        text-align: center; 
+        margin: 200px 350px 100px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center;
+    }
+
+    .novedades h1 {
+        font-size: 28px; 
+    }
+
+    .cards-contenedor {
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+        gap: 20px; 
+        max-width: 1000px; 
+        margin: 0 auto; 
+        margin-bottom: 40px;
+    }
+    
+    .card {
+        width: calc(45% - 20px); /*Dos tarjetas por fila */
+        max-width: 300px; 
+        margin: 10px; 
+    }
+
+    .footer{
+        position: relative;
+    }
+
 }
 
 </style>
