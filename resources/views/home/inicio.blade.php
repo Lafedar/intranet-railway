@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ URL::to('/img/ico.png') }}">
     <link rel="stylesheet" href="{{ asset('style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Laboratorios Lafedar</title>
+    <title>Intranet Lafedar</title>
    
 </head>
 <body>
-  <header>
+<header>
     <div class="logo">
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
-    <input type="text" class="search-bar" placeholder="Buscar por palabra clave" id="search-input">
+    <input type="text" class="search-bar" placeholder="Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>
     <div class="btn-cerrar-sesion">
-            <form action="{{ url('/logout') }}" method="POST" >
-                    {{ csrf_field() }}
-                    <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-                        Cerrar sesión
-                    </button>
-                </form>
-            </div>
+        @if (Auth::check())
+            <form action="{{ url('/logout') }}" method="POST">
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+                    Cerrar sesión
+                </button>
+            </form>
+        @else
+            <button class="btn btn-danger" disabled>Cerrar sesión</button>
+        @endif
+    </div>
   </header>
   
     <div id="results-dropdown" class="results-dropdown" style="display: none;">
@@ -40,43 +47,38 @@
     </nav>
 
     <section class="container">
-    <div class="login">
-        <h2>INICIO DE SESION</h2>
-        
         <div id="toast" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
             <span id="toast-message"></span>
-        </div>
-            
+        </div>  
         <div id="toast-success" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4CAF50; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
             <span id="toast-message-success"></span>
         </div>
-        
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-            <div class="icono_usuario">
-                <label>Usuario</label>
-            </div>
-            <div class="input_usuario">
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="icono_contraseña">
-                <label>Contraseña</label>
-            </div>
-            <div class="input_contraseña">
-                <input type="password" id="password" name="password" required>
-                <a href="{{ route('password.request') }}" style="color:blue;">
-                    ¿Olvidaste tu contraseña?
-                </a>
+        <div class="login" {{ Auth::check() ? 'style=opacity:0.5; pointer-events:none;' : '' }}>
+          <h2>INICIO DE SESION</h2>
+            <form method="POST" action="{{ route('login') }}">
+              @csrf
+              <div class="icono_usuario">
+                  <label>Usuario</label>
+              </div>
+              <div class="input_usuario">
+                  <input type="email" id="email" name="email" required {{ Auth::check() ? 'disabled' : '' }}>
             </div>
 
-            <div class="btn-iniciar-sesion">
-                <button type="submit" style="color:white">INICIAR SESION</button>
-            </div>
-            
-        </form>
-    </div>
-    </div>
+                <div class="icono_contraseña">
+                  <label>Contraseña</label>
+                </div>
+                <div class="input_contraseña">
+                  <input type="password" id="password" name="password" required {{ Auth::check() ? 'disabled' : '' }}>
+                  <a href="{{ route('password.request') }}" style="color:blue;">
+                      ¿Olvidaste tu contraseña?
+                  </a>
+                </div>
+
+                <div class="btn-iniciar-sesion">
+                  <button type="submit" style="color:white" {{ Auth::check() ? 'disabled' : '' }}>INICIAR SESION</button>
+                </div>
+            </form>
+        </div>
     
     <div class="novedades">
         <h1>____________________NOVEDADES____________________</h1>
@@ -144,9 +146,6 @@
         setTimeout(function() {
             document.getElementById('toast-success').style.display = 'none';
         }, 3000);
-        
-        // Limpiar el mensaje de éxito de la sesión
-        {{ session()->forget('success') }};
     @endif
 </script>
 
@@ -195,16 +194,16 @@
                     const li = document.createElement('li');
                     li.textContent = shortcut.name;
                     li.onclick = () => {
-                        window.location.href = shortcut.url; // Navegar al enlace al hacer clic
+                        window.location.href = shortcut.url;
                     };
                     resultsList.appendChild(li);
                 });
-                resultsDropdown.style.display = 'block'; // Mostrar el dropdown
+                resultsDropdown.style.display = 'block'; 
             } else {
-                resultsDropdown.style.display = 'none'; // Ocultar si no hay resultados
+                resultsDropdown.style.display = 'none';
             }
         } else {
-            resultsDropdown.style.display = 'none'; // Ocultar si el input está vacío
+            resultsDropdown.style.display = 'none'; 
         }
     });
 
@@ -370,22 +369,14 @@ nav {
     max-width: 800px; 
 }
 
-/*.novedades h1 {
-    margin-top: 0; 
-    margin-bottom: 20px; 
-    color: #196AB2;
-    font-weight: 1000;
-    font-size: 40px;
-    margin-left: 370px;
-}*/
 .novedades h1 {
     margin-top: 0; 
     margin-bottom: 20px; 
     color: #196AB2;
     font-weight: 1000;
     font-size: 40px;
-    text-align: center; /* Asegúrate de que esté centrado */
-    width: 100%; /* Asegúrate de que ocupe el 100% para centrar */
+    text-align: center; 
+    width: 100%; 
 }
 
 .cards-contenedor {
