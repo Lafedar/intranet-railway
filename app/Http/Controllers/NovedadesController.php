@@ -3,56 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Database\Seeder;
-use Auth;
-use DB;
-Use Session;
-use App\Novedad;
-use GuzzleHttp\Client;
-
-
-
-use Illuminate\Routing\Controller;
+use App\Services\NovedadService;
 
 class NovedadesController extends Controller
 {
-    public function index()
-{
-    // Obtener todas las novedades
-    $novedades = Novedad::all();
+    protected $novedadService;
 
-    // Pasar las novedades a la vista
-    return view('novedades.index', compact('novedades'));
-}
-
-public function store(Request $request)
-{
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'descripcion' => 'required|string',
-        'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
-
-    $novedad = new Novedad();
-    $novedad->titulo = $request->titulo;
-    $novedad->descripcion = $request->descripcion;
-
-    $imagenPaths = []; // Array para almacenar las rutas
-
-    if ($request->hasFile('imagenes')) {
-        foreach ($request->file('imagenes') as $imagen) {
-            $path = $imagen->store('images', 'public'); // Almacena la imagen y obtiene el path
-            $imagenPaths[] = $path; // Agrega el path al array
-        }
+    public function __construct(NovedadService $novedadService)  /*inyecto dependencias*/
+    {
+        $this->novedadService = $novedadService;
     }
 
-    $novedad->imagen = implode(',', $imagenPaths); // Almacena las rutas como un string separado por comas
-    $novedad->save();
+    public function index()
+    {
+        $novedades = $this->novedadService->getAll();
+        return view('novedades.index', compact('novedades'));
+    }
 
-    return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
-}
+    public function store(Request $request)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
+        $this->novedadService->create($request->all());
 
-
-
+        return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
+    }
 }

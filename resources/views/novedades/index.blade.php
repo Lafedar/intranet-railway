@@ -18,7 +18,7 @@
         {{ session('success') }}
     </div>
 @endif
-        <h1 style="margin:30px;text-align:center; font-size: 50px; font-weight: bold">Novedades</h1>
+        <h1 class="titulo">Novedades</h1>
 
         <div class="row">
         @foreach($novedades as $novedad)
@@ -94,13 +94,13 @@
     overflow: hidden; 
     border-radius: 30px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    position: relative; 
 }
 
 .carousel-item img {
     width: 100%; 
     height: 170px; 
     object-fit: cover; 
-    
 }
 
 .card-body {
@@ -108,6 +108,22 @@
     bottom: 0; 
     width: 100%; 
     background: rgba(255, 255, 255, 0.8);
+    padding: 10px; 
+    box-sizing: border-box; 
+}
+
+.card-text {
+    max-height: 60px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.titulo {
+    margin:30px;
+    text-align:center; 
+    font-size: 50px; 
+    font-weight:bold;
 }
 
 

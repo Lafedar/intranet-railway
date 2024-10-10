@@ -29,19 +29,21 @@
   
   <div class="collapse navbar-collapse" id="navbar1">
     <ul class="navbar-nav ml-auto"> 
-    <li class="nav-item">
-    <button class="btn btn-primary ml-5" data-toggle="modal" data-target="#crearNovedadModal">
-        Crear Novedad
-    </button>
-</li>
-      <form action="{{ url('/logout') }}" method="POST" >
-       {{ csrf_field() }}
-       <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
-         Cerrar sesión
-       </button>
-     </form>
-   </ul>
- </div>
+        <li class="nav-item">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#crearNovedadModal">
+                Crear Novedad
+            </button>
+        </li>
+        <li class="nav-item">
+            <form action="{{ url('/logout') }}" method="POST">
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-danger btn-separado" style="display:inline; cursor:pointer">
+                    Cerrar sesión
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
 </nav>
 <p></p>			
 </head>
@@ -73,10 +75,10 @@
                     </div>
                     
                     <div class="form-group">
-    <label for="imagenes">Cargar Imágenes (opcional)</label>
-    <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept="image/*" multiple>
-</div>
-                    <button type="submit" class="btn btn-primary">Crear Novedad</button> <!-- Margen superior añadido -->
+                        <label for="imagenes">Cargar Imágenes (opcional)</label>
+                        <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept="image/*" multiple>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Crear Novedad</button> 
                 </form>
             </div>
         </div>
@@ -86,3 +88,11 @@
 </html>
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('/js/bootstrap.bundle.min.js') }}"></script>
+
+
+<style>
+    .btn-separado {
+    margin-left: 15px; 
+}
+
+</style>
