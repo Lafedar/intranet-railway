@@ -1,0 +1,24 @@
+/* Custom image styles */
+.custom-img {
+    height: 90px;
+    margin-left: 8px; /* Moves image 8px to the right */
+}
+
+/* Custom text styles */
+.custom-text {
+    font-family: Calibri, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #236192; /* Custom color */
+    margin-top: 5px;
+    margin-left: -4px; /* Moves text 4px to the left */
+}
+
+
+
+.table-container {
+    padding-bottom: 50px; /* Ajusta el valor según lo que necesites */
+}
+
+
+  

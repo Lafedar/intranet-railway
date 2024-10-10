@@ -5,6 +5,9 @@
 
 <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>

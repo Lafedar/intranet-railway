@@ -1,5 +1,8 @@
 <?php
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use App\Http\Controllers\CursoController; 
+use App\Http\Controllers\CursoInstanciaController;
+
 Auth::routes();
 
 
@@ -513,5 +516,16 @@ Route::group(['middleware' => ['auth']], function ()
  
 });
 
+  //****************Capacitacion***********************
 
-
+  Route::group(['middleware' => ['auth']], function () 
+  {
+    
+    Route::get('/cursos', [CursoController::class, 'listAll'])->name('cursos.index');
+    Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
+    Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription');
+    //Route::get('/capacitacion','HomeController@cursos');
+    //Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('parametros-gen-sistemas.index');
+    
+   
+  });
