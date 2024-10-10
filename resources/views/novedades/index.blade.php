@@ -13,48 +13,102 @@
 <body>
 
     <div class="container">
-        @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-        @endif
-        <h1 style="text-align:center; font-size: 50px; font-weight: bold">Novedades</h1>
+    @if(session('success'))
+    <div class="alert alert-success" id="success-message">
+        {{ session('success') }}
+    </div>
+@endif
+        <h1 style="margin:30px;text-align:center; font-size: 50px; font-weight: bold">Novedades</h1>
 
         <div class="row">
         @foreach($novedades as $novedad)
     <div class="col-md-4 mb-4">
         <div class="card">
             @if($novedad->imagen)
-                <img src="{{ asset('storage/' . $novedad->imagen) }}" class="card-img-top" alt="Imagen de {{ $novedad->titulo }}">
-            @else
-                <img src="{{ asset('images/default-image.jpg') }}" class="card-img-top" alt="Sin imagen">
+                @php
+                    $imagenes = explode(',', $novedad->imagen);
+                @endphp
+                <div id="carousel{{ $novedad->id }}" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach($imagenes as $key => $imagen)
+                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                <img src="{{ asset('storage/' . $imagen) }}" class="d-block" alt="Imagen de {{ $novedad->titulo }}">
+                            </div>
+                        @endforeach
+                    </div>
+                    @if(count($imagenes) > 1)
+                        <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    @endif
+                </div>
             @endif
-            <div class="card-body d-flex flex-column">
+            <div class="card-body">
                 <h5 class="card-title">{{ $novedad->titulo }}</h5>
                 <p class="card-text">{{ $novedad->descripcion }}</p>
-                <a href="#" class="btn btn-primary mt-auto">Leer más</a>
+                <a href="#" class="btn btn-primary">Leer más</a>
             </div>
         </div>
     </div>
 @endforeach
+
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            // Espera 3 segundos (3000 ms) y luego oculta el mensaje
+            setTimeout(() => {
+                successMessage.style.transition = 'opacity 0.5s ease'; 
+                successMessage.style.opacity = '0'; 
+
+                
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 500); 
+            }, 3000); // Espera 3 segundos
+        }
+    });
+</script>
 </body>
 </html>
 @endsection
 
 
 <style>
-    .card {
-    height: 100%; /* Asegura que la tarjeta ocupe todo el espacio disponible */
+.card {
+    width: 18rem; 
+    height: 350px; 
+    overflow: hidden; 
+    border-radius: 30px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.card-img-top {
-    height: 200px; /* Altura fija para las imágenes */
-    object-fit: cover; /* Asegura que la imagen se recorte y se ajuste al contenedor */
+.carousel-item img {
+    width: 100%; 
+    height: 170px; 
+    object-fit: cover; 
+    
 }
+
+.card-body {
+    position: absolute; 
+    bottom: 0; 
+    width: 100%; 
+    background: rgba(255, 255, 255, 0.8);
+}
+
+
 </style>

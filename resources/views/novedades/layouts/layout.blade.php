@@ -73,9 +73,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="imagen">Cargar Imagen (opcional)</label>
-                        <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
-                    </div>
+    <label for="imagenes">Cargar Imágenes (opcional)</label>
+    <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept="image/*" multiple>
+</div>
                     <button type="submit" class="btn btn-primary">Crear Novedad</button> <!-- Margen superior añadido -->
                 </form>
             </div>

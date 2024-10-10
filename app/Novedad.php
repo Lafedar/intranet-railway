@@ -16,4 +16,5 @@ class Novedad extends Model
                 'created_at',
                 'imagen',
             ];
+            
 }

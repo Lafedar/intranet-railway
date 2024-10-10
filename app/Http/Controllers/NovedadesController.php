@@ -27,23 +27,26 @@ class NovedadesController extends Controller
 
 public function store(Request $request)
 {
-    
     $request->validate([
         'titulo' => 'required|string|max:255',
         'descripcion' => 'required|string',
-        'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
     $novedad = new Novedad();
     $novedad->titulo = $request->titulo;
     $novedad->descripcion = $request->descripcion;
-    $novedad->created_at = now(); // Establece la fecha actual
 
-    if ($request->hasFile('imagen')) {
-        $path = $request->file('imagen')->store('images', 'public');
-        $novedad->imagen = $path;
+    $imagenPaths = []; // Array para almacenar las rutas
+
+    if ($request->hasFile('imagenes')) {
+        foreach ($request->file('imagenes') as $imagen) {
+            $path = $imagen->store('images', 'public'); // Almacena la imagen y obtiene el path
+            $imagenPaths[] = $path; // Agrega el path al array
+        }
     }
 
+    $novedad->imagen = implode(',', $imagenPaths); // Almacena las rutas como un string separado por comas
     $novedad->save();
 
     return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
