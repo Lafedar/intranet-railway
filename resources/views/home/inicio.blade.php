@@ -178,6 +178,7 @@
         { name: 'Incidentes', url: '/incidentes' },
         { name: 'Software', url: '/Software' },
         { name: 'Software Instalado', url: '/Instalado' },
+        { name: 'Novedades', url: '/novedades' },
     ];
 
     searchInput.addEventListener('input', function() {

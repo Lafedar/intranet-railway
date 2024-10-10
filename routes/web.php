@@ -505,7 +505,7 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
-  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index')->middleware('role:administrador');;
+  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index')->middleware('role:administrador');
   Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
   Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
   Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
@@ -513,6 +513,17 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
+
+Route::get('/novedades', 'NovedadesController@index')->name('novedades.index');
+Route::post('/novedades/store', 'NovedadesController@store')->name('novedades.store');
+
+
+
+
+
+
+
+
 
 
 
