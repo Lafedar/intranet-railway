@@ -513,9 +513,16 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
+use App\Http\Controllers\NovedadesController;
+Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades.index');
+Route::post('/novedades/store', [NovedadesController::class, 'store'])->name('novedades.store');
+Route::get('/novedades/{id}', [NovedadesController::class, 'show'])->name('novedades.show');
 
-Route::get('/novedades', 'NovedadesController@index')->name('novedades.index');
-Route::post('/novedades/store', 'NovedadesController@store')->name('novedades.store');
+
+
+Route::get('/ultimas-novedades', [HomeController::class, 'get4Novedades'])->name('novedades.ultimas');
+
+
 
 
 

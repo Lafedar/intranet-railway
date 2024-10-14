@@ -32,4 +32,17 @@ class NovedadesController extends Controller
 
         return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
     }
+
+    public function show(int $id){
+        try {
+            $novedad = $this->novedadService->getById($id);
+            return view('novedades.show', compact('novedad'));
+
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('novedades.index')
+                             ->with('error', 'Novedad no encontrada.');
+        }
+    }
+
+    
 }

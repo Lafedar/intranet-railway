@@ -34,7 +34,7 @@ class NovedadService
     {
         $this->validateData($data);
         
-        // Manejo de imágenes
+        
         $imagenPaths = [];
         if (isset($data['imagenes'])) {
             foreach ($data['imagenes'] as $imagen) {
@@ -43,7 +43,7 @@ class NovedadService
             }
         }
         
-        // Almacena las rutas como un string separado por comas
+        
         $data['imagen'] = implode(',', $imagenPaths);
         
         return Novedad::create($data);
@@ -58,6 +58,12 @@ class NovedadService
     public function delete(Novedad $novedad): ?bool
     {
         return $novedad->delete();
+    }
+
+    public function get4Novedades()
+    {
+        // Recupera las últimas 4 novedades
+        return Novedad::latest()->take(4)->get();
     }
 }
 

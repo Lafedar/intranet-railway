@@ -50,8 +50,10 @@
             @endif
             <div class="card-body">
                 <h5 class="card-title">{{ $novedad->titulo }}</h5>
-                <p class="card-text">{{ $novedad->descripcion }}</p>
-                <a href="#" class="btn btn-primary">Leer más</a>
+               
+                <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
+                <br>
+                <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
             </div>
         </div>
     </div>
@@ -92,15 +94,16 @@
     width: 18rem; 
     height: 350px; 
     overflow: hidden; 
-    border-radius: 30px; 
+    border-radius: 20%; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     position: relative; 
 }
 
 .carousel-item img {
     width: 100%; 
-    height: 170px; 
+    height: 185px; 
     object-fit: cover; 
+    
 }
 
 .card-body {

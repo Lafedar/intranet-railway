@@ -80,44 +80,45 @@
             </form>
         </div>
     
-    <div class="novedades">
-        <h1>____________________NOVEDADES____________________</h1>
-        <div class="cards-contenedor">
+        <div class="novedades">
+    <h1>____________________NOVEDADES____________________</h1>
+    <div class="cards-contenedor">
+        @foreach ($novedades as $novedad)
+        
             <div class="card">
-                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
+                @if($novedad->imagen)
+                @php
+                    $imagenes = explode(',', $novedad->imagen);
+                @endphp
+                <div id="carousel{{ $novedad->id }}" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach($imagenes as $key => $imagen)
+                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                <img src="{{ asset('storage/' . $imagen) }}" class="d-block" alt="Imagen de {{ $novedad->titulo }}">
+                            </div>
+                        @endforeach
+                    </div>
+                    @if(count($imagenes) > 1)
+                        <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    @endif
+                </div>
+            @endif
                 <div class="card-body">
-                    <h5 class="card-title">Novedad 1</h5>
-                    <p class="card-text">Some quick </p>
-                    <a href="#" class="btn btn-primary">Ver mas</a>
+                    <h5 class="card-title">{{ $novedad->titulo }}</h5>
+                    
+                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
-            <div class="card">
-                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Novedad 2</h5>
-                    <p class="card-text">Some quick </p>
-                    <a href="#" class="btn btn-primary">Ver mas</a>
-                </div>
-            </div>
-            <div class="card">
-                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Novedad 3</h5>
-                    <p class="card-text">Some quick</p>
-                    <a href="#" class="btn btn-primary">Ver mas</a>
-                </div>
-            </div>
-            <div class="card">
-                <img src="{{ asset('storage/Imagenes principal-nueva/NOVEDAD.png') }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Novedad 4</h5>
-                    <p class="card-text">Some quick </p>
-                    <a href="#" class="btn btn-primary">Ver mas</a>
-                </div>
-            </div>
-            
-        </div>
+        @endforeach
     </div>
+</div>
 </section>
   
     <footer >
@@ -128,7 +129,9 @@
     </footer> 
 </body>
 </html>
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     // Mensaje de error
     @if ($errors->any())

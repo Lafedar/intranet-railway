@@ -11,13 +11,23 @@ Use Session;
 use Mail;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
+use App\Services\NovedadService;
 
 
 class HomeController extends Controller
 {
+    protected $novedadService;
+
+    public function __construct(NovedadService $novedadService)  /*inyecto dependencias*/
+    {
+        $this->novedadService = $novedadService;
+    }
     public function index()
     {
-        return view ('home.inicio');
+        // Obtener las últimas 4 novedades y pasarlas a la vista principal
+        $novedades = $this->novedadService->get4Novedades();
+
+        return view('home.inicio', compact('novedades')); 
     }
     public function notificaciones(Request $request){
         $date = Carbon::now();
@@ -104,22 +114,8 @@ class HomeController extends Controller
     {
         return view ('powerbis.index');
     }
-    // public function nombre(Request $request){
-    //     // Verificar si hay un usuario autenticado
-    //     if (Auth::check()) {
-    //     // Obtener el usuario autenticado
-    //         $usuario = Auth::user();
 
-    //     // Pasar los datos a la vista si el usuario existe
-    //     return view('powerbis.index', [
-    //         'nombre_gero' => $usuario->nombre_p,
-    //         'area' => $usuario->area
-    //     ]);
-    //     } else {
-    //     // Si no hay un usuario autenticado, redirigir a la página de inicio de sesión
-    //         return "no funciona";
-    //     }
-    // }
+   
     
 }
 
