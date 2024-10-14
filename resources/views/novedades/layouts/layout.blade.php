@@ -29,11 +29,21 @@
   
   <div class="collapse navbar-collapse" id="navbar1">
     <ul class="navbar-nav ml-auto"> 
-        <li class="nav-item">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#crearNovedadModal">
-                Crear Novedad
-            </button>
-        </li>
+    @role('administrador')
+    <li class="nav-item">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#crearNovedadModal">
+            Crear Novedad
+        </button>
+    </li>
+@endrole
+
+@role('rrhh')
+    <li class="nav-item">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#crearNovedadModal">
+            Crear Novedad
+        </button>
+    </li>
+@endrole
         <li class="nav-item">
             <form action="{{ url('/logout') }}" method="POST">
                 {{ csrf_field() }}
@@ -47,6 +57,8 @@
 </nav>
 <p></p>			
 </head>
+
+
 
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 <body>
@@ -75,9 +87,10 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="imagenes">Cargar Imágenes (opcional)</label>
-                        <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept="image/*" multiple>
-                    </div>
+                          <label for="imagenes">Cargar Imágenes (opcional)</label>
+                          <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept=".jpg, .jpeg, .png" multiple>
+                          <small id="error-message" class="text-danger d-none">Por favor, cargue solo imágenes (.jpg, .jpeg, .png).</small>
+                      </div>
                     <button type="submit" class="btn btn-primary">Crear Novedad</button> 
                 </form>
             </div>
@@ -88,7 +101,31 @@
 </html>
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('/js/bootstrap.bundle.min.js') }}"></script>
+<script>
+      // Validación en el cliente para los archivos de imagen
+      document.getElementById('imagenes').addEventListener('change', function(e) {
+          const fileInput = e.target;
+          const errorMessage = document.getElementById('error-message');
+          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+          const files = fileInput.files;
+          let valid = true;
 
+          for (let i = 0; i < files.length; i++) {
+              if (!allowedTypes.includes(files[i].type)) {
+                  valid = false;
+                  break;
+              }
+          }
+
+          if (!valid) {
+              errorMessage.classList.remove('d-none');
+              fileInput.setCustomValidity('Por favor, cargue solo imágenes .jpg, .jpeg, .png.');
+          } else {
+              errorMessage.classList.add('d-none');
+              fileInput.setCustomValidity('');
+          }
+      });
+  </script>
 
 <style>
     .btn-separado {

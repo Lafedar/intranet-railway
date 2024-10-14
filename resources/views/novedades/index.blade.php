@@ -7,18 +7,20 @@
     <meta charset="UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title style="width: 50px">Novedades</title>
-    
+    <title>Novedades</title>
 </head>
 <body>
 
     <div class="container">
-    @if(session('success'))
-    <div class="alert alert-success" id="success-message">
-        {{ session('success') }}
-    </div>
-@endif
+        @if(session('success'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('success') }}
+        </div>
+        @endif
+
         <h1 class="titulo">Novedades</h1>
+        <br>
+        <br>
 
         <div class="row">
         @foreach($novedades as $novedad)
@@ -50,7 +52,6 @@
             @endif
             <div class="card-body">
                 <h5 class="card-title">{{ $novedad->titulo }}</h5>
-               
                 <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
                 <br>
                 <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
@@ -58,34 +59,32 @@
         </div>
     </div>
 @endforeach
-
         </div>
     </div>
 
-   
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        const successMessage = document.getElementById('success-message');
-        if (successMessage) {
-            // Espera 3 segundos (3000 ms) y luego oculta el mensaje
-            setTimeout(() => {
-                successMessage.style.transition = 'opacity 0.5s ease'; 
-                successMessage.style.opacity = '0'; 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-                
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                // Espera 3 segundos (3000 ms) y luego oculta el mensaje
                 setTimeout(() => {
-                    successMessage.style.display = 'none';
-                }, 500); 
-            }, 3000); // Espera 3 segundos
-        }
-    });
-</script>
+                    successMessage.style.transition = 'opacity 0.5s ease';
+                    successMessage.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 500);
+                }, 3000); // Espera 3 segundos
+            }
+        });
+    </script>
 </body>
 </html>
+
 @endsection
 
 
@@ -94,7 +93,7 @@
     width: 18rem; 
     height: 350px; 
     overflow: hidden; 
-    border-radius: 20%; 
+    border-radius: 40px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     position: relative; 
 }
@@ -125,8 +124,9 @@
 .titulo {
     margin:30px;
     text-align:center; 
-    font-size: 50px; 
+    font-size: 80px; 
     font-weight:bold;
+    color: #004a99;
 }
 
 

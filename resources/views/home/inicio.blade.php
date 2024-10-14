@@ -41,7 +41,13 @@
     <nav>
       
         <a href="/internos" class="nav-btn" style="text-decoration: none;">Internos</a>
-        <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes</a>
+        @if(Auth::check())
+    <!-- Si el usuario está autenticado, el enlace será visible y habilitado -->
+    <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes</a>
+@else
+    <!-- Si el usuario no ha iniciado sesión, el enlace estará deshabilitado -->
+    <a href="#" class="nav-btn" style="text-decoration: none; pointer-events: none; opacity: 0.5;" title="Debes iniciar sesión para acceder">Solicitudes</a>
+@endif
         <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos</a>
         
     </nav>
@@ -113,7 +119,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ $novedad->titulo }}</h5>
                     
-                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Ver más</a>
+                    <a href="{{ route('novedades.index', $novedad->id) }}" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
         @endforeach
@@ -402,6 +408,7 @@ nav {
 }
 
 .card img {
+    width:100%;
     max-width: 300px;           
     height: 170px;             
 }

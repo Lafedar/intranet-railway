@@ -22,7 +22,7 @@ class NovedadService
 
     public function getAll(): Collection
     {
-        return Novedad::all();
+        return Novedad::orderBy('id', 'desc')->get();
     }
 
     public function getById($id): ?Novedad
@@ -63,7 +63,7 @@ class NovedadService
     public function get4Novedades()
     {
         // Recupera las últimas 4 novedades
-        return Novedad::latest()->take(4)->get();
+        return Novedad::orderBy('id', 'desc')->take(4)->get();
     }
 }
 

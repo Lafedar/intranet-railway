@@ -1,9 +1,10 @@
 <?php
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use App\Http\Controllers\NovedadesController;
 Auth::routes();
 
 
-   //****************MENU INICIAL**********************
+//****************MENU INICIAL**********************
 Route::get('/home', 'HomeController@index');
 
 Route::get('/', 'HomeController@index');
@@ -23,14 +24,14 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_tipo_permiso','PermisosController@select_tipo_permiso')->name('select_tipo_permiso');
 });
 
-   //****************RECEPCION**********************
+//****************RECEPCION**********************
 Route::group(['middleware' => ['auth']], function () {
   Route::resource('persona', 'PersonaController')->middleware('role:administrador|recepcion|rrhh');
   
   Route::get('destroy_contacto/{id}', 'PersonaController@destroy_contacto')->name('destroy_contacto');
 });
 
-   //****************EMPLEADOS**********************
+//****************EMPLEADOS**********************
    Route::group(['middleware' => ['auth']], function () {
     Route::resource('empleado', 'EmpleadoController')->middleware('role:administrador|rrhh');
   
@@ -234,8 +235,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
-//******************************QAD-Controller
-
+//******************************QAD-Controller*********************
 Route::group(['middleware' => ['auth']], function () {
   Route::get('qad','QADController@planos')->middleware('role:administrador|ingenieria|planos');
 
@@ -247,10 +247,6 @@ Route::get('oc','QADController@oc');
 });
 
 //***************Evento-Calendario-reserva*********************
-
-
-// formulario
-// formulario
 Route::get('Evento/form','EventController@form');
 Route::post('Evento/create','EventController@create');
 // Detalles de evento
@@ -261,6 +257,7 @@ Route::get('Evento','EventController@index');
 Route::get('Evento/index/{month}','EventController@index_month');
 //cancelar evento
 Route::patch('update/{evento}','EventController@updates')->name('event.update');
+
 
 //*******************Software**********************************
  Route::group(['middleware' => ['auth']], function () {
@@ -285,33 +282,25 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
 });
 
  //***********************************fullCalendar**************************************
-
  Route::resource('/eventos','EventosController');
 
+ 
  //********************************Almuerzo***********************************************
-
  Route::get('/almuerzo','AlmuerzoController@inicio')->name('almuerzo.inicio');
  Route::get('/nuevo_al','AlmuerzoController@nuevo')->name('nuevo');
  Route::get('/elegir_m','AlmuerzoController@selec')->name('seleccionar');
  Route::post('/guardar_a','AlmuerzoController@carga_inicial')->name('guardara');
  Route::post('/actualizar','AlmuerzoController@actualizar')->name('guarda');
  Route::get('/nuev_sem','AlmuerzoController@nuevasemana')->name('almuerzo.nuevasemana');
-
  Route::post('/cargar_al', 'AlmuerzoController@cargar')->name('almuerzo.cargar');
- 
  Route::get('mostrar/{fecha_desde}','AlmuerzoController@mostrar')->name('almuerzo.mostrar');
-
  Route::get('almu/{id}','AlmuerzoController@actualizaral');
-
- 
  Route::post('export', 'AlmuerzoController@export');
  Route::get('download', 'AlmuerzoController@download')->name('almuerzo.download');
  Route::put('/cambiar_a','AlmuerzoController@update')->name('almuerzo.update');
  Route::get('/comi', 'AlmuerzoController@Menu')->name('menusid');
  Route::get('/clog','AlmuerzoController@aloguin')->name('alogin');
  Route::post('/almuerzo','AlmuerzoController@elegir')->name('aeleccion');
-
- 
  Route::get('/seman/{id}','AlmuerzoController@mostrarsemana')->name('semanaactual');
  Route::get('/cerase', 'AlmuerzoController@semana_cer')->name('cerrarsem');
  Route::put('/cerse','AlmuerzoController@cerrar_semana')->name('cerrarsema');
@@ -323,12 +312,7 @@ Route::patch('update/{evento}','EventController@updates')->name('event.update');
    
   });
   
-  //Route::get('nombre','HomeController@nombre');
-  //Route::get('powerbis','HomeController@powerbis');//->middleware('role:administrador');
-   
-  
-
-   //****************Ventas**********************
+//****************Ventas**********************
 
 Route::group(['middleware' => ['auth']], function () 
 {
@@ -381,11 +365,13 @@ Route::group(['middleware' => ['auth']], function ()
 //***********************************Frecuencias*************************************
 Route::get('/frecuencias', 'FrecuenciasController@index');
 
-   //****************Mantenimiento**********************
-   Route::get('mantenimiento','HomeController@mantenimiento');
+//****************Mantenimiento**********************
+Route::get('mantenimiento','HomeController@mantenimiento');
+
+
+//****************Solicitudes**********************
 Route::group(['middleware' => ['auth']], function () 
 {
-  
   Route::resource('solicitudes','SolicitudController');
   Route::resource('historico_solicitudes','SolicitudController');
 
@@ -429,6 +415,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::post('/verificar-envio-permitido/{id}', 'SolicitudController@verificarEnvioPermitido')->name('verificar.envio.permitido');
 });
 
+//****************Equipos Mantenimiento**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('equipos_mant','Equipo_mantController')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento|Empleado-Mantenimiento');
@@ -441,7 +428,7 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
 });
 
-
+//****************Areas**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('areas','AreaController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -451,6 +438,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_area/{area}',['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area','AreaController@update_area')->name('update_area');
 });
+
+//****************Localizaciones**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('localizaciones','LocalizacionController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -461,6 +450,8 @@ Route::group(['middleware' => ['auth']], function ()
 
   Route::get('select_area', 'LocalizacionController@select_area')->name('select_area');
 });
+
+//****************Estados**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('estados','EstadoController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -469,6 +460,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_estado/{estado}',['uses' => 'EstadoController@show_update_estado'])->name('show_update_estado');
   Route::post('update_estado','EstadoController@update_estado')->name('update_estado');
 });
+
+//****************Fallas**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('fallas','FallaController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -477,6 +470,8 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('show_update_falla/{falla}',['uses' => 'FallaController@show_update_falla'])->name('show_update_falla');
   Route::post('update_falla','FallaController@update_falla')->name('update_falla');
 });
+
+//****************Equipos**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('tipos_equipos','Tipo_EquipoController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -491,6 +486,8 @@ Route::group(['middleware' => ['auth']], function ()
 
   Route::get('select_fallas', 'Tipo_EquipoController@select_fallas')->name('select_fallas');
 });
+
+//****************Tipo Solicitudes**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('tipos_solicitudes','Tipo_SolicitudController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -501,7 +498,7 @@ Route::group(['middleware' => ['auth']], function ()
   
 });
 
-
+//****************Parametros Gen**********************
 Route::group(['middleware' => ['auth']], function () 
 {
   Route::resource('parametros_gen','ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
@@ -513,15 +510,16 @@ Route::group(['middleware' => ['auth']], function ()
   Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
  
 });
-use App\Http\Controllers\NovedadesController;
+
+//****************Novedades**********************
+Route::group(['middleware' => ['auth']], function () {
+
+  Route::post('/novedades/store', [NovedadesController::class, 'store'])->name('novedades.store')->middleware('role:administrador|rrhh');
+  Route::get('/ultimas-novedades', [HomeController::class, 'get4Novedades'])->name('novedades.ultimas');
+  
+});
 Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades.index');
-Route::post('/novedades/store', [NovedadesController::class, 'store'])->name('novedades.store');
 Route::get('/novedades/{id}', [NovedadesController::class, 'show'])->name('novedades.show');
-
-
-
-Route::get('/ultimas-novedades', [HomeController::class, 'get4Novedades'])->name('novedades.ultimas');
-
 
 
 
