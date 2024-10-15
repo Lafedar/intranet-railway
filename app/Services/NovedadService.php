@@ -14,9 +14,6 @@ class NovedadService
             throw new \InvalidArgumentException('El titulo de la novedad es obligatorio.');
         }
         
-        if (empty($data['descripcion'])) {
-            throw new \InvalidArgumentException('La descripción de la novedad es obligatoria.');
-        }
         
     }
 
@@ -33,8 +30,6 @@ class NovedadService
     public function create(array $data): Novedad
     {
         $this->validateData($data);
-        
-        
         $imagenPaths = [];
         if (isset($data['imagenes'])) {
             foreach ($data['imagenes'] as $imagen) {
@@ -42,7 +37,6 @@ class NovedadService
                 $imagenPaths[] = $path;
             }
         }
-        
         
         $data['imagen'] = implode(',', $imagenPaths);
         
@@ -60,7 +54,7 @@ class NovedadService
         return $novedad->delete();
     }
 
-    public function get4Novedades()
+    public function getUltimasNovedades()
     {
         // Recupera las últimas 4 novedades
         return Novedad::orderBy('id', 'desc')->take(4)->get();

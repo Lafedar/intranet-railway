@@ -515,7 +515,9 @@ Route::group(['middleware' => ['auth']], function ()
 Route::group(['middleware' => ['auth']], function () {
 
   Route::post('/novedades/store', [NovedadesController::class, 'store'])->name('novedades.store')->middleware('role:administrador|rrhh');
-  Route::get('/ultimas-novedades', [HomeController::class, 'get4Novedades'])->name('novedades.ultimas');
+  Route::get('/ultimas-novedades', [HomeController::class, 'getUltimasNovedades'])->name('novedades.ultimas');
+  Route::get('/novedades/delete/{id}', [NovedadesController::class, 'delete'])->name('novedades.delete')->middleware('role:administrador|rrhh');
+  Route::put('/novedades/update/{id}', [NovedadesController::class, 'update'])->name('novedades.update')->middleware('role:administrador|rrhh');
   
 });
 Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades.index');

@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novedades</title>
 </head>
+<div id="modalContainer"></div>
+
 <body>
 
     <div class="container">
@@ -55,6 +57,18 @@
                 <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
                 <br>
                 <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
+
+                <a role="button" class="fa-solid fa-pen default mx-2" href="#" title="Editar" 
+        data-toggle="modal" 
+        data-id="{{ $novedad->id }}" 
+        data-titulo="{{ $novedad->titulo }}" 
+        data-descripcion="{{ $novedad->descripcion }}" 
+        data-target="#editarNovedadModal">Editar
+        </a>
+
+
+                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+
             </div>
         </div>
     </div>
@@ -82,10 +96,44 @@
             }
         });
     </script>
+    
+
 </body>
 </html>
 
 @endsection
+
+<script>
+    $(document).ready(function() {
+        $('a[data-toggle="modal"]').on('click', function() {
+            const id = $(this).data('id');
+            const titulo = $(this).data('titulo');
+            const descripcion = $(this).data('descripcion');
+
+            // Asignar valores a los campos del modal
+            $('#titulo').val(titulo);
+            $('#descripcion').val(descripcion);
+            $('#editarNovedadForm').attr('action', `{{ route('novedades.update', '') }}/${id}`);
+
+            // Mostrar el modal
+            $('#editarNovedadModal').modal('show');
+        });
+    });
+</script>
+<script>
+    function openEditModal(novedad) {
+        // Asignar los valores a los campos del formulario
+        document.getElementById('titulo').value = novedad.titulo;
+        document.getElementById('descripcion').value = novedad.descripcion;
+
+        // Actualizar la acción del formulario con el ID de la novedad
+        document.getElementById('editarNovedadForm').action = `{{ route('novedades.update', '') }}/${novedad.id}`;
+
+        // Mostrar el modal
+        $('#editarNovedadModal').modal('show');
+    }
+</script>
+
 
 
 <style>

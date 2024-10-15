@@ -87,7 +87,8 @@
         </div>
     
         <div class="novedades">
-    <h1>____________________NOVEDADES____________________</h1>
+        <h1><a class="titulo-novedades" href="{{ route('novedades.index')}}">____________________NOVEDADES____________________</a></h1>
+
     <div class="cards-contenedor">
         @foreach ($novedades as $novedad)
         
@@ -119,7 +120,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ $novedad->titulo }}</h5>
                     
-                    <a href="{{ route('novedades.index', $novedad->id) }}" class="btn btn-primary">Ver más</a>
+                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Ver más</a>
                 </div>
             </div>
         @endforeach
@@ -231,7 +232,10 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.titulo-novedades{
+    text-decoration: none; 
+    color: inherit;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: white;

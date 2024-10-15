@@ -24,8 +24,8 @@ class HomeController extends Controller
     }
     public function index()
     {
-        // Obtener las últimas 4 novedades y pasarlas a la vista principal
-        $novedades = $this->novedadService->get4Novedades();
+        
+        $novedades = $this->novedadService->getUltimasNovedades();
 
         return view('home.inicio', compact('novedades')); 
     }

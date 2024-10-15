@@ -65,7 +65,7 @@
   
   @yield('content')
   <!-- Modal para crear una novedad -->
-<div class="modal fade" id="crearNovedadModal" tabindex="-1" role="dialog" aria-labelledby="crearNovedadModalLabel" aria-hidden="true">
+  <div class="modal fade" id="crearNovedadModal" tabindex="-1" role="dialog" aria-labelledby="crearNovedadModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,32 +75,53 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-group">
-                        <label for="titulo">Título</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                          <label for="imagenes">Cargar Imágenes (opcional)</label>
-                          <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept=".jpg, .jpeg, .png" multiple>
-                          <small id="error-message" class="text-danger d-none">Por favor, cargue solo imágenes (.jpg, .jpeg, .png).</small>
-                      </div>
-                    <button type="submit" class="btn btn-primary">Crear Novedad</button> 
-                </form>
-            </div>
+    <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="form-group">
+            <label for="titulo">Título</label>
+            <input type="text" class="form-control" id="titulo" name="titulo" maxlength="100" required>
+            <small id="tituloCount" class="form-text text-muted">100 caracteres restantes</small>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" maxlength="65530"></textarea>
+            <small id="descripcionCount" class="form-text text-muted">65530 caracteres restantes</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="imagenes">Cargar Imágenes (opcional)</label>
+            <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept=".jpg, .jpeg, .png" multiple>
+            <small id="error-message" class="text-danger d-none">Por favor, cargue solo imágenes (.jpg, .jpeg, .png).</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Novedad</button> 
+    </form>
+</div>
         </div>
     </div>
-</div>
+  </div>
+
+  
 </body>
 </html>
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('/js/bootstrap.bundle.min.js') }}"></script>
+<script>
+    const tituloInput = document.getElementById('titulo');
+    const tituloCount = document.getElementById('tituloCount');
+
+    tituloInput.addEventListener('input', function() {
+        const remaining = 100 - this.value.length;
+        tituloCount.textContent = remaining + ' caracteres restantes';
+    });
+
+    const descripcionInput = document.getElementById('descripcion');
+    const descripcionCount = document.getElementById('descripcionCount');
+
+    descripcionInput.addEventListener('input', function() {
+        const remaining = 65530 - this.value.length;
+        descripcionCount.textContent = remaining + ' caracteres restantes';
+    });
+</script>
 <script>
       // Validación en el cliente para los archivos de imagen
       document.getElementById('imagenes').addEventListener('change', function(e) {
