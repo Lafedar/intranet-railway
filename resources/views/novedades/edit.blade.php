@@ -35,8 +35,11 @@
             <p>Imágenes actuales:</p>
             @if($novedad->imagenes_sec)
                 @foreach(explode(',', $novedad->imagenes_sec) as $imagen)
-                    @if($imagen !== $novedad->portada)  <!-- Asegúrate de que la portada no se muestre aquí -->
-                        <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen secundaria actual" style="max-width: 100px; max-height: 100px;">
+                    @if($imagen !== $novedad->portada)
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen secundaria actual" style="max-width: 100px; max-height: 100px;" class="me-2">
+                            <input type="checkbox" name="delete_images[]" value="{{ $imagen }}"> Borrar
+                        </div>
                     @endif
                 @endforeach
             @endif
@@ -46,33 +49,6 @@
         <a href="{{ route('novedades.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tituloInput = document.getElementById('titulo_edit');
-        const descripcionInput = document.getElementById('descripcion_edit');
-        const tituloRemaining = document.getElementById('tituloRemainingEdit');
-        const descripcionRemaining = document.getElementById('descripcionRemainingEdit');
-
-        // Función para actualizar los contadores
-        function updateCounts() {
-            const tituloLength = tituloInput.value.length;
-            const descripcionLength = descripcionInput.value.length;
-
-            tituloRemaining.textContent = 100 - tituloLength;
-            descripcionRemaining.textContent = 65530 - descripcionLength;
-        }
-
-        // Agregar event listeners
-        tituloInput.addEventListener('input', updateCounts);
-        descripcionInput.addEventListener('input', updateCounts);
-
-        // Inicializar contadores al cargar la página
-        updateCounts();
-    });
-</script>
-
-
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -98,5 +74,43 @@
         updateCounts();
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imagenesInput = document.getElementById('imagenes');
+        const portadaInput = document.getElementById('nueva_imagen');
 
+        imagenesInput.addEventListener('change', function() {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            let valid = true;
+
+            for (const file of imagenesInput.files) {
+                if (!allowedExtensions.exec(file.name)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                alert('Solo se permiten imágenes en formato JPG, JPEG o PNG.');
+                imagenesInput.value = ''; // Limpiar el input
+            }
+        });
+        portadaInput.addEventListener('change', function() {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            let valid = true;
+
+            for (const file of portadaInput.files) {
+                if (!allowedExtensions.exec(file.name)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                alert('Solo se permiten imágenes en formato JPG, JPEG o PNG.');
+                portadaInput.value = ''; // Limpiar el input
+            }
+        });
+    });
+</script>
 @endsection

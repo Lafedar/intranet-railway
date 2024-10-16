@@ -135,30 +135,44 @@
     });
 </script>
 <script>
-      // Validación en el cliente para los archivos de imagen
-      document.getElementById('imagenes').addEventListener('change', function(e) {
-          const fileInput = e.target;
-          const errorMessage = document.getElementById('error-message');
-          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-          const files = fileInput.files;
-          let valid = true;
+    document.addEventListener('DOMContentLoaded', function () {
+        const imagenesInput = document.getElementById('imagenes');
+        const portadaInput = document.getElementById('imagen_principal');
 
-          for (let i = 0; i < files.length; i++) {
-              if (!allowedTypes.includes(files[i].type)) {
-                  valid = false;
-                  break;
-              }
-          }
+        imagenesInput.addEventListener('change', function() {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            let valid = true;
 
-          if (!valid) {
-              errorMessage.classList.remove('d-none');
-              fileInput.setCustomValidity('Por favor, cargue solo imágenes .jpg, .jpeg, .png.');
-          } else {
-              errorMessage.classList.add('d-none');
-              fileInput.setCustomValidity('');
-          }
-      });
-  </script>
+            for (const file of imagenesInput.files) {
+                if (!allowedExtensions.exec(file.name)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                alert('Solo se permiten imágenes en formato JPG, JPEG o PNG.');
+                imagenesInput.value = ''; // Limpiar el input
+            }
+        });
+        portadaInput.addEventListener('change', function() {
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            let valid = true;
+
+            for (const file of portadaInput.files) {
+                if (!allowedExtensions.exec(file.name)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                alert('Solo se permiten imágenes en formato JPG, JPEG o PNG.');
+                portadaInput.value = ''; // Limpiar el input
+            }
+        });
+    });
+</script>
 
 <style>
     .btn-separado {

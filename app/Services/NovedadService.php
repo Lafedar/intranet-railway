@@ -55,51 +55,64 @@ class NovedadService
         return Novedad::create($data);
     }
 
-public function update(Request $request, Novedad $novedad): Novedad
-{
-    // Validar los datos
-    $request->validate([
-        'titulo' => 'required|max:100',
-        'descripcion' => 'required|max:65530',
-        'nueva_imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'imagenes.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
+    public function update(Request $request, Novedad $novedad): Novedad
+    {
+        // Validar los datos
+        $request->validate([
+            'titulo' => 'required|max:100',
+            'descripcion' => 'required|max:65530',
+            'nueva_imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'imagenes.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'delete_images' => 'nullable|array', //valido que sea un array si se envía
+            'delete_images.*' => 'string' //valido que cada item sea un string
+        ]);
     
-    $novedad->titulo = $request->titulo;
-    $novedad->descripcion = $request->descripcion;
-
-    // Manejar la nueva portada
-    if ($request->hasFile('nueva_imagen')) {
-        $path = $request->file('nueva_imagen')->store('portadas', 'public');
-        $novedad->portada = $path; // Actualizar la portada
-    }
-
+        $novedad->titulo = $request->titulo;
+        $novedad->descripcion = $request->descripcion;
     
-    $imagenesSecundarias = [];
-
-    // Agregar imágenes secundarias existentes, excepto la portada actual
-    if ($novedad->imagenes_sec) {
-        $imagenesExistentes = explode(',', $novedad->imagenes_sec);
-        foreach ($imagenesExistentes as $imagen) {
-            if ($imagen !== $novedad->portada) {
-                $imagenesSecundarias[] = $imagen; 
+        // Manejar la nueva portada
+        if ($request->hasFile('nueva_imagen')) {
+            //elimino la imagen anterior si existe
+            if ($novedad->portada) {
+                Storage::disk('public')->delete($novedad->portada);
+            }
+            
+            $path = $request->file('nueva_imagen')->store('portadas', 'public');
+            $novedad->portada = $path; // Actualizar la portada
+        }
+    
+        // Manejar la eliminación de imágenes secundarias
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imagen) {
+                Storage::disk('public')->delete($imagen); 
             }
         }
-    }
-
-    if ($request->hasFile('imagenes')) {
-        foreach ($request->file('imagenes') as $imagen) {
-            $path = $imagen->store('imagenes_secundarias', 'public');
-            $imagenesSecundarias[] = $path; // Agregar las nuevas imágenes secundarias
+    
+        $imagenesSecundarias = [];
+    
+        // Agregar imágenes secundarias existentes, excepto la portada actual
+        if ($novedad->imagenes_sec) {
+            $imagenesExistentes = explode(',', $novedad->imagenes_sec);
+            foreach ($imagenesExistentes as $imagen) {
+                if ($imagen !== $novedad->portada && (!in_array($imagen, $request->delete_images ?? []))) {
+                    $imagenesSecundarias[] = $imagen; // Solo agregar imágenes que no han sido eliminadas
+                }
+            }
         }
+    
+        // Agregar nuevas imágenes secundarias
+        if ($request->hasFile('imagenes')) {
+            foreach ($request->file('imagenes') as $imagen) {
+                $path = $imagen->store('imagenes_secundarias', 'public');
+                $imagenesSecundarias[] = $path; // Agregar las nuevas imágenes secundarias
+            }
+        }
+    
+        $novedad->imagenes_sec = implode(',', $imagenesSecundarias);
+        $novedad->save();
+    
+        return $novedad;
     }
-
-    $novedad->imagenes_sec = implode(',', $imagenesSecundarias);
-    $novedad->save();
-
-    return $novedad;
-}
 public function delete(Novedad $novedad): ?bool
 {
     return $novedad->delete();
