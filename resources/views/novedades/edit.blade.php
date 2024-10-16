@@ -2,26 +2,26 @@
 
 @section('content')
 <div class="container">
-    <h1>Editar Novedad</h1>
+    <h1 style="text-align:center">Editar Novedad</h1>
     
     <form action="{{ route('novedades.update', $novedad->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <div class="form-group">
-            <label for="titulo_edit">Título</label>
+            <label for="titulo_edit"><b>Título</b></label>
             <input type="text" name="titulo" id="titulo_edit" class="form-control" value="{{ old('titulo', $novedad->titulo) }}" required maxlength="100">
             <small id="tituloCountEdit" class="form-text text-muted">Restan <span id="tituloRemainingEdit">100</span> caracteres.</small>
         </div>
 
         <div class="form-group">
-            <label for="descripcion_edit">Descripción</label>
+            <label for="descripcion_edit"><b>Descripción</b></label>
             <textarea name="descripcion" id="descripcion_edit" class="form-control" rows="5" required maxlength="65530">{{ old('descripcion', $novedad->descripcion) }}</textarea>
             <small id="descripcionCountEdit" class="form-text text-muted">Restan <span id="descripcionRemainingEdit">65530</span> caracteres.</small>
         </div>
 
         <div class="form-group">
-            <label for="nueva_imagen">Cambiar Imagen Principal (opcional)</label>
+            <label for="nueva_imagen"><b>Cambiar Imagen Principal (opcional)</b></label>
             <input type="file" name="nueva_imagen" id="nueva_imagen" class="form-control" accept=".jpg,.jpeg,.png">
             <p>Imagen principal actual:</p>
             @if($novedad->portada)
@@ -30,7 +30,7 @@
         </div>
 
         <div class="form-group">
-            <label for="imagenes">Imágenes Secundarias (opcional)</label>
+            <label for="imagenes"><b>Imágenes Secundarias (opcional)</b></label>
             <input type="file" name="imagenes[]" id="imagenes" class="form-control" multiple>
             <p>Imágenes actuales:</p>
             @if($novedad->imagenes_sec)

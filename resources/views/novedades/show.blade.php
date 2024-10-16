@@ -30,11 +30,11 @@
         $imagenesSecundarias = explode(',', $novedad->imagenes_sec);
     @endphp
 
-    <div class="row">
+    <div class="row d-flex flex-wrap">
         @foreach($imagenesSecundarias as $imagen)
             @if($imagen !== $novedad->portada) <!-- Asegura que la portada no se incluya -->
-                <div class="col-md-4 mb-4">
-                    <img src="{{ asset('storage/' . $imagen) }}" class="img-fluid novedad-imagen rounded" alt="Imagen secundaria de {{ $novedad->titulo }}">
+                <div class="col-md-4 mb-4 d-flex justify-content-center">
+                    <img src="{{ asset('storage/' . $imagen) }}" class="img-fluid novedad-imagen rounded" alt="Imagen secundaria de {{ $novedad->titulo }}" style="height: 200px; object-fit: cover;">
                 </div>
             @endif
         @endforeach
@@ -129,7 +129,7 @@
 
     .carousel-item img {
         width: 100%;
-        height: auto; /* Ajuste para que las imágenes mantengan su proporción */
+        height: auto; 
         object-fit: cover;
     }
 </style>
