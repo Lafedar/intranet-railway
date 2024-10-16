@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Services\NovedadService;
+use App\Novedad;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class NovedadesController extends Controller
 {
@@ -74,19 +76,34 @@ class NovedadesController extends Controller
         }
     }
 
-    public function update(Request $request, Novedad $novedad)
+    public function update(Request $request, $id)
     {
-      
-        $data = $request->all();
-        $novedad = $this->novedadService->getById($id);
-        
-        $updated = $this->tuServicio->update($novedad, $data);
+        try {
+            
+            $request->validate([
+                'titulo' => 'required|string|max:255',
+                'descripcion' => 'nullable|string',
+                'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        if ($updated) {
-            return redirect()->route('novedades.index')->with('success', 'Novedad actualizada con éxito.');
-        } else {
-            return redirect()->back()->with('error', 'Error al actualizar la novedad.');
+            $novedad = $this->novedadService->getById($id);
+            $updated = $this->novedadService->update($novedad, $request->all());
+
+            if ($updated) {
+                return redirect()->route('novedades.index')->with('success', 'Novedad actualizada con éxito.');
+            } else {
+                return redirect()->back()->withErrors('Hubo un problema al actualizar la novedad.');
+            }
+        } catch (Exception $e) {
+            Log::error('Error en la actualización de la novedad: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar la novedad.');
         }
     }
     
+    public function edit($id)
+    {
+        $novedad = $this->novedadService->getById($id);
+        return view('novedades.edit', compact('novedad'));
+    }
+
 }

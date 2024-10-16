@@ -518,6 +518,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/ultimas-novedades', [HomeController::class, 'getUltimasNovedades'])->name('novedades.ultimas');
   Route::get('/novedades/delete/{id}', [NovedadesController::class, 'delete'])->name('novedades.delete')->middleware('role:administrador|rrhh');
   Route::put('/novedades/update/{id}', [NovedadesController::class, 'update'])->name('novedades.update')->middleware('role:administrador|rrhh');
+  Route::get('/novedades/{id}/edit', [NovedadesController::class, 'edit'])->name('novedades.edit')->middleware('role:administrador|rrhh');;
+
   
 });
 Route::get('/novedades', [NovedadesController::class, 'index'])->name('novedades.index');

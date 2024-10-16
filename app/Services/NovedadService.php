@@ -46,8 +46,34 @@ class NovedadService
     public function update(Novedad $novedad, array $data): bool
     {
         $this->validateData($data);
-        return $novedad->update($data);
+
+        $updateData = [
+            'titulo' => $data['titulo'],
+            'descripcion' => $data['descripcion'],
+        ];
+
+        if (isset($data['imagenes'])) {
+            
+            if ($novedad->imagen) {
+                $imagenesAntiguas = explode(',', $novedad->imagen);
+                foreach ($imagenesAntiguas as $imagenAntigua) {
+                    Storage::delete('public/' . $imagenAntigua);
+                }
+            }
+
+            
+            $imagenPaths = [];
+            foreach ($data['imagenes'] as $imagen) {
+                $path = $imagen->store('images', 'public');
+                $imagenPaths[] = $path;
+            }
+            
+            $updateData['imagen'] = implode(',', $imagenPaths); 
+        }
+
+        return $novedad->update($updateData);
     }
+    
 
     public function delete(Novedad $novedad): ?bool
     {
