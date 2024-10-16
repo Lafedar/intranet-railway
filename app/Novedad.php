@@ -13,8 +13,9 @@ class Novedad extends Model
         protected $fillable = [
                 'titulo',
                 'descripcion',
-                'created_at',
-                'imagen',
+                'portada',      
+                'imagenes_sec', 
+                   
             ];
             
 }

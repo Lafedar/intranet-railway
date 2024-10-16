@@ -21,12 +21,23 @@
         </div>
 
         <div class="form-group">
-            <label for="imagenes">Imágenes</label>
+            <label for="nueva_imagen">Cambiar Imagen Principal (opcional)</label>
+            <input type="file" name="nueva_imagen" id="nueva_imagen" class="form-control" accept=".jpg,.jpeg,.png">
+            <p>Imagen principal actual:</p>
+            @if($novedad->portada)
+                <img src="{{ asset('storage/' . $novedad->portada) }}" alt="Imagen principal actual" style="max-width: 100px; max-height: 100px;">
+            @endif
+        </div>
+
+        <div class="form-group">
+            <label for="imagenes">Imágenes Secundarias (opcional)</label>
             <input type="file" name="imagenes[]" id="imagenes" class="form-control" multiple>
-            @if($novedad->imagen)
-                <p>Imágenes actuales:</p>
-                @foreach(explode(',', $novedad->imagen) as $imagen)
-                    <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen actual" style="max-width: 100px; max-height: 100px;">
+            <p>Imágenes actuales:</p>
+            @if($novedad->imagenes_sec)
+                @foreach(explode(',', $novedad->imagenes_sec) as $imagen)
+                    @if($imagen !== $novedad->portada)  <!-- Asegúrate de que la portada no se muestre aquí -->
+                        <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen secundaria actual" style="max-width: 100px; max-height: 100px;">
+                    @endif
                 @endforeach
             @endif
         </div>
@@ -35,6 +46,32 @@
         <a href="{{ route('novedades.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tituloInput = document.getElementById('titulo_edit');
+        const descripcionInput = document.getElementById('descripcion_edit');
+        const tituloRemaining = document.getElementById('tituloRemainingEdit');
+        const descripcionRemaining = document.getElementById('descripcionRemainingEdit');
+
+        // Función para actualizar los contadores
+        function updateCounts() {
+            const tituloLength = tituloInput.value.length;
+            const descripcionLength = descripcionInput.value.length;
+
+            tituloRemaining.textContent = 100 - tituloLength;
+            descripcionRemaining.textContent = 65530 - descripcionLength;
+        }
+
+        // Agregar event listeners
+        tituloInput.addEventListener('input', updateCounts);
+        descripcionInput.addEventListener('input', updateCounts);
+
+        // Inicializar contadores al cargar la página
+        updateCounts();
+    });
+</script>
+
+
 
 
 <script>

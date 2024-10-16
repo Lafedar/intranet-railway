@@ -18,92 +18,95 @@ class NovedadesController extends Controller
 
     public function index()
     {
-        try{
+        try {
             $novedades = $this->novedadService->getAll();
             return view('novedades.index', compact('novedades'));
-        }
-        catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener las novedades: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en el controlador al obtener las novedades: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las novedades.');
         }
     }
 
+    
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'titulo' => 'required|string|max:255',
                 'descripcion' => 'nullable|string',
+                'imagen_principal' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-    
+
             $this->novedadService->create($request->all());
-    
+
             return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
-        }catch(Exception $e)
-        {
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al crear una novedad: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al crear la novedad.');
-        }
-       
-    }
-
-    public function show(int $id){
-        try {
-            $novedad = $this->novedadService->getById($id);
-            return view('novedades.show', compact('novedad'));
-
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar las novedades: ' . $e->getMessage());
-            return redirect()->route('novedades.index')->with('error', 'Novedad no encontrada.');
+            Log::error('Error al crear una novedad: ' . $e->getMessage());
+            return redirect()->back()->withErrors($e->getMessage()); 
         }
     }
 
-    public function delete(int $id){
+    
+    public function show(int $id)
+    {
         try {
             $novedad = $this->novedadService->getById($id);
-            if($novedad){
-                $elimninada = $this->novedadService->delete($novedad);
-                return redirect()->route('novedades.index')->with('success', 'Novedad eliminada con exito.');
+
+            if (!$novedad) {
+                return redirect()->route('novedades.index')->withErrors('Novedad no encontrada.');
             }
-            else{
+
+            return view('novedades.show', compact('novedad'));
+        } catch (Exception $e) {
+            Log::error('Error al mostrar la novedad: ' . $e->getMessage());
+            return redirect()->route('novedades.index')->withErrors('Hubo un problema al cargar la novedad.');
+        }
+    }
+    public function delete(int $id)
+    {
+        try {
+            $novedad = $this->novedadService->getById($id);
+            if ($novedad) {
+                $this->novedadService->delete($novedad);
+                return redirect()->route('novedades.index')->with('success', 'Novedad eliminada con éxito.');
+            } else {
                 return redirect()->route('novedades.index')->with('error', 'Novedad no encontrada.');
             }
-            
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al elimninar la novedad: ' . $e->getMessage());
+            Log::error('Error en el controlador al eliminar la novedad: ' . $e->getMessage());
             return redirect()->route('novedades.index')->with('error', 'Novedad no eliminada.');
         }
     }
 
-    public function update(Request $request, $id)
-    {
-        try {
-            
-            $request->validate([
-                'titulo' => 'required|string|max:255',
-                'descripcion' => 'nullable|string',
-                'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
-
-            $novedad = $this->novedadService->getById($id);
-            $updated = $this->novedadService->update($novedad, $request->all());
-
-            if ($updated) {
-                return redirect()->route('novedades.index')->with('success', 'Novedad actualizada con éxito.');
-            } else {
-                return redirect()->back()->withErrors('Hubo un problema al actualizar la novedad.');
-            }
-        } catch (Exception $e) {
-            Log::error('Error en la actualización de la novedad: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al actualizar la novedad.');
-        }
-    }
     
-    public function edit($id)
+    public function update(Request $request, int $id)
     {
-        $novedad = $this->novedadService->getById($id);
-        return view('novedades.edit', compact('novedad'));
+        try{
+            $novedad = $this->novedadService->getById($id);
+        
+            $this->novedadService->update($request, $novedad);
+    
+            return redirect()->route('novedades.index')->with('success', 'Novedad actualizada correctamente.');
+        }
+        catch(Exception $e)
+        {
+            Log::error('Error en el controlador al actualizar la novedad: ' . $e->getMessage());
+            return redirect()->route('novedades.index')->with('error', 'Novedad no actualizada.');
+        }
+       
     }
 
+    public function edit(int $id)
+    {
+        try{ 
+            $novedad = $this->novedadService->getById($id);
+            return view('novedades.edit', compact('novedad'));
+        }catch(Exception $e)
+        {
+            Log::error('Error en el controlador al abrir novedades.edit: ' . $e->getMessage());
+            return redirect()->route('novedades.index')->with('error', 'novedades.edit no se pudo abrir.');
+        }
+       
+    }
 }

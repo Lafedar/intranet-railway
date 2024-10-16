@@ -5,78 +5,82 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novedades</title>
 </head>
-<div id="modalContainer"></div>
-
 <body>
 
-    <div class="container">
-        @if(session('success'))
-        <div class="alert alert-success" id="success-message">
-            {{ session('success') }}
-        </div>
-        @endif
+<div id="modalContainer"></div>
 
-        <h1 class="titulo">Novedades</h1>
-        <br>
-        <br>
+<div class="container">
+    @if(session('success'))
+    <div class="alert alert-success" id="success-message">
+        {{ session('success') }}
+    </div>
+    @endif
 
-        <div class="row">
+    <h1 class="titulo">Novedades</h1>
+    <br>
+    <br>
+
+    <div class="row">
         @foreach($novedades as $novedad)
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            @if($novedad->imagen)
-                @php
-                    $imagenes = explode(',', $novedad->imagen);
-                @endphp
-                <div id="carousel{{ $novedad->id }}" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        @foreach($imagenes as $key => $imagen)
-                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                <img src="{{ asset('storage/' . $imagen) }}" class="d-block" alt="Imagen de {{ $novedad->titulo }}">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    @php
+                        $imagenes = [];
+                        if ($novedad->portada) {
+                            $imagenes[] = $novedad->portada; // Agrega la portada al array
+                        }
+                        if ($novedad->imagenes_sec) {
+                            $imagenes = array_merge($imagenes, explode(',', $novedad->imagenes_sec)); // Agrega imágenes secundarias
+                        }
+                    @endphp
+
+                    @if(count($imagenes) > 0)
+                        <div id="carousel{{ $novedad->id }}" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach($imagenes as $key => $imagen)
+                                    <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                        <img src="{{ asset('storage/' . $imagen) }}" class="d-block" alt="Imagen de {{ $novedad->titulo }}">
+                                    </div>
+                                @endforeach
                             </div>
-                        @endforeach
-                    </div>
-                    @if(count($imagenes) > 1)
-                        <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
+                            @if(count($imagenes) > 1)
+                                <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            @endif
+                        </div>
                     @endif
-                </div>
-            @endif
-            <div class="card-body">
-                <h5 class="card-title">{{ $novedad->titulo }}</h5>
-                <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
-                <br>
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
-                    
-                    @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
-                        <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary">Editar</a>
-                        <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-                    @endrole
 
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $novedad->titulo }}</h5>
+                        <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
+                        <br>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
+                            
+                            @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
+                                <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary">Editar</a>
+                                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                            @endrole
+                        </div>
+                    </div>
                 </div>
-                
             </div>
-        </div>
+        @endforeach
     </div>
-@endforeach
-        </div>
-    </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const successMessage = document.getElementById('success-message');

@@ -75,26 +75,33 @@
                 </button>
             </div>
             <div class="modal-body">
-    <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="form-group">
-            <label for="titulo">Título</label>
-            <input type="text" class="form-control" id="titulo" name="titulo" maxlength="100" required>
-            <small id="tituloCount" class="form-text text-muted">100 caracteres restantes</small>
-        </div>
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <textarea class="form-control" id="descripcion" name="descripcion" maxlength="65530"></textarea>
-            <small id="descripcionCount" class="form-text text-muted">65530 caracteres restantes</small>
-        </div>
-        
-        <div class="form-group">
-            <label for="imagenes">Cargar Imágenes (opcional)</label>
-            <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept=".jpg, .jpeg, .png" multiple>
-            <small id="error-message" class="text-danger d-none">Por favor, cargue solo imágenes (.jpg, .jpeg, .png).</small>
-        </div>
-        <button type="submit" class="btn btn-primary">Crear Novedad</button> 
-    </form>
+            <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="form-group">
+        <label for="titulo">Título</label>
+        <input type="text" class="form-control" id="titulo" name="titulo" maxlength="100" required>
+        <small id="tituloCount" class="form-text text-muted">100 caracteres restantes</small>
+    </div>
+    
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea class="form-control" id="descripcion" name="descripcion" maxlength="65530"></textarea>
+        <small id="descripcionCount" class="form-text text-muted">65530 caracteres restantes</small>
+    </div>
+    
+    <div class="form-group">
+        <label for="imagen_principal">Seleccionar Imagen Principal</label>
+        <input type="file" class="form-control" id="imagen_principal" name="imagen_principal" accept=".jpg, .jpeg, .png" >
+    </div>
+    
+    <div class="form-group">
+        <label for="imagenes">Cargar Imágenes Secundarias (opcional)</label>
+        <input type="file" class="form-control" id="imagenes" name="imagenes[]" accept=".jpg, .jpeg, .png" multiple>
+        <small id="error-message" class="text-danger d-none">Por favor, cargue solo imágenes (.jpg, .jpeg, .png).</small>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Crear Novedad</button> 
+</form>
 </div>
         </div>
     </div>
