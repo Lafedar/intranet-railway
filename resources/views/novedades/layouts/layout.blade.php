@@ -105,21 +105,26 @@
 </html>
 <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('/js/bootstrap.bundle.min.js') }}"></script>
+
 <script>
-    const tituloInput = document.getElementById('titulo');
-    const tituloCount = document.getElementById('tituloCount');
+    document.addEventListener('DOMContentLoaded', function () {
+        const tituloInput = document.getElementById('titulo');
+        const tituloCount = document.getElementById('tituloCount');
+        const descripcionInput = document.getElementById('descripcion');
+        const descripcionCount = document.getElementById('descripcionCount');
 
-    tituloInput.addEventListener('input', function() {
-        const remaining = 100 - this.value.length;
-        tituloCount.textContent = remaining + ' caracteres restantes';
-    });
+        function updateCounts() {
+            const remainingTitulo = 100 - tituloInput.value.length;
+            const remainingDescripcion = 65530 - descripcionInput.value.length;
+            tituloCount.textContent = remainingTitulo + ' caracteres restantes';
+            descripcionCount.textContent = remainingDescripcion + ' caracteres restantes';
+        }
 
-    const descripcionInput = document.getElementById('descripcion');
-    const descripcionCount = document.getElementById('descripcionCount');
-
-    descripcionInput.addEventListener('input', function() {
-        const remaining = 65530 - this.value.length;
-        descripcionCount.textContent = remaining + ' caracteres restantes';
+        tituloInput.addEventListener('input', updateCounts);
+        descripcionInput.addEventListener('input', updateCounts);
+        
+        // Inicializar contadores al cargar la página
+        updateCounts();
     });
 </script>
 <script>
