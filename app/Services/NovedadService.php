@@ -54,6 +54,8 @@ class NovedadService
         
         return Novedad::create($data);
     }
+    
+
 
     public function update(Request $request, Novedad $novedad): Novedad
     {

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -18,7 +19,7 @@
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
-    <input type="text" class="search-bar" placeholder="Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>
+    <input type="text" class="search-bar" placeholder="🔎 Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>
     <div class="btn-cerrar-sesion">
         @if (Auth::check())
             <form action="{{ url('/logout') }}" method="POST">
@@ -40,15 +41,16 @@
     
     <nav>
       
-        <a href="/internos" class="nav-btn" style="text-decoration: none;">Internos</a>
-        @if(Auth::check())
-    <!-- Si el usuario está autenticado, el enlace será visible y habilitado -->
-    <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes</a>
+    <a href="/internos" class="nav-btn" style="text-decoration: none;">
+    Internos <span style="margin-left:145px;">></span>
+</a>
+
+@if(Auth::check())
+    <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes <span style="margin-left:119px;">></span></a>
 @else
-    <!-- Si el usuario no ha iniciado sesión, el enlace estará deshabilitado -->
-    <a href="#" class="nav-btn" style="text-decoration: none; pointer-events: none; opacity: 0.5;" title="Debes iniciar sesión para acceder">Solicitudes</a>
+    <a href="#" class="nav-btn" style="text-decoration: none; pointer-events: none; opacity: 0.5;" title="Debes iniciar sesión para acceder">Solicitudes <span style="margin-left:119px;">></span></a>
 @endif
-        <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos</a>
+        <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos<span style="margin-left:107px;">></span></a>
         
     </nav>
 
@@ -64,14 +66,18 @@
             <form method="POST" action="{{ route('login') }}">
               @csrf
               <div class="icono_usuario">
-                  <label>Usuario</label>
+              <label>
+                    <img src="{{ asset('storage/Imagenes principal-nueva/USUARIO.png') }}" style="width: 30px; height: auto; margin-right: 5px;">
+                        <b>Ingresa tu Usuario</b>
+                </label>
+
               </div>
               <div class="input_usuario">
                   <input type="email" id="email" name="email" required {{ Auth::check() ? 'disabled' : '' }}>
             </div>
 
                 <div class="icono_contraseña">
-                  <label>Contraseña</label>
+                  <label><img src="{{ asset('storage/Imagenes principal-nueva/LLAVE.png') }}" style="width: 25px; height: auto; margin-right: 5px;"> <b>Ingresa tu Contraseña</b></label>
                 </div>
                 <div class="input_contraseña">
                   <input type="password" id="password" name="password" required {{ Auth::check() ? 'disabled' : '' }}>
@@ -81,7 +87,7 @@
                 </div>
 
                 <div class="btn-iniciar-sesion">
-                  <button type="submit" style="color:white" {{ Auth::check() ? 'disabled' : '' }}>INICIAR SESION</button>
+                  <button type="submit" style="color:white" {{ Auth::check() ? 'disabled' : '' }}>INGRESAR</button>
                 </div>
             </form>
         </div>
@@ -252,6 +258,8 @@
     });
 </script>
 
+
+
 <style>
   * {
     margin: 0;
@@ -331,18 +339,24 @@ nav {
 }
 
 .nav-btn {
-    background-color: #004a99;
+    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
     color: white;
     border-radius: 10px;
     border: none;
     padding: 10px 20px;
-    margin: 20px 30px; 
-    margin-left: 57px; 
+    margin: 10px 20px; 
+    margin-left: 37px; 
     cursor: pointer;
-    width: 250px; 
+    width: 290px; 
     height: 50px;
-    text-align: center;
     box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
+    font-family: Inter;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 26.63px;
+    text-align: left;
+    margin-bottom: 10px;
+
 }
 
 .nav-btn:hover {
@@ -360,19 +374,34 @@ nav {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     height: 330px;
+    width: 300px;
+    margin-top:37px;
 }
 
 .login h2 {
     text-align: center;  
     margin-bottom: 20px; 
-    font-size: 25px;     
+    font-size: 25px;  
     color: #1C547C;
-    font-weight: bold;
+    font-family: Arial; 
+    font-weight: 900;
+    line-height: 22.99px;
+    text-align: center;
+
+
 }
 
 .login label {
     display: block;
     margin-bottom: 5px;
+    color: rgba(28, 84, 124, 1);
+    font-family: Inter;
+font-size: 16px;
+font-weight: 500;
+line-height: 19.36px;
+text-align: center;
+
+
 }
 
 .login input {
@@ -386,12 +415,27 @@ nav {
 .login button {
     width: 100%;
     padding: 10px;
-    background-color: #003a7a;
+    background: rgba(30, 120, 200, 1);
     color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     margin-top:5px;
+    width: 110px;
+
+    height: 35px;
+    top: 642px;
+    left: 98px;
+    gap: 0px;
+    border-radius: 10px 10px 10px 10px;
+    opacity: 0px;
+
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 19.36px;
+    letter-spacing: 0.01em;
+    text-align: center;
+
 }
 
 .login button:hover {
@@ -410,13 +454,16 @@ nav {
 }
 
 .novedades h1 {
-    margin-top: 0; 
-    margin-bottom: 20px; 
+    margin-top:53px;
+    margin-bottom: 10px; 
     color: #196AB2;
-    font-weight: 1000;
-    font-size: 40px;
+    font-weight: 900;
+    font-size: 45px;
     text-align: center; 
     width: 100%; 
+    font-family: Arial;
+    
+
 }
 
 .cards-contenedor {
@@ -431,11 +478,12 @@ nav {
 
 .card {
     width: 300px; 
-    height: 350px; 
+    height: 335px; 
     border: 1px solid #ddd;   
     border-radius: 10px;      
     overflow: hidden;         
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   
 }
 
 .card img {
@@ -446,7 +494,7 @@ nav {
 
 /* FOOTER */
 footer {
-    background-color: #1E78C8; 
+    background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
     color: white; 
     text-align: center; 
     padding: 20px; 
@@ -523,6 +571,10 @@ footer p {
         margin-bottom: 20px; 
     }
 
+    .nav-btn span {
+    display: none; /* Oculta el contenido del span */
+}
+
     .nav-btn {
         width: 250px; 
         margin-bottom: 10px; 
@@ -555,12 +607,14 @@ footer p {
         max-width: 1000px; 
         margin: 0 auto; 
         margin-bottom: 40px;
+        
     }
     
     .card {
         width: calc(45% - 20px); 
         max-width: 300px; 
         margin: 10px; 
+        width:280px;
     }
 
     .footer{
@@ -592,7 +646,9 @@ footer p {
         align-items: flex-start; 
         margin-bottom: 20px; 
     }
-
+    .nav-btn span {
+    display: none; /* Oculta el contenido del span */
+}
     .nav-btn {
         width: 250px; 
         margin-bottom: 10px; 
@@ -631,10 +687,13 @@ footer p {
         width: calc(45% - 20px); 
         max-width: 300px; 
         margin: 10px; 
+        width:280px;
     }
 
     .footer{
         position: relative;
+        background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
+
     }
 }
 
@@ -652,7 +711,9 @@ footer p {
         font-size: 18px; 
         margin: 10px 50px; 
     }
-
+    .nav-btn span {
+    display: none; /* Oculta el contenido del span */
+}
     nav {
         position: absolute; 
         left: -7px; 
@@ -702,10 +763,13 @@ footer p {
         width: calc(45% - 20px); /*Dos tarjetas por fila */
         max-width: 300px; 
         margin: 10px; 
+        width:280px;
     }
 
     .footer{
         position: relative;
+        background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
+
     }
 
 }
