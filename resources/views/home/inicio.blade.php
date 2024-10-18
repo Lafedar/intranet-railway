@@ -13,7 +13,7 @@
     <title>Intranet Lafedar</title>
    
 </head>
-<body>
+<body class="{{ Auth::check() ? 'authenticated' : '' }}">
 <header>
     <div class="logo">
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
@@ -41,17 +41,10 @@
     
     <nav>
       
-    <a href="/internos" class="nav-btn" style="text-decoration: none;">
-    Internos <span style="margin-left:145px;">></span>
-</a>
-
-@if(Auth::check())
-    <a href="{{ route('solicitudes.index') }}" class="nav-btn" style="text-decoration: none;">Solicitudes <span style="margin-left:119px;">></span></a>
-@else
-    <a href="#" class="nav-btn" style="text-decoration: none; pointer-events: none; opacity: 0.5;" title="Debes iniciar sesión para acceder">Solicitudes <span style="margin-left:119px;">></span></a>
-@endif
-        <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos<span style="margin-left:107px;">></span></a>
-        
+        <a href="/internos" class="nav-btn" style="text-decoration: none;">Internos <span style="margin-left:130px;">></span></a>
+        <a href="{{ route('eventos.index') }}" class="nav-btn" style="text-decoration: none;">Calendario <span style="margin-left:107px;">></span></a>
+        <a href="/documentos" class="nav-btn" style="text-decoration: none;">Documentos<span style="margin-left:98px;">></span></a>
+            
     </nav>
 
     <section class="container">
@@ -61,37 +54,98 @@
         <div id="toast-success" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4CAF50; color: white; padding: 16px; border-radius: 5px; z-index: 1000;">
             <span id="toast-message-success"></span>
         </div>
-        <div class="login" {{ Auth::check() ? 'style=opacity:0.5; pointer-events:none;' : '' }}>
-          <h2>INICIO DE SESION</h2>
-            <form method="POST" action="{{ route('login') }}">
-              @csrf
-              <div class="icono_usuario">
-              <label>
+        <section class="login-section" {{ Auth::check() ? 'style=display:none;' : '' }}>
+    <div class="login">
+        <h2>INICIO DE SESION</h2>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="icono_usuario">
+                <label>
                     <img src="{{ asset('storage/Imagenes principal-nueva/USUARIO.png') }}" style="width: 30px; height: auto; margin-right: 5px;">
-                        <b>Ingresa tu Usuario</b>
+                    <b>Ingresa tu Usuario</b>
                 </label>
-
-              </div>
-              <div class="input_usuario">
-                  <input type="email" id="email" name="email" required {{ Auth::check() ? 'disabled' : '' }}>
             </div>
+            <div class="input_usuario">
+                <input type="email" id="email" name="email" required {{ Auth::check() ? 'disabled' : '' }}>
+            </div>
+            <div class="icono_contraseña">
+                <label>
+                    <img src="{{ asset('storage/Imagenes principal-nueva/LLAVE.png') }}" style="width: 25px; height: auto; margin-right: 5px;">
+                    <b>Ingresa tu Contraseña</b>
+                </label>
+            </div>
+            <div class="input_contraseña">
+                <input type="password" id="password" name="password" required {{ Auth::check() ? 'disabled' : '' }}>
+                <a href="{{ route('password.request') }}" style="color:blue;">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="btn-iniciar-sesion">
+                <button type="submit" style="color:white" {{ Auth::check() ? 'disabled' : '' }}>INGRESAR</button>
+            </div>
+        </form>
+    </div>
+</section>
 
-                <div class="icono_contraseña">
-                  <label><img src="{{ asset('storage/Imagenes principal-nueva/LLAVE.png') }}" style="width: 25px; height: auto; margin-right: 5px;"> <b>Ingresa tu Contraseña</b></label>
-                </div>
-                <div class="input_contraseña">
-                  <input type="password" id="password" name="password" required {{ Auth::check() ? 'disabled' : '' }}>
-                  <a href="{{ route('password.request') }}" style="color:blue;">
-                      ¿Olvidaste tu contraseña?
-                  </a>
-                </div>
+<section class="nav-buttons" {{ Auth::check() ? '' : 'style=display:none;' }}>
+    <nav class="nav-grid">
+        @role('administrador')
+            <div class="nav-group">
+                <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left:107px;">></span></a>
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
+            </div>
+            <div class="nav-group">
+                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:107px;">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:120px;">></span></a>
+            </div>
+            <div class="nav-group">
+                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:72px;">></span></a>
+                <a href="/powerbi" class="nav-btn">Power BI <span style="margin-left:120px;">></span></a>
+            </div>
+            <div class="nav-group">
+                <a href="/personal" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span style="margin-left:130px;">></span></a>
+                <a href="/guardia" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
+            </div>
+        @else
+            <div class="nav-group">
+                @can('Empleado-Mantenimiento' | 'Empleado-Mantenimiento-Asigna-Solicitudes' | 'Empleado-Mantenimiento-Ve-Solicitudes' | 'Empleado-Mantenimiento-Ve-Proyectos' | 'Empleado-Mantenimiento-Ve-Proyectos-Asigna')
+                    <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left: 10px;">></span></a>
+                @endcan
+                @can('view_permisos')
+                    <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left: 10px;">></span></a>
+                @endcan
+            </div>
+            <div class="nav-group">
+                @can('view_recepcion')
+                    <a href="/persona" class="nav-btn">Recepcion <span style="margin-left: 10px;">></span></a>
+                @endcan
+                @can('view_sistemas')
+                    <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left: 10px;">></span></a>
+                @endcan
+            </div>
+            <div class="nav-group">
+                @can('view_mantenimiento')
+                    <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left: 10px;">></span></a>
+                @endcan
+                @can('view_powerbi')
+                    <a href="/powerbi" class="nav-btn">Power BI <span style="margin-left: 10px;">></span></a>
+                @endcan
+            </div>
+            <div class="nav-group">
+                @can('view_personal')
+                    <a href="/personal" class="nav-btn">Personal <span style="margin-left: 10px;">></span></a>
+                @endcan
+                @can('view_medico')
+                    <a href="/medico" class="nav-btn">Medico <span style="margin-left: 10px;">></span></a>
+                @endcan
+                @can('view_guardia')
+                    <a href="/guardia" class="nav-btn">Guardia <span style="margin-left: 10px;">></span></a>
+                @endcan
+            </div>
+        @endrole
+    </nav>
+</section>
 
-                <div class="btn-iniciar-sesion">
-                  <button type="submit" style="color:white" {{ Auth::check() ? 'disabled' : '' }}>INGRESAR</button>
-                </div>
-            </form>
-        </div>
-    
+
         <div class="novedades">
         <h1><a class="titulo-novedades" href="{{ route('novedades.index')}}">____________________NOVEDADES____________________</a></h1>
 
@@ -297,6 +351,7 @@ header {
     justify-content: space-between; 
     align-items: flex-start; 
     margin: 40px 20px; 
+    margin-top:75px;
 }
 
 /*MENSAJE DE ERROR LOGIN*/
@@ -330,12 +385,35 @@ header .logo img {
     max-width: 400px;
 }
 
+
 /* NAV CON BOTONES */
 nav {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; 
+    align-items: flex-start;
     margin: 20px 0;
+}
+
+.nav-buttons {
+    margin-top: -95px; 
+    margin-left: -30px;
+    
+}
+
+.nav-buttons a{
+    text-decoration:none;
+}
+.nav-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    justify-content: flex-start;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
 }
 
 .nav-btn {
@@ -343,20 +421,21 @@ nav {
     color: white;
     border-radius: 10px;
     border: none;
-    padding: 10px 20px;
-    margin: 10px 20px; 
-    margin-left: 37px; 
+    padding: 8px 16px;
+    margin: 10px 0;
     cursor: pointer;
-    width: 290px; 
-    height: 50px;
+    width: 250px;
+    height: 45px;
     box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
     font-family: Inter;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
-    line-height: 26.63px;
+    line-height: 22px;
     text-align: left;
-    margin-bottom: 10px;
-
+    margin-left:54px;
+}
+.authenticated .nav-btn {
+    margin-top: -5px; /* Subir los botones más arriba */
 }
 
 .nav-btn:hover {
@@ -441,6 +520,7 @@ text-align: center;
 .login button:hover {
     background-color: #003a7a;
 }
+
 
 /* NOVEDADES */
 .novedades {
