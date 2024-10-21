@@ -62,27 +62,30 @@
                     @endif
 
                     <div class="card-body">
-    <h5 class="card-title">{{ $novedad->titulo }}</h5>
-    <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
-    <br>
-    <div class="d-flex justify-content-between">
-        <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
+                            <h5 class="card-title">{{ $novedad->titulo }}</h5>
+                            <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
+                            <br>
+                            <div class="botones-cards">
+                                <div >
+                                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer más</a>
+                                </div>
+                                
 
-        @role('administrador')
-            <div class="d-flex justify-content-between">
-                <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary me-7">Editar</a>   
-                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-            </div>
-        @else
-            @role('rrhh')
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary me-7">Editar</a> 
-                    <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-                </div>
-            @endrole
-        @endrole
-    </div>
-</div>
+                                @role('administrador')
+                                    <div>
+                                        <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                        <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                    </div>
+                                @else
+                                    @role('rrhh')
+                                        <div >
+                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                            <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                        </div>
+                                    @endrole
+                                @endrole
+                            </div>
+                    </div>
                 </div>
             </div>
         @endforeach
@@ -156,6 +159,28 @@
     font-size: 80px; 
     font-weight:bold;
     color: #004a99;
+}
+
+.botones-cards {
+    display: flex; 
+    gap: 5px; 
+    
+}
+
+.botones-cards a {
+    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
+    color: white;
+    padding: 10px; 
+    text-decoration: none; 
+    height: 40px;
+}
+.card-title {
+    display: -webkit-box;             
+    -webkit-box-orient: vertical;    
+    -webkit-line-clamp: 2;    /* Número de líneas que se mostrarán */
+    overflow: hidden;                 
+    text-overflow: ellipsis;         
+    max-width: 100%;                
 }
 
 

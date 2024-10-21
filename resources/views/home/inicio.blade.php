@@ -24,12 +24,12 @@
         @if (Auth::check())
             <form action="{{ url('/logout') }}" method="POST">
                 {{ csrf_field() }}
-                <button type="submit" class="btn btn-danger" style="display:inline;cursor:pointer">
+                <button type="submit" class="btn-cs" style="display:inline;cursor:pointer">
                     Cerrar sesión
                 </button>
             </form>
         @else
-            <button class="btn btn-danger" disabled>Cerrar sesión</button>
+            <button class="btn-cs" disabled>Cerrar sesión</button>
         @endif
     </div>
   </header>
@@ -155,19 +155,12 @@
                 <img src="{{ asset('storage/novedades/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#main-carousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#main-carousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+        
     </div>
 </section>
 
         <div class="novedades">
-        <h1><a class="titulo-novedades" href="{{ route('novedades.index')}}">____________________NOVEDADES____________________</a></h1>
+        <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">____________________NOVEDADES____________________</a></h1>
 
     <div class="cards-contenedor">
     @foreach($novedades as $novedad)
@@ -184,44 +177,47 @@
                     @endphp
 
                     @if(count($imagenes) > 0)
-                        <div id="carousel{{ $novedad->id }}" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                @foreach($imagenes as $key => $imagen)
-                                    <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                        <img src="{{ asset('storage/' . $imagen) }}" class="d-block" alt="Imagen de {{ $novedad->titulo }}">
-                                    </div>
-                                @endforeach
-                            </div>
-                            @if(count($imagenes) > 1)
-                                <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            @endif
+                    <div id="carousel{{ $novedad->id }}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @foreach($imagenes as $key => $imagen)
+                                <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                    <img src="{{ asset('storage/' . $imagen) }}" class="d-block w-100" alt="Imagen de {{ $novedad->titulo }}">
+                                </div>
+                            @endforeach
                         </div>
+                        @if(count($imagenes) > 1)
+                            <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </a>
+                        @endif
+                    </div>
                     @endif
 
                     <div class="card-body">
                             <h5 class="card-title">{{ $novedad->titulo }}</h5>
                             <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
                             <br>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ route('novedades.show', $novedad->id) }}" class="btn btn-primary">Leer más</a>
+                            <div class="botones-cards">
+                                <div >
+                                    <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer más</a>
+                                </div>
+                                
 
                                 @role('administrador')
-                                    <div class="d-flex">
-                                        <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary me-2">Editar</a>
-                                        <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                    <div>
+                                        <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                        <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
                                     </div>
                                 @else
                                     @role('rrhh')
-                                        <div class="d-flex">
-                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn btn-secondary me-2">Editar</a>
-                                            <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                        <div >
+                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                            <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
                                         </div>
                                     @endrole
                                 @endrole
@@ -339,6 +335,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.btn-cs{
+    height:60px;
+    margin-top:1px;
+    border-radius:10px;
+    background: linear-gradient(90deg, #FF5733 0.66%, #C70039 109.41%);
+    color:white;
+    border:none;
+}
+
+.btn-cs:hover{
+    box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
+    color: black;
 }
 .titulo-novedades{
     text-decoration: none; 
@@ -466,7 +476,7 @@ nav {
     margin-top: -5px; 
 }
 .authenticated .carousel-item img {
-    height: 225px;  
+    height:180px;  
     object-fit: cover;  
     border-radius: 10px; 
 }
@@ -477,7 +487,6 @@ nav {
     border-radius: 10px;      
     overflow: hidden;         
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-   
 }
 
 /* LOGIN */   
@@ -629,11 +638,36 @@ text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
    
 }
+.card-title {
+    display: -webkit-box;             
+    -webkit-box-orient: vertical;    
+    -webkit-line-clamp: 3;  /* Número de líneas que se mostrarán */
+    overflow: hidden;                 
+    text-overflow: ellipsis;          
+    max-width: 100%;                 
+}
 
 .card img {
     width:100%;
     max-width: 300px;           
     height: 170px;             
+}
+
+/*BOTONES DE LAS CARD*/
+.botones-cards {
+    display: flex;
+    gap: 5px; 
+    
+    
+}
+
+.botones-cards a {
+    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
+    color: white;
+    padding: 10px;
+    text-decoration: none; 
+    height: 40px;
+    
 }
 
 /* FOOTER */
