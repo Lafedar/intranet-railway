@@ -98,53 +98,73 @@
             </div>
             <div class="nav-group">
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:72px;">></span></a>
-                <a href="/powerbi" class="nav-btn">Power BI <span style="margin-left:120px;">></span></a>
+                <a href="/powerbis" class="nav-btn">Power BI <span style="margin-left:120px;">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/personal" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span style="margin-left:130px;">></span></a>
-                <a href="/guardia" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
             </div>
         @else
             <div class="nav-group">
-                @can('Empleado-Mantenimiento' | 'Empleado-Mantenimiento-Asigna-Solicitudes' | 'Empleado-Mantenimiento-Ve-Solicitudes' | 'Empleado-Mantenimiento-Ve-Proyectos' | 'Empleado-Mantenimiento-Ve-Proyectos-Asigna')
-                    <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left: 10px;">></span></a>
-                @endcan
-                @can('view_permisos')
-                    <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left: 10px;">></span></a>
-                @endcan
+                <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left:107px;">></span></a>
+                @role(['jefe', 'rrhh'])
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
+                @endrole
             </div>
             <div class="nav-group">
-                @can('view_recepcion')
-                    <a href="/persona" class="nav-btn">Recepcion <span style="margin-left: 10px;">></span></a>
-                @endcan
-                @can('view_sistemas')
-                    <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left: 10px;">></span></a>
-                @endcan
+                @role(['recepcion', 'rrhh'])
+                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:107px;">></span></a>
+                @endrole
+                @role('ingenieria')
+                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:120px;">></span></a>
+                @endrole
             </div>
             <div class="nav-group">
-                @can('view_mantenimiento')
-                    <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left: 10px;">></span></a>
-                @endcan
-                @can('view_powerbi')
-                    <a href="/powerbi" class="nav-btn">Power BI <span style="margin-left: 10px;">></span></a>
-                @endcan
+                
+                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:72px;">></span></a>
+                
+                
             </div>
             <div class="nav-group">
-                @can('view_personal')
-                    <a href="/personal" class="nav-btn">Personal <span style="margin-left: 10px;">></span></a>
-                @endcan
-                @can('view_medico')
-                    <a href="/medico" class="nav-btn">Medico <span style="margin-left: 10px;">></span></a>
-                @endcan
-                @can('view_guardia')
-                    <a href="/guardia" class="nav-btn">Guardia <span style="margin-left: 10px;">></span></a>
-                @endcan
+                @role('rrhh')
+                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
+                @endrole
+                @role(['medico', 'rrhh'])
+                <a href="/medico" class="nav-btn">Medico <span style="margin-left:130px;">></span></a>
+                @endrole
+                @role(['guardia', 'rrhh'])
+                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
+                @endrole
             </div>
         @endrole
     </nav>
 </section>
 
+<!-- Carousel -->
+<section class="carousel-container">
+    <div id="main-carousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ asset('storage/novedades/prueba2.jpg') }}" class="d-block w-100" alt="Imagen 1">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ asset('storage/novedades/logo2.png') }}" class="d-block w-100" alt="Imagen 2">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ asset('storage/novedades/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#main-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#main-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
 
         <div class="novedades">
         <h1><a class="titulo-novedades" href="{{ route('novedades.index')}}">____________________NOVEDADES____________________</a></h1>
@@ -224,7 +244,7 @@
 </html>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Mensaje de error
     @if ($errors->any())
@@ -434,13 +454,30 @@ nav {
     text-align: left;
     margin-left:54px;
 }
-.authenticated .nav-btn {
-    margin-top: -5px; /* Subir los botones más arriba */
-}
 
 .nav-btn:hover {
     background-color: white;
     color: #004a99;
+}
+
+
+/*LUEGO DE LOGUEARSE*/
+.authenticated .nav-btn {
+    margin-top: -5px; 
+}
+.authenticated .carousel-item img {
+    height: 225px;  
+    object-fit: cover;  
+    border-radius: 10px; 
+}
+.authenticated .card {
+    width: 300px; 
+    height: 345px; 
+    border: 1px solid #ddd;   
+    border-radius: 10px;      
+    overflow: hidden;         
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   
 }
 
 /* LOGIN */   
@@ -479,7 +516,6 @@ font-size: 16px;
 font-weight: 500;
 line-height: 19.36px;
 text-align: center;
-
 
 }
 
@@ -522,19 +558,47 @@ text-align: center;
 }
 
 
+/*CAROUSEL*/
+.carousel-container {
+    position: absolute;  
+    top: 100px; 
+    margin-left:382px;
+    width: 71.7%; 
+    max-height: 300px; 
+    height: 800px; 
+    z-index: 2;
+    overflow: hidden;  
+    border-radius: 10px;
+}
+
+
+.carousel-item img {
+    height: 270px;  
+    object-fit: cover;  
+    border-radius: 10px; 
+}
+
+
+.carousel-control-prev, 
+.carousel-control-next {
+    height: 30px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
+
 /* NOVEDADES */
 .novedades {
     display: flex;
     flex-direction: column; 
     align-items: center;      
     justify-content: flex-start;
-    margin-top: -90px; 
+    margin-top: -92px; 
     width: 100%; 
     max-width: 800px; 
 }
 
 .novedades h1 {
-    margin-top:53px;
+    margin-top:53px;/*53*/
     margin-bottom: 10px; 
     color: #196AB2;
     font-weight: 900;
@@ -620,11 +684,6 @@ footer p {
 
 
 
-
-
-
-
-
 /*RESPONSIVE*/
 /*Pantallas 1366x768 */
 @media (max-width: 1366px) {
@@ -683,7 +742,7 @@ footer p {
         display: flex; 
         flex-wrap: wrap;
         justify-content: center; 
-        gap: 20px; 
+        gap: 30px; 
         max-width: 1000px; 
         margin: 0 auto; 
         margin-bottom: 40px;
@@ -695,7 +754,39 @@ footer p {
         max-width: 300px; 
         margin: 10px; 
         width:280px;
+        height: 400px;
     }
+    .authenticated .cards-contenedor {
+        gap: 50px; 
+   
+}
+
+    .carousel-container {
+    position: absolute;  
+    top: 100px; 
+    margin-left:320px;
+    width: 62.5%; 
+    max-height: 300px; 
+    height: 800px; 
+    z-index: 2;
+    overflow: hidden;  
+    border-radius: 10px;
+}
+
+
+.carousel-item img {
+    height: 270px;  
+    object-fit: cover;  
+    border-radius: 10px; 
+}
+
+
+.carousel-control-prev, 
+.carousel-control-next {
+    height: 30px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
 
     .footer{
         position: relative;
@@ -726,9 +817,11 @@ footer p {
         align-items: flex-start; 
         margin-bottom: 20px; 
     }
+
     .nav-btn span {
     display: none; /* Oculta el contenido del span */
 }
+
     .nav-btn {
         width: 250px; 
         margin-bottom: 10px; 
@@ -757,10 +850,11 @@ footer p {
         display: flex; 
         flex-wrap: wrap;
         justify-content: center; 
-        gap: 20px; 
+        gap: 30px; 
         max-width: 1000px; 
         margin: 0 auto; 
         margin-bottom: 40px;
+        
     }
     
     .card {
@@ -768,12 +862,42 @@ footer p {
         max-width: 300px; 
         margin: 10px; 
         width:280px;
+        height: 400px;
     }
+    .authenticated .cards-contenedor {
+        gap: 50px; 
+   
+}
+
+    .carousel-container {
+    position: absolute;  
+    top: 100px; 
+    margin-left:320px;
+    width: 62.5%; 
+    max-height: 300px; 
+    height: 800px; 
+    z-index: 2;
+    overflow: hidden;  
+    border-radius: 10px;
+}
+
+
+.carousel-item img {
+    height: 270px;  
+    object-fit: cover;  
+    border-radius: 10px; 
+}
+
+
+.carousel-control-prev, 
+.carousel-control-next {
+    height: 30px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
 
     .footer{
         position: relative;
-        background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
-
     }
 }
 
@@ -782,7 +906,7 @@ footer p {
     .container {
         display: flex;
         flex-direction: column; 
-        align-items: flex-start; 
+        align-items: flex-start; /* Alinea a la izquierda */
         margin: 40px 20px; 
     }
 
@@ -791,18 +915,20 @@ footer p {
         font-size: 18px; 
         margin: 10px 50px; 
     }
-    .nav-btn span {
-    display: none; /* Oculta el contenido del span */
-}
+
     nav {
         position: absolute; 
         left: -7px; 
         top: 100px; 
-        display: flex; 
+        display: flex; /*Flex para apilar botones */
         flex-direction: column; 
         align-items: flex-start; 
         margin-bottom: 20px; 
     }
+
+    .nav-btn span {
+    display: none; /* Oculta el contenido del span */
+}
 
     .nav-btn {
         width: 250px; 
@@ -813,16 +939,16 @@ footer p {
         position: absolute; 
         left: 20px; 
         top: 400px; 
-        
     }
 
     .novedades {
         width: 100%; 
         text-align: center; 
-        margin: 200px 350px 100px; 
+        margin: 200px 350px 100px;
+        margin-left: 300px;
         display: flex; 
         flex-direction: column; 
-        align-items: center;
+        align-items: center; 
     }
 
     .novedades h1 {
@@ -831,27 +957,59 @@ footer p {
 
     .cards-contenedor {
         display: flex; 
-        flex-wrap: wrap; 
+        flex-wrap: wrap;
         justify-content: center; 
-        gap: 20px; 
+        gap: 30px; 
         max-width: 1000px; 
         margin: 0 auto; 
         margin-bottom: 40px;
+        
     }
     
     .card {
-        width: calc(45% - 20px); /*Dos tarjetas por fila */
+        width: calc(45% - 20px); 
         max-width: 300px; 
         margin: 10px; 
         width:280px;
+        height: 400px;
     }
+    .authenticated .cards-contenedor {
+        gap: 50px;
+   }
+   .authenticated .novedades{
+    margin-top: 225px;
+   }
+
+    .carousel-container {
+    position: absolute;  
+    top: 100px; 
+    margin-left:320px;
+    width: 60%; 
+    max-height: 300px; 
+    height: 800px; 
+    z-index: 2;
+    overflow: hidden;  
+    border-radius: 10px;
+}
+
+
+.carousel-item img {
+    height: 270px;  
+    object-fit: cover;  
+    border-radius: 10px; 
+}
+
+
+.carousel-control-prev, 
+.carousel-control-next {
+    height: 30px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
 
     .footer{
         position: relative;
-        background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
-
     }
-
 }
 
 </style>
