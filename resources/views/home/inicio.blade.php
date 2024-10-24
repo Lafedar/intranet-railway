@@ -19,7 +19,7 @@
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
-    <input type="text" class="search-bar" placeholder="🔎 Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>
+    <!--<input type="text" class="search-bar" placeholder="🔎 Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>-->
     <div class="btn-cerrar-sesion">
         @if (Auth::check())
             <form action="{{ url('/logout') }}" method="POST">
@@ -93,17 +93,17 @@
                 <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:107px;">></span></a>
-                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:120px;">></span></a>
+                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:109px;">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:123px;">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:72px;">></span></a>
-                <a href="/powerbis" class="nav-btn">Power BI <span style="margin-left:120px;">></span></a>
+                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:75px;">></span></a>
+                <a href="/powerbis" class="nav-btn">Power BI <span style="margin-left:123px;">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
-                <a href="/medico" class="nav-btn">Medico <span style="margin-left:130px;">></span></a>
-                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
             </div>
         @else
             <div class="nav-group">
@@ -117,24 +117,24 @@
                 <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:107px;">></span></a>
                 @endrole
                 @role('ingenieria')
-                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:120px;">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:123px;">></span></a>
                 @endrole
             </div>
             <div class="nav-group">
                 
-                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:72px;">></span></a>
+            <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:75px;">></span></a>
                 
                 
             </div>
             <div class="nav-group">
                 @role('rrhh')
-                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:120px;">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
                 @endrole
                 @role(['medico', 'rrhh'])
-                <a href="/medico" class="nav-btn">Medico <span style="margin-left:130px;">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
                 @endrole
                 @role(['guardia', 'rrhh'])
-                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:127px;">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
                 @endrole
             </div>
         @endrole
@@ -146,10 +146,10 @@
     <div id="main-carousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('storage/novedades/prueba2.jpg') }}" class="d-block w-100" alt="Imagen 1">
+                <img src="{{ asset('storage/novedades/portada.jpg') }}" class="d-block w-100" alt="Imagen 1">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('storage/novedades/logo2.png') }}" class="d-block w-100" alt="Imagen 2">
+                <img src="{{ asset('storage/novedades/portada4.jpg') }}" class="d-block w-100" alt="Imagen 2">
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('storage/novedades/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
@@ -373,6 +373,7 @@ header {
     border-radius: 5px; 
     border: none; 
     cursor: pointer; 
+    margin-left:1515px;
 }
 
 /* CONTAINER LOGIN Y NOVEDADES */
@@ -489,6 +490,13 @@ nav {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.authenticated #main-carousel{
+    margin-top:43px;
+}
+.authenticated #main-carousel img{
+    height:320px;
+}
+
 /* LOGIN */   
 .login {
     background-color: #E0E0E0BF;
@@ -570,22 +578,24 @@ text-align: center;
 /*CAROUSEL*/
 .carousel-container {
     position: absolute;  
-    top: 100px; 
+    margin-top:-380px; 
     margin-left:382px;
     width: 71.7%; 
-    max-height: 300px; 
+    max-height: 340px;
     height: 800px; 
     z-index: 2;
     overflow: hidden;  
     border-radius: 10px;
+    
 }
 
 
 .carousel-item img {
-    height: 270px;  
+    height: 340px;  
     object-fit: cover;  
     border-radius: 10px; 
 }
+
 
 
 .carousel-control-prev, 
