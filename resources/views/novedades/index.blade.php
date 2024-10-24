@@ -125,15 +125,16 @@
     width: 18rem; 
     height: 350px; 
     overflow: hidden; 
-    border-radius: 40px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     position: relative; 
+   
 }
 
 .carousel-item img {
     width: 100%; 
     height: 185px; 
     object-fit: cover; 
+    
     
 }
 
@@ -144,6 +145,7 @@
     background: rgba(255, 255, 255, 0.8);
     padding: 10px; 
     box-sizing: border-box; 
+    
 }
 
 .card-text {
@@ -177,7 +179,7 @@
 .card-title {
     display: -webkit-box;             
     -webkit-box-orient: vertical;    
-    -webkit-line-clamp: 2;    /* Número de líneas que se mostrarán */
+    -webkit-line-clamp: 2;    /* Número de líneas que se mostrarán en el titulo de la card */
     overflow: hidden;                 
     text-overflow: ellipsis;         
     max-width: 100%;                

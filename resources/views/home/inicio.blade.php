@@ -478,7 +478,7 @@ nav {
 .authenticated .carousel-item img {
     height:180px;  
     object-fit: cover;  
-    border-radius: 10px; 
+     
 }
 .authenticated .card {
     width: 300px; 
@@ -641,7 +641,7 @@ text-align: center;
 .card-title {
     display: -webkit-box;             
     -webkit-box-orient: vertical;    
-    -webkit-line-clamp: 3;  /* Número de líneas que se mostrarán */
+    -webkit-line-clamp: 2;  /* Número de líneas que se mostrarán */
     overflow: hidden;                 
     text-overflow: ellipsis;          
     max-width: 100%;                 
@@ -650,7 +650,8 @@ text-align: center;
 .card img {
     width:100%;
     max-width: 300px;           
-    height: 170px;             
+    height: 170px; 
+    border-radius: 10px 10px 0px 0px;            
 }
 
 /*BOTONES DE LAS CARD*/
@@ -832,7 +833,7 @@ footer p {
     .container {
         display: flex;
         flex-direction: column; 
-        align-items: flex-start; /* Alinea a la izquierda */
+        align-items: flex-start; 
         margin: 40px 20px; 
     }
 
@@ -846,14 +847,14 @@ footer p {
         position: absolute; 
         left: -7px; 
         top: 100px; 
-        display: flex; /*Flex para apilar botones */
+        display: flex; 
         flex-direction: column; 
         align-items: flex-start; 
         margin-bottom: 20px; 
     }
 
     .nav-btn span {
-    display: none; /* Oculta el contenido del span */
+    display: none; 
 }
 
     .nav-btn {
@@ -940,7 +941,7 @@ footer p {
     .container {
         display: flex;
         flex-direction: column; 
-        align-items: flex-start; /* Alinea a la izquierda */
+        align-items: flex-start; 
         margin: 40px 20px; 
     }
 
@@ -954,14 +955,14 @@ footer p {
         position: absolute; 
         left: -7px; 
         top: 100px; 
-        display: flex; /*Flex para apilar botones */
+        display: flex; 
         flex-direction: column; 
         align-items: flex-start; 
         margin-bottom: 20px; 
     }
 
     .nav-btn span {
-    display: none; /* Oculta el contenido del span */
+    display: none; 
 }
 
     .nav-btn {
