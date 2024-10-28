@@ -19,19 +19,7 @@
         <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
-    <!--<input type="text" class="search-bar" placeholder="🔎 Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>-->
-    <!--<div class="btn-cerrar-sesion">
-        @if (Auth::check())
-            <form action="{{ url('/logout') }}" method="POST">
-                {{ csrf_field() }}
-                <button type="submit" class="btn-cs" style="display:inline;cursor:pointer">
-                    Cerrar sesión
-                </button>
-            </form>
-        @else
-            <button class="btn-cs" disabled>Cerrar sesión</button>
-        @endif
-    </div>-->
+
   </header>
   
     <div id="results-dropdown" class="results-dropdown" style="display: none;">
@@ -104,6 +92,7 @@
                 <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
                 <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
+                <a href="/visitas" class="nav-btn">Cursos <span style="margin-left:137px;">></span></a>
             </div>
         @else
             <div class="nav-group">
@@ -428,11 +417,15 @@ nav {
     flex-direction: column;
     align-items: flex-start;
     margin: 20px 0;
+    gap: 2px;
+    
 }
 
+
 .nav-buttons {
-    margin-top: -95px; 
+    margin-top: -93px; 
     margin-left: -30px;
+    
     
 }
 
@@ -442,14 +435,14 @@ nav {
 .nav-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1px;
+    gap: 2px;
     justify-content: flex-start;
 }
 
 .nav-group {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
 }
 
 .nav-btn {
@@ -488,7 +481,7 @@ nav {
 }
 
 .authenticated .novedades{
-    margin-top: -45px;
+    margin-top: -37px;
 }
 .authenticated .card {
     width: 300px; 
@@ -503,7 +496,8 @@ nav {
     margin-top:43px;
 }
 .authenticated #main-carousel img{
-    height:320px;
+    max-height:500px;
+    height: 450px;
 }
 
 /* LOGIN */   
@@ -597,16 +591,11 @@ text-align: center;
     border-radius: 10px;
     
 }
-
-
 .carousel-item img {
     height: 340px;  
     object-fit: cover;  
     border-radius: 10px; 
 }
-
-
-
 .carousel-control-prev, 
 .carousel-control-next {
     height: 30px; 
