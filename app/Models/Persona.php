@@ -25,7 +25,8 @@ class Persona extends Model
         'turno',
         'jefe',
         'usuario',
-        'activo'
+        'activo',
+        'legajo'
     ];
 
     public $timestamps = true;
