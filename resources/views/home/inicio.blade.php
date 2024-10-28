@@ -20,7 +20,7 @@
     </div>
     
     <!--<input type="text" class="search-bar" placeholder="🔎 Buscar por palabra clave" id="search-input" {{ Auth::check() ? '' : 'disabled' }}>-->
-    <div class="btn-cerrar-sesion">
+    <!--<div class="btn-cerrar-sesion">
         @if (Auth::check())
             <form action="{{ url('/logout') }}" method="POST">
                 {{ csrf_field() }}
@@ -31,7 +31,7 @@
         @else
             <button class="btn-cs" disabled>Cerrar sesión</button>
         @endif
-    </div>
+    </div>-->
   </header>
   
     <div id="results-dropdown" class="results-dropdown" style="display: none;">
@@ -580,7 +580,7 @@ text-align: center;
     position: absolute;  
     margin-top:-380px; 
     margin-left:382px;
-    width: 71.7%; 
+    width: 77%; 
     max-height: 340px;
     height: 800px; 
     z-index: 2;
@@ -633,10 +633,10 @@ text-align: center;
     display: flex;              
     justify-content: space-between;  
     flex-wrap: nowrap;         
-    gap: 90px; /* espacio entre las tarjetas */               
+    gap: 100px; /* espacio entre las tarjetas */               
     margin-top: 10px;   
-    margin-left: -220px;  
-    max-width: 100%; /* Evitar que exceda el ancho de la pantalla */    
+    margin-left: -150px;  
+    width:110%;
 }
 
 .card {
