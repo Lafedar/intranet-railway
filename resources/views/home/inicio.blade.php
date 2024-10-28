@@ -138,6 +138,18 @@
                 @endrole
             </div>
         @endrole
+        <div class="btn-cerrar-sesion">
+        @if (Auth::check())
+            <form action="{{ url('/logout') }}" method="POST">
+                {{ csrf_field() }}
+                <button type="submit" class="btn-cs" style="display:inline;cursor:pointer">
+                    Cerrar sesión
+                </button>
+            </form>
+        @else
+            <button class="btn-cs" disabled>Cerrar sesión</button>
+        @endif
+    </div>
     </nav>
 </section>
 
@@ -231,10 +243,7 @@
 </section>
   
     <footer >
-        <p>​Laboratorios Lafedar S.A.<br>
-              Paraná, Entre Rios.<br>
-              ​0343- 4363000 <br>
-              ​​www.lafedar.com</p>
+        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A    </p>
     </footer> 
 </body>
 </html>
@@ -338,7 +347,8 @@
 }
 
 .btn-cs{
-    height:60px;
+    height:45px;
+    width:120px;
     margin-top:1px;
     border-radius:10px;
     background: linear-gradient(90deg, #FF5733 0.66%, #C70039 109.41%);
@@ -367,13 +377,8 @@ header {
     background-color: white; 
 }
 .btn-cerrar-sesion {
-    font-size: 16px; 
-    height: 65px; 
-    width: 90px; 
-    border-radius: 5px; 
-    border: none; 
-    cursor: pointer; 
-    margin-left:1515px;
+    margin-left: 120px;
+    
 }
 
 /* CONTAINER LOGIN Y NOVEDADES */
@@ -481,6 +486,10 @@ nav {
     object-fit: cover;  
      
 }
+
+.authenticated .novedades{
+    margin-top: -45px;
+}
 .authenticated .card {
     width: 300px; 
     height: 345px; 
@@ -508,7 +517,7 @@ nav {
     text-align: center;
     height: 330px;
     width: 300px;
-    margin-top:37px;
+    margin-top:65px;
 }
 
 .login h2 {
@@ -611,7 +620,7 @@ text-align: center;
     flex-direction: column; 
     align-items: center;      
     justify-content: flex-start;
-    margin-top: -92px; 
+    margin-top: -65px; 
     width: 100%; 
     max-width: 800px; 
 }
@@ -1054,6 +1063,12 @@ footer p {
 
     .footer{
         position: relative;
+        font-family: Inter;
+font-size: 16px;
+font-weight: 500;
+line-height: 19.36px;
+text-align: left;
+
     }
 }
 
