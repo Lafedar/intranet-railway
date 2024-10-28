@@ -75,4 +75,14 @@ class EnrolamientoCursoService
         } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $courseId . ' y la instancia id: ' . $instanceId );
         return $courseEnrollment;
     }
+
+    public function getCoursesByUserId(int $userId): Collection
+    {
+        $enrolamientos = EnrolamientoCurso::where('id_persona', $userId)->get();
+    
+        Log::info('Enrolamientos: ', $enrolamientos->toArray());
+    
+        return $enrolamientos->load('curso')->pluck('id_curso');
+    }
+
 }

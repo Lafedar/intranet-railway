@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('selectAreasTurnos', 'EmpleadoController@selectAreasTurnos');
     Route::get('selectAreaEmpleados', 'EmpleadoController@selectAreaEmpleados');
     Route::get('selectTurnosEmpleados', 'EmpleadoController@selectTurnosEmpleados');
+
+    Route::get('/empleado/curso', [EmpleadoController::class, 'curso'])->name('empleado.curso');
   });
    //****************PUESTOS**********************
 Route::group(['middleware' => ['auth']], function () {
@@ -522,6 +524,14 @@ Route::group(['middleware' => ['auth']], function ()
   {
     
     Route::get('/cursos', [CursoController::class, 'listAll'])->name('cursos.index');
+    Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store');
+    Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy');
+    Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit');
+    Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update');
+    Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
+    
+
+    Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
     Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription');
     //Route::get('/capacitacion','HomeController@cursos');
@@ -529,3 +539,7 @@ Route::group(['middleware' => ['auth']], function ()
     
    
   });
+
+ 
+
+

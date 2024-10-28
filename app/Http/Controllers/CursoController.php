@@ -58,13 +58,27 @@ class CursoController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+
+
+     public function store(Request $request)
     {
-        $data = $request->all();
-        $this->cursoService->create($data);
+        
+        $validatedData = $request->validate([
+            'titulo' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:65530',
+            'obligatorio' => 'required|boolean',
+            'codigo' => 'nullable|string',
+            'tipo' => 'required|string',
+        ]);
+
+        // Llama al servicio para crear el curso
+        $curso = $this->cursoService->create($validatedData); 
 
         return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
     }
+
+     
+    
 
     /**
      * Mostrar el formulario para editar un curso existente.
@@ -75,14 +89,15 @@ class CursoController extends Controller
     public function edit(int $id)
     {
         $curso = $this->cursoService->getById($id);
-
+    
         if (!$curso) {
             return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
         }
-
+    
         return view('cursos.edit', compact('curso'));
     }
-
+    
+   
     /**
      * Actualizar un curso en la base de datos.
      *
@@ -101,7 +116,7 @@ class CursoController extends Controller
         $data = $request->all();
         $this->cursoService->update($curso, $data);
 
-        return redirect()->route('cursos.show', $id)->with('success', 'Curso actualizado exitosamente.');
+        return redirect()->route('cursos.index', $id)->with('success', 'Curso actualizado exitosamente.');
     }
 
     /**
@@ -122,4 +137,6 @@ class CursoController extends Controller
 
         return redirect()->route('cursos.index')->with('success', 'Curso eliminado exitosamente.');
     }
+
+   
 }

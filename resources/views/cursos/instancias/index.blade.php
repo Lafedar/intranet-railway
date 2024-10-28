@@ -1,7 +1,11 @@
 @extends('cursos.layouts.layout')
-
+<div id="modalContainer"></div>
 @section('content')
 <div class="container mt-5">
+<a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-primary">
+    Crear Nueva Instancia
+</a>
+
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
     
     @if ($errors->any())
@@ -25,6 +29,7 @@
                 <th>Lugar</th>
                 <th>Estado</th>
                 <th>Version</th>
+                <th>Acciones</th>
 
             </tr>
         </thead>
@@ -33,7 +38,7 @@
             <tr>
                 <td>{{ $instance->id }}</td>
                 <td>{{ $instance->fecha_inicio->format('d/m/Y') }}</td>
-                <td>{{ $instance->fecha_fin->format('d/m/Y') }}</td>
+                <td>{{ $instance->fecha_fin }}</td>
                 <td>@if ($instance->cupo === 0)
                         <span class="badge bg-danger text-dark">
                             <i class="bi bi-x-circle-fill"></i> completo
@@ -71,6 +76,17 @@
                     @else
                         Inactivo
                     @endif
+                </td>
+                <td></td>
+                <td>
+            
+                        <a href="{{ route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-sm">Editar</a>
+
+                            <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
                 </td>
                                 
             </tr>

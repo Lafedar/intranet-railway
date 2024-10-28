@@ -9,6 +9,8 @@ use Auth;
 use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Curso;
+
 
 class CursoInstanciaController extends Controller
 {
@@ -77,5 +79,31 @@ class CursoInstanciaController extends Controller
             return redirect()->back()->withErrors('Hubo un problema al intentar inscribir al usuario.');
 
         }
+    }
+
+    public function create($cursoId)
+    {
+        $curso = Curso::findOrFail($cursoId); 
+        return view('cursos.instancias.create', compact('curso')); 
+    }
+
+    public function store(Request $request, $cursoId)
+    {
+        
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            
+        ]);
+
+        
+        $data = $request->all();
+        $data['curso_id'] = $cursoId; // Asegúrate de incluir el ID del curso
+
+        
+        $this->instanciaService->create($data);
+
+       
+        return redirect()->route('cursos.instancias.index', $cursoId)
+                         ->with('success', 'Instancia creada exitosamente.');
     }
 }

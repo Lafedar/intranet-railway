@@ -9,7 +9,7 @@ class CursoService
 {
     private function validateData(array $data): void
     {
-        if (empty($data['nombre'])) {
+        if (empty($data['titulo'])) {
             throw new \InvalidArgumentException('El nombre del curso es obligatorio.');
         }
     }
@@ -26,7 +26,7 @@ class CursoService
 
     public function create(array $data): Curso
     {
-        $this->validateData($data);
+        $this->validateData($data); 
         return Curso::create($data);
     }
 

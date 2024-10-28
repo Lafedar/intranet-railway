@@ -10,6 +10,10 @@
   <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+ 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+
 
   <head>
     <meta charset="UTF-8">
@@ -25,11 +29,13 @@
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav ml-auto"> &nbsp   
           
-          
+        
+        <li>
           <form action="{{ url('/logout') }}" method="POST" >
             {{ csrf_field() }}
             <button type="submit"  class="btn btn-danger" style="display:inline;cursor:pointer">Cerrar sesión</button>  
           </form>
+</li>
         </ul>
       </div>
     </nav>
@@ -39,7 +45,10 @@
   
 
   <body>
-    @yield('content')
+  @yield('content')
+  
+
+
   </body>
 
 </html>

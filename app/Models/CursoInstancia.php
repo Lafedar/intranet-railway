@@ -29,7 +29,7 @@ class CursoInstancia extends Model
         'fecha_inicio',
         'fecha_fin',
     ];
-
+   
     public $timestamps = true;
 
     public function curso()
