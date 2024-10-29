@@ -35,7 +35,7 @@ class CursoInstanciaController extends Controller
     {
         try {
             
-            $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId);
+            $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId)->sortByDesc('created_at');
             
             $curso = $this->cursoService->getById($cursoId);
 
@@ -103,10 +103,54 @@ class CursoInstanciaController extends Controller
         $data = $request->all();
         $data['id_curso'] = $cursoId; 
     
-        $this->instanciaService->create($data);
+        $this->cursoInstanciaService->create($data);
     
         return redirect()->route('cursos.instancias.index', $cursoId)
                          ->with('success', 'Instancia creada exitosamente.');
     }
 
+    public function destroy(int $id)
+    {
+        $instancia = $this->cursoInstanciaService->getInstanceById($id);
+
+        if (!$instancia) {
+            return redirect()->route('cursos.instancias.index', ['cursoId' => $instancia->id_curso])
+                            ->withErrors('La instancia no fue encontrada.');
+        }
+        $instancia->enrolamientos()->delete(); //borro todos los enrolamientos de la instancia
+        $cursoId = $instancia->id_curso; //obtengo el ID del curso de la instancia
+
+        $this->cursoInstanciaService->delete($instancia);
+
+        return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
+                        ->with('success', 'Instancia eliminada exitosamente.');
+    }
+
+    public function edit($instanciaId)
+    {
+        
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+        
+        return view('cursos.instancias.edit', compact('instancia'));
+    }
+    
+    public function update(Request $request, $instanciaId)
+    {
+       $request->validate([
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date',
+            'cupo' => 'required|integer',
+            'modalidad' => 'nullable|string|max:255',
+            'capacitador' => 'nullable|string|max:255',
+            'lugar' => 'nullable|string|max:255',
+            'estado' => 'required|string|in:Activo,No Activo',
+            'version' => 'nullable|string|max:255',
+        ]);
+    
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+        $instancia->update($request->all());
+    
+        return redirect()->route('cursos.instancias.index', $instancia->id_curso)
+                         ->with('success', 'Instancia actualizada exitosamente.');
+    }
 }

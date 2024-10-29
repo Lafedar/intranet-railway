@@ -50,7 +50,7 @@
                     @endif
                 </td>
                 <td>{{ $instance->modalidad }}</td>
-                <td>{{ $instance->impartido_por }}</td>
+                <td>{{ $instance->capacitador }}</td>
                 <td>{{ $instance->lugar }}</td>
                 <td>
                     @php
@@ -77,16 +77,16 @@
                         Inactivo
                     @endif
                 </td>
-                <td></td>
+                <td>{{ $instance->version }}</td>
                 <td>
             
-                        <a href="{{ route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{{ route('cursos.instancias.destroy', $instance->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
 
-                            <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
                 </td>
                                 
             </tr>

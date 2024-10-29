@@ -535,6 +535,12 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
     Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription');
+    Route::delete('instancias/{instancia}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy');
+    
+    Route::get('instancias/{instancia}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
+    Route::put('instancias/{instancia}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
+    
+
     //Route::get('/capacitacion','HomeController@cursos');
     //Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('parametros-gen-sistemas.index');
     

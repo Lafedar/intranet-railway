@@ -60,7 +60,25 @@ class CursoInstanciaService
     }
 
     public function create(array $data): CursoInstancia
-{
-    return CursoInstancia::create($data);
-}
+    {
+        try {
+            return CursoInstancia::create($data);
+        } catch (\Exception $e) {
+            \Log::error('Error al crear la instancia: ' . $e->getMessage());
+            throw $e; // Lanza de nuevo la excepción para manejarla en el controlador
+        }
+    }
+
+    public function getInstanceById(int $id): ?CursoInstancia
+    {
+        return CursoInstancia::find($id); 
+    }
+
+    public function delete(CursoInstancia $instancia) :?bool 
+    {
+        return $instancia->delete();
+    }
+
+    
+
 }

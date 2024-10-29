@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Curso;
+use App\Models\CursoInstancia;
 use Illuminate\Database\Eloquent\Collection; 
 
 class CursoService
@@ -12,6 +13,13 @@ class CursoService
         if (empty($data['titulo'])) {
             throw new \InvalidArgumentException('El nombre del curso es obligatorio.');
         }
+        if (empty($data['obligatorio'])) {
+            throw new \InvalidArgumentException('La obligatoriedad del curso es necesaria.');
+        }
+        if (empty($data['tipo'])) {
+            throw new \InvalidArgumentException('El tipo del curso es obligatorio.');
+        }
+       
     }
     
     public function getAll(): Collection
@@ -40,6 +48,6 @@ class CursoService
     {
         return $curso->delete();
     }
-
+    
     
 }

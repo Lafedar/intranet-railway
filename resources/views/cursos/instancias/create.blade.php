@@ -11,11 +11,11 @@
         </div>
         <div class="form-group">
             <label for="fecha_fin">Fecha Fin</label>
-            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required></textarea>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
         </div>
         <div class="form-group">
             <label for="cupo">Cupos</label>
-            <input type="text" class="form-control" id="cupo" name="cupo" required></textarea>
+            <input type="number" class="form-control" id="cupo" name="cupo" required>
         </div>
         <div class="form-group">
             <label for="modalidad">Modalidad</label>
@@ -39,7 +39,8 @@
         </div>
         <div class="form-group">
             <label for="version">Version</label>
-            <input type="text" class="form-control" id="version" name="version">
+            <input type="number" name="version" step="0.01" class="form-control" required>
+
         </div>
         <button type="submit" class="btn btn-primary">Crear Instancia</button>
     </form>
