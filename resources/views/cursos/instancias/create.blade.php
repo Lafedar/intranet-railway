@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Crear Instancia</h1>
-    <form id="cursoForm" action="{{ route('cursos.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="fecha_inicio">Fecha inicio</label>

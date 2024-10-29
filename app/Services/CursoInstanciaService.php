@@ -59,8 +59,8 @@ class CursoInstanciaService
         return $instance->cupo;
     }
 
-    public function create(array $data): Instancia
-    {
-        return Instancia::create($data);
-    }
+    public function create(array $data): CursoInstancia
+{
+    return CursoInstancia::create($data);
+}
 }

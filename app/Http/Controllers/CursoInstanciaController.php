@@ -89,21 +89,24 @@ class CursoInstanciaController extends Controller
 
     public function store(Request $request, $cursoId)
     {
-        
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date',
+            'cupo' => 'required|integer',
+            'modalidad' => 'nullable|string|max:255',
+            'capacitador' => 'nullable|string|max:255',
+            'lugar' => 'nullable|string|max:255',
+            'estado' => 'required|string|in:Activo,No Activo',
+            'version' => 'nullable|string|max:255',
         ]);
-
-        
+    
         $data = $request->all();
-        $data['curso_id'] = $cursoId; // Asegúrate de incluir el ID del curso
-
-        
+        $data['id_curso'] = $cursoId; 
+    
         $this->instanciaService->create($data);
-
-       
+    
         return redirect()->route('cursos.instancias.index', $cursoId)
                          ->with('success', 'Instancia creada exitosamente.');
     }
+
 }
