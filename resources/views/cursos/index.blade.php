@@ -63,7 +63,10 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
+                            <a href="{{ route('cursos.inscritos', $curso->id) }}" class="btn btn-info btn-sm">Ver Inscritos</a>
+
                         </td>
+                        
                     </tr>
                     @endforeach
                 </tbody>

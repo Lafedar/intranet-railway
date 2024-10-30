@@ -25,11 +25,16 @@ class EnrolamientoCurso extends Model
 
     public function persona()
     {
-        return $this->belongsTo(Persona::class, 'id_persona');
+        return $this->belongsTo(Persona::class, 'id_persona', 'id_p');
     }
 
     public function instanciaCurso()
     {
         return $this->belongsTo(CursoInstancia::class, 'id_instancia');
     }
+    public function curso()
+{
+    return $this->belongsTo(Curso::class, 'id_curso', 'id');
+}
+
 }

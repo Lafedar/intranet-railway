@@ -6,16 +6,18 @@ use App\Services\CursoService;
 use App\Services\CursoInstanciaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
+use App\Services\EnrolamientoCursoService;
 class CursoController extends Controller
 {
     private CursoService $cursoService;
     private CursoInstanciaService $cursoInstanciaService;
+    private EnrolamientoCursoService $enrolamientoCursoService;
 
-    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService)
+    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService)
     {
         $this->cursoService = $cursoService;
         $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->enrolamientoCursoService = $enrolamientoCursoService;
     }
 
     /**
@@ -196,6 +198,24 @@ class CursoController extends Controller
             return redirect()->back()->withErrors('Hubo un problema al eliminar el curso.');
         }
     }
+
+
+    public function getInscriptos(int $cursoId){
+        try{
+            $inscritos = $this->enrolamientoCursoService->getPersonsByCourseId($cursoId);
+            $curso = $this->cursoService->getById($cursoId);
+            return view('cursos.inscriptos', compact('inscritos', 'curso'));
+        }
+        catch(\Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener los incriptos del curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener los incriptos del curso.');
+        }
+       
+    }
+   
+ 
+
+    
     }
 
    

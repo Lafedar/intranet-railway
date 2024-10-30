@@ -90,8 +90,9 @@
                   @if($empleado->jefe == 1)
                     <button id="jefeArea" class="btn btn-info btn-sm mr-1" onclick='fnOpenModalJefeArea({{$empleado->id_p}})' title="jefeArea">Areas</button>
                   @endif
-                  <a href="#" class="btn btn-info btn-sm mr-1" data-toggle="modal">Ver cursos
-                  </a>
+                  <a href="{{ route('empleado.cursos', $empleado->id_p) }}" class="btn btn-info btn-sm mr-1">Ver Cursos</a>
+
+
                   <form id="formDelete" action="{{ route('destroy_empleado', $empleado->id_p) }}" method="POST">
                     @csrf
                     @method('DELETE')

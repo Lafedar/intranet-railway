@@ -9,6 +9,10 @@ use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use App\Models\Curso; 
+
+
+
 
 class EnrolamientoCursoService
 {
@@ -76,13 +80,18 @@ class EnrolamientoCursoService
         return $courseEnrollment;
     }
 
-    public function getCoursesByUserId(int $userId): Collection
+    public function getCoursesByUserId(int $userId): Collection  //obtengo los cursos de una persona
     {
-        $enrolamientos = EnrolamientoCurso::where('id_persona', $userId)->get();
-    
-        Log::info('Enrolamientos: ', $enrolamientos->toArray());
-    
-        return $enrolamientos->load('curso')->pluck('id_curso');
+        return EnrolamientoCurso::where('id_persona', $userId)
+            ->with('curso') 
+            ->get(['id_curso', 'evaluacion']); 
+    }
+
+    public function getPersonsByCourseId(int $cursoId): Collection  //obtengo las personas enroladas en un curso
+    {
+        return EnrolamientoCurso::where('id_curso', $cursoId)
+            ->with('persona') 
+            ->get(); 
     }
 
 }

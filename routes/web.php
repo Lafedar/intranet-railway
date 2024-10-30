@@ -530,6 +530,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update');
     Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
     Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store');
+    Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos');
 
 
     Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create');
@@ -546,6 +547,10 @@ Route::group(['middleware' => ['auth']], function ()
     
    
   });
+  use App\Http\Controllers\EmpleadoController;
+
+  Route::get('/empleado/{id}/cursos', [EmpleadoController::class, 'getCursos'])->name('empleado.cursos');
+
 
  
 

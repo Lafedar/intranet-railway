@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CursoService
 {
+   
     private function validateData(array $data): void
     {
         if (empty($data['titulo'])) {

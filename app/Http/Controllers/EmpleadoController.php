@@ -14,8 +14,18 @@ use App\User;
 Use Session;
 use Auth;
 use DB;
+use App\Services\EnrolamientoCursoService;
+use App\Services\CursoInstanciaService;
 
 class EmpleadoController extends Controller{
+    private $enrolamientoCursoService;
+    private $cursoInstanciaService;
+
+    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService)
+    {
+        $this->enrolamientoCursoService = $enrolamientoCursoService;
+        $this->cursoIntanciaService = $cursoInstanciaService;
+    }
     public function index(Request $request){
         /*$empleados = Empleado::Relacion()->get();
 
@@ -189,5 +199,12 @@ class EmpleadoController extends Controller{
     public function obtenerNuevoListadoAreaXJefe($id){
         $idsJAs = Empleado::showAreaXJefeUpdate($id);
         return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
+    }
+
+    public function getCursos(int $userId)
+    {
+        $cursos = $this->enrolamientoCursoService->getCoursesByUserId($userId);
+        
+        return view('empleado.cursos', compact('cursos'));
     }
 }

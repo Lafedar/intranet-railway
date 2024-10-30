@@ -35,4 +35,5 @@ class Persona extends Model
     {
         return $this->hasMany(EnrolamientoCurso::class, 'id_persona');
     }
+
 }
