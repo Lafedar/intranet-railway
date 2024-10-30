@@ -4,8 +4,24 @@
 <script src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 <div id="modalContainer"></div>
 @section('content')
-<div class="container mt-5 table-container">
-<a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm">
+@if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="successMessage">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" id="errorMessage">
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+<div class="container mt-5 table-container" >
+<a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
     Crear Curso
 </a>
 
@@ -42,7 +58,7 @@
 </a>
 
 
-                            <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso?');">
+                            <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
@@ -59,4 +75,21 @@
 
 <div id="footer-lafedar"></div>
 @endsection
+<script>
+    $(document).ready(function() {
+        // Ocultar el mensaje de éxito después de 3 segundos
+        setTimeout(function() {
+            $('#successMessage').fadeOut('slow');
+        }, 3000);
 
+        // Ocultar el mensaje de error después de 3 segundos
+        setTimeout(function() {
+            $('#errorMessage').fadeOut('slow');
+        }, 3000);
+    });
+</script>
+<style>
+#BCC{
+    margin-left: 95px;
+}
+</style>

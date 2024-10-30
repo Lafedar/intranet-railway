@@ -1,6 +1,18 @@
 @extends('cursos.layouts.layout')
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Crear Instancia</h1>
     <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST" enctype="multipart/form-data">
@@ -11,7 +23,7 @@
         </div>
         <div class="form-group">
             <label for="fecha_fin">Fecha Fin</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
         </div>
         <div class="form-group">
             <label for="cupo">Cupos</label>
@@ -39,10 +51,24 @@
         </div>
         <div class="form-group">
             <label for="version">Version</label>
-            <input type="number" name="version" step="0.01" class="form-control" required>
+            <input type="number" name="version" class="form-control" required>
 
         </div>
         <button type="submit" class="btn btn-primary">Crear Instancia</button>
-    </form>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+
 </div>
 @endsection
+<script>
+    $(document).ready(function() {
+        // Ocultar el mensaje de éxito después de 3 segundos
+        setTimeout(function() {
+            $('#successMessage').fadeOut('slow');
+        }, 3000);
+
+        // Ocultar el mensaje de error después de 3 segundos
+        setTimeout(function() {
+            $('#errorMessage').fadeOut('slow');
+        }, 3000);
+    });
+</script>

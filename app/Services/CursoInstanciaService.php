@@ -65,18 +65,31 @@ class CursoInstanciaService
             return CursoInstancia::create($data);
         } catch (\Exception $e) {
             \Log::error('Error al crear la instancia: ' . $e->getMessage());
-            throw $e; // Lanza de nuevo la excepción para manejarla en el controlador
+            throw $e; 
         }
     }
 
     public function getInstanceById(int $id): ?CursoInstancia
     {
-        return CursoInstancia::find($id); 
+        try{
+            return CursoInstancia::find($id); 
+        }catch(\Exception $e){
+            \Log::error('Error al obtener la instancia: ' . $e->getMessage());
+            throw $e; 
+        }
+        
     }
 
     public function delete(CursoInstancia $instancia) :?bool 
     {
-        return $instancia->delete();
+        try{
+            return $instancia->delete();
+        }
+        catch(\Exception $e){
+            \Log::error('Error al eliminar la instancia: ' . $e->getMessage());
+            throw $e; 
+        }
+        
     }
 
     

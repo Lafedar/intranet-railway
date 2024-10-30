@@ -83,74 +83,114 @@ class CursoInstanciaController extends Controller
 
     public function create($cursoId)
     {
-        $curso = Curso::findOrFail($cursoId); 
-        return view('cursos.instancias.create', compact('curso')); 
+        try{
+            $curso = Curso::findOrFail($cursoId); 
+            return view('cursos.instancias.create', compact('curso')); 
+        }
+        catch(\Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al retornar el curso a cursos.instancias.create' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al retornar el curso a cursos.instancias.create.');
+        }
+        
     }
 
     public function store(Request $request, $cursoId)
     {
-        $request->validate([
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date',
-            'cupo' => 'required|integer',
-            'modalidad' => 'nullable|string|max:255',
-            'capacitador' => 'nullable|string|max:255',
-            'lugar' => 'nullable|string|max:255',
-            'estado' => 'required|string|in:Activo,No Activo',
-            'version' => 'nullable|string|max:255',
-        ]);
+        try {
+            $request->validate([
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'nullable|date',  
+                'cupo' => 'required|integer',
+                'modalidad' => 'nullable|string|max:255',
+                'capacitador' => 'nullable|string|max:255',
+                'lugar' => 'nullable|string|max:255',
+                'estado' => 'required|string|in:Activo,No Activo',
+                'version' => 'nullable|string|max:255',
+            ]);
     
-        $data = $request->all();
-        $data['id_curso'] = $cursoId; 
+            // Solo valida si fecha_fin no es nula
+            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
+                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            }
+            $data = $request->all();
+            $data['id_curso'] = $cursoId;
     
-        $this->cursoInstanciaService->create($data);
+            $this->cursoInstanciaService->create($data);
     
-        return redirect()->route('cursos.instancias.index', $cursoId)
-                         ->with('success', 'Instancia creada exitosamente.');
+            return redirect()->route('cursos.instancias.index', $cursoId)
+                             ->with('success', 'Instancia creada exitosamente.');
+        } catch (\Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
+        }
+       
     }
 
     public function destroy(int $id)
     {
-        $instancia = $this->cursoInstanciaService->getInstanceById($id);
+        try{
+            $instancia = $this->cursoInstanciaService->getInstanceById($id);
 
-        if (!$instancia) {
-            return redirect()->route('cursos.instancias.index', ['cursoId' => $instancia->id_curso])
-                            ->withErrors('La instancia no fue encontrada.');
+            if (!$instancia) {
+                return redirect()->route('cursos.instancias.index', ['cursoId' => $instancia->id_curso])
+                                ->withErrors('La instancia no fue encontrada.');
+            }
+            $instancia->enrolamientos()->delete(); //borro todos los enrolamientos de la instancia
+            $cursoId = $instancia->id_curso; //obtengo el ID del curso de la instancia
+    
+            $this->cursoInstanciaService->delete($instancia);
+    
+            return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
+                            ->with('success', 'Instancia eliminada exitosamente.');
+        }catch(\Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la instancia del curso' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
         }
-        $instancia->enrolamientos()->delete(); //borro todos los enrolamientos de la instancia
-        $cursoId = $instancia->id_curso; //obtengo el ID del curso de la instancia
-
-        $this->cursoInstanciaService->delete($instancia);
-
-        return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
-                        ->with('success', 'Instancia eliminada exitosamente.');
+        
     }
 
     public function edit($instanciaId)
     {
+        try{
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
         
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+            return view('cursos.instancias.edit', compact('instancia'));
+        }
+        catch(\Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al retornar la instancia a cursos.instancias.edit.');
+        }
         
-        return view('cursos.instancias.edit', compact('instancia'));
+        
     }
     
     public function update(Request $request, $instanciaId)
     {
-       $request->validate([
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date',
-            'cupo' => 'required|integer',
-            'modalidad' => 'nullable|string|max:255',
-            'capacitador' => 'nullable|string|max:255',
-            'lugar' => 'nullable|string|max:255',
-            'estado' => 'required|string|in:Activo,No Activo',
-            'version' => 'nullable|string|max:255',
-        ]);
+        try {
+            $request->validate([
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'nullable|date',  
+                'cupo' => 'required|integer',
+                'modalidad' => 'nullable|string|max:255',
+                'capacitador' => 'nullable|string|max:255',
+                'lugar' => 'nullable|string|max:255',
+                'estado' => 'required|string|in:Activo,No Activo',
+                'version' => 'nullable|string|max:255',
+            ]);
     
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
-        $instancia->update($request->all());
-    
-        return redirect()->route('cursos.instancias.index', $instancia->id_curso)
-                         ->with('success', 'Instancia actualizada exitosamente.');
+            // Solo valida si fecha_fin no es nula
+            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
+                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            }
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+            $instancia->update($request->all());
+        
+            return redirect()->route('cursos.instancias.index', $instancia->id_curso)
+                             ->with('success', 'Instancia actualizada exitosamente.');
+        }catch(\Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar la instancia' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar la instancia.');
+        }
+       
     }
 }

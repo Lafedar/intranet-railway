@@ -1,6 +1,18 @@
 @extends('cursos.layouts.layout')
 
 @section('content')
+@if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" id="errorMessage">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Editar Instancia</h1>
     <form id="cursoForm" action="{{ route('cursos.instancias.update', $instancia->id) }}" method="POST" enctype="multipart/form-data">
@@ -12,9 +24,10 @@
             <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ $instancia->fecha_inicio->format('Y-m-d') }}" required>
         </div>
         <div class="form-group">
-            <label for="fecha_fin">Fecha Fin</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ $instancia->fecha_fin->format('Y-m-d') }}" required>
-        </div>
+    <label for="fecha_fin">Fecha Fin</label>
+    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ $instancia->fecha_fin ? $instancia->fecha_fin->format('Y-m-d') : '' }}">
+</div>
+
         <div class="form-group">
             <label for="cupo">Cupos</label>
             <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instancia->cupo }}" required>
@@ -44,6 +57,8 @@
             <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}">
         </div>
         <button type="submit" class="btn btn-primary">Editar Instancia</button>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+
     </form>
 </div>
 @endsection

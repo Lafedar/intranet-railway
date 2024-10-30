@@ -1,8 +1,29 @@
 @extends('cursos.layouts.layout')
 <div id="modalContainer"></div>
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 <div class="container mt-5">
-<a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-primary">
+<a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-warning btn-sm">
     Crear Nueva Instancia
 </a>
 
@@ -38,7 +59,8 @@
             <tr>
                 <td>{{ $instance->id }}</td>
                 <td>{{ $instance->fecha_inicio->format('d/m/Y') }}</td>
-                <td>{{ $instance->fecha_fin }}</td>
+                <td>{{ $instance->fecha_fin ? $instance->fecha_fin->format('d/m/Y') : 'N/A' }}</td>
+
                 <td>@if ($instance->cupo === 0)
                         <span class="badge bg-danger text-dark">
                             <i class="bi bi-x-circle-fill"></i> completo
@@ -101,3 +123,15 @@
 
 <div id="footer-lafedar"></div>
 @endsection
+
+<script>
+    $(document).ready(function() {
+        // Ocultar los mensajes de éxito y error después de 3 segundos
+        $('.alert').each(function() {
+            var alert = $(this);
+            setTimeout(function() {
+                alert.fadeOut('slow');
+            }, 3000);
+        });
+    });
+</script>

@@ -23,7 +23,7 @@
         </div>
         <div class="form-group">
             <label for="codigo">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo">
+            <input type="text" class="form-control" id="codigo" name="codigo" required>
         </div>
         <div class="form-group">
             <label>Tipo</label>
@@ -34,6 +34,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Crear Curso</button>
+        <a href="{{ route('cursos.index') }}" class="btn btn-secondary">Volver</a>
     </form>
 </div>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CursoService;
 use App\Services\CursoInstanciaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CursoController extends Controller
 {
@@ -24,8 +25,17 @@ class CursoController extends Controller
      */
     public function listAll()
     {
-        $cursos = $this->cursoService->getAll()->sortByDesc('created_at'); 
-        return view('cursos.index', compact('cursos'));
+        try{
+            $cursos = $this->cursoService->getAll()->sortByDesc('created_at'); 
+            return view('cursos.index', compact('cursos'));
+        }
+        catch(\Exception $e)
+        {
+            // Registrar el error y redirigir con un mensaje de error
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar los cursos: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
+        }
+       
     }
 
     /**
@@ -43,7 +53,9 @@ class CursoController extends Controller
             }
             return view('cursos.show', compact('curso'));
         } catch (\Exception $e) {
-            return redirect()->route('cursos.index')->withErrors($e->getMessage());
+            // Registrar el error y redirigir con un mensaje de error
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al mostrar el curso.');
         }
     }
 
@@ -68,6 +80,7 @@ class CursoController extends Controller
     
     public function store(Request $request)
     {
+        try {
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:100',
             'descripcion' => 'string|max:65530',
@@ -76,11 +89,15 @@ class CursoController extends Controller
             'tipo' => 'required|string',
         ]);
 
-        try {
+        
             $curso = $this->cursoService->create($validatedData);
+           
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('cursos.create')->withErrors('Error al crear el curso: ' . $e->getMessage());
+            // Registrar el error y redirigir con un mensaje de error
+            session()->flash('error', 'Error al crear el curso: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al crear el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
         }
     }
 
@@ -100,7 +117,9 @@ class CursoController extends Controller
             }
             return view('cursos.edit', compact('curso'));
         } catch (\Exception $e) {
-            return redirect()->route('cursos.index')->withErrors($e->getMessage());
+            // Registrar el error y redirigir con un mensaje de error
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener el curso.');
         }
     }
     
@@ -114,25 +133,32 @@ class CursoController extends Controller
     
     public function update(Request $request, int $id)
     {
-        $curso = $this->cursoService->getById($id);
+        try{
 
-        if (!$curso) {
-            return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
-        }
+        
+            $curso = $this->cursoService->getById($id);
 
-        $validatedData = $request->validate([
-            'titulo' => 'required|string|max:100',
-            'descripcion' => 'string|max:65530',
-            'obligatorio' => 'required|boolean',
-            'codigo' => 'nullable|string',
-            'tipo' => 'required|string',
-        ]);
+            if (!$curso) {
+                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
+            }
 
-        try {
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:100',
+                'descripcion' => 'string|max:65530',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+            ]);
+
+        
             $this->cursoService->update($curso, $validatedData);
+            
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('cursos.edit', $id)->withErrors('Error al actualizar el curso: ' . $e->getMessage());
+            // Registrar el error y redirigir con un mensaje de error
+            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al actualizar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
         }
     }
 
@@ -162,10 +188,12 @@ class CursoController extends Controller
 
             // Eliminar el curso
             $this->cursoService->delete($curso);
-
             return redirect()->route('cursos.index')->with('success', 'Curso y sus instancias eliminados exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('cursos.index')->withErrors($e->getMessage());
+            // Registrar el error y redirigir con un mensaje de error
+            session()->flash('error', 'Error al eliminar el curso: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al eliminar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al eliminar el curso.');
         }
     }
     }
