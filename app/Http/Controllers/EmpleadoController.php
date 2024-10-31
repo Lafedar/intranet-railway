@@ -26,10 +26,11 @@ class EmpleadoController extends Controller{
     
         $query = Empleado::Relacion();
     
-        if (!empty($search)) {
+        if (!empty($search) && preg_match('/^[a-zA-Z0-9 ]*$/', $search)) { 
             $query->where(function($q) use ($search) {
                 $q->where('apellido', 'like', "%{$search}%")
-                  ->orWhere('nombre_p', 'like', "%{$search}%");
+                  ->orWhere('nombre_p', 'like', "%{$search}%")
+                  ->orWhere('dni', 'like', "%{$search}%");
             });
         }
     
