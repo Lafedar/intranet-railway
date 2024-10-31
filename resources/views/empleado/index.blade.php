@@ -18,7 +18,7 @@
     <div class="col-md-12 ml-auto">
         <div class="form-group">
             <div class="input-group">
-                <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar">
+                <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}" placeholder="Nombre, apellido o DNI">
                 <div class="input-group-append">
                     <div class="form-check form-check-inline" style="margin-left: 15px">
                         <input class="form-check-input" type="checkbox" id="filtroJefe" name="filtroJefe" {{ request('filtroJefe') ? 'checked' : '' }}>
