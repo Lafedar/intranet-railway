@@ -531,7 +531,8 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
     Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store');
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos');
-
+    Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
+    ->name('cursos.instancias.inscriptos');
 
     Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
@@ -545,7 +546,7 @@ Route::group(['middleware' => ['auth']], function ()
     //Route::get('/capacitacion','HomeController@cursos');
     //Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('parametros-gen-sistemas.index');
     
-   
+    
   });
   use App\Http\Controllers\EmpleadoController;
 

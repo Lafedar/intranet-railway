@@ -94,4 +94,12 @@ class EnrolamientoCursoService
             ->get(); 
     }
 
+    public function getPersonsByInstanceId(int $instanceId, int $cursoId)
+    {
+        
+        return EnrolamientoCurso::with('persona') 
+            ->where('id_curso', $cursoId)
+            ->where('id_instancia', $instanceId)
+            ->get();
+    }
 }

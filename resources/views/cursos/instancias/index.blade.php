@@ -28,16 +28,6 @@
 </a>
 
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
-    
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -57,7 +47,7 @@
         <tbody>
             @foreach($instancesEnrollment as $instance)
             <tr>
-                <td>{{ $instance->id }}</td>
+                <td>{{ $instance->id_instancia }}</td>
                 <td>{{ $instance->fecha_inicio->format('d/m/Y') }}</td>
                 <td>{{ $instance->fecha_fin ? $instance->fecha_fin->format('d/m/Y') : 'N/A' }}</td>
 
@@ -108,12 +98,17 @@
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                 </form>
+                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}">
+    Ver personas inscritas
+</a>
 
                 </td>
                                 
             </tr>
             @endforeach
+          
         </tbody>
+       
     </table>
 
     <!-- Botón para regresar al listado de cursos -->

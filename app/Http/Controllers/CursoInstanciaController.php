@@ -39,6 +39,8 @@ class CursoInstanciaController extends Controller
             
             $curso = $this->cursoService->getById($cursoId);
 
+            
+
             if (!$curso) {
                 throw new \Exception('Curso no encontrado.');
             }
@@ -95,59 +97,80 @@ class CursoInstanciaController extends Controller
     }
 
     public function store(Request $request, $cursoId)
-    {
-        try {
-            $request->validate([
-                'fecha_inicio' => 'required|date',
-                'fecha_fin' => 'nullable|date',  
-                'cupo' => 'required|integer',
-                'modalidad' => 'nullable|string|max:255',
-                'capacitador' => 'nullable|string|max:255',
-                'lugar' => 'nullable|string|max:255',
-                'estado' => 'required|string|in:Activo,No Activo',
-                'version' => 'nullable|string|max:255',
-            ]);
-    
-            // Solo valida si fecha_fin no es nula
-            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
-                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
-            }
-            $data = $request->all();
-            $data['id_curso'] = $cursoId;
-    
-            $this->cursoInstanciaService->create($data);
-    
-            return redirect()->route('cursos.instancias.index', $cursoId)
-                             ->with('success', 'Instancia creada exitosamente.');
-        } catch (\Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
+{
+    try {
+        $request->validate([
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'nullable|date',  
+            'cupo' => 'required|integer',
+            'modalidad' => 'nullable|string|max:255',
+            'capacitador' => 'nullable|string|max:255',
+            'lugar' => 'nullable|string|max:255',
+            'estado' => 'required|string|in:Activo,No Activo',
+            'version' => 'nullable|string|max:255',
+        ]);
+
+        // Solo valida si fecha_fin no es nula
+        if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
+            return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
         }
-       
+
+        $data = $request->all();
+        $data['id_curso'] = $cursoId;
+
+        // Obtener el próximo id_instancia basado en el conteo de instancias
+        $nextInstanciaId = $this->cursoInstanciaService->getCountInstances($cursoId) + 1;
+        $data['id_instancia'] = $nextInstanciaId;
+
+        $this->cursoInstanciaService->create($data);
+
+        return redirect()->route('cursos.instancias.index', $cursoId)
+                         ->with('success', 'Instancia creada exitosamente.');
+    } catch (\Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
     }
+}
 
-    public function destroy(int $id)
-    {
-        try{
-            $instancia = $this->cursoInstanciaService->getInstanceById($id);
 
-            if (!$instancia) {
-                return redirect()->route('cursos.instancias.index', ['cursoId' => $instancia->id_curso])
-                                ->withErrors('La instancia no fue encontrada.');
-            }
-            $instancia->enrolamientos()->delete(); //borro todos los enrolamientos de la instancia
-            $cursoId = $instancia->id_curso; //obtengo el ID del curso de la instancia
     
-            $this->cursoInstanciaService->delete($instancia);
-    
+public function destroy(int $id)
+{
+    try {
+        $instancia = $this->cursoInstanciaService->getInstanceById($id);
+
+        if (!$instancia) {
             return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
-                            ->with('success', 'Instancia eliminada exitosamente.');
-        }catch(\Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la instancia del curso' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
+                             ->withErrors('La instancia no fue encontrada.');
         }
         
+        $cursoId = $instancia->id_curso; // Obtengo el ID del curso de la instancia
+        $id_instancia = $instancia->id_instancia;
+       
+        // Obtener los enrolados de la instancia específica
+        $enrolados = $this->enrolamientoCursoService->getPersonsByInstanceId($id_instancia, $cursoId);
+        
+        // Elimina los enrolados de esa instancia
+        foreach ($enrolados as $enrolado) {
+            $deleted = $this->enrolamientoCursoService->delete($enrolado);
+            if (!$deleted) {
+                Log::error('Error al eliminar el enrolado: ' . $enrolado->id);
+            }
+        }
+
+        // Eliminar la instancia
+        $this->cursoInstanciaService->delete($instancia);
+        
+        return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
+                         ->with('success', 'Instancia eliminada exitosamente.');
+    } catch (\Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
     }
+}
+
+
+
 
     public function edit($instanciaId)
     {
@@ -192,5 +215,13 @@ class CursoInstanciaController extends Controller
             return redirect()->back()->withErrors('Hubo un problema al actualizar la instancia.');
         }
        
+    }
+
+    public function getAsistentesInstancia(int $instanciaId, int $cursoId)
+    {
+        $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+        
+        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos'));
     }
 }

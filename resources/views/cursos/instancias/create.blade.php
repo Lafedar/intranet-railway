@@ -54,6 +54,8 @@
             <input type="number" name="version" class="form-control" required>
 
         </div>
+        
+        
         <button type="submit" class="btn btn-primary">Crear Instancia</button>
         <button type="button" class="btn btn-secondary" onclick="window.history.back();">Volver</button>
 

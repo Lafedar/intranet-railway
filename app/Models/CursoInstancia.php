@@ -21,7 +21,10 @@ class CursoInstancia extends Model
         'capacitador', 
         'lugar', 
         'estado',
-        'version'
+        'version',
+        'id_instancia'
+
+        
     ];
 
     // Indicar a Laravel que los campos son de tipo fecha
@@ -37,8 +40,9 @@ class CursoInstancia extends Model
         return $this->belongsTo(Curso::class, 'id_curso');
     }
 
+    
     public function enrolamientos()
-    {
-        return $this->hasMany(EnrolamientoCurso::class, 'id_instancia');
-    }
+{
+    return $this->hasMany(EnrolamientoCurso::class, 'id_instancia', 'id_instancia');
+}
 }
