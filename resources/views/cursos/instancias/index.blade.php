@@ -77,7 +77,7 @@
                                 Inscripto
                             @else
                                 @if ($instance->cupo > 0)
-                                    <a href="{{ route('cursos.instancias.inscription', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribirse</a>
+                                    <a href="{{ route('cursos.instancias.inscription', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
                                 @endif
                             @endif
                         

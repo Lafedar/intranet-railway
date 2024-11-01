@@ -17,12 +17,14 @@ class CursoInstanciaController extends Controller
     private $cursoInstanciaService;
     private $cursoService;
     private $enrolamientoCursoService;
+    private $personasService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService)
+    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonasService $personasService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->cursoService = $cursoService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
+        $this->personasService = $personasService;
     }
 
     /**
@@ -223,5 +225,11 @@ public function destroy(int $id)
         $curso = $this->cursoService->getById($cursoId);
         
         return view('cursos.instancias.inscriptos', compact('curso', 'inscritos'));
+    }
+
+
+    public function getPersonas(){
+        $personas = $this -> personasService->getAll();
+        return view('cursos.instancias.personas', compact('personas'));
     }
 }

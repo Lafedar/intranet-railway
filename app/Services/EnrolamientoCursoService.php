@@ -108,4 +108,72 @@ class EnrolamientoCursoService
     {
         return EnrolamientoCurso::where('id_instancia', $idInstancia)->delete();
     }
+
+
+    public function getAllNonEnrolledCourses (int $idPerson) :?Collection
+    {
+        $cursos= DB::table ('cursos as c')
+            ->select ('c.id', 'c.codigo', 'c.titulo')
+            ->leftJoinSub (
+                DB::table ('enrolamiento_cursos')
+                ->select ('id_curso')
+                ->distinct()
+                ->where('id_persona', $idPerson),
+                'ec',
+                'c.id',
+                '=',
+                'ec.id_curso'
+            ) 
+            ->whereNull ('ec.id_curso')
+            ->get();
+        
+        $result= $cursos->map (function ($curso) {
+            return [
+                'id_course'=>$curso->id,
+                'id_code'=>$curso->codigo,
+                'title'=>$curso->titulo,
+                'state'=>'No realizado' 
+            ];
+        });
+        return $result;
+    }
+    
+    public function getAllEnrolledCourses (int $idPerson) :?Collection
+    {
+        $cursos= DB::table ('cursos as c')
+            ->select ('c.id', 'c.codigo', 'c.titulo')
+            ->leftJoinSub (
+                DB::table ('enrolamiento_cursos')
+                ->select ('id_curso')
+                ->distinct()
+                ->whereNotNull('id_persona', $idPerson),
+                'ec',
+                'c.id',
+                '=',
+                'ec.id_curso'
+            ) 
+            ->whereNotNull ('ec.id_curso')
+            ->get();
+        
+        $result= $cursos->map (function ($curso) {
+            return [
+                'id_course'=>$curso->id,
+                'id_code'=>$curso->codigo,
+                'title'=>$curso->titulo,
+                'state'=>'Realizado' 
+            ];
+        });
+        return $result;
+    }
+
+    public function getAllCourses (int $idPerson) :?Collection{
+
+    $enrolled = $this->getAllEnrolledCourses($idPerson);
+    $notEnrolled= $this->getAllNonEnrolledCourses($idPerson);
+    $allCourses = $enrolled->merge($notEnrolled);
+    $result = $allCourses->sortBy('title')->values();
+    return $result;
+    
+    }
+
 }
