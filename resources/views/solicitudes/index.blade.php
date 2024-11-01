@@ -86,14 +86,17 @@
         <label for="fecha" style="display: block; margin-bottom: 5px;"><h6>Fecha:</h6></label>
         <input class="form-control" type="date" id="fecha" name="fecha">
       </div>
+      
       <div style="display: inline-block;">
-    <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
-    <select class="form-control" name="id_encargado" id="id_encargado">
-        <option value="0">{{'Todos'}} </option>
-        @foreach($encargados as $encargado)
-            <option value="{{$encargado->idPersona}}" @if($encargado->idPersona == $id_encargado) selected @endif>{{$encargado->name}} </option>
-        @endforeach
-    </select>
+        <label for="encargado" style="display: block; margin-bottom: 5px;"><h6>Encargado:</h6></label>
+        <select class="form-control" name="id_encargado" id="id_encargado">
+            <option value="0">{{'Todos'}} </option>
+            @foreach($encargados as $encargado)
+                <option value="{{$encargado->idPersona}}" @if($encargado->idPersona == $id_encargado) selected @endif>{{$encargado->name}} </option>
+            @endforeach
+        </select>
+      
+
 </div>
 
       &nbsp
@@ -118,7 +121,6 @@
       <th class="text-center">Estado</th>     
       <th class="text-center">Tipo de falla</th>    
       <th class="text-center">Fecha de emision</th> 
-      <!--<th class="text-center">Fecha de finalizacion</th> -->
       <th class="text-center">Solicitante</th>
       <th class="text-center">Encargado</th> 
       <th class="text-center">Acciones</th>        
@@ -165,77 +167,58 @@
              
             </td>
             <td>
-              <div class="text-center">
-                <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
+  <div class="text-center">
+    <div class="btn-group" style="display: flex; flex-wrap: wrap; justify-content: center;">
 
-                  <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                    <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
-                  </div>
-                  @php 
-                    $estado_solicitud = \App\Solicitud::find($solicitud->id)->id_estado; //obtengo el id del estado de cada solicitud
-                  @endphp
+      @php 
+        $estado_solicitud = \App\Solicitud::find($solicitud->id)->id_estado; // obtengo el id del estado de cada solicitud
+      @endphp
+      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+          <button id="detalle" class="btn btn-info btn-sm" onclick='fnOpenModalShow({{$solicitud->id}})' title="show">Detalles</button>
+        </div>
+      @if($estado_solicitud != 8) <!--verifico que no este cancelada-->
+      
+        @can('actualizar-solicitud')
+          <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
+          </div>
+        @endcan
 
+        @can('asignar-solicitud')
+          <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
+          </div>
+        @endcan
 
-                  <!--Boton Actualizar-->
-                  @can('actualizar-solicitud')
-                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <button id="actualizar" class="btn btn-info btn-sm" onclick='fnOpenModalUpdate({{$solicitud->id}})' title="update">Actualizar</button>
-                    </div>
-                  @endcan
+        @if($estado_solicitud == 5 && $solicitud->id_solicitante == $personaAutenticada->id_p)
+          <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
+          </div>
+          <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+            <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
+          </div>
+        @endif
 
-                  <!--Boton Asignar-->
-                  @can('asignar-solicitud')
-    
-                      <!-- if(!$solicitud->nombre_encargado) -->
-                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button id="asignar" class="btn btn-info btn-sm" onclick='fnOpenModalAssing({{$solicitud->id}})' title="assing">Asignar</button>
-                      </div>
-                    
-                  @endcan
+        @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7) 
+          <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
+            @csrf
+            <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
+              <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail de recordatorio a Mantenimiento">Recordatorio</button>
+            </div>
+          </form>
+        @endif
 
-                  <!--Boton Reclamar-->
-                  {{--@if($solicitud->estado == "Aprob. pendiente" && $solicitud->id_solicitante == $personaAutenticada->id_p)--}}
-                  @if($estado_solicitud == 5 && $solicitud->id_solicitante == $personaAutenticada->id_p)
-                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <a href="{{url('aprobar_solicitud', $solicitud->id)}}" class="btn btn-info btn-sm" title="aprobar" onclick="return confirm ('Está seguro que desea aprobar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="aprobar">Aprobar</a>
-                    </div>
-                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <button id="reclamar" class="btn btn-info btn-sm" onclick='fnOpenModalReclaim({{$solicitud->id}})' title="reclaim">Reclamar</button>
-                    </div>
-                  @endif
-                 
-                  {{--@if($solicitud->estado == "Abierta" && $solicitud->id_solicitante == $personaAutenticada->id_p)
-                  @if($estado_solicitud == 1 && $solicitud->id_solicitante == $personaAutenticada->id_p)
-                    <!--<div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <button class="btn btn-info btn-sm" onclick='fnOpenModalEdit({{$solicitud->id}})' title="edit"  data-tipo="{{$solicitud->tipo_solicitud}}" id="edit-{{$solicitud->id}}">Editar</button>
-                    </div>-->
-                    <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                      <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                    </div>
-                  @endif--}}
-                  
-                  
-                   <!-- Boton Recordatorio-->
-                   @if($estado_solicitud == 1 || $estado_solicitud == 2 || $estado_solicitud == 3 || $estado_solicitud == 6 || $estado_solicitud == 7 || $estado_solicitud == 8) 
-                    <form action="{{ route('enviar.recordatorio', ['id' => $solicitud->id]) }}" method="post" id="recordatorioForm{{$solicitud->id}}"> 
-                      @csrf
-                      <div class="btn-container" style="margin-bottom: 5px; margin-right: 5px;">
-                        <button type="button" class="btn btn-info btn-sm" onclick="confirmarEnvio({{$solicitud->id}})" id="recordatorioBtn{{$solicitud->id}}" data-verificacion="{{ $verificacion ? 'true' : 'false' }}" title="Enviar mail de recordatorio a Mantenimiento">Recordatorio</button>
-                      </div>
-                    </form>
-                  @endif
+        @can('eliminar-solicitud')
+          <div class="btn-container" style="margin-bottom: 5px; ">
+            <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea cancelar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+          </div>
+        @endcan
+      @endif
 
-                    
-                  <!-- Boton Eliminar-->
-                  @can('eliminar-solicitud')
-                    <div class="btn-container" style="margin-bottom: 5px; ">
-                      <a href="{{url('destroy_solicitud', $solicitud->id)}}" class="btn btn-danger btn-sm" title="Borrar" onclick="return confirm('Está seguro que desea eliminar esta solicitud?')" data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
-                    </div>
-                  @endcan
-                  
-                </div>
-              </div>
-            </td>
+    </div>
+  </div>
+</td>
+
           </tr>
         @endforeach
     </tbody>       
