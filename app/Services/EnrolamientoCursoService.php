@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use App\Models\Curso; 
 
-
-
-
 class EnrolamientoCursoService
 {
     private $cursoInstanciaService;
@@ -106,5 +103,9 @@ class EnrolamientoCursoService
         return EnrolamientoCurso::with('persona') 
         ->where('id_curso', $cursoId)
         ->count();
+    }
+    public function deleteByInstanceId(int $idInstancia)
+    {
+        return EnrolamientoCurso::where('id_instancia', $idInstancia)->delete();
     }
 }

@@ -14,9 +14,9 @@ class CursoService
         if (empty($data['titulo'])) {
             throw new \InvalidArgumentException('El nombre del curso es obligatorio.');
         }
-        if (empty($data['obligatorio'])) {
+        /*if (empty($data['obligatorio'])) {
             throw new \InvalidArgumentException('La obligatoriedad del curso es necesaria.');
-        }
+        }*/
         if (empty($data['tipo'])) {
             throw new \InvalidArgumentException('El tipo del curso es obligatorio.');
         }

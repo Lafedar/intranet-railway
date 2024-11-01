@@ -178,6 +178,7 @@ class CursoController extends Controller
      */
     
    
+    
     public function destroy(int $id)
     {
         try {
@@ -185,22 +186,19 @@ class CursoController extends Controller
             if (!$curso) {
                 throw new \Exception('El curso no fue encontrado.');
             }
-            $enrolados = $this->enrolamientoCursoService->getPersonsByCourseId($id);
-        
-            // Elimina los enrolados
-            foreach ($enrolados as $enrolado) {
-                $this->enrolamientoCursoService->delete($enrolado);
-            }
+            
             // Obtener las instancias asociadas al curso
             $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
-            // Eliminar las instancias
+            
+            // Eliminar los enrolamientos de cada instancia
             foreach ($instancias as $instancia) {
+                $this->enrolamientoCursoService->deleteByInstanceId($instancia->id); 
                 $this->cursoInstanciaService->delete($instancia);
             }
 
-            // Eliminar el curso
+            
             $this->cursoService->delete($curso);
-            return redirect()->route('cursos.index')->with('success', 'Curso y sus instancias eliminados exitosamente.');
+            return redirect()->route('cursos.index')->with('success', 'El curso y sus instancias fueron eliminados exitosamente.');
         } catch (\Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             session()->flash('error', 'Error al eliminar el curso: ' . $e->getMessage());
@@ -208,6 +206,7 @@ class CursoController extends Controller
             return redirect()->back()->withErrors('Hubo un problema al eliminar el curso.');
         }
     }
+
 
 
     public function getInscriptos(int $cursoId){

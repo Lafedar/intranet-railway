@@ -18,12 +18,12 @@
         </div>
 
         <div class="form-group">
-            <label>Obligatorio</label>
-            <select name="obligatorio" class="form-control" required>
-                <option value="1" {{ $curso->obligatorio ? 'selected' : '' }}>Sí</option>
-                <option value="0" {{ !$curso->obligatorio ? 'selected' : '' }}>No</option>
-            </select>
-        </div>
+    <label>Obligatorio</label>
+    <select name="obligatorio" class="form-control" required>
+        <option value="1" {{ $curso->obligatorio == 1 ? 'selected' : '' }}>Sí</option>
+        <option value="0" {{ $curso->obligatorio == 0 ? 'selected' : '' }}>No</option>
+    </select>
+</div>
 
         <div class="form-group">
             <label for="codigo">Código</label>
