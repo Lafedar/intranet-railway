@@ -40,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($cursos as $curso)
+                    @foreach($cursosData as $curso)
                     <tr>
                         <td>{{ $curso->titulo }}</td>
                         <td>{{ $curso->descripcion }}</td>
@@ -57,12 +57,13 @@
     Editar
 </a>
 
-
+                            @if($curso->cantInscriptos == 0)
                             <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
+                            @endif
                             <a href="{{ route('cursos.inscritos', $curso->id) }}" class="btn btn-info btn-sm">Ver Inscritos</a>
 
                         </td>

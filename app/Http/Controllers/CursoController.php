@@ -25,20 +25,26 @@ class CursoController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    
     public function listAll()
-    {
-        try{
-            $cursos = $this->cursoService->getAll()->sortByDesc('created_at'); 
-            return view('cursos.index', compact('cursos'));
-        }
-        catch(\Exception $e)
-        {
-            // Registrar el error y redirigir con un mensaje de error
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar los cursos: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
-        }
-       
+{
+    try {
+        
+        $cursos = $this->cursoService->getAll()->sortByDesc('created_at'); 
+
+        $cursosData = $cursos->map(function ($curso) { //añado datos opcionales a cada curso
+            $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
+            return $curso;
+        });
+
+        return view('cursos.index', compact('cursosData'));
+    } catch (\Exception $e) {
+        // Registrar el error y redirigir con un mensaje de error
+        Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar los cursos: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
     }
+}
+
 
     /**
      * Mostrar los detalles de un curso específico.
@@ -217,7 +223,16 @@ class CursoController extends Controller
        
     }
    
- 
+    public function validateDestroy($cursoId)
+{
+    $cantInstancias = $this->cursoInstanciaService->getCountInstances($cursoId);
+    $cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($cursoId);
+
+    // Verifica los valores
+    dd($cantInstancias, $cantInscriptos);
+
+    return view('cursos.index', compact('cantInstancias', 'cantInscriptos'));
+}
 
     
     }

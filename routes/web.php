@@ -531,6 +531,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
     Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store');
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos');
+    Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy');
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
     ->name('cursos.instancias.inscriptos');
 
