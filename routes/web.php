@@ -542,10 +542,15 @@ Route::group(['middleware' => ['auth']], function ()
     
     Route::get('instancias/{instancia}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
     Route::put('instancias/{instancia}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
+
+    Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas');
+    Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])
+    ->name('inscribir.persona');
+    Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos');
+    Route::get('/cursos/{curso_id}/instancias/{instancia_id}/inscripcion', [CursoInstanciaController::class, 'mostrarInscripcion'])->name('cursos.inscripcion');
     
 
-    //Route::get('/capacitacion','HomeController@cursos');
-    //Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('parametros-gen-sistemas.index');
+    Route::get('/inscripcion/{instancia_id}/{curso_id}', [CursoInstanciaController::class, 'mostrarInscripcion'])->name('inscripcion.mostrar');
     
     
   });

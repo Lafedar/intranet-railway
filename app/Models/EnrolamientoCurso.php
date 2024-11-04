@@ -17,7 +17,9 @@ class EnrolamientoCurso extends Model
         'id_instancia', 
         'fecha_enrolamiento', 
         'estado', 
-        'evaluacion'
+        'evaluacion',
+        'id_curso'
+
     ];
 
     //actualiza las columnas created_at updated_at automaticamente

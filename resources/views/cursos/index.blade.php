@@ -54,8 +54,8 @@
                         <td>
             
                         <a href="{{ route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-sm">
-    Editar
-</a>
+                            Editar
+                        </a>
 
                             @if($curso->cantInscriptos == 0)
                             <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">

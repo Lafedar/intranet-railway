@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CursoInstanciaService;
 use App\Services\CursoService;
 use App\Services\EnrolamientoCursoService;
+use App\Services\PersonaService;
 use Auth;
 use App\Models\Persona;
 use Illuminate\Http\Request;
@@ -17,14 +18,14 @@ class CursoInstanciaController extends Controller
     private $cursoInstanciaService;
     private $cursoService;
     private $enrolamientoCursoService;
-    private $personasService;
+    private $personaService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonasService $personasService)
+    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->cursoService = $cursoService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
-        $this->personasService = $personasService;
+        $this->personaService = $personaService;
     }
 
     /**
@@ -58,7 +59,7 @@ class CursoInstanciaController extends Controller
                 $instancia->isEnrolled = $isEnrolled;
                 return $instancia;
             });
-            
+           
             return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability'));
         
         } catch (\Exception $e) {
@@ -145,21 +146,7 @@ public function destroy(int $id)
             return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                              ->withErrors('La instancia no fue encontrada.');
         }
-        
-        $cursoId = $instancia->id_curso; // Obtengo el ID del curso de la instancia
-        $id_instancia = $instancia->id_instancia;
-       
-        // Obtener los enrolados de la instancia específica
-        $enrolados = $this->enrolamientoCursoService->getPersonsByInstanceId($id_instancia, $cursoId);
-        
-        // Elimina los enrolados de esa instancia
-        foreach ($enrolados as $enrolado) {
-            $deleted = $this->enrolamientoCursoService->delete($enrolado);
-            if (!$deleted) {
-                Log::error('Error al eliminar el enrolado: ' . $enrolado->id);
-            }
-        }
-
+    
         // Eliminar la instancia
         $this->cursoInstanciaService->delete($instancia);
         
@@ -222,14 +209,51 @@ public function destroy(int $id)
     public function getAsistentesInstancia(int $instanciaId, int $cursoId)
     {
         $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+        $inscriptosCount = $inscritos->count(); // Conteo de inscritos
         $curso = $this->cursoService->getById($cursoId);
         
         return view('cursos.instancias.inscriptos', compact('curso', 'inscritos'));
     }
 
+    
 
-    public function getPersonas(){
-        $personas = $this -> personasService->getAll();
-        return view('cursos.instancias.personas', compact('personas'));
+    public function getPersonas(int $cursoId, int $instanciaId){  //obtengo todas las personas
+        $curso = $this->cursoService->getById($cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+        $personas = $this -> personaService->getAll();
+        return view('cursos.instancias.personas', compact('personas', 'curso', 'instancia'));
     }
+
+
+
+    public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
+    {
+        $user = $this->personaService->getById($id_persona);
+        $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($user->dni, $instancia_id);
+
+
+        if (!$estadoEnrolado) {
+            $enrolamiento = $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
+            return redirect()->back()->with('success', 'Inscripción exitosa.');
+                                    
+        } else {
+            return redirect()->back()->with('error', 'La persona ya está enrolada en este curso.');
+                                    
+        }
+    }
+
+
+
+
+    
+    
+
+
+   
+   
+   
+
+
+   
+
 }

@@ -50,7 +50,7 @@ class EnrolamientoCursoService
             ->exists();
     }
 
-    public function enroll($userDni, $instanceId): ?EnrolamientoCurso
+    public function enroll($userDni, $instanceId, $numInstancia): ?EnrolamientoCurso
     {
         $courseEnrollment = null;
         $person = Persona::where('dni', $userDni)->first();
@@ -61,21 +61,23 @@ class EnrolamientoCursoService
 
         $courseId = CursoInstancia::where('id', $instanceId)
             ->value('id_curso');
-            
-
+    
+       
         if ($this->cursoInstanciaService->checkInstanceQuota($courseId, $instanceId) > 0) {
             $quota = $this->cursoInstanciaService->decrementQuota($courseId, $instanceId);
             $data = [
                 'id_persona' => $person->id_p,
-                'id_instancia' => $instanceId,
+                'id_instancia' => $numInstancia,
                 'fecha_enrolamiento' => Carbon::now(),
                 'estado' => 'Alta',
-                'evaluacion' => null
+                'evaluacion' => null,
+                'id_curso' => $courseId,
             ];
             $courseEnrollment = EnrolamientoCurso::create($data);
         } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $courseId . ' y la instancia id: ' . $instanceId );
         return $courseEnrollment;
     }
+   
 
     public function getCoursesByUserId(int $userId): Collection  //obtengo los cursos de una persona
     {
@@ -97,6 +99,7 @@ class EnrolamientoCursoService
             ->where('id_curso', $cursoId)
             ->where('id_instancia', $instanceId)
             ->get();
+            
     }
 
     public function getCountPersonas(int $cursoId){
@@ -168,11 +171,11 @@ class EnrolamientoCursoService
 
     public function getAllCourses (int $idPerson) :?Collection{
 
-    $enrolled = $this->getAllEnrolledCourses($idPerson);
-    $notEnrolled= $this->getAllNonEnrolledCourses($idPerson);
-    $allCourses = $enrolled->merge($notEnrolled);
-    $result = $allCourses->sortBy('title')->values();
-    return $result;
+        $enrolled = $this->getAllEnrolledCourses($idPerson);
+        $notEnrolled= $this->getAllNonEnrolledCourses($idPerson);
+        $allCourses = $enrolled->merge($notEnrolled);
+        $result = $allCourses->sortBy('title')->values();
+        return $result;
     
     }
 

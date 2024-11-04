@@ -77,7 +77,7 @@
                                 Inscripto
                             @else
                                 @if ($instance->cupo > 0)
-                                    <a href="{{ route('cursos.instancias.inscription', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
+                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
                                 @endif
                             @endif
                         
@@ -91,16 +91,22 @@
                 </td>
                 <td>{{ $instance->version }}</td>
                 <td>
-            
+                
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                
+                @if($instance->inscriptosCount == 0)
                 <form action="{{ route('cursos.instancias.destroy', $instance->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                 </form>
-                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}">
-    Ver personas inscritas
-</a>
+                @endif
+                
+                
+                
+                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-secondary btn-sm">
+                    Ver personas inscritas
+                </a>
 
                 </td>
                                 

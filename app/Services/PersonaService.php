@@ -25,7 +25,7 @@ class PersonaService
      */
     public function getAll(): Collection
     {
-        return Persona::all();
+        return Persona::orderBy('nombre_p')->get();
     }
 
     /**
@@ -74,4 +74,7 @@ class PersonaService
     {
         return $persona->delete();
     }
+
+
+   
 }
