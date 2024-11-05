@@ -98,7 +98,8 @@ class CursoInstanciaService
         ->count('id_instancia'); 
     }
     
-
+  
+    
     
 
 }

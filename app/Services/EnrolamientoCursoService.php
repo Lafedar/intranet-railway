@@ -109,11 +109,15 @@ class EnrolamientoCursoService
         ->where('id_curso', $cursoId)
         ->count();
     }
-    public function deleteByInstanceId(int $idInstancia)
+
+    public function deleteByInstanceId(int $idCurso, int $idInstancia)
     {
-        return EnrolamientoCurso::where('id_instancia', $idInstancia)->delete();
+        return EnrolamientoCurso::where('id_instancia', $idInstancia)
+                                ->where('id_curso', $idCurso)
+                                ->delete();
     }
 
+    
 
     public function getAllNonEnrolledCourses (int $idPerson) :?Collection
     {
@@ -180,5 +184,5 @@ class EnrolamientoCursoService
         return $result;
     
     }
-
+    
 }

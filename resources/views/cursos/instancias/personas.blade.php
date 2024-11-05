@@ -26,17 +26,21 @@
             </tr>
         </thead>
         <tbody>
-    @foreach($personas as $persona)
+    @foreach($personasConEstado as $persona)
         <tr>
             <td>
-                {{ $persona->nombre_p }} {{ $persona->apellido }} {{ $instancia->id}}
+                {{ $persona->nombre_p }} {{ $persona->apellido }} 
             </td>
             <td style="text-align: center">
-                
+           {{$persona->estadoEnrolado}}
+                @if($persona->estadoEnrolado)
+                    <p>Ya inscripto</p>
+                @else
                     <form action="{{ route('inscribir.persona', ['id_persona' => $persona->id_p, 'instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST" style="display:inline;" class="inscripcion-form" data-persona-id="{{ $persona->id_p }}">
                         @csrf
                         <button type="submit" class="btn btn-primary">Inscribir</button>
                     </form>
+                @endif
                 
             </td>
         </tr>

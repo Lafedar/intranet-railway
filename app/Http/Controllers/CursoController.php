@@ -187,12 +187,12 @@ class CursoController extends Controller
                 throw new \Exception('El curso no fue encontrado.');
             }
             
-            // Obtener las instancias asociadas al curso
+            
             $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
             
             // Eliminar los enrolamientos de cada instancia
             foreach ($instancias as $instancia) {
-                $this->enrolamientoCursoService->deleteByInstanceId($instancia->id); 
+                $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id); 
                 $this->cursoInstanciaService->delete($instancia);
             }
 

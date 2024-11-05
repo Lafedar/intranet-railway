@@ -93,13 +93,14 @@
                 <td>
                 
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                
-                @if($instance->inscriptosCount == 0)
-                <form action="{{ route('cursos.instancias.destroy', $instance->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
+                {{$instance->countInscritos}}
+                @if($instance->countInscritos == 0)
+                <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                     @csrf
-                    @method('DELETE')
+                    @method('DELETE')  
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                 </form>
+
                 @endif
                 
                 

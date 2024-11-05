@@ -11,6 +11,7 @@ use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
+use DB;
 
 
 class CursoInstanciaController extends Controller
@@ -59,7 +60,7 @@ class CursoInstanciaController extends Controller
                 $instancia->isEnrolled = $isEnrolled;
                 return $instancia;
             });
-           
+            
             return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability'));
         
         } catch (\Exception $e) {
@@ -136,24 +137,27 @@ class CursoInstanciaController extends Controller
 }
 
 
-    
-public function destroy(int $id)
+public function destroy(int $cursoId, int $instanciaId)
 {
     try {
-        $instancia = $this->cursoInstanciaService->getInstanceById($id);
+        
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
 
         if (!$instancia) {
+            
             return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                              ->withErrors('La instancia no fue encontrada.');
         }
-    
-        // Eliminar la instancia
+
+        $this->enrolamientoCursoService->deleteByInstanceId($cursoId, $instancia->id_instancia);
+
         $this->cursoInstanciaService->delete($instancia);
         
         return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                          ->with('success', 'Instancia eliminada exitosamente.');
     } catch (\Exception $e) {
-        Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
+        // Registrar el error y redirigir con mensaje de error
+        Log::error('Error en clase: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
     }
 }
@@ -215,13 +219,34 @@ public function destroy(int $id)
         return view('cursos.instancias.inscriptos', compact('curso', 'inscritos'));
     }
 
+    public function getCountAsistentes(int $instanciaId)
+    {  
+        $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+        $countInscritos = $inscritos->count();
+        return view('cursos.instancias.index', compact('countInscritos'));
+    }
+
     
 
-    public function getPersonas(int $cursoId, int $instanciaId){  //obtengo todas las personas
+    public function getPersonas(int $cursoId, int $instanciaId)
+    {
+        
         $curso = $this->cursoService->getById($cursoId);
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
-        $personas = $this -> personaService->getAll();
-        return view('cursos.instancias.personas', compact('personas', 'curso', 'instancia'));
+        
+        $personas = $this->personaService->getAll();
+
+        $personasConEstado = $personas->map(function ($persona) use ($instanciaId) {
+            
+            $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($persona->dni, $instanciaId);
+            
+            
+            $persona->estadoEnrolado = $estadoEnrolado;
+
+            return $persona; 
+        });
+
+        return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia'));
     }
 
 
