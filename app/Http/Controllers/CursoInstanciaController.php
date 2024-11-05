@@ -229,8 +229,7 @@ public function destroy(int $id)
     public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
     {
         $user = $this->personaService->getById($id_persona);
-        $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($user->dni, $instancia_id);
-
+        $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($user->dni, $numInstancia);
 
         if (!$estadoEnrolado) {
             $enrolamiento = $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);

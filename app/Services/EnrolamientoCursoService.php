@@ -41,18 +41,19 @@ class EnrolamientoCursoService
         return $enrolamiento->delete();
     }
 
-    public function isEnrolled($userDni, $instanceId): ?bool
+    public function isEnrolled($userDni, $numInstancia): ?bool
     {
-
+        
         $person = Persona::where('dni', $userDni)->first();
         return EnrolamientoCurso::where('id_persona', $person->id_p)
-            ->where('id_instancia', $instanceId)
+            ->where('id_instancia', $numInstancia)
             ->exists();
     }
 
     public function enroll($userDni, $instanceId, $numInstancia): ?EnrolamientoCurso
     {
         $courseEnrollment = null;
+       
         $person = Persona::where('dni', $userDni)->first();
         if ($this->isEnrolled($person->dni, $instanceId)) {
             Log::error('Error el id: ' . $person->id_p . ' de persona ya existe: ');
@@ -61,23 +62,24 @@ class EnrolamientoCursoService
 
         $courseId = CursoInstancia::where('id', $instanceId)
             ->value('id_curso');
-    
-       
+            
+
         if ($this->cursoInstanciaService->checkInstanceQuota($courseId, $instanceId) > 0) {
             $quota = $this->cursoInstanciaService->decrementQuota($courseId, $instanceId);
             $data = [
                 'id_persona' => $person->id_p,
                 'id_instancia' => $numInstancia,
+                'id_curso' => $courseId,
                 'fecha_enrolamiento' => Carbon::now(),
                 'estado' => 'Alta',
-                'evaluacion' => null,
-                'id_curso' => $courseId,
+                'evaluacion' => null
             ];
             $courseEnrollment = EnrolamientoCurso::create($data);
         } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $courseId . ' y la instancia id: ' . $instanceId );
         return $courseEnrollment;
     }
-   
+
+
 
     public function getCoursesByUserId(int $userId): Collection  //obtengo los cursos de una persona
     {

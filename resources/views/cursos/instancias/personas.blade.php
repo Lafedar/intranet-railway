@@ -29,9 +29,9 @@
     @foreach($personas as $persona)
         <tr>
             <td>
-                {{ $persona->nombre_p }} {{ $persona->apellido }}
+                {{ $persona->nombre_p }} {{ $persona->apellido }} {{ $instancia->id}}
             </td>
-            <td style="text-align: center" class="inscripcion-status-{{ $persona->id_p }}">
+            <td style="text-align: center">
                 
                     <form action="{{ route('inscribir.persona', ['id_persona' => $persona->id_p, 'instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST" style="display:inline;" class="inscripcion-form" data-persona-id="{{ $persona->id_p }}">
                         @csrf
