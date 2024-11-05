@@ -49,7 +49,11 @@ class EnrolamientoCursoService
             ->where('id_instancia', $numInstancia)
             ->exists();
     }
-
+    public function isEnrolled2($id_persona): ?bool
+    {
+        return EnrolamientoCurso::where('id_persona', $id_persona)
+            ->exists();
+    }
     public function enroll($userDni, $instanceId, $numInstancia): ?EnrolamientoCurso
     {
         $courseEnrollment = null;
@@ -93,7 +97,14 @@ class EnrolamientoCursoService
         return EnrolamientoCurso::where('id_curso', $cursoId)
             ->with('persona') 
             ->get(); 
+
     }
+    public function getCountPersonas(int $cursoId){
+        return EnrolamientoCurso::with('persona') 
+        ->where('id_curso', $cursoId)
+        ->count();
+    }
+
 
     public function getPersonsByInstanceId(int $instanceId, int $cursoId)
     {
@@ -103,12 +114,16 @@ class EnrolamientoCursoService
             ->get();
             
     }
-
-    public function getCountPersonas(int $cursoId){
+    public function getCountPersonsByInstanceId(int $instanceId, int $cursoId)
+    {
         return EnrolamientoCurso::with('persona') 
-        ->where('id_curso', $cursoId)
-        ->count();
+            ->where('id_curso', $cursoId)
+            ->where('id_instancia', $instanceId)
+            ->count();
+            
     }
+
+    
 
     public function deleteByInstanceId(int $idCurso, int $idInstancia)
     {

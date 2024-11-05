@@ -19,35 +19,32 @@
     <h2>Número de Instancia: {{ $instancia->id_instancia }}</h2>
 
     <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Nombre y Apellido</th>
-                <th style="text-align: center">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach($personasConEstado as $persona)
+    <thead>
         <tr>
-            <td>
-                {{ $persona->nombre_p }} {{ $persona->apellido }} 
-            </td>
-            <td style="text-align: center">
-           {{$persona->estadoEnrolado}}
-                @if($persona->estadoEnrolado)
-                    <p>Ya inscripto</p>
-                @else
-                    <form action="{{ route('inscribir.persona', ['id_persona' => $persona->id_p, 'instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST" style="display:inline;" class="inscripcion-form" data-persona-id="{{ $persona->id_p }}">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">Inscribir</button>
-                    </form>
-                @endif
-                
-            </td>
+            <th>Nombre y Apellido</th>
+            <th style="text-align: center">Acciones</th>
         </tr>
-    @endforeach
-</tbody>
-
-    </table>
+    </thead>
+    <tbody>
+    @foreach($personasConEstado as $persona)
+            <tr>
+                <td>{{ $persona->nombre_p }} {{ $persona->apellido }}</td>
+                <td style="text-align: center">
+                    @if($persona->estadoEnrolado)
+                        
+                        <p>Ya inscripto</p>
+                    @else
+                        
+                        <form action="{{ route('inscribir.persona', ['id_persona' => $persona->id_p, 'instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST" style="display:inline;" class="inscripcion-form" data-persona-id="{{ $persona->id_p }}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">Inscribir</button>
+                        </form>
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

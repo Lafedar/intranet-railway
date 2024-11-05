@@ -228,27 +228,30 @@ public function destroy(int $cursoId, int $instanciaId)
 
     
 
+   
     public function getPersonas(int $cursoId, int $instanciaId)
     {
         
-        $curso = $this->cursoService->getById($cursoId);
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
-        
+        $curso = $this->cursoService->getById($cursoId);
+
         $personas = $this->personaService->getAll();
 
-        $personasConEstado = $personas->map(function ($persona) use ($instanciaId) {
-            
-            $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($persona->dni, $instanciaId);
-            
-            
-            $persona->estadoEnrolado = $estadoEnrolado;
+        $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
 
-            return $persona; 
+        $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
+
+        // Añadir el estado de enrolamiento a cada persona
+        $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
+            // Verificar si la persona está enrolada
+            $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds); // true si está enrolado, false si no
+            
+            return $persona;
         });
 
+        
         return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia'));
     }
-
 
 
     public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
@@ -265,7 +268,7 @@ public function destroy(int $cursoId, int $instanciaId)
                                     
         }
     }
-
+    
 
 
 

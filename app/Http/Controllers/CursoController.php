@@ -222,16 +222,7 @@ class CursoController extends Controller
        
     }
    
-    public function validateDestroy($cursoId)
-{
-    $cantInstancias = $this->cursoInstanciaService->getCountInstances($cursoId);
-    $cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($cursoId);
 
-    // Verifica los valores
-    dd($cantInstancias, $cantInscriptos);
-
-    return view('cursos.index', compact('cantInstancias', 'cantInscriptos'));
-}
 
     
     }
