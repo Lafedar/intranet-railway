@@ -25,7 +25,9 @@ class PersonaService
      */
     public function getAll(): Collection
     {
-        return Persona::orderBy('nombre_p')->get();
+        return Persona::with('area')  // Carga la relación 'area' de forma eficiente
+        ->orderBy('nombre_p')
+        ->get();
     }
 
     /**

@@ -254,7 +254,7 @@ public function destroy(int $cursoId, int $instanciaId)
     }
 
 
-    public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
+    /*public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
     {
         $user = $this->personaService->getById($id_persona);
         $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($user->dni, $numInstancia);
@@ -267,10 +267,30 @@ public function destroy(int $cursoId, int $instanciaId)
             return redirect()->back()->with('error', 'La persona ya está enrolada en este curso.');
                                     
         }
-    }
+    }*/
     
 
+    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $numInstancia)
+{
+    // Obtener el array de personas seleccionadas
+    $personasSeleccionadas = $request->input('personas', []);
+    
+    // Validar si se seleccionaron personas
+    if (empty($personasSeleccionadas)) {
+        return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
+    }
 
+    // Recorrer todas las personas seleccionadas y hacer la inscripción
+    foreach ($personasSeleccionadas as $id_persona => $inscribir) {
+        $user = $this->personaService->getById($id_persona);
+        
+        // Inscripción del usuario
+        $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
+    }
+
+    // Redirigir con el mensaje de éxito
+    return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
+}
 
     
     

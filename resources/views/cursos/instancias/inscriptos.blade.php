@@ -12,6 +12,7 @@
             <thead>
                 <tr>
                     <th>Nombre y Apellido</th>
+                    <th>Area</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,6 +25,7 @@
                 Persona no encontrada
             @endif
         </td>
+        <td>{{$enrolamiento->persona->area}}</td>
     </tr>
     @endforeach
 </tbody>

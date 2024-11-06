@@ -33,10 +33,26 @@ class CursoService
         return Curso::find($id);
     }
 
-    public function create(array $data): Curso
+    /*public function create(array $data): Curso
     {
         $this->validateData($data); 
         return Curso::create($data);
+    }*/
+    public function create(array $data)
+    {
+        // Crear el curso
+        $curso = Curso::create([
+            'titulo' => $data['titulo'],
+            'descripcion' => $data['descripcion'],
+            'obligatorio' => $data['obligatorio'],
+            'codigo' => $data['codigo'],
+            'tipo' => $data['tipo'],
+        ]);
+    
+       
+    
+        // Devolver el objeto curso creado
+        return $curso;
     }
 
     public function update(Curso $curso, array $data): bool

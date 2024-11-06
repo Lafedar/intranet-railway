@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Area;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,10 @@ class Persona extends Model
     public function enrolamientos()
     {
         return $this->hasMany(EnrolamientoCurso::class, 'id_persona');
+    }
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area', 'id_a');  // Relación entre persona y área
     }
 
 }

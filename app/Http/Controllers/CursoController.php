@@ -7,6 +7,8 @@ use App\Services\CursoInstanciaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
+use App\Area;
+use App\Models\Curso;
 class CursoController extends Controller
 {
     private CursoService $cursoService;
@@ -26,24 +28,29 @@ class CursoController extends Controller
      * @return \Illuminate\View\View
      */
     
-    public function listAll()
+    
+public function listAll()
 {
     try {
+       
+        $cursosData = $this->cursoService->getAll()->load('areas')->sortByDesc('created_at');
         
-        $cursos = $this->cursoService->getAll()->sortByDesc('created_at'); 
-
-        $cursosData = $cursos->map(function ($curso) { //añado datos opcionales a cada curso
+        $cursosData = $cursosData->map(function ($curso) {
             $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
             return $curso;
         });
 
+        
         return view('cursos.index', compact('cursosData'));
     } catch (\Exception $e) {
         // Registrar el error y redirigir con un mensaje de error
-        Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar los cursos: ' . $e->getMessage());
+        Log::error('Error en el controlador al mostrar los cursos: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
     }
 }
+
+
+
 
 
     /**
@@ -74,7 +81,9 @@ class CursoController extends Controller
      */
     public function create()
     {
-        return view('cursos.create');
+        $areas = Area::all();  // Recupera todas las áreas
+
+        return view('cursos.create', compact('areas'));
     }
 
     /**
@@ -86,28 +95,34 @@ class CursoController extends Controller
 
 
     
+    
     public function store(Request $request)
-    {
-        try {
+{
+    try {
+        // Validación de los datos del formulario
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:100',
-            'descripcion' => 'string|max:65530',
+            'descripcion' => 'nullable|string|max:65530',
             'obligatorio' => 'required|boolean',
             'codigo' => 'nullable|string',
             'tipo' => 'required|string',
+            'area' => 'required|array',  
         ]);
 
+    
+        $curso = $this->cursoService->create($validatedData);
+        $curso->areas()->attach($validatedData['area']);  // Usar attach para asociar las áreas
+
         
-            $curso = $this->cursoService->create($validatedData);
-           
-            return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
-        } catch (\Exception $e) {
-            // Registrar el error y redirigir con un mensaje de error
-            session()->flash('error', 'Error al crear el curso: ' . $e->getMessage());
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al crear el curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
-        }
+        return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+    } catch (\Exception $e) {
+        // Registrar el error y redirigir con un mensaje de error
+        Log::error('Error al crear el curso: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
     }
+}
+
+
 
      
     /**

@@ -38,7 +38,7 @@
                 <th>Modalidad</th>
                 <th>Capacitador</th>
                 <th>Lugar</th>
-                <th>Estado</th>
+                
                 <th>Version</th>
                 <th>Acciones</th>
 
@@ -64,8 +64,10 @@
                 <td>{{ $instance->modalidad }}</td>
                 <td>{{ $instance->capacitador }}</td>
                 <td>{{ $instance->lugar }}</td>
+                
+                <td>{{ $instance->version }}</td>
                 <td>
-                    @php
+                @php
                         // Verificar la disponibilidad de la instancia
                         $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
                     @endphp
@@ -81,17 +83,11 @@
                                 @endif
                             @endif
                         
-                        @else
-                            <!-- Mostrar como Inactivo si no está habilitado -->
-                            Inactivo
+                      
                         @endif
                     @else
                         Inactivo
                     @endif
-                </td>
-                <td>{{ $instance->version }}</td>
-                <td>
-                
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
                 <!-- Mostrar el botón de eliminar solo si no hay inscriptos -->
                 @if ($instance->cantInscriptos == 0)

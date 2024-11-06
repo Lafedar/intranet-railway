@@ -34,6 +34,7 @@
                         <th>Título</th>
                         <th>Descripción</th>
                         <th>Obligatorio</th>
+                        <th>Area</th>
                         <th>Fecha de Creación</th>
                         <th>Instancias</th>
                         <th>Acciones</th>
@@ -45,6 +46,12 @@
                         <td>{{ $curso->titulo }}</td>
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
+                        <td>
+                           
+                        @foreach($curso->areas as $area)
+                <span>{{$area->nombre_a }} </span><br>
+            @endforeach
+                        </td>
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         <td>                            
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-primary btn-sm">
@@ -64,7 +71,7 @@
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                             @endif
-                            <a href="{{ route('cursos.inscritos', $curso->id) }}" class="btn btn-info btn-sm">Ver Inscritos</a>
+                            <!--<a href="{{ route('cursos.inscritos', $curso->id) }}" class="btn btn-info btn-sm">Ver Inscritos</a>-->
 
                         </td>
                         
