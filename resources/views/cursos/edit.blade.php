@@ -1,9 +1,14 @@
 @extends('cursos.layouts.layout')
 
 @section('content')
+<!-- Agregar el CSS de Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<!-- Agregar el JavaScript de Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Editar Curso</h1>
-    <form action="{{ route('cursos.update', $curso->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('cursos.update', $curso->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -24,6 +29,17 @@
         <option value="0" {{ $curso->obligatorio == 0 ? 'selected' : '' }}>No</option>
     </select>
 </div>
+<div class="form-group">
+        <label for="area">Áreas</label>
+        <select name="area[]" class="form-control select2" multiple="multiple" required>
+            @foreach($areas as $area)
+                <option value="{{ $area->id_a }}" 
+                    @if($curso->areas->contains('id_a', $area->id_a)) selected @endif>
+                    {{ $area->nombre_a }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 
         <div class="form-group">
             <label for="codigo">Código</label>
@@ -44,4 +60,9 @@
 
     </form>
 </div>
+<script>
+    $(document).ready(function() {
+    $('.select2').select2();
+});
+</script>
 @endsection

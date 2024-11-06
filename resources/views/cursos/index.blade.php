@@ -49,8 +49,8 @@
                         <td>
                            
                         @foreach($curso->areas as $area)
-                <span>{{$area->nombre_a }} </span><br>
-            @endforeach
+    <span>{{ $area->nombre_a }}</span><br>
+@endforeach
                         </td>
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         <td>                            

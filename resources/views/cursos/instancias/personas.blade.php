@@ -33,7 +33,8 @@
             @foreach($personasConEstado as $persona)
                 <tr>
                     <td>{{ $persona->nombre_p }} {{ $persona->apellido }}</td>
-                    <td>{{ $persona->area }}</td>
+                    
+                    <td>{{ $persona->area}}</td>
                     <td style="text-align: center">
                         @if($persona->estadoEnrolado)
                             <p>Ya inscripto</p>

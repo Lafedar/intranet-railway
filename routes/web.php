@@ -552,7 +552,8 @@ Route::group(['middleware' => ['auth']], function ()
     
 
     Route::get('/inscripcion/{instancia_id}/{curso_id}', [CursoInstanciaController::class, 'mostrarInscripcion'])->name('inscripcion.mostrar');
-    Route::get('/inscripcion/{instancia_id}', [CursoInstanciaController::class, 'getCountAsistentes'])->name('inscripcion.contar');
+    Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count');
+
     Route::get('/inscripcion/{instancia_id}/curso/{curso_id}', [CursoInstanciaController::class, 'validateDestroy'])->name('inscripcion.validateDestroy');
     
     Route::post('/inscripcion/varias-personas/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas');

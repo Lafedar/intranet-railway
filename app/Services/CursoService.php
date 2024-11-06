@@ -30,7 +30,8 @@ class CursoService
 
     public function getById($id): ?Curso
     {
-        return Curso::find($id);
+        return Curso::with('areas') 
+                ->find($id);  
     }
 
     /*public function create(array $data): Curso

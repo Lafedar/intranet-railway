@@ -35,6 +35,7 @@
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th>Cupo</th>
+                <th>Cupos Restantes</th>
                 <th>Modalidad</th>
                 <th>Capacitador</th>
                 <th>Lugar</th>
@@ -50,8 +51,21 @@
                 <td>{{ $instance->id_instancia }}</td>
                 <td>{{ $instance->fecha_inicio->format('d/m/Y') }}</td>
                 <td>{{ $instance->fecha_fin ? $instance->fecha_fin->format('d/m/Y') : 'N/A' }}</td>
+                <td>
+                
+    @if($instance->cupo == null)
+       {{$instance->cantInscriptos}}
+    @else
+        {{ $instance->cupo }}
+    @endif
+</td>
+                <td>
+                    @if ($instance->cupo == null)
+                        <span class="badge bg-danger text-dark">
+                            <i class="bi bi-x-circle-fill"></i> completo
+                        </span>
 
-                <td>@if ($instance->cupo === 0)
+                    @elseif ($instance->cupo === 0)
                         <span class="badge bg-danger text-dark">
                             <i class="bi bi-x-circle-fill"></i> completo
                         </span>
@@ -86,7 +100,7 @@
                       
                         @endif
                     @else
-                        Inactivo
+                     
                     @endif
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
                 <!-- Mostrar el botón de eliminar solo si no hay inscriptos -->

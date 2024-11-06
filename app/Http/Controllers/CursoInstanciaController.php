@@ -214,16 +214,21 @@ public function destroy(int $cursoId, int $instanciaId)
     {
         $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
         $inscriptosCount = $inscritos->count(); // Conteo de inscritos
+       
         $curso = $this->cursoService->getById($cursoId);
         
-        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos'));
+        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount'));
     }
 
-    public function getCountAsistentes(int $instanciaId)
+    public function getCountAsistentes(int $instanciaId, int $cursoId)
     {  
-        $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-        $countInscritos = $inscritos->count();
-        return view('cursos.instancias.index', compact('countInscritos'));
+        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+        $countInscriptos = $inscritos->count();
+        $instancia->cantInscriptos = $countInscriptos;
+
+        
+        return view('cursos.instancias.index', compact('countInscriptos'));
     }
 
     
@@ -236,7 +241,6 @@ public function destroy(int $cursoId, int $instanciaId)
         $curso = $this->cursoService->getById($cursoId);
 
         $personas = $this->personaService->getAll();
-
         $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
 
         $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();

@@ -135,10 +135,11 @@ public function listAll()
     {
         try {
             $curso = $this->cursoService->getById($id);
+            $areas = Area::all();
             if (!$curso) {
                 throw new \Exception('El curso no fue encontrado.');
             }
-            return view('cursos.edit', compact('curso'));
+            return view('cursos.edit', compact('curso', 'areas'));
         } catch (\Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener el curso: ' . $e->getMessage());
@@ -154,7 +155,7 @@ public function listAll()
      * @return \Illuminate\Http\RedirectResponse
      */
     
-    public function update(Request $request, int $id)
+   /* public function update(Request $request, int $id)
     {
         try{
 
@@ -171,6 +172,7 @@ public function listAll()
                 'obligatorio' => 'required|boolean',
                 'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
+                
             ]);
 
         
@@ -183,7 +185,47 @@ public function listAll()
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al actualizar el curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
         }
+    }*/
+    public function update(Request $request, int $id)
+    {
+        try {
+            // Obtener el curso a editar
+            $curso = $this->cursoService->getById($id);
+    
+            if (!$curso) {
+                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
+            }
+    
+            // Validar los datos del formulario
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:100',
+                'descripcion' => 'nullable|string|max:65530',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+                'area' => 'nullable|array',  // Asegúrate de que el campo sea un array y sea opcional
+            ]);
+    
+            // Actualizar el curso
+            $curso->update($validatedData);
+    
+            // Si 'area' está presente en los datos validados, sincronizar las relaciones
+            if (isset($validatedData['area'])) {
+                $curso->areas()->sync($validatedData['area']); // Sincroniza las áreas seleccionadas
+            }
+    
+            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
+    
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error al actualizar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
+        }
     }
+    
+    
+
+    
 
     /**
      * Eliminar un curso de la base de datos.
