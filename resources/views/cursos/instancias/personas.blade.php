@@ -14,10 +14,10 @@
         </div>
     @endif
 
-    <h1>Inscripción para el curso: {{ $curso->id }}</h1>
+    <h1>Inscripción para el curso: {{ $curso->titulo }}</h1>
     <br>
     <h2>Número de Instancia: {{ $instancia->id_instancia }}</h2>
-    <h5>Cupo disponible: <span id="cupoDisponible">{{ $instancia->cupo }}</span></h5> 
+    <h5>Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5> 
     
     <div class="form-group">
         
@@ -28,6 +28,8 @@
             @csrf
             <table class="table table-bordered table-striped">
                 <thead>
+                
+                <a href="{{ url()->previous() }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
                 <button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Inscribir seleccionados</button>
                     <tr>
                         <th>Legajo</th>
@@ -67,7 +69,7 @@
         // Función para actualizar el cupo disponible
         function actualizarCupo() {
             var totalSeleccionados = $("input[name^='personas']:checked").length;
-            var cupoMaximo = {{ $instancia->cupo }};  // El valor del cupo original
+            var cupoMaximo = {{ $restantes}};  // El valor del cupo original
             var cupoDisponible = cupoMaximo - totalSeleccionados;
             $("#cupoDisponible").text(cupoDisponible);
 

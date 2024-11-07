@@ -35,40 +35,51 @@ class CursoInstanciaController extends Controller
      * @param int $cursoId
      * @return \Illuminate\View\View
      */
+    
     public function index($cursoId)
     {
         try {
             
             $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId)->sortByDesc('created_at');
-            
             $curso = $this->cursoService->getById($cursoId);
-
-            
 
             if (!$curso) {
                 throw new \Exception('Curso no encontrado.');
             }
 
-            //verificar la disponiblidad de las instancias de los cursos
+           
             $availability = $this->cursoInstanciaService->checkAvailability($instancias);
 
             $userDni = Auth::user()->dni;
 
-            //obtener las instancias en la que el usuario esta inscripto
-            $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni) {                  
+           
+            $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni) {
                 $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id);
                 $instancia->isEnrolled = $isEnrolled;
                 return $instancia;
             });
+
+           
+            $instanciasConRestantes = $instancias->map(function ($instancia) use ($curso) {
+                
+                $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id);
+                $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
+                $restantes = $cupo - $cantInscriptos;
             
+                $instancia->restantes = $restantes;
+                return $instancia;
+            });
+
             return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability'));
-        
+
         } catch (\Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener instancias del curso: ' . $e->getMessage());
+            Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener las instancias del curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las instancias del curso.');
         }
     }
+
+
 
 
     public function inscription($courseId, $instanceId)
@@ -144,13 +155,11 @@ public function destroy(int $cursoId, int $instanciaId)
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
 
         if (!$instancia) {
-            
             return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                              ->withErrors('La instancia no fue encontrada.');
         }
 
-        $this->enrolamientoCursoService->deleteByInstanceId($cursoId, $instancia->id_instancia);
-
+        
         $this->cursoInstanciaService->delete($instancia);
         
         return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
@@ -246,21 +255,22 @@ public function destroy(int $cursoId, int $instanciaId)
         $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
         $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
 
-        // Añadir el estado de enrolamiento a cada persona
         $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
             $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds);
             return $persona;
         });
 
+        $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id);
+        $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
+        $restantes = $cupo - $cantInscriptos;
         
-        // Aplicar el filtro si existe
         if ($filtro = request('filtro')) {
             $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
                 return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
             });
         }
 
-        return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia'));
+        return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia','restantes'));
     }
 
 
@@ -287,7 +297,7 @@ public function destroy(int $cursoId, int $instanciaId)
     
 
 
-   
+  
    
    
 

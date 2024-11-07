@@ -55,18 +55,19 @@
                     {{ $instance->cupo }}
                 </td>
                 <td>
-                    @if ($instance->cupo == null)
+                    
+                    @if ($instance->restantes == null)
                         <span class="badge bg-danger text-dark">
                             <i class="bi bi-x-circle-fill"></i> completo
                         </span>
 
-                    @elseif ($instance->cupo === 0)
+                    @elseif ($instance->restantes === 0)
                         <span class="badge bg-danger text-dark">
-                            <i class="bi bi-x-circle-fill"></i> completo
+                            <i class="bi bi-x-circle-fill"></i> completo 
                         </span>
                     @else
                         <span class="badge bg-success">
-                            <i class="bi bi-check-circle-fill"></i> {{ $instance->cupo }} disponibles
+                            <i class="bi bi-check-circle-fill"></i> {{ $instance->restantes }} disponibles
                         </span>
                     @endif
                 </td>
@@ -88,7 +89,7 @@
                             @if ($instance->isEnrolled)
                                 Inscripto
                             @else
-                                @if ($instance->cupo > 0)
+                                @if ($instance->restantes > 0)
                                     <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
                                 @endif
                             @endif
@@ -100,15 +101,16 @@
                     @endif
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
                 
-                @if ($instance->cantInscriptos == 0)
-                    
+                
+                @if ($instance->restantes == $instance->cupo)
                     <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                         @csrf
                         @method('DELETE')  
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                     </form>
                 @endif
-
+               
+                
                 
                 
                 

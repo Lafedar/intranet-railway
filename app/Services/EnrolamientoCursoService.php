@@ -68,8 +68,8 @@ class EnrolamientoCursoService
             ->value('id_curso');
             
 
-        if ($this->cursoInstanciaService->checkInstanceQuota($courseId, $instanceId) > 0) {
-            $quota = $this->cursoInstanciaService->decrementQuota($courseId, $instanceId);
+        if ($this->cursoInstanciaService->checkInstanceQuota($courseId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $courseId) > 0) {
+            //$quota = $this->cursoInstanciaService->decrementQuota($courseId, $instanceId);
             $data = [
                 'id_persona' => $person->id_p,
                 'id_instancia' => $numInstancia,
