@@ -47,10 +47,13 @@
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
                         <td>
-                           
-                        @foreach($curso->areas as $area)
-    <span>{{ $area->nombre_a }}</span><br>
-@endforeach
+                        @if($curso->areas->isEmpty())
+                            <span>N/A</span>
+                        @else
+                            @foreach($curso->areas as $area)
+                                <span>{{ $area->nombre_a ?? 'N/A' }}</span><br>
+                            @endforeach
+                        @endif
                         </td>
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         <td>                            
@@ -71,7 +74,7 @@
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                             @endif
-                            <!--<a href="{{ route('cursos.inscritos', $curso->id) }}" class="btn btn-info btn-sm">Ver Inscritos</a>-->
+                            
 
                         </td>
                         

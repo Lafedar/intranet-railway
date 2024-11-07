@@ -22,7 +22,8 @@ class CursoService
     
     public function getAll(): Collection
     {
-        return Curso::all();
+        return Curso::with('areas')
+            ->get();
     }
 
     public function getById($id): ?Curso

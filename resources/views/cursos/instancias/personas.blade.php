@@ -21,7 +21,7 @@
     
     <div class="form-group">
         
-        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre o Apellido" autocomplete="off" style="width: 300px">
+        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido o Legajo" autocomplete="off" style="width: 300px">
     </div>
     
     <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST">
@@ -30,6 +30,7 @@
                 <thead>
                 <button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Inscribir seleccionados</button>
                     <tr>
+                        <th>Legajo</th>
                         <th>Nombre y Apellido</th>
                         <th>Area</th>
                         <th style="text-align: center">Inscribir</th>
@@ -38,6 +39,7 @@
                 <tbody>
                 @foreach($personasConEstado as $persona)
                     <tr>
+                        <td>{{ $persona->legajo }} </td>
                         <td>{{ $persona->nombre_p }} {{ $persona->apellido }}</td>
                         
                         
@@ -60,36 +62,6 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Función para actualizar el cupo disponible
-            function actualizarCupo() {
-                var totalSeleccionados = $("input[name^='personas']:checked").length;
-                var cupoMaximo = {{ $instancia->cupo }};  // El valor del cupo original
-                var cupoDisponible = cupoMaximo - totalSeleccionados;
-                $("#cupoDisponible").text(cupoDisponible);
-
-                // Si el cupo es 0, deshabilitar solo los checkboxes que no están seleccionados
-                if (cupoDisponible <= 0) {
-                    // Deshabilitar los checkboxes no seleccionados
-                    $("input[name^='personas']:not(:checked)").prop('disabled', true);
-                    $("#cupoDisponible").css('color', 'red'); // Cambiar color a rojo cuando el cupo sea 0
-                } else {
-                    // Habilitar todos los checkboxes si hay cupo
-                    $("input[name^='personas']").prop('disabled', false);
-                    $("#cupoDisponible").css('color', ''); // Restaurar el color original
-                }
-            }
-
-            // Llamar a la función al cargar la página por si ya hay checkboxes seleccionados
-            actualizarCupo();
-
-            // Escuchar el cambio en los checkboxes
-            $("input[name^='personas']").change(function() {
-                actualizarCupo();
-            });
-        });
-    </script>
 <script>
     $(document).ready(function() {
         // Función para actualizar el cupo disponible
@@ -125,8 +97,11 @@
 
             // Iterar sobre las filas de la tabla
             $('table tbody tr').each(function() {
-                var nombreApellido = $(this).find('td:first').text().toLowerCase(); // Nombre y apellido en la primera columna
-                if (nombreApellido.indexOf(filtro) === -1) {
+                var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); // Nombre y apellido en la segunda columna
+                var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); // Legajo en la primera columna
+                
+                // Si el filtro no coincide ni con nombre/apellido ni con legajo, ocultar la fila
+                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1) {
                     $(this).hide();  // Si no coincide, ocultar la fila
                 } else {
                     $(this).show();  // Si coincide, mostrar la fila

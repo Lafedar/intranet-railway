@@ -256,7 +256,7 @@ public function destroy(int $cursoId, int $instanciaId)
         // Aplicar el filtro si existe
         if ($filtro = request('filtro')) {
             $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
-                return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false;
+                return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
             });
         }
 

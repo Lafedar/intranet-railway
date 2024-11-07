@@ -39,7 +39,7 @@
                 <th>Modalidad</th>
                 <th>Capacitador</th>
                 <th>Lugar</th>
-                
+                <th>Estado</th>
                 <th>Version</th>
                 <th>Acciones</th>
 
@@ -73,6 +73,7 @@
                 <td>{{ $instance->modalidad }}</td>
                 <td>{{ $instance->capacitador }}</td>
                 <td>{{ $instance->lugar }}</td>
+                <td>{{ $instance->estado }}</td>
                 
                 <td>{{ $instance->version }}</td>
                 <td>

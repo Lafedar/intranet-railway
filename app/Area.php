@@ -16,9 +16,9 @@ class Area extends Model
     protected $keyType = 'string';  
     
     public function cursos()
-    {
-        return $this->belongsToMany(Curso::class, 'relacion_curso_area', 'id_area', 'id_curso');
-    }
+{
+    return $this->belongsToMany(Curso::class, 'relacion_curso_area', 'id_area', 'id_curso');
+}
     
     public function scopeIndex($query)
     {
