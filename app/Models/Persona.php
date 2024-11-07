@@ -38,7 +38,7 @@ class Persona extends Model
     }
     public function area()
     {
-        return $this->belongsTo(Area::class, 'area', 'id_a'); // 'area' es la columna de la tabla 'personas' que almacena el ID del área
+        
+        return $this->belongsTo(Area::class, 'area', 'id_a');
     }
-
 }

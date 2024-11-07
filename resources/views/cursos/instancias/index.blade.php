@@ -52,13 +52,8 @@
                 <td>{{ $instance->fecha_inicio->format('d/m/Y') }}</td>
                 <td>{{ $instance->fecha_fin ? $instance->fecha_fin->format('d/m/Y') : 'N/A' }}</td>
                 <td>
-                
-    @if($instance->cupo == null)
-       {{$instance->cantInscriptos}}
-    @else
-        {{ $instance->cupo }}
-    @endif
-</td>
+                    {{ $instance->cupo }}
+                </td>
                 <td>
                     @if ($instance->cupo == null)
                         <span class="badge bg-danger text-dark">
@@ -103,7 +98,7 @@
                      
                     @endif
                 <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                <!-- Mostrar el botón de eliminar solo si no hay inscriptos -->
+                
                 @if ($instance->cantInscriptos == 0)
                     
                     <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
@@ -117,7 +112,7 @@
                 
                 
                 <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-secondary btn-sm">
-                    Ver personas inscritas
+                    Ver personas inscriptas
                 </a>
 
                 </td>
@@ -129,7 +124,7 @@
        
     </table>
 
-    <!-- Botón para regresar al listado de cursos -->
+    
     <a href="{{ route('cursos.index') }}" class="btn btn-secondary">Regresar al listado de Cursos</a>
 </div>
 

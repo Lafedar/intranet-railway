@@ -14,9 +14,6 @@ class CursoService
         if (empty($data['titulo'])) {
             throw new \InvalidArgumentException('El nombre del curso es obligatorio.');
         }
-        /*if (empty($data['obligatorio'])) {
-            throw new \InvalidArgumentException('La obligatoriedad del curso es necesaria.');
-        }*/
         if (empty($data['tipo'])) {
             throw new \InvalidArgumentException('El tipo del curso es obligatorio.');
         }
@@ -34,14 +31,20 @@ class CursoService
                 ->find($id);  
     }
 
-    /*public function create(array $data): Curso
+    public function getAreasByCourseId(int $cursoId)
     {
-        $this->validateData($data); 
-        return Curso::create($data);
-    }*/
+        $curso = Curso::with('areas')->find($cursoId);
+        if (!$curso) {
+            
+            return null;  
+        }
+
+        return $curso->areas;
+    }
+
     public function create(array $data)
     {
-        // Crear el curso
+        
         $curso = Curso::create([
             'titulo' => $data['titulo'],
             'descripcion' => $data['descripcion'],
@@ -50,9 +53,6 @@ class CursoService
             'tipo' => $data['tipo'],
         ]);
     
-       
-    
-        // Devolver el objeto curso creado
         return $curso;
     }
 

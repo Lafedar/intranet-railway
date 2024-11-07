@@ -231,70 +231,57 @@ public function destroy(int $cursoId, int $instanciaId)
         return view('cursos.instancias.index', compact('countInscriptos'));
     }
 
-    
 
-   
     public function getPersonas(int $cursoId, int $instanciaId)
     {
-        
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
         $curso = $this->cursoService->getById($cursoId);
 
-        $personas = $this->personaService->getAll();
-        $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
+        $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
+        $areaIds = $areasCurso->pluck('id_a')->toArray(); 
+        $personas = $this->personaService->getPersonsByArea($areaIds);
+        
+        $personas->load('area');
 
+        $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
         $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
 
         // Añadir el estado de enrolamiento a cada persona
         $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
-            // Verificar si la persona está enrolada
-            $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds); // true si está enrolado, false si no
-            
+            $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds);
             return $persona;
         });
 
         
+        // Aplicar el filtro si existe
+        if ($filtro = request('filtro')) {
+            $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
+                return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false;
+            });
+        }
+
         return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia'));
     }
 
 
-    /*public function InscribirPersona(int $id_persona, int $instancia_id, int $numInstancia)
-    {
-        $user = $this->personaService->getById($id_persona);
-        $estadoEnrolado = $this->enrolamientoCursoService->isEnrolled($user->dni, $numInstancia);
-
-        if (!$estadoEnrolado) {
-            $enrolamiento = $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
-            return redirect()->back()->with('success', 'Inscripción exitosa.');
-                                    
-        } else {
-            return redirect()->back()->with('error', 'La persona ya está enrolada en este curso.');
-                                    
-        }
-    }*/
-    
-
     public function inscribirVariasPersonas(Request $request, int $instancia_id, int $numInstancia)
-{
-    // Obtener el array de personas seleccionadas
-    $personasSeleccionadas = $request->input('personas', []);
-    
-    // Validar si se seleccionaron personas
-    if (empty($personasSeleccionadas)) {
-        return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
-    }
-
-    // Recorrer todas las personas seleccionadas y hacer la inscripción
-    foreach ($personasSeleccionadas as $id_persona => $inscribir) {
-        $user = $this->personaService->getById($id_persona);
+    {
         
-        // Inscripción del usuario
-        $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
-    }
+        $personasSeleccionadas = $request->input('personas', []);
+    
+        if (empty($personasSeleccionadas)) {
+            return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
+        }
+        foreach ($personasSeleccionadas as $id_persona => $inscribir) {
+            $user = $this->personaService->getById($id_persona);
+            
+           
+            $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
+        }
 
-    // Redirigir con el mensaje de éxito
-    return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
-}
+        
+        return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
+    }
 
     
     

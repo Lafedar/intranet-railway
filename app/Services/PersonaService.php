@@ -24,11 +24,17 @@ class PersonaService
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAll(): Collection
-{
-    return Persona::with('area')  // Carga la relación 'area' de forma eficiente
-        ->orderBy('nombre_p')
-        ->get();
-}
+    {
+        return Persona::with('area')  // Carga la relación 'area' de forma eficiente
+            ->orderBy('nombre_p')
+            ->get();
+    }
+    public function getPersonsByArea(array $areas)
+    {
+        return Persona::whereIn('area', $areas) 
+            ->with('area')  
+            ->get();
+    }
     /**
      * Obtener una persona por su ID.
      *

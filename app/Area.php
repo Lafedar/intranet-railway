@@ -4,15 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Models\Persona;
 
 class Area extends Model
 {
     public $table = "area";
     public $timestamps = false;
     
-    protected $primaryKey = 'id_a';  // Clave primaria como string
-    public $incrementing = false;    // Especifica que no es un campo auto incremental
-    protected $keyType = 'string';   // Asegura que Laravel trate 'id_a' como string
+    protected $primaryKey = 'id_a';  
+    public $incrementing = false;    
+    protected $keyType = 'string';  
     
     public function cursos()
     {
@@ -23,6 +24,10 @@ class Area extends Model
     {
         return $query->select('area.id_a as id_a', 'area.nombre_a as nombre_a');
     }
+    public function personas()
+{
+    return $this->hasMany(Persona::class, 'area', 'id_a');  
+}
     
 
 }
