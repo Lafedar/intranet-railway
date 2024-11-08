@@ -29,7 +29,9 @@
             <table class="table table-bordered table-striped">
                 <thead>
                 
-                <a href="{{ url()->previous() }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
+
+
                 <button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Inscribir seleccionados</button>
                     <tr>
                         <th>Legajo</th>
@@ -45,7 +47,13 @@
                         <td>{{ $persona->nombre_p }} {{ $persona->apellido }}</td>
                         
                         
-                        <td>{{ $persona->area }}</td>
+                        <td>
+                            @if($persona->area)
+                                {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
 
                         <td style="text-align: center">
                             @if($persona->estadoEnrolado)

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
 use DB;
+use App\Area;
 
 
 class CursoInstanciaController extends Controller
@@ -247,11 +248,13 @@ public function destroy(int $cursoId, int $instanciaId)
         $curso = $this->cursoService->getById($cursoId);
 
         $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
-        $areaIds = $areasCurso->pluck('id_a')->toArray(); 
+        $areaIds = $areasCurso->pluck('id_a')->toArray();
         $personas = $this->personaService->getPersonsByArea($areaIds);
-        
-        $personas->load('area');
 
+        $personas->each(function ($persona) {
+            $persona->area = $this->personaService->getAreaForPerson($persona->area); 
+        });
+        
         $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
         $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
 
@@ -267,6 +270,7 @@ public function destroy(int $cursoId, int $instanciaId)
         if ($filtro = request('filtro')) {
             $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
                 return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
+               
             });
         }
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Persona;
+use App\Area;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -80,6 +81,11 @@ class PersonaService
     public function delete(Persona $persona): ?bool
     {
         return $persona->delete();
+    }
+
+    public function getAreaForPerson(string $areaId)
+    {
+        return Area::find($areaId);
     }
 
 
