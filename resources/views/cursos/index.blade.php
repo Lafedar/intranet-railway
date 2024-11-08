@@ -28,7 +28,7 @@
     <h1 class="mb-4 text-center">Listado de Cursos</h1>
     <div class="row justify-content-center">
         <div class="col-md-10"> 
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped text-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>Título</th>
@@ -51,7 +51,7 @@
                             <span>N/A</span>
                         @else
                             @foreach($curso->areas as $area)
-                                <span>{{ $area->nombre_a ?? 'N/A' }}</span><br>
+                                <span>{{ $area->nombre_a?? 'N/A' }}</span><br>
                             @endforeach
                         @endif
                         </td>

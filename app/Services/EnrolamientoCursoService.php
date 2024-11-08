@@ -205,7 +205,7 @@ class EnrolamientoCursoService
     
     }
 
-    public function unEnroll($userId, $instanceId, $numInstancia): ?bool
+    public function unEnroll($userId, $instanceId, $cursoId): ?bool
     {
 
         $person = $this->personaService->getById($userId);
@@ -214,15 +214,15 @@ class EnrolamientoCursoService
             Log::error('Error: Persona no encontrada para el ID: ' . $userId);
             return false;
         }
-        $courseId = $this->cursoInstanciaService->getIdCourseByInstanceId($instanceId);
+       
         $enrollment = EnrolamientoCurso::where('id_persona', $person->id_p)
-                                        ->where('id_instancia', $numInstancia)
-                                        ->where('id_curso', $courseId)
+                                        ->where('id_instancia', $instanceId)
+                                        ->where('id_curso', $cursoId)
                                         ->first();
         
         if (!$enrollment) {
             Log::error('Error: No se encontró enrolamiento para la persona con DNI: ' . $userId . 
-                    ' en la instancia id: ' . $instanceId . ' y curso id: ' . $courseId);
+                    ' en la instancia id: ' . $instanceId . ' y curso id: ' . $cursoId);
             return false;
         }
         

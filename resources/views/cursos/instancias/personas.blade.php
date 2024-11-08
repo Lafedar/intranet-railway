@@ -26,13 +26,13 @@
     
     <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST">
             @csrf
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped text-center">
                 <thead>
                 
                 <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
 
 
-                <button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">Inscribir seleccionados</button>
+                <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-left: 10px">Inscribir seleccionados</button>
                     <tr>
                         <th>Legajo</th>
                         <th>Nombre y Apellido</th>
@@ -67,7 +67,7 @@
         </form>
                         <td>
                             @if($persona->estadoEnrolado)
-                            <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST">
+                            <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
                                     @csrf
                                     @method('POST') <!-- Esto indica que es una solicitud POST -->
                                     <button type="submit" class="btn btn-danger">Desinscribir</button>

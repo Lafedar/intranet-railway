@@ -224,10 +224,10 @@ public function destroy(int $cursoId, int $instanciaId)
     {
         $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
         $inscriptosCount = $inscritos->count(); // Conteo de inscritos
-       
+       $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         $curso = $this->cursoService->getById($cursoId);
         
-        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount'));
+        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount',  'instancia'));
     }
 
     public function getCountAsistentes(int $instanciaId, int $cursoId)
@@ -297,10 +297,10 @@ public function destroy(int $cursoId, int $instanciaId)
         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
     }
 
-    public function desinscribirPersona(int $userId, int $instanciaId, int $numInstancia)
+    public function desinscribirPersona(int $userId, int $instanciaId, int $cursoId)
 {
     
-    $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $numInstancia);
+    $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $cursoId);
     
     
     return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');

@@ -28,7 +28,7 @@
 </a>
 
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
                 <th>ID</th>
@@ -90,7 +90,7 @@
                                 Inscripto
                             @else
                                 @if ($instance->restantes > 0)
-                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
+                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm" style="margin: 3px">Inscribir Personas</a>
                                 @endif
                             @endif
                         
@@ -99,14 +99,14 @@
                     @else
                      
                     @endif
-                <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm" style="margin: 3px">Editar</a>
                 
                 
                 @if ($instance->restantes == $instance->cupo)
                     <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                         @csrf
                         @method('DELETE')  
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <button type="submit" class="btn btn-danger btn-sm" style="margin: 3px">Eliminar</button>
                     </form>
                 @endif
                
