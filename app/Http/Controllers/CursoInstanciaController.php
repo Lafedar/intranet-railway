@@ -254,7 +254,7 @@ public function destroy(int $cursoId, int $instanciaId)
         $personas->each(function ($persona) {
             $persona->area = $this->personaService->getAreaForPerson($persona->area); 
         });
-        
+
         $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
         $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
 
@@ -297,6 +297,14 @@ public function destroy(int $cursoId, int $instanciaId)
         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
     }
 
+    public function desinscribirPersona(int $userId, int $instanciaId, int $numInstancia)
+{
+    
+    $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $numInstancia);
+    
+    
+    return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
+}
     
     
 

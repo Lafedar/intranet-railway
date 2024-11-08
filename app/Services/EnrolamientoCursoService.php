@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CursoInstancia;
 use App\Models\EnrolamientoCurso;
 use App\Services\CursoInstanciaService;
+use App\Services\PersonaService;
 use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -14,10 +15,14 @@ use App\Models\Curso;
 class EnrolamientoCursoService
 {
     private $cursoInstanciaService;
+    private $personaService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService)
+
+    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->personaService = $personaService;
+
     }
 
     public function getAll(): Collection
@@ -199,5 +204,31 @@ class EnrolamientoCursoService
         return $result;
     
     }
+
+    public function unEnroll($userId, $instanceId, $numInstancia): ?bool
+    {
+
+        $person = $this->personaService->getById($userId);
+    
+        if (!$person) {
+            Log::error('Error: Persona no encontrada para el ID: ' . $userId);
+            return false;
+        }
+        $courseId = $this->cursoInstanciaService->getIdCourseByInstanceId($instanceId);
+        $enrollment = EnrolamientoCurso::where('id_persona', $person->id_p)
+                                        ->where('id_instancia', $numInstancia)
+                                        ->where('id_curso', $courseId)
+                                        ->first();
+        
+        if (!$enrollment) {
+            Log::error('Error: No se encontró enrolamiento para la persona con DNI: ' . $userId . 
+                    ' en la instancia id: ' . $instanceId . ' y curso id: ' . $courseId);
+            return false;
+        }
+        
+        $enrollment->delete();
+        return true;
+    }
+
     
 }

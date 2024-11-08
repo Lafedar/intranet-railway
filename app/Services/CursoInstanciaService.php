@@ -97,6 +97,12 @@ class CursoInstanciaService
         ->distinct('id_instancia') 
         ->count('id_instancia'); 
     }
+
+    public function getIdCourseByInstanceId(int $instanceId){
+        return CursoInstancia::where('id', $instanceId)
+        ->value('id_curso');
+        
+    }
     
   
     

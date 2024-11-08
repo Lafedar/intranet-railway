@@ -38,6 +38,7 @@
                         <th>Nombre y Apellido</th>
                         <th>Area</th>
                         <th style="text-align: center">Inscribir</th>
+                        <th style="text-align: center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,8 +59,21 @@
                         <td style="text-align: center">
                             @if($persona->estadoEnrolado)
                                 <p>Ya inscripto</p>
+                                
                             @else
                                 <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]" value="1">
+                            @endif
+                        </td>
+        </form>
+                        <td>
+                            @if($persona->estadoEnrolado)
+                            <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST">
+                                    @csrf
+                                    @method('POST') <!-- Esto indica que es una solicitud POST -->
+                                    <button type="submit" class="btn btn-danger">Desinscribir</button>
+                                </form>
+                            @else
+                            N/A 
                             @endif
                         </td>
                     </tr>
@@ -68,7 +82,7 @@
             </table>
 
             
-        </form>
+        
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
