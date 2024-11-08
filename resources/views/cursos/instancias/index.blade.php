@@ -99,7 +99,7 @@
                     @else
                      
                     @endif
-                <a href="{{ route('cursos.instancias.edit', $instance->id) }}" class="btn btn-warning btn-sm" style="margin: 3px">Editar</a>
+                <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" class="btn btn-warning btn-sm" style="margin: 3px">Editar</a>
                 
                 
                 @if ($instance->restantes == $instance->cupo)

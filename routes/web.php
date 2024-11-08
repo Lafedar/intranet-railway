@@ -541,7 +541,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy');
 
     
-    Route::get('instancias/{instancia}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
+    Route::get('instancias/{instancia}/{cursoId}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
     Route::put('instancias/{instancia}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
 
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas');

@@ -175,10 +175,10 @@ public function destroy(int $cursoId, int $instanciaId)
 
 
 
-    public function edit($instanciaId)
+    public function edit($instanciaId, $cursoId)
     {
         try{
-            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         
             return view('cursos.instancias.edit', compact('instancia'));
         }
