@@ -6,6 +6,7 @@ use App\Models\CursoInstancia;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Log;
+use DB;
 
 class CursoInstanciaService
 {
@@ -69,25 +70,35 @@ class CursoInstanciaService
         }
     }
 
-    public function getInstanceById(int $id): ?CursoInstancia
+    public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
     {
-        try{
-            return CursoInstancia::find($id); 
-        }catch(\Exception $e){
+        try {
+            return CursoInstancia::where('id_instancia', $id_instancia)
+                                 ->where('id_curso', $cursoId)
+                                 ->first(); 
+        } catch (\Exception $e) {
+            // Manejo de errores
             \Log::error('Error al obtener la instancia: ' . $e->getMessage());
             throw $e; 
         }
-        
     }
+    
 
-    public function delete(CursoInstancia $instancia) :?bool 
+    public function delete(CursoInstancia $instancia, int $cursoId) :?bool 
     {
-        try{
-            return $instancia->delete();
-        }
-        catch(\Exception $e){
+        try {
+            $instanciaToDelete = CursoInstancia::where('id_instancia', $instancia->id_instancia)
+                                               ->where('id_curso', $cursoId)
+                                               ->first();
+    
+            if ($instanciaToDelete) {
+                return $instanciaToDelete->delete();
+            }
+            return false;
+    
+        } catch (\Exception $e) {
             \Log::error('Error al eliminar la instancia: ' . $e->getMessage());
-            throw $e; 
+            throw $e;
         }
         
     }

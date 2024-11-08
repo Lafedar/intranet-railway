@@ -90,7 +90,7 @@
                                 Inscripto
                             @else
                                 @if ($instance->restantes > 0)
-                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
+                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm">Inscribir Personas</a>
                                 @endif
                             @endif
                         
@@ -103,7 +103,7 @@
                 
                 
                 @if ($instance->restantes == $instance->cupo)
-                    <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
+                    <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                         @csrf
                         @method('DELETE')  
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>

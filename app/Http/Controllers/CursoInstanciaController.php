@@ -153,15 +153,15 @@ public function destroy(int $cursoId, int $instanciaId)
 {
     try {
         
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
-
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+       
         if (!$instancia) {
             return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                              ->withErrors('La instancia no fue encontrada.');
         }
 
         
-        $this->cursoInstanciaService->delete($instancia);
+        $this->cursoInstanciaService->delete($instancia, $cursoId);
         
         return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                          ->with('success', 'Instancia eliminada exitosamente.');
@@ -244,7 +244,7 @@ public function destroy(int $cursoId, int $instanciaId)
 
     public function getPersonas(int $cursoId, int $instanciaId)
     {
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         $curso = $this->cursoService->getById($cursoId);
 
         $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
