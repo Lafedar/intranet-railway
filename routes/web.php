@@ -558,6 +558,8 @@ Route::group(['middleware' => ['auth']], function ()
     
     Route::post('/inscripcion/varias-personas/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas');
     Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir');
+    Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia');
+    
   });
   use App\Http\Controllers\EmpleadoController;
 

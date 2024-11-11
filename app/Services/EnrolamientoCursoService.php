@@ -217,6 +217,45 @@ class EnrolamientoCursoService
         $enrollment->delete();
         return true;
     }
-
+    public function evaluarInstancia(int $userId, int $instanciaId, int $cursoId, int $bandera)
+    {
+        try {
+            
+            $enrolamiento = DB::table('enrolamiento_cursos')
+                ->where('id_persona', $userId)
+                ->where('id_curso', $cursoId)
+                ->where('id_instancia', $instanciaId)
+                ->first();
+    
+           
+            if (!$enrolamiento) {
+                return response()->json(['error' => 'El registro de enrolamiento no existe.'], 404);
+            }
+   
+            if($bandera == 0){
+                    DB::table('enrolamiento_cursos')
+                    ->where('id_persona', $userId)
+                    ->where('id_curso', $cursoId)
+                    ->where('id_instancia', $instanciaId)
+                    ->update(['evaluacion' => 'Aprobado']);
+        
+                return response()->json(['success' => 'Curso aprobado correctamente.']);
+    
+            }else{
+                    DB::table('enrolamiento_cursos')
+                    ->where('id_persona', $userId)
+                    ->where('id_curso', $cursoId)
+                    ->where('id_instancia', $instanciaId)
+                    ->update(['evaluacion' => 'No Aprobado']);
+        
+                return response()->json(['success' => 'Curso desaprobado correctamente.']);
+        
+            }
+            
+        } catch (\Exception $e) {
+            
+            return response()->json(['error' => 'Ocurrió un error al cambiar la evaluacion del curso: ' . $e->getMessage()], 500);
+        }
+    }
     
 }

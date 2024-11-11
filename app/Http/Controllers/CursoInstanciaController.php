@@ -309,8 +309,29 @@ public function destroy(int $cursoId, int $instanciaId)
     
     return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
 }
-    
-    
+
+
+
+
+public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
+{
+    try {
+        
+        $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanciaId, $cursoId, $bandera);
+
+        
+        return redirect()->back()
+                         ->with('success', 'La instancia fue evaluada correctamente.');
+
+    } catch (\Exception $e) {
+        
+        return redirect()->back()
+                         ->withErrors('Ocurrió un error al aprobar la instancia: ' . $e->getMessage());
+    }
+}
+
+
+
 
 
   
