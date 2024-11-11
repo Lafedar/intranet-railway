@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CursoService;
 use App\Services\CursoInstanciaService;
+use App\Services\AreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
@@ -14,12 +15,14 @@ class CursoController extends Controller
     private CursoService $cursoService;
     private CursoInstanciaService $cursoInstanciaService;
     private EnrolamientoCursoService $enrolamientoCursoService;
+    private AreaService $areaService;
 
-    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService)
+    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService)
     {
         $this->cursoService = $cursoService;
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
+        $this->areaService = $areaService;
     }
 
     /**
@@ -29,25 +32,46 @@ class CursoController extends Controller
      */
     
     
-public function listAll()
+public function listAll(Request $request)
 {
     try {
-       
-        $cursosData = $this->cursoService->getAll()->load('areas')->sortByDesc('created_at');
         
+        $nombreCurso = $request->input('nombre_curso', '');
+        $areaId = $request->input('area_id', null);
+
+        $cursosData = $this->cursoService->getAll()->load('areas');
+
+        if ($nombreCurso) {
+            $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
+                return str_contains(strtolower($curso->titulo), strtolower($nombreCurso));
+            });
+        }
+
+      
+        if ($areaId) {
+            $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
+                return $curso->areas->contains('id_a', $areaId);
+            });
+        }
+
+        $cursosData = $cursosData->sortByDesc('created_at');
+
         $cursosData = $cursosData->map(function ($curso) {
             $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
             return $curso;
         });
 
-        
-        return view('cursos.index', compact('cursosData'));
+        $areas = $this->areaService->getAll();
+
+        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId'));
+
     } catch (\Exception $e) {
-        // Registrar el error y redirigir con un mensaje de error
-        Log::error('Error en el controlador al mostrar los cursos: ' . $e->getMessage());
+        Log::error('Error al mostrar los cursos: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
     }
 }
+
+
 
 
 
@@ -155,37 +179,7 @@ public function listAll()
      * @return \Illuminate\Http\RedirectResponse
      */
     
-   /* public function update(Request $request, int $id)
-    {
-        try{
 
-        
-            $curso = $this->cursoService->getById($id);
-
-            if (!$curso) {
-                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
-            }
-
-            $validatedData = $request->validate([
-                'titulo' => 'required|string|max:100',
-                'descripcion' => 'string|max:65530',
-                'obligatorio' => 'required|boolean',
-                'codigo' => 'nullable|string',
-                'tipo' => 'required|string',
-                
-            ]);
-
-        
-            $this->cursoService->update($curso, $validatedData);
-            
-            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
-        } catch (\Exception $e) {
-            // Registrar el error y redirigir con un mensaje de error
-            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al actualizar el curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
-        }
-    }*/
     public function update(Request $request, int $id)
     {
         try {

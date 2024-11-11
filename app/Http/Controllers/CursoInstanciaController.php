@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CursoInstanciaService;
 use App\Services\CursoService;
+use App\Services\AreaService;
 use App\Services\EnrolamientoCursoService;
 use App\Services\PersonaService;
 use Auth;
@@ -21,13 +22,15 @@ class CursoInstanciaController extends Controller
     private $cursoService;
     private $enrolamientoCursoService;
     private $personaService;
+    private $areaService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService)
+    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService, AreaService $areaService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->cursoService = $cursoService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->personaService = $personaService;
+        $this->areaService = $areaService;
     }
 
     /**
@@ -253,7 +256,7 @@ public function destroy(int $cursoId, int $instanciaId)
         $personas = $this->personaService->getPersonsByArea($areaIds);
 
         $personas->each(function ($persona) {
-            $persona->area = $this->personaService->getAreaForPerson($persona->area); 
+            $persona->area = $this->areaService->getAreaById($persona->area); 
         });
 
         $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);

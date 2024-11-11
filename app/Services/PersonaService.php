@@ -83,10 +83,7 @@ class PersonaService
         return $persona->delete();
     }
 
-    public function getAreaForPerson(string $areaId)
-    {
-        return Area::find($areaId);
-    }
+    
 
 
    
