@@ -30,6 +30,7 @@ class EmpleadoController extends Controller{
             $query->where(function($q) use ($search) {
                 $q->where('apellido', 'like', "%{$search}%")
                   ->orWhere('nombre_p', 'like', "%{$search}%")
+                  ->orWhere('nombre_a', 'like', "%{$search}%")
                   ->orWhere('dni', 'like', "%{$search}%");
             });
         }
@@ -52,6 +53,8 @@ class EmpleadoController extends Controller{
             'filtroActividad' => $filtroActividad
         ]);
     }
+    
+
 
     public function store(Request $request){
         $aux= DB::table('personas')->where('personas.dni',$request['dni'])->first();
