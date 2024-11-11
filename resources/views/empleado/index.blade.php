@@ -261,36 +261,7 @@
       },
     });
   }
-  /*function fnOpenModalAgregarRelacion(id) {
-    var myModal3 = new bootstrap.Modal(document.getElementById('show3'));
-    $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/showStoreAreaXJefe/" + id,
-      type: 'GET',
-      success: function(data) {
-        // Borrar contenido anterior
-        $("#modalshow3").empty();
-        // Establecer el contenido del modal
-        $("#modalshow3").html(data);
-
-        // Borrar contenido anterior
-        $("#modalfooter3").empty();
-
-        // Agregar el botón "Cerrar y Guardar" al footer
-        $("#modalfooter3").append(saveButton);
-        $("#modalfooter3").append(closeButton2);
-
-        // Mostrar el modal
-        myModal3.show();
-
-        // Cambiar el tamaño del modal a "modal-lg"
-        var modalDialog = myModal3._element.querySelector('.modal-dialog');
-        modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.add('modal-lg');
-
-      },
-    });
-  }*/
-
+  
   $('#editar_empleado').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget) 
@@ -398,19 +369,7 @@
   });
 </script>
 
-<!--<script>
- $(document).ready(function(){
-   $("#search").keyup(function(){
-     _this = this;
-     $.each($("#test tbody tr"), function() {
-       if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-         $(this).hide();
-       else
-         $(this).show();
-     });
-   });
- });
-</script>-->
+
 
 
 <script>
@@ -438,50 +397,7 @@
   });
 </script>
 
-<!--<script> //filtro check boxs
-$(document).ready(function () { 
-  $("#search").keyup(function () {
-    filterTable();
-  });
 
-  $("#filtroJefe, #filtroActividad").change(function () {
-    filterTable();
-  });
-});
-
-function filterTable() {
-  var searchText = $("#search").val().toLowerCase();
-  var filtroJefe = $("#filtroJefe").prop("checked");
-  var filtroActividad = $("#filtroActividad").prop("checked");
-
-  $("#test tbody tr").each(function () {
-    var nombre = $(this).find("td:eq(0)").text().toLowerCase();
-    var esJefe = $(this).find("td:eq(6) .circle_green").length > 0;
-    var enActividad = $(this).find("td:eq(7) .circle_green").length > 0;
-
-    var mostrar = true;
-
-    if (filtroJefe && !esJefe) {
-      mostrar = false;
-    }
-
-    if (filtroActividad && !enActividad) {
-      mostrar = false;
-    }
-
-    if (mostrar && nombre.indexOf(searchText) === -1) {
-      mostrar = false;
-    }
-
-    if (mostrar) {
-      $(this).show();
-    } else {
-      $(this).hide();
-    }
-  });
-}
-
-</script>-->
 <script>
   $(document).ready(function(){
     // Filtros y búsqueda
