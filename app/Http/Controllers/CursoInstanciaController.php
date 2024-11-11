@@ -179,8 +179,9 @@ public function destroy(int $cursoId, int $instanciaId)
     {
         try{
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+            $curso = $this->cursoService->getById($cursoId);
         
-            return view('cursos.instancias.edit', compact('instancia'));
+            return view('cursos.instancias.edit', compact('instancia', 'curso'));
         }
         catch(\Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
@@ -190,7 +191,7 @@ public function destroy(int $cursoId, int $instanciaId)
         
     }
     
-    public function update(Request $request, $instanciaId)
+    public function update(Request $request, $instanciaId, $cursoId)
     {
         try {
             $request->validate([
@@ -208,7 +209,7 @@ public function destroy(int $cursoId, int $instanciaId)
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
-            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $instancia->update($request->all());
         
             return redirect()->route('cursos.instancias.index', $instancia->id_curso)

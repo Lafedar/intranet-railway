@@ -542,7 +542,7 @@ Route::group(['middleware' => ['auth']], function ()
 
     
     Route::get('instancias/{instancia}/{cursoId}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
-    Route::put('instancias/{instancia}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
+    Route::put('instancias/{instancia}/{cursoId}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
 
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas');
     Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])

@@ -15,7 +15,7 @@
     @endif
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Editar Instancia</h1>
-    <form id="cursoForm" action="{{ route('cursos.instancias.update', $instancia->id) }}" method="POST" enctype="multipart/form-data">
+    <form id="cursoForm" action="{{ route('cursos.instancias.update', ['instancia' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT') <!-- Asegúrate de usar el método PUT para la actualización -->
         
