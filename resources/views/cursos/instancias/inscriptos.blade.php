@@ -16,6 +16,7 @@
                     <th>Nombre y Apellido</th>
                     <th>Area</th>
                     <th>Acciones</td>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +37,7 @@
                                     <button type="submit" class="btn btn-danger">Desinscribir</button>
                                 </form>
         </td>
+       
         
     </tr>
     @endforeach

@@ -35,8 +35,8 @@ class EnrolamientoCurso extends Model
         return $this->belongsTo(CursoInstancia::class, 'id_instancia');
     }
     public function curso()
-{
-    return $this->belongsTo(Curso::class, 'id_curso', 'id');
-}
+    {
+        return $this->belongsTo(Curso::class, 'id_curso');
+    }
 
 }

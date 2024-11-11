@@ -21,4 +21,13 @@ class Curso extends Model
 {
     return $this->belongsToMany(Area::class, 'relacion_curso_area', 'id_curso', 'id_area');
 }
+public function enrolamientos()
+    {
+        return $this->hasMany(EnrolamientoCurso::class, 'id_curso');
+    }
+    public function personas()
+    {
+        return $this->belongsToMany(Persona::class, 'enrolamiento_cursos', 'id_curso', 'id_persona')
+        ->withPivot('id_instancia', 'evaluacion');
+    }
 }

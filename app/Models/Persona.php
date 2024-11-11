@@ -41,4 +41,9 @@ class Persona extends Model
         
         return $this->belongsTo(Area::class, 'area', 'id_a');
     }
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'enrolamiento_cursos', 'id_persona', 'id_curso')
+        ->withPivot('id_instancia', 'evaluacion'); 
+    }
 }

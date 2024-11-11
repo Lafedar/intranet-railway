@@ -10,6 +10,7 @@ use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use DB;
 use App\Models\Curso; 
 
 class EnrolamientoCursoService
@@ -167,33 +168,20 @@ class EnrolamientoCursoService
         return $result;
     }
     
-    public function getAllEnrolledCourses (int $idPerson) :?Collection
+    
+    public function getAllEnrolledCourses(int $idPerson): ?Collection
     {
-        $cursos= DB::table ('cursos as c')
-            ->select ('c.id', 'c.codigo', 'c.titulo')
-            ->leftJoinSub (
-                DB::table ('enrolamiento_cursos')
-                ->select ('id_curso')
-                ->distinct()
-                ->whereNotNull('id_persona', $idPerson),
-                'ec',
-                'c.id',
-                '=',
-                'ec.id_curso'
-            ) 
-            ->whereNotNull ('ec.id_curso')
-            ->get();
-        
-        $result= $cursos->map (function ($curso) {
-            return [
-                'id_course'=>$curso->id,
-                'id_code'=>$curso->codigo,
-                'title'=>$curso->titulo,
-                'state'=>'Realizado' 
-            ];
-        });
-        return $result;
+        $persona = Persona::find($idPerson);
+
+        if (!$persona) {
+            return null; 
+        }
+        $cursos = $persona->cursos;  
+
+        return $cursos;
     }
+
+
 
     public function getAllCourses (int $idPerson) :?Collection{
 

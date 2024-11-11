@@ -16,15 +16,21 @@ use Auth;
 use DB;
 use App\Services\EnrolamientoCursoService;
 use App\Services\CursoInstanciaService;
+use App\Services\PersonaService;
+use App\Services\CursoService;
 
 class EmpleadoController extends Controller{
     private $enrolamientoCursoService;
     private $cursoInstanciaService;
+    private $personaService;
+    private $cursoService;
 
-    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService)
+    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService)
     {
         $this->enrolamientoCursoService = $enrolamientoCursoService;
-        $this->cursoIntanciaService = $cursoInstanciaService;
+        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->personaService = $personaService;
+        $this->cursoService = $cursoService;
     }
     public function index(Request $request){
         /*$empleados = Empleado::Relacion()->get();
@@ -202,10 +208,30 @@ class EmpleadoController extends Controller{
         return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
     }
 
+    
     public function getCursos(int $userId)
     {
-        $cursos = $this->enrolamientoCursoService->getCoursesByUserId($userId);
+        $cursos = $this->enrolamientoCursoService->getAllEnrolledCourses($userId);
+        $persona = $this->personaService->getById($userId);
+        // Inicializar un array para almacenar los cursos con la información adicional de la instancia
+        $cursosConDetalles = [];
+
+        foreach ($cursos as $curso) {
+            
+            $areas = $this->cursoService->getAreasByCourseId($curso->id);
+            $curso->areas = $areas;
+            
+            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
         
-        return view('empleado.cursos', compact('cursos'));
+            if ($instancia) {
+                $curso->fecha_inicio = $instancia->fecha_inicio;
+                $curso->capacitador = $instancia->capacitador;
+                $curso->modalidad = $instancia->modalidad;
+            }
+
+            $cursosConDetalles[] = $curso;
+        }
+
+        return view('empleado.cursos', compact('cursosConDetalles','persona'));
     }
 }
