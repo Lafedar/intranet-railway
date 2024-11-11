@@ -82,7 +82,7 @@ class EnrolamientoCursoService
                 'id_curso' => $courseId,
                 'fecha_enrolamiento' => Carbon::now(),
                 'estado' => 'Alta',
-                'evaluacion' => null
+                'evaluacion' => 'No Aprobado',
             ];
             $courseEnrollment = EnrolamientoCurso::create($data);
         } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $courseId . ' y la instancia id: ' . $instanceId );

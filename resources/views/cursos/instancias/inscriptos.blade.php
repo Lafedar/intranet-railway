@@ -30,8 +30,8 @@
         <table class="table table-bordered table-striped text-center">
             <thead>
                 <tr>
+                    <th>Legajo</th>
                     <th>Nombre y Apellido</th>
-                    <th>Area</th>
                     <th>Evaluacion</th>
                     <th>Acciones</td>
                     
@@ -40,6 +40,7 @@
             <tbody>
     @foreach($inscritos as $enrolamiento)
     <tr>
+        <td>{{ $enrolamiento->persona->legajo }}</td>
         <td>
             @if ($enrolamiento->persona)
                 {{ $enrolamiento->persona->nombre_p }} {{ $enrolamiento->persona->apellido }}
@@ -47,7 +48,7 @@
                 Persona no encontrada
             @endif
         </td>
-        <td>{{$enrolamiento->persona->area}}</td>
+        
         <td>{{$enrolamiento->evaluacion}}</td>
         <td>
         <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
@@ -60,7 +61,7 @@
                         @if($enrolamiento->evaluacion == "Aprobado") 
                             <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-success">Desarobar</button>
+                                <button type="submit" class="btn btn-success">Desaprobar</button>
                             </form>
                         @else
                             <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">

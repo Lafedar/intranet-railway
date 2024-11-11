@@ -31,51 +31,62 @@ class CursoController extends Controller
      * @return \Illuminate\View\View
      */
     
-    
-public function listAll(Request $request)
-{
-    try {
-        
-        $nombreCurso = $request->input('nombre_curso', '');
-        $areaId = $request->input('area_id', null);
+    public function listAll(Request $request)
+    {
+        try {
+            
+            $nombreCurso = $request->input('nombre_curso', '');
+            $areaId = $request->input('area_id', null);
 
-        $cursosData = $this->cursoService->getAll()->load('areas');
+            
+            $cursosData = $this->cursoService->getAll()->load('areas');
 
-        if ($nombreCurso) {
-            $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
-                return str_contains(strtolower($curso->titulo), strtolower($nombreCurso));
+            
+            if ($nombreCurso) {
+                $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
+                    return str_contains(strtolower($curso->titulo), strtolower($nombreCurso));
+                });
+            }
+
+            
+            if ($areaId && $areaId !== 'all') {
+                
+                $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
+                    return $curso->areas->contains('id_a', $areaId);
+                });
+            }
+
+            if ($areaId === 'all') {
+                //muestro solo los cursos que tienen "todas las áreas"
+                $cursosData = $cursosData->filter(function ($curso) {
+                    return $curso->areas->count() === $this->areaService->getAll()->count(); 
+                });
+            }
+            //excluyo los cursos con "todas las áreas" si se seleccionó un área específica
+            if ($areaId && $areaId !== 'all') {
+                $cursosData = $cursosData->filter(function ($curso) {
+                    
+                    return $curso->areas->count() !== $this->areaService->getAll()->count();
+                });
+            }
+            
+            $cursosData = $cursosData->sortByDesc('created_at');
+
+            $cursosData = $cursosData->map(function ($curso) {
+                $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
+                return $curso;
             });
+
+            $areas = $this->areaService->getAll();
+            $totalAreas = $areas->count();
+
+            return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas'));
+
+        } catch (\Exception $e) {
+            Log::error('Error al mostrar los cursos: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
         }
-
-      
-        if ($areaId) {
-            $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
-                return $curso->areas->contains('id_a', $areaId);
-            });
-        }
-
-        $cursosData = $cursosData->sortByDesc('created_at');
-
-        $cursosData = $cursosData->map(function ($curso) {
-            $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
-            return $curso;
-        });
-
-        $areas = $this->areaService->getAll();
-
-        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId'));
-
-    } catch (\Exception $e) {
-        Log::error('Error al mostrar los cursos: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
     }
-}
-
-
-
-
-
-
 
     /**
      * Mostrar los detalles de un curso específico.
@@ -105,7 +116,7 @@ public function listAll(Request $request)
      */
     public function create()
     {
-        $areas = Area::all();  // Recupera todas las áreas
+        $areas = $this->areaService->getAll();  // Recupera todas las áreas
 
         return view('cursos.create', compact('areas'));
     }
@@ -132,11 +143,11 @@ public function listAll(Request $request)
             'tipo' => 'required|string',
             'area' => 'required|array',  
         ]);
-
+        
     
         $curso = $this->cursoService->create($validatedData);
         $curso->areas()->attach($validatedData['area']);  // Usar attach para asociar las áreas
-
+        
         
         return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
     } catch (\Exception $e) {
@@ -159,7 +170,7 @@ public function listAll(Request $request)
     {
         try {
             $curso = $this->cursoService->getById($id);
-            $areas = Area::all();
+            $areas = $this->areaService->getAll();
             if (!$curso) {
                 throw new \Exception('El curso no fue encontrado.');
             }

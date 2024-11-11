@@ -32,8 +32,8 @@
         <!-- Filtro por área -->
         <div class="col-md-4">
             <select name="area_id" class="form-control">
-                
                 <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
+                <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> <!-- Opción para todas las áreas -->
 
                 @foreach ($areas as $area)
                     <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
@@ -48,6 +48,7 @@
         </div>
     </div>
 </form>
+
 <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
     Crear Curso
 </a>
@@ -77,11 +78,17 @@
                         @if($curso->areas->isEmpty())
                             <span>N/A</span>
                         @else
-                            @foreach($curso->areas as $area)
-                                <span>{{ $area->nombre_a?? 'N/A' }}</span><br>
-                            @endforeach
+                            
+                            @if($curso->areas->count() == $totalAreas)
+                                <span>Todas las áreas</span>
+                            @else
+                               
+                                @foreach($curso->areas as $area)
+                                    <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
+                                @endforeach
+                            @endif
                         @endif
-                        </td>
+                    </td>
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         <td>                            
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-primary btn-sm">

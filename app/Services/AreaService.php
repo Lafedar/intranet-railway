@@ -11,8 +11,7 @@ class AreaService
    
     public function getAll(): Collection
     {
-        return Area::all();
-           
+        return Area::where('permite_personal', 1)->get();
     }
     public function getAreaById(string $areaId)
     {
