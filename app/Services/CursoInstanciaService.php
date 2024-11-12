@@ -40,11 +40,22 @@ class CursoInstanciaService
 
     public function checkInstanceQuota($courseId, $instanceId): int
     {
-
-        $quota = CursoInstancia::where('id', $instanceId)
-            ->where('id_curso', $courseId)
-            ->value('cupo');
-        return $quota;
+        try {
+            
+            $quota = CursoInstancia::where('id_instancia', $instanceId)
+                ->where('id_curso', $courseId)
+                ->value('cupo');
+               
+            // Si $quota es null, se asigna 0, de lo contrario, se devuelve el valor de $quota
+            return $quota ?? 0; 
+           
+        } catch (Exception $e) {
+            
+            Log::error('Error en checkInstanceQuota: ' . $e->getMessage());
+            
+            return 0; 
+        }
+        
     }
 
     public function decrementQuota($courseId, $instanceId): int

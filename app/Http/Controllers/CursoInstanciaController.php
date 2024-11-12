@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
 use DB;
 use App\Area;
+use Carbon\Carbon;
+
 
 
 class CursoInstanciaController extends Controller
@@ -58,19 +60,31 @@ class CursoInstanciaController extends Controller
 
            
             $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni) {
-                $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id);
+                
+                $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id_instancia);
                 $instancia->isEnrolled = $isEnrolled;
                 return $instancia;
+                
             });
 
            
             $instanciasConRestantes = $instancias->map(function ($instancia) use ($curso) {
                 
-                $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id);
+                $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
-                $restantes = $cupo - $cantInscriptos;
-            
+
+                //valido si el cupo es null para los cursos viejos
+                if ($cupo == 0 || $cupo == null) {
+                    $restantes = 0;
+                    $cupo = $cantInscriptos;
+                    $instancia->cupo = $cupo;
+                } else {
+                    $restantes = $cupo - $cantInscriptos;
+                    
+                }
+                    
                 $instancia->restantes = $restantes;
+                
                 return $instancia;
             });
 
@@ -128,6 +142,16 @@ class CursoInstanciaController extends Controller
             'estado' => 'required|string|in:Activo,No Activo',
             'version' => 'nullable|string|max:255',
         ]);
+
+        if ($request->input('fecha_inicio') !== null) {
+            $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
+            $fechaActual = Carbon::now();
+        
+            // Verifica si la fecha de inicio es menor que la fecha actual
+            if ($fechaInicio < $fechaActual) {
+                return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
+            }
+        }
 
         // Solo valida si fecha_fin no es nula
         if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
@@ -207,7 +231,16 @@ public function destroy(int $cursoId, int $instanciaId)
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
             ]);
-    
+
+            if ($request->input('fecha_inicio') !== null) {
+                $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
+                $fechaActual = Carbon::now();
+            
+                // Verifica si la fecha de inicio es menor que la fecha actual
+                if ($fechaInicio < $fechaActual) {
+                    return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
+                }
+            }
             // Solo valida si fecha_fin no es nula
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
@@ -267,7 +300,8 @@ public function destroy(int $cursoId, int $instanciaId)
             return $persona;
         });
 
-        $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id);
+        $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
+        
         $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
         $restantes = $cupo - $cantInscriptos;
         
@@ -282,7 +316,7 @@ public function destroy(int $cursoId, int $instanciaId)
     }
 
 
-    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $numInstancia)
+    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
     {
         
         $personasSeleccionadas = $request->input('personas', []);
@@ -294,7 +328,7 @@ public function destroy(int $cursoId, int $instanciaId)
             $user = $this->personaService->getById($id_persona);
             
            
-            $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $numInstancia);
+            $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
         }
 
         

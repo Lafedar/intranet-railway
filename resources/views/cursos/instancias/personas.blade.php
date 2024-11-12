@@ -24,7 +24,7 @@
         <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido o Legajo" autocomplete="off" style="width: 300px">
     </div>
     
-    <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id, 'numInstancia' => $instancia->id_instancia]) }}" method="POST">
+    <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
             @csrf
             <table class="table table-bordered table-striped text-center">
                 <thead>

@@ -556,7 +556,7 @@ Route::group(['middleware' => ['auth']], function ()
 
     Route::get('/inscripcion/{instancia_id}/curso/{curso_id}', [CursoInstanciaController::class, 'validateDestroy'])->name('inscripcion.validateDestroy');
     
-    Route::post('/inscripcion/varias-personas/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas');
+    Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas');
     Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir');
     Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia');
     
