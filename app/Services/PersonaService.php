@@ -48,6 +48,10 @@ class PersonaService
     {
         return Persona::find($id);
     }
+    public function getByDni(int $dni)
+{
+    return Persona::where('dni', $dni)->first();  // Retorna la primera persona que tenga el dni proporcionado
+}
 
     /**
      * Crear una nueva persona.

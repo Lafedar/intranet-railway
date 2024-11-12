@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CursoService;
+use App\Services\PersonaService;
 use App\Services\CursoInstanciaService;
 use App\Services\AreaService;
 use Illuminate\Http\Request;
@@ -16,13 +17,15 @@ class CursoController extends Controller
     private CursoInstanciaService $cursoInstanciaService;
     private EnrolamientoCursoService $enrolamientoCursoService;
     private AreaService $areaService;
+    private PersonaService $personaService;
 
-    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService)
+    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService)
     {
         $this->cursoService = $cursoService;
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->areaService = $areaService;
+        $this->personaService = $personaService;
     }
 
     /**
@@ -31,24 +34,31 @@ class CursoController extends Controller
      * @return \Illuminate\View\View
      */
     
+    
     public function listAll(Request $request)
     {
-        try {
-            
+        try{
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
 
-            
-            $cursosData = $this->cursoService->getAll()->load('areas');
+            $userDni = auth()->user()->dni;
+            $personaDni = $this->personaService->getByDni($userDni);
+            $persona = $this->personaService->getById($personaDni->id_p);
 
+            if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
+                $cursosData = $this->cursoService->getAll()->load('areas');
+            } else {
+                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($persona->id_p); 
             
+            }
+
+            //filtros
             if ($nombreCurso) {
                 $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
                     return str_contains(strtolower($curso->titulo), strtolower($nombreCurso));
                 });
             }
 
-            
             if ($areaId && $areaId !== 'all') {
                 
                 $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
@@ -57,26 +67,24 @@ class CursoController extends Controller
             }
 
             if ($areaId === 'all') {
-                //muestro solo los cursos que tienen "todas las áreas"
+                
                 $cursosData = $cursosData->filter(function ($curso) {
                     return $curso->areas->count() === $this->areaService->getAll()->count(); 
                 });
             }
-            //excluyo los cursos con "todas las áreas" si se seleccionó un área específica
+            
             if ($areaId && $areaId !== 'all') {
                 $cursosData = $cursosData->filter(function ($curso) {
                     
                     return $curso->areas->count() !== $this->areaService->getAll()->count();
                 });
             }
-            
-            $cursosData = $cursosData->sortByDesc('created_at');
-
             $cursosData = $cursosData->map(function ($curso) {
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
                 return $curso;
             });
-
+            
+            $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
 
@@ -87,6 +95,10 @@ class CursoController extends Controller
             return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
         }
     }
+
+    
+
+
 
     /**
      * Mostrar los detalles de un curso específico.

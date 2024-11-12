@@ -23,6 +23,7 @@ class CursoService
     public function getAll(): Collection
     {
         return Curso::with('areas')
+        ->orderBy('created_at','desc')
             ->get();
     }
 

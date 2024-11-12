@@ -3,7 +3,6 @@
 namespace App\Models;
 use App\Area;
 
-//use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Curso extends Model
@@ -30,4 +29,5 @@ public function enrolamientos()
         return $this->belongsToMany(Persona::class, 'enrolamiento_cursos', 'id_curso', 'id_persona')
         ->withPivot('id_instancia', 'evaluacion');
     }
+    
 }

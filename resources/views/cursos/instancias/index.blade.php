@@ -90,15 +90,10 @@
                         @if ($availabilityItem)
                             @if ($availabilityItem['enabled'])
 
-                                @if ($instance->isEnrolled)
-                                    Inscripto
-                                @else
+                                
                                     @if ($instance->restantes > 0)
                                         <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm" style="margin: 3px">Inscribir Personas</a>
                                     @endif
-                                @endif
-                            
-                        
                             @endif
                         @else
                         

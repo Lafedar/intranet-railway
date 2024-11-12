@@ -80,8 +80,6 @@ class EnrolamientoCursoService
         return $courseEnrollment;
     }
 
-
-
     public function getCoursesByUserId(int $userId): Collection  //obtengo los cursos de una persona
     {
         return EnrolamientoCurso::where('id_persona', $userId)
@@ -89,6 +87,16 @@ class EnrolamientoCursoService
             ->get(['id_curso', 'evaluacion']); 
     }
 
+    public function getCursosByUserId(int $userId): \Illuminate\Database\Eloquent\Collection //envio los cursos con la relacion de area
+    {
+        return EnrolamientoCurso::where('id_persona', $userId)
+            ->with('curso.areas')  
+            ->get()  
+            ->map(function ($enrolamiento) {
+                return $enrolamiento->curso;  
+            });
+    }
+    
     public function getPersonsByCourseId(int $cursoId): Collection  //obtengo las personas enroladas en un curso
     {
         return EnrolamientoCurso::where('id_curso', $cursoId)
