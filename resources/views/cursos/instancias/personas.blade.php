@@ -121,11 +121,12 @@
 
             // Iterar sobre las filas de la tabla
             $('table tbody tr').each(function() {
-                var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); // Nombre y apellido en la segunda columna
-                var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); // Legajo en la primera columna
+                var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); //segunda columna
+                var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); //primera columna
+                var area = $(this).find('td:nth-child(3)').text().toLowerCase(); //tercera columna
                 
                 // Si el filtro no coincide ni con nombre/apellido ni con legajo, ocultar la fila
-                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1) {
+                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1 ) {
                     $(this).hide();  // Si no coincide, ocultar la fila
                 } else {
                     $(this).show();  // Si coincide, mostrar la fila
