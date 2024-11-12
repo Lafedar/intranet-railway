@@ -21,35 +21,35 @@
         </div>
     @endif
 <div class="container mt-5 table-container">
-
-<form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
-    <div class="row">
-        <!-- Filtro por nombre del curso -->
-        <div class="col-md-4">
-            <input type="text" name="nombre_curso" class="form-control" placeholder="Buscar por nombre"
-                value="{{ old('nombre_curso', $nombreCurso) }}">
-        </div>
-        <!-- Filtro por área -->
-        <div class="col-md-4">
-            <select name="area_id" class="form-control">
-                <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
-                <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
-
-                @foreach ($areas as $area)
-                    <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
-                        {{ $area->nombre_a }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
-        </div>
-    </div>
-</form>
-
 @role(['administrador', 'Gestor-cursos'])
+    <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
+        <div class="row">
+            <!-- Filtro por nombre del curso -->
+            <div class="col-md-4">
+                <input type="text" name="nombre_curso" class="form-control" placeholder="Buscar por nombre"
+                    value="{{ old('nombre_curso', $nombreCurso) }}">
+            </div>
+            <!-- Filtro por área -->
+            <div class="col-md-4">
+                <select name="area_id" class="form-control">
+                    <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
+                    <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
+
+                    @foreach ($areas as $area)
+                        <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
+                            {{ $area->nombre_a }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+
     <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
         Crear Curso
     </a>
@@ -76,7 +76,7 @@
                 <tbody>
                     @foreach($cursosData as $curso)
                     <tr>
-                        <td>{{ $curso->titulo }}</td>
+                        <td>{{ $curso->titulo }}{{$curso->id}}</td>
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
                         <td>

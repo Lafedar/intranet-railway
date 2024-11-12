@@ -74,15 +74,15 @@ class CursoInstanciaController extends Controller
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
 
                 //valido si el cupo es null para los cursos viejos
-                if ($cupo == 0 || $cupo == null) {
+                /*if ($cupo == 0 || $cupo == null) {
                     $restantes = 0;
                     $cupo = $cantInscriptos;
                     $instancia->cupo = $cupo;
                 } else {
                     $restantes = $cupo - $cantInscriptos;
+                }*/
                     
-                }
-                    
+                $restantes = $cupo - $cantInscriptos;
                 $instancia->restantes = $restantes;
                 
                 return $instancia;
