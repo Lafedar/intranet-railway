@@ -23,10 +23,11 @@
     </div>
 @endif
 <div class="container mt-5">
-<a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-warning btn-sm">
-    Crear Nueva Instancia
-</a>
-
+@role(['administrador', 'Gestor-cursos'])
+    <a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-warning btn-sm">
+        Crear Nueva Instancia
+    </a>
+@endrole
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
     <table class="table table-bordered text-center">
         <thead>
@@ -41,7 +42,9 @@
                 <th>Lugar</th>
                 <th>Estado</th>
                 <th>Version</th>
-                <th>Acciones</th>
+                @role(['administrador', 'Gestor-cursos'])
+                    <th>Acciones</th>
+                @endrole
 
             </tr>
         </thead>
@@ -77,48 +80,50 @@
                 <td>{{ $instance->estado }}</td>
                 
                 <td>{{ $instance->version }}</td>
-                <td>
-                @php
-                        // Verificar la disponibilidad de la instancia
-                        $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
-                    @endphp
+                @role(['administrador', 'Gestor-cursos'])
+                    <td>
+                    @php
+                            // Verificar la disponibilidad de la instancia
+                            $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
+                        @endphp
 
-                    @if ($availabilityItem)
-                        @if ($availabilityItem['enabled'])
+                        @if ($availabilityItem)
+                            @if ($availabilityItem['enabled'])
 
-                            @if ($instance->isEnrolled)
-                                Inscripto
-                            @else
-                                @if ($instance->restantes > 0)
-                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm" style="margin: 3px">Inscribir Personas</a>
+                                @if ($instance->isEnrolled)
+                                    Inscripto
+                                @else
+                                    @if ($instance->restantes > 0)
+                                        <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" class="btn btn-primary btn-sm" style="margin: 3px">Inscribir Personas</a>
+                                    @endif
                                 @endif
-                            @endif
+                            
                         
-                      
+                            @endif
+                        @else
+                        
                         @endif
-                    @else
-                     
+                    <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" class="btn btn-warning btn-sm" style="margin: 3px">Editar</a>
+                    
+                    
+                    @if ($instance->restantes == $instance->cupo)
+                        <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
+                            @csrf
+                            @method('DELETE')  
+                            <button type="submit" class="btn btn-danger btn-sm" style="margin: 3px">Eliminar</button>
+                        </form>
                     @endif
-                <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" class="btn btn-warning btn-sm" style="margin: 3px">Editar</a>
                 
-                
-                @if ($instance->restantes == $instance->cupo)
-                    <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
-                        @csrf
-                        @method('DELETE')  
-                        <button type="submit" class="btn btn-danger btn-sm" style="margin: 3px">Eliminar</button>
-                    </form>
-                @endif
-               
-                
-                
-                
-                
-                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-secondary btn-sm">
-                    Ver personas inscriptas
-                </a>
+                    
+                    
+                    
+                    
+                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-secondary btn-sm">
+                        Ver personas inscriptas
+                    </a>
 
-                </td>
+                    </td>
+                @endrole
                                 
             </tr>
             @endforeach

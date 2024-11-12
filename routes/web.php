@@ -524,41 +524,31 @@ Route::group(['middleware' => ['auth']], function ()
   {
     
     Route::get('/cursos', [CursoController::class, 'listAll'])->name('cursos.index');
-    Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store');
-    Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy');
-    Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit');
-    Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update');
-    Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
-    Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store');
-    Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos');
-    Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy');
+    Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store')->middleware('role:administrador|Gestor-cursos');
+    Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');
+    Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
+
+    Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
-    ->name('cursos.instancias.inscriptos');
-
-    Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create');
+    ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
+    Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
-    Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription');
-    Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy');
-
-    
-    Route::get('instancias/{instancia}/{cursoId}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit');
-    Route::put('instancias/{instancia}/{cursoId}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update');
-
-    Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas');
+    Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
+    Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy')->middleware('role:administrador|Gestor-cursos');
+    Route::get('instancias/{instancia}/{cursoId}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit')->middleware('role:administrador|Gestor-cursos');
+    Route::put('instancias/{instancia}/{cursoId}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas')->middleware('role:administrador|Gestor-cursos');
     Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])
-    ->name('inscribir.persona');
-    Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos');
-    Route::get('/cursos/{curso_id}/instancias/{instancia_id}/inscripcion', [CursoInstanciaController::class, 'mostrarInscripcion'])->name('cursos.inscripcion');
-    
-
-    Route::get('/inscripcion/{instancia_id}/{curso_id}', [CursoInstanciaController::class, 'mostrarInscripcion'])->name('inscripcion.mostrar');
+    ->name('inscribir.persona')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
     Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count');
-
-    Route::get('/inscripcion/{instancia_id}/curso/{curso_id}', [CursoInstanciaController::class, 'validateDestroy'])->name('inscripcion.validateDestroy');
-    
-    Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas');
-    Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir');
-    Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia');
+    Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
+    Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
+    Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
     
   });
   use App\Http\Controllers\EmpleadoController;

@@ -57,7 +57,7 @@
             <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}">
         </div>
         <button type="submit" class="btn btn-primary">Editar Instancia</button>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+        <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary">Volver</a>
 
     </form>
 </div>

@@ -21,7 +21,7 @@
 
 <h1>Inscriptos en el Curso: </h1><h3>{{ $curso->titulo }}</h3>
     <br>
-    <h2>ID del Curso: </h2><h4>{{ $curso->id }}</h4>
+    
     <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
     @if($inscritos->isEmpty())
         <p>No hay inscriptos en este curso.</p>

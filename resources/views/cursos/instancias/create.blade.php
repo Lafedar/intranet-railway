@@ -57,7 +57,7 @@
         
         
         <button type="submit" class="btn btn-primary">Crear Instancia</button>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+        <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary">Volver</a>
 
 </div>
 @endsection

@@ -49,9 +49,11 @@
     </div>
 </form>
 
-<a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
-    Crear Curso
-</a>
+@role(['administrador', 'Gestor-cursos'])
+    <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
+        Crear Curso
+    </a>
+@endrole
 
     <h1 class="mb-4 text-center">Listado de Cursos</h1>
     <div class="row justify-content-center">
@@ -65,7 +67,10 @@
                         <th>Area</th>
                         <th>Fecha de Creación</th>
                         <th>Instancias</th>
-                        <th>Acciones</th>
+                        @role(['administrador', 'Gestor-cursos'])
+                            <th>Acciones</th>
+                        @endrole
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -95,22 +100,24 @@
                                 Ver Instancias
                             </a>
                         </td>
-                        <td>
-            
-                        <a href="{{ route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-sm">
-                            Editar
-                        </a>
+                        @role(['administrador', 'Gestor-cursos'])
+                            <td>
+                        
+                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
 
-                            @if($curso->cantInscriptos == 0)
-                            <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                            @endif
+                                    @if($curso->cantInscriptos == 0)
+                                    <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                    @endif
                             
 
-                        </td>
+                            </td>
+                        @endrole
                         
                     </tr>
                     @endforeach

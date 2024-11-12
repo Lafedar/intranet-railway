@@ -26,13 +26,15 @@ class PersonaService
      */
     public function getAll(): Collection
     {
-        return Persona::with('area')  // Carga la relación 'area' de forma eficiente
+        return Persona::with('area') 
+            ->where('activo', 1) // Carga la relación 'area' de forma eficiente
             ->orderBy('nombre_p')
             ->get();
     }
     public function getPersonsByArea(array $areas)
     {
         return Persona::whereIn('area', $areas) 
+            ->where('activo', 1)
             ->with('area')  
             ->get();
     }
