@@ -29,7 +29,7 @@ class PersonaService
         try{
             return Persona::with('area') 
             ->where('activo', 1) 
-            ->orderBy('nombre_p')
+            ->orderBy('apellido')
             ->get();
         }
         catch(Exception $e){
@@ -43,6 +43,7 @@ class PersonaService
         try{
             return Persona::whereIn('area', $areas) 
             ->where('activo', 1)
+            ->orderBy('apellido')
             ->with('area')  
             ->get();
         }

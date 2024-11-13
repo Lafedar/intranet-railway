@@ -77,7 +77,7 @@
         </div>
         <div class="form-group">
             <label for="version">Version</label>
-            <input type="number" name="version" class="form-control" required>
+            <input type="number" name="version" class="form-control">
 
         </div>
         

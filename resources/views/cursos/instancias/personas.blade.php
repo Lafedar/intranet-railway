@@ -21,7 +21,7 @@
     
     <div class="form-group">
         
-        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido o Legajo" autocomplete="off" style="width: 300px">
+        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 350px">
     </div>
     
     <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
@@ -45,7 +45,7 @@
                 @foreach($personasConEstado as $persona)
                     <tr>
                         <td>{{ $persona->legajo }} </td>
-                        <td>{{ $persona->nombre_p }} {{ $persona->apellido }}</td>
+                        <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
                         
                         
                         <td>
