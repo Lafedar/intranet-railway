@@ -281,21 +281,29 @@ public function destroy(int $cursoId, int $instanciaId)
        
     }
 
+
     public function getAsistentesInstancia(int $instanciaId, int $cursoId)
     {
-        try{
-            $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-            $inscriptosCount = $inscritos->count(); 
-            $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-            $curso = $this->cursoService->getById($cursoId);
+        try {
             
-            return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount',  'instancia'));
-        }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia' . $e->getMessage());
+            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+            
+            $inscriptosCount = $inscriptos->count();
+
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+            $curso = $this->cursoService->getById($cursoId);
+
+            $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
+                $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
+            });
+            return view('cursos.instancias.inscriptos', compact('curso', 'inscriptos', 'inscriptosCount', 'instancia'));
+            
+        } catch (Exception $e) {
+            Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener los asistentes de la instancia.');
         }
-       
     }
+
 
     public function getCountAsistentes(int $instanciaId, int $cursoId)
     {  

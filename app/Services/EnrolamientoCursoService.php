@@ -320,5 +320,19 @@ class EnrolamientoCursoService
             return response()->json(['error' => 'Ocurrió un error al cambiar la evaluacion del curso: ' . $e->getMessage()], 500);
         }
     }
+
+    public function getFechaCreacion(int $instanciaId, int $cursoId, int $userId){
+        try{
+            return EnrolamientoCurso::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->where('id_persona', $userId)
+            ->value('created_at');
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la fecha de enrolamiento' . $e->getMessage());
+            throw $e;
+        }
+        
+    }
     
 }

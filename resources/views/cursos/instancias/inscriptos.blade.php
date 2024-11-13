@@ -23,7 +23,7 @@
     <br>
     
     <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
-    @if($inscritos->isEmpty())
+    @if($inscriptos->isEmpty())
         <p>No hay inscriptos en este curso.</p>
     @else
     
@@ -32,13 +32,15 @@
                 <tr>
                     <th>Legajo</th>
                     <th>Nombre y Apellido</th>
-                    <th>Evaluacion</th>
+                    <th>Fecha de Inscripción</th>
+                    <th>Version de Instancia</th>
+                    <th>Evaluación</th>
                     <th>Acciones</td>
                     
                 </tr>
             </thead>
             <tbody>
-    @foreach($inscritos as $enrolamiento)
+    @foreach($inscriptos as $enrolamiento)
     <tr>
         <td>{{ $enrolamiento->persona->legajo }}</td>
         <td>
@@ -49,6 +51,9 @@
             @endif
         </td>
         
+      
+        <td>{{$enrolamiento->fecha_enrolamiento ? $enrolamiento->fecha_enrolamiento->format('d/m/Y H:i') : 'No disponible' }}</td> <!--fecha de enrolamiento-->
+        <td>{{$instancia->version}}</td>
         <td>{{$enrolamiento->evaluacion}}</td>
         <td>
         <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
