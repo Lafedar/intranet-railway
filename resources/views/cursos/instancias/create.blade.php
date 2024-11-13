@@ -18,13 +18,15 @@
     <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
-            <label for="fecha_inicio">Fecha inicio</label>
-            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-        </div>
-        <div class="form-group">
-            <label for="fecha_fin">Fecha Fin</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-        </div>
+        
+    <label for="fecha_inicio">Fecha inicio</label>
+    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+</div>
+
+<div class="form-group">
+    <label for="fecha_fin">Fecha Fin</label>
+    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+</div>
         <div class="form-group">
             <label for="cupo">Cupos</label>
             <input type="number" class="form-control" id="cupo" name="cupo" required>
@@ -72,5 +74,19 @@
         setTimeout(function() {
             $('#errorMessage').fadeOut('slow');
         }, 3000);
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Escuchar el cambio en el campo 'fecha_inicio'
+        const fechaInicio = document.getElementById('fecha_inicio');
+        const fechaFin = document.getElementById('fecha_fin');
+
+        // Si el campo fecha_fin está vacío, asignamos el valor de fecha_inicio
+        fechaInicio.addEventListener('input', function() {
+            if (!fechaFin.value) {  // Solo actualizamos 'fecha_fin' si está vacío
+                fechaFin.value = fechaInicio.value;
+            }
+        });
     });
 </script>
