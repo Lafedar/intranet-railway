@@ -26,17 +26,31 @@ class PersonaService
      */
     public function getAll(): Collection
     {
-        return Persona::with('area') 
-            ->where('activo', 1) // Carga la relación 'area' de forma eficiente
+        try{
+            return Persona::with('area') 
+            ->where('activo', 1) 
             ->orderBy('nombre_p')
             ->get();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas' . $e->getMessage());
+            throw $e;
+        }
+        
     }
     public function getPersonsByArea(array $areas)
     {
-        return Persona::whereIn('area', $areas) 
+        try{
+            return Persona::whereIn('area', $areas) 
             ->where('activo', 1)
             ->with('area')  
             ->get();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas de las areas' . $e->getMessage());
+            throw $e;
+        }
+        
     }
     /**
      * Obtener una persona por su ID.
@@ -46,12 +60,26 @@ class PersonaService
      */
     public function getById(int $id): ?Persona
     {
-        return Persona::find($id);
+        try{
+            return Persona::find($id);
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
+            throw $e;
+        }
+        
     }
     public function getByDni(int $dni)
-{
-    return Persona::where('dni', $dni)->first();  // Retorna la primera persona que tenga el dni proporcionado
-}
+    {
+        try{
+            return Persona::where('dni', $dni)->first(); 
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Dni ' . $e->getMessage());
+            throw $e;
+        }
+        
+    }
 
     /**
      * Crear una nueva persona.
@@ -61,6 +89,7 @@ class PersonaService
      */
     public function create(array $data): Persona
     {
+    
         $this->validateData($data);
         return Persona::create($data);
     }
@@ -86,7 +115,14 @@ class PersonaService
      */
     public function delete(Persona $persona): ?bool
     {
-        return $persona->delete();
+        try{
+            return $persona->delete();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la persona' . $e->getMessage());
+            throw $e;
+        }
+       
     }
 
     

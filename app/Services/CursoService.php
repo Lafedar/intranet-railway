@@ -22,51 +22,86 @@ class CursoService
     
     public function getAll(): Collection
     {
-        return Curso::with('areas')
-        ->orderBy('created_at','desc')
-            ->get();
+        try{
+            return Curso::with('areas')
+            ->orderBy('created_at','desc')
+                ->get();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
     public function getById($id): ?Curso
     {
-        return Curso::with('areas') 
-                ->find($id);  
+        try{
+            return Curso::with('areas') 
+            ->find($id); 
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso por Id' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
     public function getAreasByCourseId(int $cursoId)
     {
-        $curso = Curso::with('areas')->find($cursoId);
-        if (!$curso) {
-            
-            return null;  
+        try{
+            $curso = Curso::with('areas')->find($cursoId);
+            if (!$curso) {
+                
+                return null;  
+            }
+    
+            return $curso->areas;
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las areas del curso' . $e->getMessage());
+            throw $e;
         }
-
-        return $curso->areas;
+        
     }
 
     public function create(array $data)
     {
+        try{
+            $curso = Curso::create([
+                'titulo' => $data['titulo'],
+                'descripcion' => $data['descripcion'],
+                'obligatorio' => $data['obligatorio'],
+                'codigo' => $data['codigo'],
+                'tipo' => $data['tipo'],
+            ]);
         
-        $curso = Curso::create([
-            'titulo' => $data['titulo'],
-            'descripcion' => $data['descripcion'],
-            'obligatorio' => $data['obligatorio'],
-            'codigo' => $data['codigo'],
-            'tipo' => $data['tipo'],
-        ]);
-    
-        return $curso;
+            return $curso;
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al crear el curso' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
     public function update(Curso $curso, array $data): bool
     {
-        $this->validateData($data);
-        return $curso->update($data);
+        try{
+            $this->validateData($data);
+            return $curso->update($data);
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function delete(Curso $curso) :?bool 
     {
-        return $curso->delete();
+        try{
+            return $curso->delete();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar el curso' . $e->getMessage());
+            throw $e;
+        }
+        
     }
     
     

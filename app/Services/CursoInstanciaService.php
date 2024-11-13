@@ -21,8 +21,8 @@ class CursoInstanciaService
         try {
             // Fetch all instances related to the course ID
             return CursoInstancia::where('id_curso', $cursoId)->get();
-        } catch (\Throwable $e) {
-            Log::error('Error obteniendo instancias del curso: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error obteniendo las instancias del curso' . $e->getMessage());
             throw new Exception('Error al buscar las instancias.');
         }
     }
@@ -46,13 +46,11 @@ class CursoInstanciaService
                 ->where('id_curso', $courseId)
                 ->value('cupo');
                
-            // Si $quota es null, se asigna 0, de lo contrario, se devuelve el valor de $quota
             return $quota ?? 0; 
            
         } catch (Exception $e) {
             
-            Log::error('Error en checkInstanceQuota: ' . $e->getMessage());
-            
+            Log::error('Error in class: ' . get_class($this) . ' .Error en checkInstanceQuota' . $e->getMessage());
             return 0; 
         }
         
@@ -75,8 +73,8 @@ class CursoInstanciaService
     {
         try {
             return CursoInstancia::create($data);
-        } catch (\Exception $e) {
-            \Log::error('Error al crear la instancia: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia' . $e->getMessage());
             throw $e; 
         }
     }
@@ -88,8 +86,8 @@ class CursoInstanciaService
                                  ->where('id_curso', $cursoId)
                                  ->first(); 
         } catch (\Exception $e) {
-            // Manejo de errores
-            \Log::error('Error al obtener la instancia: ' . $e->getMessage());
+            
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la instancia' . $e->getMessage());
             throw $e; 
         }
     }
@@ -107,22 +105,33 @@ class CursoInstanciaService
             }
             return false;
     
-        } catch (\Exception $e) {
-            \Log::error('Error al eliminar la instancia: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la instancia' . $e->getMessage());
             throw $e;
         }
         
     }
     public function getCountInstances(int $cursoId){
-           
-        return CursoInstancia::where('id_curso', $cursoId)
-        ->distinct('id_instancia') 
-        ->count('id_instancia'); 
+           try{
+                return CursoInstancia::where('id_curso', $cursoId)
+                ->distinct('id_instancia') 
+                ->count('id_instancia'); 
+           }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al contar las instancias del curso' . $e->getMessage());
+            throw $e;
+           }
+        
     }
 
     public function getIdCourseByInstanceId(int $instanceId){
-        return CursoInstancia::where('id', $instanceId)
+        try{
+            return CursoInstancia::where('id', $instanceId)
         ->value('id_curso');
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso mediante el Id de instancia' . $e->getMessage());
+            throw $e;
+        }
         
     }
     

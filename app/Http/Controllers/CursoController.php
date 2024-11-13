@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
 use App\Area;
 use App\Models\Curso;
+use Exception;
+
 class CursoController extends Controller
 {
     private CursoService $cursoService;
@@ -90,8 +92,9 @@ class CursoController extends Controller
 
             return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas'));
 
-        } catch (\Exception $e) {
-            Log::error('Error al mostrar los cursos: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
+            
             return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
         }
     }
@@ -111,10 +114,10 @@ class CursoController extends Controller
         try {
             $curso = $this->cursoService->getById($id);
             if (!$curso) {
-                throw new \Exception('El curso no fue encontrado.');
+                throw new Exception('El curso no fue encontrado.');
             }
             return view('cursos.show', compact('curso'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar el curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al mostrar el curso.');
@@ -128,9 +131,16 @@ class CursoController extends Controller
      */
     public function create()
     {
-        $areas = $this->areaService->getAll();  // Recupera todas las áreas
+        try{
+            $areas = $this->areaService->getAll();  // Recupera todas las áreas
 
-        return view('cursos.create', compact('areas'));
+            return view('cursos.create', compact('areas'));
+        }catch(Exception $e){
+            // Registrar el error y redirigir con un mensaje de error
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.create: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al mostrar la vista cursos.create.');
+        }
+        
     }
 
     /**
@@ -162,9 +172,9 @@ class CursoController extends Controller
         
         
         return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Registrar el error y redirigir con un mensaje de error
-        Log::error('Error al crear el curso: ' . $e->getMessage());
+        Log::error('Error in class: ' . get_class($this) . ' .Error al crear el curso: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
     }
 }
@@ -184,13 +194,13 @@ class CursoController extends Controller
             $curso = $this->cursoService->getById($id);
             $areas = $this->areaService->getAll();
             if (!$curso) {
-                throw new \Exception('El curso no fue encontrado.');
+                throw new Exception('El curso no fue encontrado.');
             }
             return view('cursos.edit', compact('curso', 'areas'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
-            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener el curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al obtener el curso.');
+            Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.edit: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener la vista cursos.edit.');
         }
     }
     
@@ -213,29 +223,29 @@ class CursoController extends Controller
                 return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
             }
     
-            // Validar los datos del formulario
+            
             $validatedData = $request->validate([
                 'titulo' => 'required|string|max:100',
                 'descripcion' => 'nullable|string|max:65530',
                 'obligatorio' => 'required|boolean',
                 'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
-                'area' => 'nullable|array',  // Asegúrate de que el campo sea un array y sea opcional
+                'area' => 'nullable|array',  
             ]);
     
-            // Actualizar el curso
+            
             $curso->update($validatedData);
     
-            // Si 'area' está presente en los datos validados, sincronizar las relaciones
+            
             if (isset($validatedData['area'])) {
-                $curso->areas()->sync($validatedData['area']); // Sincroniza las áreas seleccionadas
+                $curso->areas()->sync($validatedData['area']); 
             }
     
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
     
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
-            Log::error('Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
         }
     }
@@ -258,13 +268,13 @@ class CursoController extends Controller
         try {
             $curso = $this->cursoService->getById($id);
             if (!$curso) {
-                throw new \Exception('El curso no fue encontrado.');
+                throw new Exception('El curso no fue encontrado.');
             }
             
             
             $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
             
-            // Eliminar los enrolamientos de cada instancia
+            
             foreach ($instancias as $instancia) {
                 $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id); 
                 $this->cursoInstanciaService->delete($instancia);
@@ -273,7 +283,7 @@ class CursoController extends Controller
             
             $this->cursoService->delete($curso);
             return redirect()->route('cursos.index')->with('success', 'El curso y sus instancias fueron eliminados exitosamente.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             session()->flash('error', 'Error al eliminar el curso: ' . $e->getMessage());
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al eliminar el curso: ' . $e->getMessage());
@@ -289,7 +299,7 @@ class CursoController extends Controller
             $curso = $this->cursoService->getById($cursoId);
             return view('cursos.inscriptos', compact('inscritos', 'curso'));
         }
-        catch(\Exception $e){
+        catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener los incriptos del curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener los incriptos del curso.');
         }

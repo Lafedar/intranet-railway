@@ -15,6 +15,7 @@ use App\Models\Curso;
 use DB;
 use App\Area;
 use Carbon\Carbon;
+use Exception;
 
 
 
@@ -50,7 +51,7 @@ class CursoInstanciaController extends Controller
             $curso = $this->cursoService->getById($cursoId);
 
             if (!$curso) {
-                throw new \Exception('Curso no encontrado.');
+                throw new Exception('Curso no encontrado.');
             }
 
            
@@ -90,7 +91,7 @@ class CursoInstanciaController extends Controller
 
             return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability'));
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener las instancias del curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las instancias del curso.');
@@ -108,7 +109,7 @@ class CursoInstanciaController extends Controller
             $enroll = $this->enrolamientoCursoService->enroll($userDni, $instanceId);
             return redirect()->route('cursos.instancias.index', $courseId);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             Log::error('Error in class: ' . get_class($this) . ' .Error al incribir al usuario ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al intentar inscribir al usuario.');
@@ -122,7 +123,7 @@ class CursoInstanciaController extends Controller
             $curso = Curso::findOrFail($cursoId); 
             return view('cursos.instancias.create', compact('curso')); 
         }
-        catch(\Exception $e){
+        catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar el curso a cursos.instancias.create' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al retornar el curso a cursos.instancias.create.');
         }
@@ -147,13 +148,13 @@ class CursoInstanciaController extends Controller
             $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
             $fechaActual = Carbon::now();
         
-            // Verifica si la fecha de inicio es menor que la fecha actual
+            
             if ($fechaInicio < $fechaActual->startOfDay()) {
                 return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
             }
         }
 
-        // Solo valida si fecha_fin no es nula
+        
         if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
             return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
         }
@@ -169,7 +170,7 @@ class CursoInstanciaController extends Controller
 
         return redirect()->route('cursos.instancias.index', $cursoId)
                          ->with('success', 'Instancia creada exitosamente.');
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
     }
@@ -192,7 +193,7 @@ public function destroy(int $cursoId, int $instanciaId)
         
         return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
                          ->with('success', 'Instancia eliminada exitosamente.');
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Registrar el error y redirigir con mensaje de error
         Log::error('Error en clase: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
@@ -210,7 +211,7 @@ public function destroy(int $cursoId, int $instanciaId)
         
             return view('cursos.instancias.edit', compact('instancia', 'curso'));
         }
-        catch(\Exception $e){
+        catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al retornar la instancia a cursos.instancias.edit.');
         }
@@ -250,7 +251,7 @@ public function destroy(int $cursoId, int $instanciaId)
         
             return redirect()->route('cursos.instancias.index', $instancia->id_curso)
                              ->with('success', 'Instancia actualizada exitosamente.');
-        }catch(\Exception $e){
+        }catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar la instancia' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar la instancia.');
         }
@@ -259,89 +260,116 @@ public function destroy(int $cursoId, int $instanciaId)
 
     public function getAsistentesInstancia(int $instanciaId, int $cursoId)
     {
-        $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-        $inscriptosCount = $inscritos->count(); // Conteo de inscritos
-       $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-        $curso = $this->cursoService->getById($cursoId);
-        
-        return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount',  'instancia'));
+        try{
+            $inscritos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+            $inscriptosCount = $inscritos->count(); 
+            $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+            $curso = $this->cursoService->getById($cursoId);
+            
+            return view('cursos.instancias.inscriptos', compact('curso', 'inscritos', 'inscriptosCount',  'instancia'));
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener los asistentes de la instancia.');
+        }
+       
     }
 
     public function getCountAsistentes(int $instanciaId, int $cursoId)
     {  
-        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-        $countInscriptos = $inscritos->count();
-        $instancia->cantInscriptos = $countInscriptos;
-
+        try{
+            $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
+            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+            $countInscriptos = $inscritos->count();
+            $instancia->cantInscriptos = $countInscriptos;
+    
+            
+            return view('cursos.instancias.index', compact('countInscriptos'));
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener los asistentes de la instancia.');
+        }
         
-        return view('cursos.instancias.index', compact('countInscriptos'));
     }
 
 
     public function getPersonas(int $cursoId, int $instanciaId)
     {
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-        $curso = $this->cursoService->getById($cursoId);
-
-        $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
-        $areaIds = $areasCurso->pluck('id_a')->toArray();
-        $personas = $this->personaService->getPersonsByArea($areaIds);
-
-        $personas->each(function ($persona) {
-            $persona->area = $this->areaService->getAreaById($persona->area); 
-        });
-
-        $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
-        $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
-
-        $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
-            $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds);
-            return $persona;
-        });
-
-        $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
-        
-        $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
-        $restantes = $cupo - $cantInscriptos;
-        
-        if ($filtro = request('filtro')) {
-            $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
-                return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
-               
+        try{
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+            $curso = $this->cursoService->getById($cursoId);
+    
+            $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
+            $areaIds = $areasCurso->pluck('id_a')->toArray();
+            $personas = $this->personaService->getPersonsByArea($areaIds);
+    
+            $personas->each(function ($persona) {
+                $persona->area = $this->areaService->getAreaById($persona->area); 
             });
+    
+            $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
+            $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
+    
+            $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
+                $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds);
+                return $persona;
+            });
+    
+            $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
+            
+            $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
+            $restantes = $cupo - $cantInscriptos;
+            
+            if ($filtro = request('filtro')) {
+                $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
+                    return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
+                   
+                });
+            }
+    
+            return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia','restantes'));
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las personas para inscribir' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al obtener las personas para inscribir.');
         }
-
-        return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia','restantes'));
+        
     }
 
 
     public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
     {
-        
-        $personasSeleccionadas = $request->input('personas', []);
+        try{
+            $personasSeleccionadas = $request->input('personas', []);
     
-        if (empty($personasSeleccionadas)) {
-            return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
-        }
-        foreach ($personasSeleccionadas as $id_persona => $inscribir) {
-            $user = $this->personaService->getById($id_persona);
+            if (empty($personasSeleccionadas)) {
+                return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
+            }
+            foreach ($personasSeleccionadas as $id_persona => $inscribir) {
+                $user = $this->personaService->getById($id_persona);
+                
+               
+                $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
+            }
+    
             
-           
-            $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
+            return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
         }
-
         
-        return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
     }
 
     public function desinscribirPersona(int $userId, int $instanciaId, int $cursoId)
 {
+    try{
+        $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $cursoId);
+        return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
+    }
+    catch(Exception $e){
+        Log::error('Error in class: ' . get_class($this) . ' .Error al desinscribir la persona' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al desinscribir la persona.');
+    }
     
-    $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $cursoId);
-    
-    
-    return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
 }
 
 
@@ -352,13 +380,13 @@ public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
     try {
         
         $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanciaId, $cursoId, $bandera);
-
-        
         return redirect()->back()
                          ->with('success', 'La instancia fue evaluada correctamente.');
 
-    } catch (\Exception $e) {
-        
+    } catch (Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al evaluar la persona.');
+            
         return redirect()->back()
                          ->withErrors('Ocurrió un error al aprobar la instancia: ' . $e->getMessage());
     }

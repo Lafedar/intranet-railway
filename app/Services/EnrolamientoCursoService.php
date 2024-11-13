@@ -49,11 +49,17 @@ class EnrolamientoCursoService
 
     public function isEnrolled($userDni, $instanciaId): ?bool
     {
+        try{
+            $person = Persona::where('dni', $userDni)->first();
+            return EnrolamientoCurso::where('id_persona', $person->id_p)
+                ->where('id_instancia', $instanciaId)
+                ->exists();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al verificar el enrolamiento' . $e->getMessage());
+            throw $e;
+        }
        
-        $person = Persona::where('dni', $userDni)->first();
-        return EnrolamientoCurso::where('id_persona', $person->id_p)
-            ->where('id_instancia', $instanciaId)
-            ->exists();
     }
     public function isEnrolled2($id_persona): ?bool
     {
@@ -62,69 +68,115 @@ class EnrolamientoCursoService
     }
     public function enroll($userDni, $instanceId, $cursoId): ?EnrolamientoCurso
     {
-        $courseEnrollment = null;
+        try{
+            $courseEnrollment = null;
        
-        $person = Persona::where('dni', $userDni)->first();
+            $person = Persona::where('dni', $userDni)->first();
+            
+            if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
+                $data = [
+                    'id_persona' => $person->id_p,
+                    'id_instancia' => $instanceId,
+                    'id_curso' => $cursoId,
+                    'fecha_enrolamiento' => Carbon::now(),
+                    'estado' => 'Alta',
+                    'evaluacion' => 'No Aprobado',
+                ];
+                $courseEnrollment = EnrolamientoCurso::create($data);
+            } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $cursoId . ' y la instancia id: ' . $instanceId );
+            return $courseEnrollment;
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al crear el enrolamiento' . $e->getMessage());
+            throw $e;
+        }
         
-        if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
-            $data = [
-                'id_persona' => $person->id_p,
-                'id_instancia' => $instanceId,
-                'id_curso' => $cursoId,
-                'fecha_enrolamiento' => Carbon::now(),
-                'estado' => 'Alta',
-                'evaluacion' => 'No Aprobado',
-            ];
-            $courseEnrollment = EnrolamientoCurso::create($data);
-        } else Log::alert('Alert in class: ' . get_class($this) .'.No hay cupo para el id_curso: ' . $cursoId . ' y la instancia id: ' . $instanceId );
-        return $courseEnrollment;
     }
 
     public function getCoursesByUserId(int $userId): Collection  //obtengo los cursos de una persona
     {
-        return EnrolamientoCurso::where('id_persona', $userId)
+        try{
+            return EnrolamientoCurso::where('id_persona', $userId)
             ->with('curso') 
             ->get(['id_curso', 'evaluacion']); 
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos del usuario' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
     public function getCursosByUserId(int $userId): \Illuminate\Database\Eloquent\Collection //envio los cursos con la relacion de area
     {
-        return EnrolamientoCurso::where('id_persona', $userId)
+        try{
+            return EnrolamientoCurso::where('id_persona', $userId)
             ->with('curso.areas')  
             ->get()  
             ->map(function ($enrolamiento) {
                 return $enrolamiento->curso;  
             });
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos del usuario en getCursosByUserId' . $e->getMessage());
+            throw $e;
+        }
     }
     
     public function getPersonsByCourseId(int $cursoId): Collection  //obtengo las personas enroladas en un curso
     {
-        return EnrolamientoCurso::where('id_curso', $cursoId)
+        try{
+            return EnrolamientoCurso::where('id_curso', $cursoId)
             ->with('persona') 
             ->get(); 
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las personas del curso' . $e->getMessage());
+            throw $e;
+        }
+        
 
     }
     public function getCountPersonas(int $cursoId){
-        return EnrolamientoCurso::with('persona') 
-        ->where('id_curso', $cursoId)
-        ->count();
+        try{
+            return EnrolamientoCurso::with('persona') 
+            ->where('id_curso', $cursoId)
+            ->count();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al contar las personas del curso' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
 
     public function getPersonsByInstanceId(int $instanceId, int $cursoId)
     {
-        return EnrolamientoCurso::with('persona') 
+        try{
+            return EnrolamientoCurso::with('persona') 
             ->where('id_curso', $cursoId)
             ->where('id_instancia', $instanceId)
             ->get();
+        } catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las personas de la instancia' . $e->getMessage());
+            throw $e;
+        }
+       
             
     }
     public function getCountPersonsByInstanceId(int $instanceId, int $cursoId)
     {
-        return EnrolamientoCurso::with('persona') 
+        try{
+            return EnrolamientoCurso::with('persona') 
             ->where('id_curso', $cursoId)
             ->where('id_instancia', $instanceId)
             ->count();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al contar las personas de la instancia' . $e->getMessage());
+            throw $e;
+        }
+        
             
     }
 
@@ -132,9 +184,15 @@ class EnrolamientoCursoService
 
     public function deleteByInstanceId(int $idCurso, int $idInstancia)
     {
-        return EnrolamientoCurso::where('id_instancia', $idInstancia)
-                                ->where('id_curso', $idCurso)
-                                ->delete();
+        try{
+            return EnrolamientoCurso::where('id_instancia', $idInstancia)
+            ->where('id_curso', $idCurso)
+            ->delete();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar el enrolamiento' . $e->getMessage());
+            throw $e;
+        }
+        
     }
 
     
@@ -194,27 +252,32 @@ class EnrolamientoCursoService
 
     public function unEnroll($userId, $instanceId, $cursoId): ?bool
     {
-
-        $person = $this->personaService->getById($userId);
-    
-        if (!$person) {
-            Log::error('Error: Persona no encontrada para el ID: ' . $userId);
-            return false;
-        }
-       
-        $enrollment = EnrolamientoCurso::where('id_persona', $person->id_p)
-                                        ->where('id_instancia', $instanceId)
-                                        ->where('id_curso', $cursoId)
-                                        ->first();
+        try{
+                $person = $this->personaService->getById($userId);
         
-        if (!$enrollment) {
-            Log::error('Error: No se encontró enrolamiento para la persona con DNI: ' . $userId . 
-                    ' en la instancia id: ' . $instanceId . ' y curso id: ' . $cursoId);
-            return false;
-        }
+            if (!$person) {
+                Log::error('Error: Persona no encontrada para el ID: ' . $userId);
+                return false;
+            }
         
-        $enrollment->delete();
-        return true;
+            $enrollment = EnrolamientoCurso::where('id_persona', $person->id_p)
+                                            ->where('id_instancia', $instanceId)
+                                            ->where('id_curso', $cursoId)
+                                            ->first();
+            
+            if (!$enrollment) {
+                Log::error('Error: No se encontró enrolamiento para la persona con DNI: ' . $userId . 
+                        ' en la instancia id: ' . $instanceId . ' y curso id: ' . $cursoId);
+                return false;
+            }
+            
+            $enrollment->delete();
+            return true;
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al desenrolar a la persona' . $e->getMessage());
+            throw $e;
+        }
     }
     public function evaluarInstancia(int $userId, int $instanciaId, int $cursoId, int $bandera)
     {
@@ -251,8 +314,9 @@ class EnrolamientoCursoService
         
             }
             
-        } catch (\Exception $e) {
-            
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar a la persona' . $e->getMessage());
+            throw $e;
             return response()->json(['error' => 'Ocurrió un error al cambiar la evaluacion del curso: ' . $e->getMessage()], 500);
         }
     }
