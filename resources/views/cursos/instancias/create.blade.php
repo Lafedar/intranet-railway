@@ -33,7 +33,13 @@
         </div>
         <div class="form-group">
             <label for="modalidad">Modalidad</label>
-            <input type="text" class="form-control" id="modalidad" name="modalidad">
+            <select class="form-control" id="modalidad" name="modalidad">
+                <option value="">Seleccione una modalidad</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Hibrido">Hibrido</option>
+                <option value="Remoto">Remoto</option>
+            
+            </select>
         </div>
         <div class="form-group">
     <label for="capacitador">Capacitador</label>

@@ -134,7 +134,11 @@ class CursoInstanciaService
         }
         
     }
-    
+    public function getModalidad(int $instanciaId, int $cursoId){
+        return CursoInstancia::where('id_curso', $cursoId)
+        ->where('id_instancia', $instanciaId)
+        ->value('modalidad');
+    }
   
     
     

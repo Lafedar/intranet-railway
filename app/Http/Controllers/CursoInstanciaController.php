@@ -220,8 +220,9 @@ public function destroy(int $cursoId, int $instanciaId)
             $curso = $this->cursoService->getById($cursoId);
             $capacitador = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->capacitador;
             $personas = $this->personaService->getAll();
+            $modalidad = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->modalidad;
         
-            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas'));
+            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad'));
         }
         catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());

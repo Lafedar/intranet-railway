@@ -32,10 +32,17 @@
             <label for="cupo">Cupos</label>
             <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instancia->cupo }}" required>
         </div>
+        
         <div class="form-group">
-            <label for="modalidad">Modalidad</label>
-            <input type="text" class="form-control" id="modalidad" name="modalidad" value="{{ $instancia->modalidad }}">
-        </div>
+    <label for="modalidad">Modalidad</label>
+    <select class="form-control" id="modalidad" name="modalidad">
+        <option value="">Seleccione una modalidad</option>
+        <option value="Presencial" {{ old('modalidad', $modalidad) == 'Presencial' ? 'selected' : '' }}>Presencial</option>
+        <option value="Hibrido" {{ old('modalidad', $modalidad) == 'Hibrido' ? 'selected' : '' }}>Hibrido</option>
+        <option value="Remoto" {{ old('modalidad', $modalidad) == 'Remoto' ? 'selected' : '' }}>Remoto</option>
+    </select>
+</div>
+
         <div class="form-group">
             <label for="capacitador">Capacitador</label>
             <select class="form-control" id="capacitador" name="capacitador" required>
