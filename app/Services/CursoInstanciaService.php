@@ -123,6 +123,19 @@ class CursoInstanciaService
         
     }
 
+    public function getMaxInstanceId(int $cursoId)
+    {
+        try {
+            $maxIdInstancia = CursoInstancia::where('id_curso', $cursoId)
+                                            ->max('id_instancia');
+            
+            return $maxIdInstancia;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el id_instancia más grande del curso' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function getIdCourseByInstanceId(int $instanceId){
         try{
             return CursoInstancia::where('id', $instanceId)

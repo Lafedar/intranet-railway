@@ -85,12 +85,21 @@ class CursoController extends Controller
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
                 return $curso;
             });
-            
+
+            $cursosData = $cursosData->map(function ($curso) {
+                $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
+                
+                // Ahora se calcula el porcentaje de aprobados para cada curso
+                $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id, $curso->id);
+                
+                return $curso;
+            });
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
-
-            return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas'));
+            
+           
+        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());

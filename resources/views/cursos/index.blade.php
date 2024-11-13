@@ -67,6 +67,8 @@
                         <th>Codigo</th>
                         <th>Area</th>
                         <th>Fecha de Creación</th>
+                        <th>Cant. Inscriptos</th>
+                        <th>% Aprobados</th>
                         <th>Instancias</th>
                         @role(['administrador', 'Gestor-cursos'])
                             <th>Acciones</th>
@@ -96,6 +98,8 @@
                             @endif
                         </td>
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
+                        <td>{{ $curso->cantInscriptos}}</td>
+                        <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
                         <td>                            
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-primary btn-sm">
                                 Ver Instancias

@@ -334,5 +334,33 @@ class EnrolamientoCursoService
         }
         
     }
+    public function getCountAprobados(int $cursoId){
+        try{
+            return EnrolamientoCurso::where('id_curso', $cursoId)
+            ->where('evaluacion', 'Aprobado')
+            ->count();
+        }
+        catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al contar los aprobados del curso.' . $e->getMessage());
+            throw $e;
+        }
+       
+    }
+    public function getPorcentajeAprobacion(int $cursoId){
+        try{
+            $cantInscriptos = $this->getCountPersonas($cursoId);
+            $cantAprobados = $this->getCountAprobados($cursoId);
+            if ($cantInscriptos == 0) {
+                return 0;
+            }
+            $porcentaje = ($cantAprobados * 100) / $cantInscriptos;
+            return $porcentaje;
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al calcular el % de aprobacion.' . $e->getMessage());
+            throw $e;
+        }
+       
+        
+    }
     
 }

@@ -173,7 +173,7 @@ class CursoInstanciaController extends Controller
         $data['capacitador'] = $capacitador;
 
         // Obtener el próximo id_instancia basado en el conteo de instancias
-        $nextInstanciaId = $this->cursoInstanciaService->getCountInstances($cursoId) + 1;
+        $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
         $data['id_instancia'] = $nextInstanciaId;
 
         $this->cursoInstanciaService->create($data);
