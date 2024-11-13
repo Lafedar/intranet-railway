@@ -89,6 +89,16 @@
 });
 </script>
 <script>
+    // Marcar/desmarcar todos los checkboxes cuando se seleccione "Todas las áreas"
+    $('#selectAll').change(function() {
+        if ($(this).prop('checked')) {
+            $('input[name="area[]"]').prop('checked', true);  // Marca todos los checkboxes
+        } else {
+            $('input[name="area[]"]').prop('checked', false); // Desmarca todos los checkboxes
+        }
+    });
+</script>
+<script>
     // Función para actualizar el contador de caracteres
     function updateCharacterCount(inputId, countId) {
         const inputElement = document.getElementById(inputId);
