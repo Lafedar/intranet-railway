@@ -148,7 +148,7 @@ class CursoInstanciaController extends Controller
             $fechaActual = Carbon::now();
         
             // Verifica si la fecha de inicio es menor que la fecha actual
-            if ($fechaInicio < $fechaActual) {
+            if ($fechaInicio < $fechaActual->startOfDay()) {
                 return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
             }
         }
@@ -237,7 +237,7 @@ public function destroy(int $cursoId, int $instanciaId)
                 $fechaActual = Carbon::now();
             
                 // Verifica si la fecha de inicio es menor que la fecha actual
-                if ($fechaInicio < $fechaActual) {
+                if ($fechaInicio < $fechaActual->startOfDay()) {
                     return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
                 }
             }
