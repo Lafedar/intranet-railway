@@ -158,8 +158,8 @@ class CursoController extends Controller
     try {
         // Validación de los datos del formulario
         $validatedData = $request->validate([
-            'titulo' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:65530',
+            'titulo' => 'required|string|max:253',
+            'descripcion' => 'nullable|string|max:253',
             'obligatorio' => 'required|boolean',
             'codigo' => 'nullable|string',
             'tipo' => 'required|string',
@@ -277,7 +277,7 @@ class CursoController extends Controller
             
             foreach ($instancias as $instancia) {
                 $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id); 
-                $this->cursoInstanciaService->delete($instancia);
+                $this->cursoInstanciaService->delete($instancia, $curso->id);
             }
 
             

@@ -64,6 +64,7 @@
                         <th>Título</th>
                         <th>Descripción</th>
                         <th>Obligatorio</th>
+                        <th>Codigo</th>
                         <th>Area</th>
                         <th>Fecha de Creación</th>
                         <th>Instancias</th>
@@ -76,9 +77,10 @@
                 <tbody>
                     @foreach($cursosData as $curso)
                     <tr>
-                        <td>{{ $curso->titulo }}{{$curso->id}}</td>
+                        <td>{{ $curso->titulo }}</td>
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
+                        <td>{{ $curso->codigo ?? 'N/A'}}</td>
                         <td>
                             
                             @if($curso->areas->isEmpty()) 

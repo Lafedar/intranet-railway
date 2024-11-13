@@ -12,15 +12,18 @@
         @csrf
         @method('PUT')
 
+       
         <div class="form-group">
-            <label for="titulo">Título</label>
-            <input type="text" class="form-control" id="titulo" name="titulo" value="{{ old('titulo', $curso->titulo) }}" required>
-        </div>
+    <label for="titulo">Título</label>
+    <input type="text" class="form-control" id="titulo" name="titulo" value="{{ old('titulo', $curso->titulo) }}" required maxlength="252">
+    <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
+</div>
 
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <textarea class="form-control" id="descripcion" name="descripcion" required>{{ old('descripcion', $curso->descripcion) }}</textarea>
-        </div>
+<div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <textarea class="form-control" id="descripcion" name="descripcion" required maxlength="252">{{ old('descripcion', $curso->descripcion) }}</textarea>
+    <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
+</div>
 
         <div class="form-group">
     <label>Obligatorio</label>
@@ -84,5 +87,31 @@
     $(document).ready(function() {
     $('.select2').select2();
 });
+</script>
+<script>
+    // Función para actualizar el contador de caracteres
+    function updateCharacterCount(inputId, countId) {
+        const inputElement = document.getElementById(inputId);
+        const countElement = document.getElementById(countId);
+        const maxLength = inputElement.getAttribute("maxlength");
+        const currentLength = inputElement.value.length;
+        const remaining = maxLength - currentLength;
+
+        countElement.textContent = `Quedan ${remaining} caracteres`;
+    }
+
+    // Escuchamos eventos para el campo de título
+    document.getElementById("titulo").addEventListener("input", function() {
+        updateCharacterCount("titulo", "titulo-count");
+    });
+
+    // Escuchamos eventos para el campo de descripción
+    document.getElementById("descripcion").addEventListener("input", function() {
+        updateCharacterCount("descripcion", "descripcion-count");
+    });
+
+    // Inicializar los contadores al cargar la página
+    updateCharacterCount("titulo", "titulo-count");
+    updateCharacterCount("descripcion", "descripcion-count");
 </script>
 @endsection
