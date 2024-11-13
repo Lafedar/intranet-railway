@@ -36,9 +36,27 @@
             <input type="text" class="form-control" id="modalidad" name="modalidad">
         </div>
         <div class="form-group">
-            <label for="capacitador">Capacitador</label>
-            <input type="text" class="form-control" id="capacitador" name="capacitador">
-        </div>
+    <label for="capacitador">Capacitador</label>
+    <select class="form-control" id="capacitador" name="capacitador" required>
+        <option value="">Seleccione un capacitador</option>
+        @foreach($personas as $persona)
+            <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}">
+                {{ $persona->nombre_p }} {{ $persona->apellido }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+
+<a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
+
+
+<a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
+
+<div id="otroCapacitadorInput" style="display: none;">
+    <label for="otro_capacitador">Escribe el nombre del capacitador</label>
+    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador">
+</div>
         <div class="form-group">
             <label for="lugar">Lugar</label>
             <input type="text" class="form-control" id="lugar" name="lugar">
@@ -86,6 +104,56 @@
         fechaInicio.addEventListener('input', function() {
             if (!fechaFin.value) {  // Solo actualizamos 'fecha_fin' si está vacío
                 fechaFin.value = fechaInicio.value;
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectCapacitador = document.getElementById('capacitador');
+        const otroLink = document.getElementById('otroCapacitadorLink');
+        const cerrarLink = document.getElementById('cerrarCapacitadorLink');
+        const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
+        const otroCapacitadorInput = document.getElementById('otro_capacitador');
+
+        // Mostrar el input cuando se hace clic en el enlace "Otro"
+        otroLink.addEventListener('click', function() {
+            inputOtroCapacitador.style.display = 'block'; // Mostrar el input
+            selectCapacitador.disabled = true; // Bloquear el select
+            cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
+            otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
+            // Limpiar el campo de texto
+            otroCapacitadorInput.value = '';
+        });
+
+        // Mostrar el input cuando se selecciona "Otro" en el select
+        selectCapacitador.addEventListener('change', function() {
+            if (selectCapacitador.value !== "") {
+                inputOtroCapacitador.style.display = 'none'; // Ocultar el input
+                selectCapacitador.disabled = false; // Desbloquear el select
+                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+                otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+            } else {
+                inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
+                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+            }
+        });
+
+        // Cuando se hace clic en el botón "Cerrar"
+        cerrarLink.addEventListener('click', function() {
+            inputOtroCapacitador.style.display = 'none'; // Ocultar el input de "Otro"
+            selectCapacitador.disabled = false; // Habilitar el select
+            otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+            cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+        });
+
+        // Antes de enviar el formulario, asignamos el valor del input de "Otro" al campo de capacitador
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Si el input "Otro" es visible y tiene valor, lo asignamos al select
+            if (inputOtroCapacitador.style.display === 'block' && otroCapacitadorInput.value.trim() !== "") {
+                // Asignamos el valor del input al select antes de enviar
+                selectCapacitador.value = otroCapacitadorInput.value.trim();
             }
         });
     });

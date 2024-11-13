@@ -121,7 +121,8 @@ class CursoInstanciaController extends Controller
     {
         try{
             $curso = Curso::findOrFail($cursoId); 
-            return view('cursos.instancias.create', compact('curso')); 
+            $personas = $this->personaService->getAll();
+            return view('cursos.instancias.create', compact('curso', 'personas')); 
         }
         catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar el curso a cursos.instancias.create' . $e->getMessage());
@@ -139,11 +140,19 @@ class CursoInstanciaController extends Controller
             'cupo' => 'required|integer',
             'modalidad' => 'nullable|string|max:255',
             'capacitador' => 'nullable|string|max:255',
+            'otro_capacitador' => 'nullable|string|max:255',
             'lugar' => 'nullable|string|max:255',
             'estado' => 'required|string|in:Activo,No Activo',
             'version' => 'nullable|string|max:255',
         ]);
+        $capacitador = $request->input('capacitador');
 
+        // Si el campo "Otro" fue llenado, usamos ese valor en lugar del select.
+        if ($request->input('otro_capacitador')) {
+            $capacitador = $request->input('otro_capacitador');
+            
+        }
+    
         if ($request->input('fecha_inicio') !== null) {
             $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
             $fechaActual = Carbon::now();
@@ -161,6 +170,7 @@ class CursoInstanciaController extends Controller
 
         $data = $request->all();
         $data['id_curso'] = $cursoId;
+        $data['capacitador'] = $capacitador;
 
         // Obtener el próximo id_instancia basado en el conteo de instancias
         $nextInstanciaId = $this->cursoInstanciaService->getCountInstances($cursoId) + 1;
@@ -208,8 +218,10 @@ public function destroy(int $cursoId, int $instanciaId)
         try{
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $curso = $this->cursoService->getById($cursoId);
+            $capacitador = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->capacitador;
+            $personas = $this->personaService->getAll();
         
-            return view('cursos.instancias.edit', compact('instancia', 'curso'));
+            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas'));
         }
         catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
@@ -228,11 +240,18 @@ public function destroy(int $cursoId, int $instanciaId)
                 'cupo' => 'required|integer',
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
+                'otro_capacitador' => 'nullable|string|max:255',
                 'lugar' => 'nullable|string|max:255',
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
             ]);
-
+            $capacitador = $request->input('capacitador');
+            
+            if ($request->input('otro_capacitador')) {
+                $capacitador = $request->input('otro_capacitador');
+                
+                
+            }
             if ($request->input('fecha_inicio') !== null) {
                 $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
                 $fechaActual = Carbon::now();
@@ -247,8 +266,11 @@ public function destroy(int $cursoId, int $instanciaId)
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-            $instancia->update($request->all());
-        
+            
+            $data = $request->all();
+            $data['capacitador'] = $capacitador;
+            $instancia->update($data);
+            
             return redirect()->route('cursos.instancias.index', $instancia->id_curso)
                              ->with('success', 'Instancia actualizada exitosamente.');
         }catch(Exception $e){

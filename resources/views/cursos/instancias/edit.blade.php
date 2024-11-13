@@ -38,8 +38,24 @@
         </div>
         <div class="form-group">
             <label for="capacitador">Capacitador</label>
-            <input type="text" class="form-control" id="capacitador" name="capacitador" value="{{ $instancia->capacitador }}">
+            <select class="form-control" id="capacitador" name="capacitador" required>
+                <option value="">Seleccione un capacitador</option>
+                @foreach($personas as $persona)
+                    <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}"
+                        {{ old('capacitador', $capacitador) == $persona->nombre_p . ' ' . $persona->apellido ? 'selected' : '' }}>
+                        {{ $persona->nombre_p }} {{ $persona->apellido }}
+                    </option>
+                @endforeach
+            </select>
         </div>
+        <a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
+        <a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
+        <div id="otroCapacitadorInput" style="display: none;">
+            <label for="otro_capacitador">Escribe el nombre del capacitador</label>
+            <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" 
+                value="{{ old('otro_capacitador', $capacitador) }}">
+        </div>
+
         <div class="form-group">
             <label for="lugar">Lugar</label>
             <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}">
@@ -61,4 +77,56 @@
 
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectCapacitador = document.getElementById('capacitador');
+        const otroLink = document.getElementById('otroCapacitadorLink');
+        const cerrarLink = document.getElementById('cerrarCapacitadorLink');
+        const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
+        const otroCapacitadorInput = document.getElementById('otro_capacitador');
+
+        // Verificar si el capacitador seleccionado es "Otro"
+        if (selectCapacitador.value === "") {
+            inputOtroCapacitador.style.display = 'block'; // Mostrar el input "Otro" si no hay selección
+            selectCapacitador.disabled = true; // Bloquear el select
+            cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
+            otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
+        }
+
+        // Mostrar el input cuando se hace clic en el enlace "Otro"
+        otroLink.addEventListener('click', function() {
+            inputOtroCapacitador.style.display = 'block'; // Mostrar el input
+            selectCapacitador.disabled = true; // Bloquear el select
+            cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
+            otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
+            // Limpiar el campo de texto
+            otroCapacitadorInput.value = '';
+        });
+
+        // Mostrar el enlace "Otro" y ocultar el input cuando se hace clic en "Cerrar"
+        cerrarLink.addEventListener('click', function() {
+            inputOtroCapacitador.style.display = 'none'; // Ocultar el input de "Otro"
+            selectCapacitador.disabled = false; // Habilitar el select
+            otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+            cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+            // Limpiar el campo de texto
+            otroCapacitadorInput.value = ''; // Limpiar el valor del input "Otro"
+        });
+
+        // Mostrar el input cuando se selecciona "Otro" en el select
+        selectCapacitador.addEventListener('change', function() {
+            if (selectCapacitador.value !== "") {
+                inputOtroCapacitador.style.display = 'none'; // Ocultar el input
+                selectCapacitador.disabled = false; // Desbloquear el select
+                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+                otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+            } else {
+                inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
+                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+            }
+        });
+    });
+</script>
+
 @endsection
