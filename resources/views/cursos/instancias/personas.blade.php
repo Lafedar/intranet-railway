@@ -70,7 +70,7 @@
                             <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
                                     @csrf
                                     @method('POST') <!-- Esto indica que es una solicitud POST -->
-                                    <button type="submit" class="btn btn-danger">Desinscribir</button>
+                                    <button type="submit" class="btn btn-danger">Desuscribir</button>
                                 </form>
                             @else
                             N/A 

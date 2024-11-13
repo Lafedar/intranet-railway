@@ -54,7 +54,7 @@
         <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
                                     @csrf
                                     @method('POST') 
-                                    <button type="submit" class="btn btn-danger">Desinscribir</button>
+                                    <button type="submit" class="btn btn-danger">Desuscribir</button>
                                 </form>
                                 
                                 <!-- Formulario para aprobar -->

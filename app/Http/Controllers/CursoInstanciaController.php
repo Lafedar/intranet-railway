@@ -317,45 +317,51 @@ public function destroy(int $cursoId, int $instanciaId)
 
     public function getPersonas(int $cursoId, int $instanciaId)
     {
-        try{
+        try {
+            
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $curso = $this->cursoService->getById($cursoId);
-    
+
             $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
             $areaIds = $areasCurso->pluck('id_a')->toArray();
+
             $personas = $this->personaService->getPersonsByArea($areaIds);
-    
+
             $personas->each(function ($persona) {
-                $persona->area = $this->areaService->getAreaById($persona->area); 
+                $persona->area = $this->areaService->getAreaById($persona->area);
             });
-    
+
             $personasEnroladas = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $curso->id);
             $enroladasIds = $personasEnroladas->pluck('id_persona')->toArray();
-    
+
+            // Asignar el estado de inscripción a las personas
             $personasConEstado = $personas->map(function ($persona) use ($enroladasIds) {
                 $persona->estadoEnrolado = in_array($persona->id_p, $enroladasIds);
                 return $persona;
             });
-    
+
+            $personasConEstado = $personasConEstado->sortByDesc('estadoEnrolado'); 
+
+        
             $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
             
             $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
             $restantes = $cupo - $cantInscriptos;
-            
+        
             if ($filtro = request('filtro')) {
                 $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
                     return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
-                   
                 });
             }
-    
-            return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia','restantes'));
-        }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las personas para inscribir' . $e->getMessage());
+
+            return view('cursos.instancias.personas', compact('personasConEstado', 'curso', 'instancia', 'restantes'));
+
+        } catch (Exception $e) {
+            Log::error('Error al obtener las personas para inscribir: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las personas para inscribir.');
         }
-        
     }
+
 
 
     public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
