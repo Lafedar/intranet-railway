@@ -437,6 +437,29 @@ public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
     }
 }
 
+public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, $bandera)
+{
+    try {
+        
+        // Obtener todas las personas inscritas en esta instancia
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+
+        // Aprobar a todas las personas
+        foreach ($inscriptos as $enrolamiento) {
+            $this->enrolamientoCursoService->evaluarInstancia($enrolamiento->id_persona, $instanciaId, $cursoId, $bandera); 
+        }
+        if($bandera==0){
+            return redirect()->back()->with('success', 'Todas las personas fueron aprobadas correctamente.');
+        }else{
+            return redirect()->back()->with('success', 'Todas las personas fueron desaprobadas correctamente.');
+        }
+        
+    } catch (Exception $e) {
+        Log::error('Error en la clase: ' . get_class($this) . ' .Error al aprobar a todas las personas: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al aprobar a todas las personas.');
+    }
+}
+
 
 
 

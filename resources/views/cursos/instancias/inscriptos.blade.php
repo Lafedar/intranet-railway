@@ -27,6 +27,14 @@
         <p>No hay inscriptos en este curso.</p>
     @else
     
+    <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}" method="POST" style="margin-bottom: 20px;">
+        @csrf
+        <button type="submit" class="btn btn-primary">Aprobar a todos</button>
+    </form>
+    <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}" method="POST" style="margin-bottom: 20px;">
+        @csrf
+        <button type="submit" class="btn btn-primary">Desaprobar a todos</button>
+    </form>
         <table class="table table-bordered table-striped text-center">
             <thead>
                 <tr>
