@@ -266,6 +266,14 @@ public function destroy(int $cursoId, int $instanciaId)
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
+
+            //validar el cupo
+            $inscriptosCount = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instanciaId, $cursoId);
+            $cupo = $request->input('cupo');
+            if ($cupo < $inscriptosCount) {
+                return redirect()->back()->withInput()->withErrors(['cupo' => 'El cupo no puede ser menor que la cantidad de personas ya inscriptas.']);
+            }
+
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             
             $data = $request->all();
