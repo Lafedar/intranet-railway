@@ -20,6 +20,7 @@
             </button>
         </div>
     @endif
+    
 <div class="container mt-5 table-container">
 @role(['administrador', 'Gestor-cursos'])
     <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
@@ -57,7 +58,7 @@
 
     <h1 class="mb-4 text-center">Listado de Cursos</h1>
     <div class="row justify-content-center">
-        <div class="col-md-10"> 
+        <div class="col-md-15"> 
             <table class="table table-bordered table-striped text-center">
                 <thead class="thead-dark">
                     <tr>

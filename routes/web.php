@@ -2,6 +2,9 @@
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use App\Http\Controllers\CursoController; 
 use App\Http\Controllers\CursoInstanciaController;
+use App\Exports\InscriptosExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\EmpleadoController;
 
 Auth::routes();
 
@@ -52,6 +55,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('selectTurnosEmpleados', 'EmpleadoController@selectTurnosEmpleados');
 
     Route::get('/empleado/curso', [EmpleadoController::class, 'curso'])->name('empleado.curso');
+    Route::get('/empleado/{id}/cursos', [EmpleadoController::class, 'getCursos'])->name('empleado.cursos');
   });
    //****************PUESTOS**********************
 Route::group(['middleware' => ['auth']], function () {
@@ -551,11 +555,16 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
     Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos');
   });
-  use App\Http\Controllers\EmpleadoController;
-
-  Route::get('/empleado/{id}/cursos', [EmpleadoController::class, 'getCursos'])->name('empleado.cursos');
 
 
- 
+  
+  // Ruta para exportar los inscriptos en Excel
+  Route::get('cursos/{cursoId}/instancias/{instanciaId}/exportar', function ($cursoId, $instanciaId) {
+    $curso = \App\Models\Curso::findOrFail($cursoId);  
+    $instancia = \App\Models\CursoInstancia::findOrFail($instanciaId);  
+    
+    return Excel::download(new InscriptosExport($curso, $instancia), 'inscriptos_' . $curso->titulo . '.xlsx');
+  })->name('exportarInscriptos');
+  
 
 

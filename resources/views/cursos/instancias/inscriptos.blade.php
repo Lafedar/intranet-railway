@@ -26,6 +26,10 @@
     @if($inscriptos->isEmpty())
         <p>No hay inscriptos en este curso.</p>
     @else
+    <form action="{{ route('exportarInscriptos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}" method="GET" style="margin-bottom: 20px;">
+    @csrf
+    <button type="submit" class="btn btn-success">Exportar a Excel</button>
+</form>
     
     <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}" method="POST" style="margin-bottom: 20px;">
         @csrf
@@ -61,7 +65,7 @@
         
       
         <td>{{$enrolamiento->fecha_enrolamiento ? $enrolamiento->fecha_enrolamiento->format('d/m/Y H:i') : 'No disponible' }}</td> <!--fecha de enrolamiento-->
-        <td>{{$instancia->version}}</td>
+        <td>{{$instancia->version ?? 'N/A' }}</td>
         <td>{{$enrolamiento->evaluacion}}</td>
         <td>
         <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
