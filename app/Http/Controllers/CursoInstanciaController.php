@@ -16,6 +16,13 @@ use DB;
 use App\Area;
 use Carbon\Carbon;
 use Exception;
+use App\Models\Anexo;
+
+use Barryvdh\DomPDF\Facade;
+use PDF;
+
+ 
+
 
 
 
@@ -463,6 +470,79 @@ public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, 
 
 
 
+public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
+{
+    // Obtener los inscriptos, instancia y curso como antes
+    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+
+    $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
+        $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
+    });
+
+    // Obtener los valores de los campos del formulario desde la solicitud
+    $version = $request->input('version');
+    $anexo = $request->input('anexo');
+    $poe = $request->input('poe');
+    $titulo = $request->input('titulo');
+    $hojas = $request->input('hojas');
+    $procedimiento = $request->input('procedimiento');
+
+    // Crear un nuevo anexo si se envían los datos desde el formulario
+    if ($request->has('anexo') && $request->has('poe')) {
+        $anexoData = new Anexo();
+        $anexoData->formulario = $anexo;
+        $anexoData->descripcion1 = "POE";
+        $anexoData->valor1 = $poe;
+        $anexoData->descripcion2 = "Titulo";
+        $anexoData->valor2 = $titulo;
+        $anexoData->descripcion3 = "Version";
+        $anexoData->valor3 = $version;
+        $anexoData->descripcion4 = "Hojas";
+        $anexoData->valor4= $hojas;
+        $anexoData->descripcion5 = "Anexo";
+        $anexoData->valor5= $anexo;
+        
+
+        // Guardar el nuevo anexo en la base de datos
+        $anexoData->save();
+
+        
+    }
+
+    // Obtener las columnas de la tabla anexos
+    $anexos = Anexo::select('descripcion1', 'descripcion2', 'descripcion3', 'descripcion4','descripcion5' )
+                  ->first(); // Obtiene el primer registro de la tabla
+
+    // Pasar estos valores a la vista
+    return view('cursos.planillaCursos', compact('inscriptos', 'version', 'anexo', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso'));
+}
+
+
+public function generarPDF(int $instanciaId, int $cursoId) {
+
+    // Obtener los inscriptos, instancia y curso, como lo haces en verPlanilla
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+
+    // Ahora puedes llamar a los servicios para obtener los datos.
+    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+
+    // Obtener las columnas de la tabla anexos
+    $anexos = Anexo::select('valor1', 'valor2', 'valor3', 'valor4', 'valor5')
+               ->latest()
+               ->first();
+
+
+    // Cargar la vista para el PDF, pasando todos los datos necesarios
+    $pdf = PDF::loadView('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos'));
+    
+    // Generar y descargar el PDF
+    return $pdf->download('planilla.pdf');
+}
 
   
    

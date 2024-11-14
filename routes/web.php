@@ -536,7 +536,7 @@ Route::group(['middleware' => ['auth']], function ()
 
     Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
-    Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
+    //Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
     ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
     Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
@@ -554,6 +554,10 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
     Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
     Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos');
+
+    Route::get('/cursos/{instanciaId}/{cursoId}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
+    Route::get('/cursos/generar-pdf/{instanciaId}/{cursoId}', [CursoinstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
+
   });
 
 
