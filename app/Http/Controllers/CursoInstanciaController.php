@@ -17,9 +17,10 @@ use App\Area;
 use Carbon\Carbon;
 use Exception;
 use App\Models\Anexo;
-
-use Barryvdh\DomPDF\Facade;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
+use Illuminate\Support\Facades\Storage;
+
 
  
 
@@ -493,6 +494,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
     if ($request->has('anexo') && $request->has('poe')) {
         $anexoData = new Anexo();
         $anexoData->formulario = $anexo;
+        $anexoData->valor_formulario = $anexo;
         $anexoData->descripcion1 = "POE";
         $anexoData->valor1 = $poe;
         $anexoData->descripcion2 = "Titulo";
@@ -521,32 +523,37 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
 
 
 public function generarPDF(int $instanciaId, int $cursoId) {
-
-    // Obtener los inscriptos, instancia y curso, como lo haces en verPlanilla
+    // Obtener los inscriptos, instancia y curso
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
 
-    // Ahora puedes llamar a los servicios para obtener los datos.
+    // Obtener los datos de los inscriptos
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
 
     // Obtener las columnas de la tabla anexos
     $anexos = Anexo::select('valor1', 'valor2', 'valor3', 'valor4', 'valor5')
                ->latest()
                ->first();
 
+    // Cargar la vista para el PDF
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos'))->render();
 
-    // Cargar la vista para el PDF, pasando todos los datos necesarios
-    $pdf = PDF::loadView('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos'));
-    
+    // Cargar el HTML para el PDF usando SnappyPdf
+    $pdf = SnappyPdf::loadHTML($html)
+                     ->setOption('enable-local-file-access', true)
+                     ->setOption('enable-javascript', true)
+                     ->setOption('javascript-delay', 200)
+                     ->setOption('margin-top', 10)
+                     ->setOption('margin-right', 10)
+                     ->setOption('margin-bottom', 10)
+                     ->setOption('margin-left', 10);
+
     // Generar y descargar el PDF
     return $pdf->download('planilla.pdf');
 }
 
-  
-   
-   
+
+
 
 
    
