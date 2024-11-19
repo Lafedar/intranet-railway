@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
- 
+  <meta charset="UTF-8">
 </head>
 <body>
 
@@ -12,10 +12,10 @@
       <!-- Fila 1 -->
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda" style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-          <b>LAFEDAR</b>
+        <b>{{$anexos->descripcion5 ?? $anexos->valor5}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-          <b>POE N°: POE</b>
+          <b>POE N°: {{$anexos->descripcion1 ?? $anexos->valor1}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
         </div>
@@ -25,7 +25,7 @@
       <div class="fila-2" style="display: table-row; width: 80%;">  <!-- Cambié el ancho de la fila -->
         <!-- Celda izquierda (Logo) -->
         <div class="celda-izquierda-2" style="display: table-cell; border-right: 2px solid black; box-sizing: border-box; height: 50px; vertical-align: middle; text-align: center;">
-  <img src="{{ $imageBase64 }}" alt="Logo" width="100" height="50" />
+  <img src="{{ $imageBase64 }}" alt="Logo" width="100" height="70" />
 </div>
 
 
@@ -34,14 +34,14 @@
   
         <!-- Celda central -->
         <div class="celda-central" style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-          <b>Título</b>
+          <b>{{$anexos->descripcion2 ?? $anexos->valor2}}</b>
         </div>
   
         <!-- Celda derecha -->
         <div class="celda-derecha-2" style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;"> <!-- Cambié el ancho de esta celda -->
           <!-- Contenedor para el texto "Version N°" -->
           <div class="arriba" style="margin-bottom: 2px;">
-            <b>Version N°: Version</b>
+            <b>Version N°: {{$anexos->descripcion3 ?? $anexos->valor3}}</b>
           </div>
   
           <!-- Línea horizontal centrada en la celda -->
@@ -49,7 +49,7 @@
   
           <!-- Contenido inferior -->
           <div class="abajo" style="margin-top: 5px;">
-            <b>Pagina N°: Hojas</b>
+            <b>Pagina N°: {{$anexos->descripcion4 ?? $anexos->valor4}}</b>
           </div>
         </div>
       </div>

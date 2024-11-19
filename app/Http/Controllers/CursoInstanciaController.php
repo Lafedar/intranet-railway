@@ -579,11 +579,10 @@ public function generarPDF(int $instanciaId, int $cursoId) {
                    ->first();
 
     // Ruta de la imagen
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
-
-    // Verificar si la imagen existe
+    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
+    
     if (file_exists($imagePath)) {
-        // Convertir la imagen a Base64
+       
         $imageData = base64_encode(file_get_contents($imagePath));
         $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
 
