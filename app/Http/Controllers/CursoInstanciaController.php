@@ -516,13 +516,27 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
     // Obtener las columnas de la tabla anexos
     $anexos = Anexo::select('descripcion1', 'descripcion2', 'descripcion3', 'descripcion4','descripcion5' )
                   ->first(); // Obtiene el primer registro de la tabla
+                  $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
 
-    // Pasar estos valores a la vista
-    return view('cursos.planillaCursos', compact('inscriptos', 'version', 'anexo', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso'));
-}
+                  // Verificar si la imagen existe
+                  if (file_exists($imagePath)) {
+                      // Convertir la imagen a Base64
+                      $imageData = base64_encode(file_get_contents($imagePath));
+                      $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+              
+                      // Crear la cadena de imagen Base64
+                      $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+                  } else {
+                      // Si no se encuentra la imagen, puedes asignar un valor predeterminado
+                      $imageBase64 = null;
+                  }
+              
+                  // Pasar estos valores a la vista
+                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'anexo', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
+              }
 
 
-public function generarPDF(int $instanciaId, int $cursoId) {
+/*public function generarPDF(int $instanciaId, int $cursoId) {
     // Obtener los inscriptos, instancia y curso
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
@@ -550,7 +564,53 @@ public function generarPDF(int $instanciaId, int $cursoId) {
 
     // Generar y descargar el PDF
     return $pdf->download('planilla.pdf');
+}*/
+public function generarPDF(int $instanciaId, int $cursoId) {
+    // Obtener los inscriptos, instancia y curso
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+
+    // Obtener los datos de los inscriptos
+    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+
+    // Obtener las columnas de la tabla anexos
+    $anexos = Anexo::select('valor1', 'valor2', 'valor3', 'valor4', 'valor5')
+                   ->latest()
+                   ->first();
+
+    // Ruta de la imagen
+    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
+
+    // Verificar si la imagen existe
+    if (file_exists($imagePath)) {
+        // Convertir la imagen a Base64
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+        // Crear la cadena de imagen Base64
+        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+    } else {
+        // Si no se encuentra la imagen, puedes asignar un valor predeterminado
+        $imageBase64 = null;
+    }
+
+    // Cargar la vista para el PDF y pasar la variable de la imagen
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos', 'imageBase64'))->render();
+
+    // Cargar el HTML para el PDF usando SnappyPdf
+    $pdf = SnappyPdf::loadHTML($html)
+                     ->setOption('enable-local-file-access', true)
+                     ->setOption('enable-javascript', true)
+                     ->setOption('javascript-delay', 200)
+                     ->setOption('margin-top', 10)
+                     ->setOption('margin-right', 10)
+                     ->setOption('margin-bottom', 10)
+                     ->setOption('margin-left', 10);
+
+    // Generar y descargar el PDF
+    return $pdf->download('planilla.pdf');
 }
+
 
 
 
