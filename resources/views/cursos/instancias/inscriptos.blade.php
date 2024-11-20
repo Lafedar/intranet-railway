@@ -50,7 +50,7 @@
                 <input type="text" id="hojas" name="hojas" required>
                 
                 <!-- Botón de envío -->
-                <button type="submit" class="btn btn-success">Crear Plantilla Garantía</button>
+                <button type="submit" class="btn btn-success">Editar Plantilla Garantía</button>
             </div>
         </form>
 
@@ -69,6 +69,10 @@
             <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-primary">Desaprobar a todos</button>
+            </form>
+            <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-primary">Vista previa Formulario</button>
             </form>
         </div>
 

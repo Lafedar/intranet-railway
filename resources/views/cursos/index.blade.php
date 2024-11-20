@@ -120,6 +120,10 @@
                                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                         </form>
                                     @endif
+                                    <a href="{{ route('verPlanilla', ['instanciaId' => 1, 'cursoId' => $curso->id]) }}" method="GET" style="margin-bottom: 20px;" class="btn btn-success btn-sm">
+                                        Ver formulario
+                                    </a>
+
                             
 
                             </td>

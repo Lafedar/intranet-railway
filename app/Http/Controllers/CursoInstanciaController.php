@@ -484,7 +484,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
 
     // Obtener los valores de los campos del formulario desde la solicitud
     $version = $request->input('version');
-    $anexo = $request->input('anexo');
+    $formulario = $request->input('anexo');
     $poe = $request->input('poe');
     $titulo = $request->input('titulo');
     $hojas = $request->input('hojas');
@@ -493,8 +493,8 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
     // Crear un nuevo anexo si se envían los datos desde el formulario
     if ($request->has('anexo') && $request->has('poe')) {
         $anexoData = new Anexo();
-        $anexoData->formulario = $anexo;
-        $anexoData->valor_formulario = $anexo;
+        $anexoData->formulario = "Anexo";
+        $anexoData->valor_formulario = $formulario;
         $anexoData->descripcion1 = "POE";
         $anexoData->valor1 = $poe;
         $anexoData->descripcion2 = "Titulo";
@@ -503,8 +503,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
         $anexoData->valor3 = $version;
         $anexoData->descripcion4 = "Hojas";
         $anexoData->valor4= $hojas;
-        $anexoData->descripcion5 = "Anexo";
-        $anexoData->valor5= $anexo;
+        
         
 
         // Guardar el nuevo anexo en la base de datos
@@ -514,7 +513,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
     }
 
     // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('descripcion1', 'descripcion2', 'descripcion3', 'descripcion4','descripcion5' )
+    $anexos = Anexo::select('formulario','descripcion1', 'descripcion2', 'descripcion3', 'descripcion4' )
                   ->first(); // Obtiene el primer registro de la tabla
                   $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
 
@@ -532,7 +531,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
                   }
               
                   // Pasar estos valores a la vista
-                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'anexo', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
+                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'formulario', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
               }
 
 
@@ -574,7 +573,7 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
 
     // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('valor1', 'valor2', 'valor3', 'valor4', 'valor5')
+    $anexos = Anexo::select('valor_formulario','valor1', 'valor2', 'valor3', 'valor4')
                    ->latest()
                    ->first();
 
@@ -610,6 +609,68 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     return $pdf->download('planilla.pdf');
 }
 
+public function verPlanillaPrevia(int $instanciaId, int $cursoId)
+{
+    // Obtener los inscriptos, instancia y curso como antes
+    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+
+    $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
+        $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
+    });
+
+    // Obtener los valores de los campos del formulario desde la solicitud
+    $version = $request->input('version');
+    $formulario = $request->input('anexo');
+    $poe = $request->input('poe');
+    $titulo = $request->input('titulo');
+    $hojas = $request->input('hojas');
+    $procedimiento = $request->input('procedimiento');
+
+    // Crear un nuevo anexo si se envían los datos desde el formulario
+    if ($request->has('anexo') && $request->has('poe')) {
+        $anexoData = new Anexo();
+        $anexoData->formulario = "Anexo";
+        $anexoData->valor_formulario = $formulario;
+        $anexoData->descripcion1 = "POE";
+        $anexoData->valor1 = $poe;
+        $anexoData->descripcion2 = "Titulo";
+        $anexoData->valor2 = $titulo;
+        $anexoData->descripcion3 = "Version";
+        $anexoData->valor3 = $version;
+        $anexoData->descripcion4 = "Hojas";
+        $anexoData->valor4= $hojas;
+        
+        
+
+        // Guardar el nuevo anexo en la base de datos
+        $anexoData->save();
+
+        
+    }
+
+    // Obtener las columnas de la tabla anexos
+    $anexos = Anexo::select('formulario','descripcion1', 'descripcion2', 'descripcion3', 'descripcion4' )
+                  ->first(); // Obtiene el primer registro de la tabla
+                  $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
+
+                  // Verificar si la imagen existe
+                  if (file_exists($imagePath)) {
+                      // Convertir la imagen a Base64
+                      $imageData = base64_encode(file_get_contents($imagePath));
+                      $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+              
+                      // Crear la cadena de imagen Base64
+                      $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+                  } else {
+                      // Si no se encuentra la imagen, puedes asignar un valor predeterminado
+                      $imageBase64 = null;
+                  }
+              
+                  // Pasar estos valores a la vista
+                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'formulario', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
+              }
 
 
 

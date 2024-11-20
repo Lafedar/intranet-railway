@@ -12,7 +12,8 @@
       <!-- Fila 1 -->
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda" style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>{{$anexos->descripcion5 ?? $anexos->valor5}}</b>
+        
+        <b>{{$anexos->formulario ?? $anexos->valor_formulario}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
           <b>POE N°: {{$anexos->descripcion1 ?? $anexos->valor1}}</b>
@@ -83,12 +84,16 @@
         @endforeach
       </tbody>
     </table>
+    <br><br><br>
+    @if(!empty($instancia->id_instancia))
+      <form action="{{ route('cursos.generarPDF', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET">
+      @csrf
+      <button type="submit" class="btn btn-primary">Generar PDF</button>
+    @endif
+  </form>
   </div>
 
-  <form action="{{ route('cursos.generarPDF', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET">
-    @csrf
-    <button type="submit" class="btn btn-primary">Generar PDF</button>
-  </form>
+  
 
 </body>
 </html>
