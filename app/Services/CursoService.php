@@ -34,16 +34,15 @@ class CursoService
     }
 
     public function getById($id): ?Curso
-    {
-        try{
-            return Curso::with('areas') 
-            ->find($id); 
-        }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso por Id' . $e->getMessage());
-            throw $e;
-        }
-        
+{
+    try {
+        return Curso::with('areas', 'anexos')  // Asegúrate de cargar 'anexos' aquí
+            ->find($id);
+    } catch (Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso por Id' . $e->getMessage());
+        throw $e;
     }
+}
 
     public function getAreasByCourseId(int $cursoId)
     {
@@ -104,5 +103,24 @@ class CursoService
         
     }
     
+    public function getDocumentacion(int $cursoId)
+    {
+        $curso = $this->getById($cursoId);
     
+        if ($curso->anexos->isEmpty()) {
+            dd('No hay anexos relacionados con este curso.');
+        }
+    
+        $formularios = $curso->anexos;
+    
+        return $formularios;
+    }
+
+    public function getDocumentacionById(string $formulario_id, int $cursoId) {
+        $curso = $this->getById($cursoId);
+    
+        $anexo = $curso->anexos()->where('anexos.formulario_id', $formulario_id)->first();
+    
+        return $anexo;
+    }
 }

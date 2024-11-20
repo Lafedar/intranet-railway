@@ -28,31 +28,7 @@
         <p>No hay inscriptos en este curso.</p>
     @else
         <!-- Formulario para crear planilla -->
-        <form action="{{ route('verPlanilla', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET" style="margin-bottom: 20px;">
-            @csrf
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <label for="version">Versión:</label>
-                <input type="number" id="version" name="version" required min="1">
-
-                <label for="anexo">Anexo:</label>
-                <input type="text" id="anexo" name="anexo" required>
-
-                <label for="poe">POE:</label>
-                <input type="text" id="poe" name="poe" required>
-
-                <label for="titulo">Título:</label>
-                <input type="text" id="titulo" name="titulo" required>
-
-                <label for="proced">ID y Nombre del Procedimiento:</label>
-                <input type="text" id="proced" name="proced" required>
-
-                <label for="hojas">Hojas (Desde - Hasta):</label>
-                <input type="text" id="hojas" name="hojas" required>
-                
-                <!-- Botón de envío -->
-                <button type="submit" class="btn btn-success">Editar Plantilla Garantía</button>
-            </div>
-        </form>
+        
 
         <!-- Botones adicionales debajo del formulario -->
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -70,10 +46,12 @@
                 @csrf
                 <button type="submit" class="btn btn-primary">Desaprobar a todos</button>
             </form>
-            <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Vista previa Formulario</button>
-            </form>
+            <form action="{{ route('verPlanilla', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET" style="margin-bottom: 20px;">
+           
+            <button type="submit" class="btn btn-success">Ver Planilla</button>
+
+        </form>
+           
         </div>
 
         <!-- Tabla de inscriptos -->

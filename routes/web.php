@@ -557,7 +557,8 @@ Route::group(['middleware' => ['auth']], function ()
 
     Route::get('/cursos/{instanciaId}/{cursoId}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
     Route::get('/cursos/generar-pdf/{instanciaId}/{cursoId}', [CursoinstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
-
+    Route::get('/ver-documentos/{cursoId}', [CursoController::class, 'getDocumentacion'])->name('verDocumentos');
+    Route::get('/ver-planilla-previa/{formularioId}/{cursoId}', [CursoinstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia');
   });
 
 

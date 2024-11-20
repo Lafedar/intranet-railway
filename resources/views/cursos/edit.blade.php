@@ -21,7 +21,7 @@
 
 <div class="form-group">
     <label for="descripcion">Descripción</label>
-    <textarea class="form-control" id="descripcion" name="descripcion" required maxlength="252">{{ old('descripcion', $curso->descripcion) }}</textarea>
+    <textarea class="form-control" id="descripcion" name="descripcion"  maxlength="252">{{ old('descripcion', $curso->descripcion) }}</textarea>
     <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
 </div>
 
@@ -63,6 +63,17 @@
             <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
         </div>
     @endforeach
+</div>
+<div class="form-group">
+    <label for="anexos">Anexos</label>
+    <select name="anexos[]" class="form-control select2" multiple="multiple">
+        @foreach($anexos as $formulario)
+            <option value="{{ $formulario->formulario_id }}"
+                @if(in_array($formulario->formulario_id, $selectedAnexos)) selected @endif>
+                {{ $formulario->formulario_id }}
+            </option>
+        @endforeach
+    </select>
 </div>
         <div class="form-group">
             <label for="codigo">Código</label>
@@ -123,5 +134,10 @@
     // Inicializar los contadores al cargar la página
     updateCharacterCount("titulo", "titulo-count");
     updateCharacterCount("descripcion", "descripcion-count");
+</script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
 </script>
 @endsection

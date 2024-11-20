@@ -13,10 +13,10 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda" style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
         
-        <b>{{$anexoMasReciente->valor_formulario}}</b>
+        <b>{{$anexo->valor_formulario}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-          <b>POE N°: {{$anexoMasReciente->valor1}}</b>
+          <b>POE N°: {{$anexo->valor1}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
         </div>
@@ -35,14 +35,14 @@
   
         <!-- Celda central -->
         <div class="celda-central" style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-          <b>{{$anexoMasReciente->valor2}}</b>
+          <b>{{$anexo->valor2}}</b>
         </div>
   
         <!-- Celda derecha -->
         <div class="celda-derecha-2" style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;"> <!-- Cambié el ancho de esta celda -->
           <!-- Contenedor para el texto "Version N°" -->
           <div class="arriba" style="margin-bottom: 2px;">
-            <b>Version N°: {{$anexoMasReciente->valor3}}</b>
+            <b>Version N°: {{$anexo->valor3}}</b>
           </div>
   
           <!-- Línea horizontal centrada en la celda -->
@@ -50,7 +50,7 @@
   
           <!-- Contenido inferior -->
           <div class="abajo" style="margin-top: 5px;">
-            <b>Pagina N°: {{$anexoMasReciente->valor4}}</b>
+            <b>Pagina N°: {{$anexo->valor4}}</b>
           </div>
         </div>
       </div>
@@ -74,30 +74,9 @@
       </thead>
       <tbody>
         
-        @foreach ($inscriptos as $enrolamiento)
-    @if ($enrolamiento->evaluacion === 'Aprobado')
-        <tr>
-            <td style="border: 1px solid black; text-align: center; height:30px">
-                {{ $enrolamiento->fecha_enrolamiento ? $enrolamiento->fecha_enrolamiento : 'No disponible' }}
-            </td>
-            <td style="border: 1px solid black; text-align: center;">
-                {{ $enrolamiento->persona->nombre_p }} {{ $enrolamiento->persona->apellido }}
-            </td>
-            <td style="border: 1px solid black; text-align: center;"></td>
-            <td style="border: 1px solid black; text-align: center;"></td>
-            <td style="border: 1px solid black; text-align: center;"></td>
-        </tr>
-    @endif
-@endforeach
-
       </tbody>
     </table>
-    <br><br><br>
-    @if(!empty($instancia->id_instancia))
-      <form action="{{ route('cursos.generarPDF', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET">
-      @csrf
-      <button type="submit" class="btn btn-primary">Generar PDF</button>
-    @endif
+    
   </form>
   </div>
 

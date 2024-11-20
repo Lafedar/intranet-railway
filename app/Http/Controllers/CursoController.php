@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
 use App\Area;
+use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
 
@@ -142,8 +143,9 @@ class CursoController extends Controller
     {
         try{
             $areas = $this->areaService->getAll();  // Recupera todas las áreas
-
-            return view('cursos.create', compact('areas'));
+            $anexos = Anexo::select('formulario_id')->distinct()->get(); 
+        
+            return view('cursos.create', compact('areas', 'anexos'));
         }catch(Exception $e){
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.create: ' . $e->getMessage());
@@ -162,7 +164,7 @@ class CursoController extends Controller
 
     
     
-    public function store(Request $request)
+    /*public function store(Request $request)
 {
     try {
         // Validación de los datos del formulario
@@ -186,6 +188,57 @@ class CursoController extends Controller
         Log::error('Error in class: ' . get_class($this) . ' .Error al crear el curso: ' . $e->getMessage());
         return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
     }
+}*/
+public function store(Request $request)
+{
+    try {
+        // Validación de los datos del formulario
+        $validatedData = $request->validate([
+            'titulo' => 'required|string|max:253',
+            'descripcion' => 'nullable|string|max:253',
+            'obligatorio' => 'required|boolean',
+            'codigo' => 'nullable|string',
+            'tipo' => 'required|string',
+            'area' => 'required|array',
+            'anexos' => 'nullable|array',  // Validación de anexos (pueden ser nulos o una lista de anexos)
+        ]);
+        
+        // Crear el curso
+        $curso = $this->cursoService->create($validatedData);
+        
+        // Asociar las áreas al curso
+        $curso->areas()->attach($validatedData['area']);
+        
+        // Asociar los anexos a través de la tabla intermedia 'curso_anexo'
+        /*if (isset($validatedData['anexos'])) {
+            foreach ($validatedData['anexos'] as $formulario) {
+                
+                $curso->anexos()->attach($formulario);
+            }
+        }*/
+        if (isset($validatedData['anexos'])) {
+            foreach ($validatedData['anexos'] as $formularioId) {
+                // Obtener el tipo del anexo por formulario_id
+                $anexo = Anexo::where('formulario_id', $formularioId)->first();
+        
+                if ($anexo) {
+                    // Asociar el curso con el anexo en la tabla intermedia incluyendo el tipo
+                    $curso->anexos()->attach($formularioId, [
+                        'tipo' => $anexo->tipo // Añadir el tipo a la relación
+                    ]);
+                } else {
+                    // Manejar el caso si no se encuentra el anexo (opcional)
+                    Log::error("Anexo no encontrado para formulario_id: $formularioId");
+                }
+            }
+        }
+        
+        return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+    } catch (Exception $e) {
+        // Registrar el error y redirigir con un mensaje de error
+        Log::error('Error al crear el curso: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
+    }
 }
 
 
@@ -202,10 +255,13 @@ class CursoController extends Controller
         try {
             $curso = $this->cursoService->getById($id);
             $areas = $this->areaService->getAll();
+            $anexos = Anexo::select('formulario_id')->distinct()->get(); 
+            // Obtener los formulario_id relacionados con el curso
+            $selectedAnexos = $curso->anexos->pluck('formulario_id')->toArray();
             if (!$curso) {
                 throw new Exception('El curso no fue encontrado.');
             }
-            return view('cursos.edit', compact('curso', 'areas'));
+            return view('cursos.edit', compact('curso', 'areas', 'anexos', 'selectedAnexos'));
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.edit: ' . $e->getMessage());
@@ -222,42 +278,66 @@ class CursoController extends Controller
      */
     
 
-    public function update(Request $request, int $id)
-    {
-        try {
-            // Obtener el curso a editar
-            $curso = $this->cursoService->getById($id);
-    
-            if (!$curso) {
-                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
-            }
-    
-            
-            $validatedData = $request->validate([
-                'titulo' => 'required|string|max:100',
-                'descripcion' => 'nullable|string|max:65530',
-                'obligatorio' => 'required|boolean',
-                'codigo' => 'nullable|string',
-                'tipo' => 'required|string',
-                'area' => 'nullable|array',  
-            ]);
-    
-            
-            $curso->update($validatedData);
-    
-            
-            if (isset($validatedData['area'])) {
-                $curso->areas()->sync($validatedData['area']); 
-            }
-    
-            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
-    
-        } catch (Exception $e) {
-            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
-            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
-        }
-    }
+     public function update(Request $request, int $id)
+     {
+         try {
+             // Obtener el curso a editar
+             $curso = $this->cursoService->getById($id);
+     
+             if (!$curso) {
+                 return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
+             }
+     
+             $validatedData = $request->validate([
+                 'titulo' => 'required|string|max:100',
+                 'descripcion' => 'nullable|string|max:65530',
+                 'obligatorio' => 'required|boolean',
+                 'codigo' => 'nullable|string',
+                 'tipo' => 'required|string',
+                 'area' => 'nullable|array',
+                 'anexos' => 'nullable|array',
+             ]);
+     
+             // Actualizar el curso con los datos validados
+             $curso->update($validatedData);
+     
+             // Actualizar las áreas (sincroniza las áreas seleccionadas)
+             if (isset($validatedData['area'])) {
+                 $curso->areas()->sync($validatedData['area']);
+             }
+     
+             // Sincronizar los anexos con los nuevos valores
+             if (isset($validatedData['anexos'])) {
+                 $anexos = [];
+     
+                 foreach ($validatedData['anexos'] as $formularioId) {
+                     // Obtener el tipo del anexo por formulario_id
+                     $anexo = Anexo::where('formulario_id', $formularioId)->first();
+     
+                     if ($anexo) {
+                         // Preparar el anexo para sincronizar, incluyendo el tipo
+                         $anexos[$formularioId] = [
+                             'tipo' => $anexo->tipo // Añadir el tipo a la relación
+                         ];
+                     } else {
+                         // Manejar el caso si no se encuentra el anexo (opcional)
+                         Log::error("Anexo no encontrado para formulario_id: $formularioId");
+                     }
+                 }
+     
+                 // Sincronizar anexos con sus tipos
+                 $curso->anexos()->sync($anexos);
+             }
+     
+             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
+     
+         } catch (Exception $e) {
+             session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
+             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
+             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
+         }
+     }
+     
     
     
 
@@ -314,7 +394,16 @@ class CursoController extends Controller
         }
        
     }
-   
+    public function getDocumentacion($cursoId)
+    {
+        // Aquí puedes hacer la lógica para obtener los documentos relacionados con el curso
+        $documentos = $this->cursoService->getDocumentacion($cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+        //$documentos = $curso->anexos;  // Por ejemplo, obtener los anexos relacionados
+       
+    
+        return view('cursos.documentacion', compact('documentos', 'curso'));
+    }
 
 
     

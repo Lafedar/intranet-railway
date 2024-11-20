@@ -471,20 +471,28 @@ public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, 
 
 
 
-public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
+public function verPlanilla(int $instanciaId, int $cursoId)
 {
     // Obtener los inscriptos, instancia y curso como antes
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
+    $anexo = $this->cursoService->getDocumentacion($cursoId);
+    $anexosFiltrados = $curso->anexos()
+        ->where('anexos.tipo', 'ane')            
+        ->orderBy('created_at', 'desc')   
+        ->get();                          
 
+    
+    $anexoMasReciente = $anexosFiltrados->first(); 
+    
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
         $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
     });
 
     // Obtener los valores de los campos del formulario desde la solicitud
-    $version = $request->input('version');
-    $formulario = $request->input('anexo');
+    /*$version = $anexoMasReciente->version
+    $formulario = $anexoMasReciente->version
     $poe = $request->input('poe');
     $titulo = $request->input('titulo');
     $hojas = $request->input('hojas');
@@ -510,11 +518,10 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
         $anexoData->save();
 
         
-    }
+    }*/
 
     // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('formulario','descripcion1', 'descripcion2', 'descripcion3', 'descripcion4' )
-                  ->first(); // Obtiene el primer registro de la tabla
+    
                   $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
 
                   // Verificar si la imagen existe
@@ -531,39 +538,13 @@ public function verPlanilla(int $instanciaId, int $cursoId, Request $request)
                   }
               
                   // Pasar estos valores a la vista
-                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'formulario', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
-              }
+                  return view('cursos.planillaCursos', compact('inscriptos', 'anexoMasReciente', 'instancia', 'curso', 'imageBase64'));
+}
 
 
-/*public function generarPDF(int $instanciaId, int $cursoId) {
-    // Obtener los inscriptos, instancia y curso
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
 
-    // Obtener los datos de los inscriptos
-    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
 
-    // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('valor1', 'valor2', 'valor3', 'valor4', 'valor5')
-               ->latest()
-               ->first();
 
-    // Cargar la vista para el PDF
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos'))->render();
-
-    // Cargar el HTML para el PDF usando SnappyPdf
-    $pdf = SnappyPdf::loadHTML($html)
-                     ->setOption('enable-local-file-access', true)
-                     ->setOption('enable-javascript', true)
-                     ->setOption('javascript-delay', 200)
-                     ->setOption('margin-top', 10)
-                     ->setOption('margin-right', 10)
-                     ->setOption('margin-bottom', 10)
-                     ->setOption('margin-left', 10);
-
-    // Generar y descargar el PDF
-    return $pdf->download('planilla.pdf');
-}*/
 public function generarPDF(int $instanciaId, int $cursoId) {
     // Obtener los inscriptos, instancia y curso
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
@@ -572,10 +553,14 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     // Obtener los datos de los inscriptos
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
 
-    // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('valor_formulario','valor1', 'valor2', 'valor3', 'valor4')
-                   ->latest()
-                   ->first();
+    $anexo = $this->cursoService->getDocumentacion($cursoId);
+    $anexosFiltrados = $curso->anexos()
+        ->where('anexos.tipo', 'ane')            
+        ->orderBy('created_at', 'desc')   
+        ->get();                          
+
+    
+    $anexoMasReciente = $anexosFiltrados->first(); 
 
     // Ruta de la imagen
     $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
@@ -593,7 +578,7 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     }
 
     // Cargar la vista para el PDF y pasar la variable de la imagen
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexos', 'imageBase64'))->render();
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexoMasReciente', 'imageBase64'))->render();
 
     // Cargar el HTML para el PDF usando SnappyPdf
     $pdf = SnappyPdf::loadHTML($html)
@@ -609,68 +594,31 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     return $pdf->download('planilla.pdf');
 }
 
-public function verPlanillaPrevia(int $instanciaId, int $cursoId)
+
+
+
+public function verPlanillaPrevia(string $formulario_id, int $cursoId)
 {
-    // Obtener los inscriptos, instancia y curso como antes
-    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+
     $curso = $this->cursoService->getById($cursoId);
+    $anexo= $this->cursoService->getDocumentacionById($formulario_id, $cursoId);
+    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
+    
+    if (file_exists($imagePath)) {
+       
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
 
-    $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
-        $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
-    });
-
-    // Obtener los valores de los campos del formulario desde la solicitud
-    $version = $request->input('version');
-    $formulario = $request->input('anexo');
-    $poe = $request->input('poe');
-    $titulo = $request->input('titulo');
-    $hojas = $request->input('hojas');
-    $procedimiento = $request->input('procedimiento');
-
-    // Crear un nuevo anexo si se envían los datos desde el formulario
-    if ($request->has('anexo') && $request->has('poe')) {
-        $anexoData = new Anexo();
-        $anexoData->formulario = "Anexo";
-        $anexoData->valor_formulario = $formulario;
-        $anexoData->descripcion1 = "POE";
-        $anexoData->valor1 = $poe;
-        $anexoData->descripcion2 = "Titulo";
-        $anexoData->valor2 = $titulo;
-        $anexoData->descripcion3 = "Version";
-        $anexoData->valor3 = $version;
-        $anexoData->descripcion4 = "Hojas";
-        $anexoData->valor4= $hojas;
-        
-        
-
-        // Guardar el nuevo anexo en la base de datos
-        $anexoData->save();
-
-        
+        // Crear la cadena de imagen Base64
+        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+    } else {
+        // Si no se encuentra la imagen, puedes asignar un valor predeterminado
+        $imageBase64 = null;
     }
+    
 
-    // Obtener las columnas de la tabla anexos
-    $anexos = Anexo::select('formulario','descripcion1', 'descripcion2', 'descripcion3', 'descripcion4' )
-                  ->first(); // Obtiene el primer registro de la tabla
-                  $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
-
-                  // Verificar si la imagen existe
-                  if (file_exists($imagePath)) {
-                      // Convertir la imagen a Base64
-                      $imageData = base64_encode(file_get_contents($imagePath));
-                      $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-              
-                      // Crear la cadena de imagen Base64
-                      $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-                  } else {
-                      // Si no se encuentra la imagen, puedes asignar un valor predeterminado
-                      $imageBase64 = null;
-                  }
-              
-                  // Pasar estos valores a la vista
-                  return view('cursos.planillaCursos', compact('inscriptos', 'version', 'formulario', 'poe', 'titulo', 'hojas', 'procedimiento', 'anexos', 'instancia', 'curso', 'imageBase64'));
-              }
+    return view('cursos.planillaPrevia', compact('anexo', 'imageBase64'));
+}
 
 
 
