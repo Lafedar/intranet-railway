@@ -52,6 +52,7 @@
     </thead>        
     
     <tbody>
+      
       @if($empleados->count())
         @foreach($empleados as $empleado) 
           <tr>
@@ -110,7 +111,9 @@
   </div>
 </div>
 
-@include('empleado.edit')
+@if(!$empleados->isEmpty())
+  @include('empleado.edit')
+@endif
 
 <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog estilo" role="document">
