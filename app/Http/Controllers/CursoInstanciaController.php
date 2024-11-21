@@ -197,12 +197,12 @@ class CursoInstanciaController extends Controller
         // Asociar anexos a la instancia si se proporcionan
         if ($request->has('anexos') && is_array($request->input('anexos'))) {
             foreach ($request->input('anexos') as $anexoId) {
-                $anexo = $this->cursoInstanciaService->getDocumentacionById($anexoId, $nextInstanciaId, $cursoId);
+                
                 CursoInstanciaAnexo::create([
                     'id_curso' => $cursoId,
                     'id_instancia' => $nextInstanciaId,
                     'formulario_id' => $anexoId,
-                    'tipo' => $anexo->tipo,
+                    
 
                 ]);
             }
@@ -252,8 +252,10 @@ public function destroy(int $cursoId, int $instanciaId)
             $personas = $this->personaService->getAll();
             $modalidad = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->modalidad;
             $anexos = $this->cursoInstanciaService->getAnexos();
-            $selectedAnexos = $instancia->anexos->pluck('formulario_id')->toArray();
-        
+            $selectedAnexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
+            
+
+            
             return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad', 'anexos', 'selectedAnexos'));
         }
         catch(Exception $e){
@@ -501,50 +503,16 @@ public function verPlanilla(int $instanciaId, int $cursoId)
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
-    $anexo = $this->cursoService->getDocumentacion($cursoId);
-    $anexosFiltrados = $curso->anexos()
-        ->where('anexos.tipo', 'ane')            
-        ->orderBy('created_at', 'desc')   
-        ->get();                          
-
+    $anexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
     
-    $anexoMasReciente = $anexosFiltrados->first(); 
+   
+    
     
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
         $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
     });
 
-    // Obtener los valores de los campos del formulario desde la solicitud
-    /*$version = $anexoMasReciente->version
-    $formulario = $anexoMasReciente->version
-    $poe = $request->input('poe');
-    $titulo = $request->input('titulo');
-    $hojas = $request->input('hojas');
-    $procedimiento = $request->input('procedimiento');
-
-    // Crear un nuevo anexo si se envían los datos desde el formulario
-    if ($request->has('anexo') && $request->has('poe')) {
-        $anexoData = new Anexo();
-        $anexoData->formulario = "Anexo";
-        $anexoData->valor_formulario = $formulario;
-        $anexoData->descripcion1 = "POE";
-        $anexoData->valor1 = $poe;
-        $anexoData->descripcion2 = "Titulo";
-        $anexoData->valor2 = $titulo;
-        $anexoData->descripcion3 = "Version";
-        $anexoData->valor3 = $version;
-        $anexoData->descripcion4 = "Hojas";
-        $anexoData->valor4= $hojas;
-        
-        
-
-        // Guardar el nuevo anexo en la base de datos
-        $anexoData->save();
-
-        
-    }*/
-
-    // Obtener las columnas de la tabla anexos
+    
     
                   $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
 
@@ -562,7 +530,7 @@ public function verPlanilla(int $instanciaId, int $cursoId)
                   }
               
                   // Pasar estos valores a la vista
-                  return view('cursos.planillaCursos', compact('inscriptos', 'anexoMasReciente', 'instancia', 'curso', 'imageBase64'));
+                  return view('cursos.planillaCursos', compact('inscriptos', 'anexos', 'instancia', 'curso', 'imageBase64'));
 }
 
 
@@ -648,13 +616,36 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
     {
         // Aquí puedes hacer la lógica para obtener los documentos relacionados con el curso
         $documentos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
-        $instancia = $this->cursoService->getInstanceById($instanciaId, $cursoId);
-
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
         //$documentos = $curso->anexos;  // Por ejemplo, obtener los anexos relacionados
        
     
-        return view('cursos.documentacion', compact('documentos', 'instancia'));
+        return view('cursos.documentacion', compact('documentos', 'instancia', 'curso'));
     }
+    /*public function getDocumentacion(int $instanciaId, int $cursoId)
+    {
+        try {
+            // Obtiene la instancia
+            $instancia = $this->getInstanceById($instanciaId, $cursoId);
+
+            // Verificar si la instancia tiene anexos
+            if ($instancia->anexos->isEmpty()) {
+                // Devuelve un array vacío si no hay anexos
+                return [];
+            }
+
+            // Obtener los anexos de la instancia
+            $formularios = $instancia->anexos;
+
+            // Extraer los formulario_id de los anexos y devolverlos como un array
+            return $formularios->pluck('formulario_id')->toArray();
+        } catch (\Exception $e) {
+            // Log de error y retorno de array vacío
+            Log::error('Error al obtener los anexos: ' . $e->getMessage());
+            return [];  // Devuelve un array vacío en caso de error
+        }
+    }*/
 
 
 

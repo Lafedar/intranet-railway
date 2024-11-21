@@ -15,12 +15,9 @@
                     
                     @foreach($documentos as $doc)
                     <tr>
-                        <td>{{ $doc->valor_formulario }}</td>
+                        <td>{{ $doc->formulario_id ?? "No hay anexos"}}</td>
                         <td>
-                        <form action="{{ route('verPlanillaPrevia', ['formularioId' => $doc->formulario_id, 'cursoId' => $curso->id]) }}" method="GET" style="margin-bottom: 20px;">
-    @csrf
-    <button type="submit" class="btn btn-success">Ver</button>
-</form>
+                        
 
                         </td>
                         

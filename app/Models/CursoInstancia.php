@@ -47,10 +47,15 @@ class CursoInstancia extends Model
     return $this->hasMany(EnrolamientoCurso::class, 'id_instancia', 'id_instancia');
 }
 
-public function anexos()
+/*public function anexos()
     {
         return $this->belongsToMany(Anexo::class, 'relacion_curso_instancia_anexo', 'id_curso', 'formulario_id')
                     ->withPivot('id_instancia', 'tipo'); // Incluye columna adicional de la tabla intermedia
+    }*/
+    public function anexos()
+    {
+        return $this->belongsToMany(Anexo::class, 'relacion_curso_instancia_anexo', 'id_instancia', 'formulario_id')
+                    ->withPivot('id_curso'); // Esto asegura que 'id_curso' esté accesible
     }
 
 

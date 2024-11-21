@@ -6,8 +6,9 @@ use App\Models\CursoInstancia;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Log;
-use DB;
+
 use App\Models\Anexo;
+use Illuminate\Support\Facades\DB;
 
 class CursoInstanciaService
 {
@@ -190,31 +191,53 @@ class CursoInstanciaService
     }
 
 
-    public function getDocumentacion(int $instanciaId, int $cursoId)
+    /*public function getDocumentacion(int $instanciaId, int $cursoId)
 {
     try {
+        // Obtener la instancia del curso
+        $instancia = $this->getInstanceById($instanciaId, $cursoId);
         
-        // Verificar si hay anexos asociados a la instancia
-        if ($instancia->anexos->isEmpty()) {
-            return response()->json(['message' => 'No hay anexos relacionados con este curso.'], 404);
+        // Verificar si la instancia tiene anexos asociados
+        $anexos = $instancia->anexos()->wherePivot('id_curso', $cursoId)->get();
+dd($anexos);
+        // Verificar si no hay anexos encontrados
+        if ($anexos->isEmpty()) {
+            return response()->json(['message' => 'No hay anexos relacionados con este curso e instancia.'], 404);
         }
 
-        // Obtener los anexos
-        $formularios = $instancia->anexos;
-
         // Retornar los anexos encontrados
-        return response()->json(['formularios' => $formularios], 200);
-        
+        return response()->json($anexos);
     } catch (\Exception $e) {
-        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener la documentación: ' . $e->getMessage());
+        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los anexos: ' . $e->getMessage());
+        return response()->json(['error' => 'Hubo un error al obtener los anexos.'], 500);
+    }
+}*/
+
+
+public function getDocumentacion(int $instanciaId, int $cursoId)  //cambiar luego
+{
+    try {
+        $anexos = DB::table('relacion_curso_instancia_anexo')
+                    ->join('anexos', 'relacion_curso_instancia_anexo.formulario_id', '=', 'anexos.formulario_id')
+                    ->where('relacion_curso_instancia_anexo.id_instancia', $instanciaId)
+                    ->where('relacion_curso_instancia_anexo.id_curso', $cursoId)
+                    ->select('anexos.*') // Seleccionar los campos de la tabla anexos
+                    ->get();
+
+        if ($anexos->isEmpty()) {
+            return response()->json(['message' => 'No hay anexos relacionados con este curso e instancia.'], 404);
+        }
+
+        return $anexos;
+    } catch (\Exception $e) {
+        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los anexos: ' . $e->getMessage());
         return response()->json(['error' => 'Hubo un error al obtener los anexos.'], 500);
     }
 }
 
-
     public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId) {
         $instancia = $this->getInstanceById($instanciaId, $cursoId);
-   dd($instancia);
+    dd($instancia);
         $anexo = $instancia->anexos()->where('anexos.formulario_id', $formulario_id)->first();
     
         return $anexo;
@@ -224,6 +247,8 @@ class CursoInstanciaService
     public function getAnexos(){
         return Anexo::all();
     }
+
+    
     
 
 }

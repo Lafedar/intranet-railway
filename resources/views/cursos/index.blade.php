@@ -120,9 +120,7 @@
                                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                         </form>
                                     @endif
-                                    <a href="{{ route('verDocumentos', ['cursoId' => $curso->id]) }}" class="btn btn-success btn-sm" style="margin-bottom: 20px;">
-                                        Ver documentos
-                                    </a>
+                                    
 
                             
 

@@ -117,6 +117,10 @@
                         Ver personas inscriptas
                     </a>
 
+                    <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-primary btn-sm">
+                        Ver documentos
+                    </a>
+
                     </td>
                 @endrole
                                 

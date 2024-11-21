@@ -69,14 +69,21 @@
         </div>
         <div class="form-group">
     <label for="anexos">Anexos</label>
-    <select name="anexos[]" class="form-control select2" multiple="multiple">
+    <div id="anexos">
         @foreach($anexos as $formulario)
-            <option value="{{ $formulario->formulario_id }}"
-                @if(in_array($formulario->formulario_id, $selectedAnexos)) selected @endif>
-                {{ $formulario->formulario_id }}
-            </option>
+            <div class="form-check">
+                <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    name="anexos[]" 
+                    id="anexo_{{ $formulario->formulario_id }}" 
+                    value="{{ $formulario->formulario_id }}">
+                <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
+                    {{ $formulario->formulario_id }}
+                </label>
+            </div>
         @endforeach
-    </select>
+    </div>
 </div>
         <div class="form-group">
             <label for="estado">Estado</label>

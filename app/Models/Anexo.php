@@ -18,9 +18,13 @@ class Anexo extends Model
     
     // Indica el tipo de la clave primaria, si es necesario (en caso de que sea string, por ejemplo)
     protected $keyType = 'string';
-    public function cursosInstancias()
+    /*public function cursosInstancias()
     {
         return $this->belongsToMany(CursoInstancia::class, 'relacion_curso_instancia_anexo', 'formulario_id', 'id_curso')
                     ->withPivot('id_instancia', 'tipo');
-    }
+    }*/
+    public function instancias()
+{
+    return $this->belongsToMany(CursoInstancia::class, 'relacion_curso_instancia_anexo', 'formulario_id', 'id_instancia');
+}
 }
