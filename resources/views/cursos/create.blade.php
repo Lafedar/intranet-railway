@@ -56,14 +56,7 @@
             @endforeach
         </div>
         
-        <<div class="form-group">
-    <label for="anexos">Anexos</label>
-    <select name="anexos[]" class="form-control select2" multiple="multiple">
-        @foreach($anexos as $formulario)
-            <option value="{{ $formulario->formulario_id }}">{{ $formulario->formulario_id }}</option>
-        @endforeach
-    </select>
-</div>
+        
 
 
         <div class="form-group">

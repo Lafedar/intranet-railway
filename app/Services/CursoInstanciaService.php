@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Log;
 use DB;
+use App\Models\Anexo;
 
 class CursoInstanciaService
 {
@@ -79,10 +80,11 @@ class CursoInstanciaService
         }
     }
 
-    public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
+    /*public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
     {
         try {
-            return CursoInstancia::where('id_instancia', $id_instancia)
+            return CursoInstancia::with('anexos')
+                                ->where('id_instancia', $id_instancia)
                                  ->where('id_curso', $cursoId)
                                  ->first(); 
         } catch (\Exception $e) {
@@ -90,7 +92,33 @@ class CursoInstanciaService
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la instancia' . $e->getMessage());
             throw $e; 
         }
+    }*/
+    public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
+{
+    try {
+        
+        
+        $instancia = CursoInstancia::with('anexos')
+            ->where('id_instancia', $id_instancia)
+            ->where('id_curso', $cursoId)
+            ->first();
+
+        
+        /*if ($instancia) {
+            foreach ($instancia->anexos as $anexo) {
+                Log::info("Anexo: {$anexo->nombre}, Tipo: {$anexo->pivot->tipo}");
+            }
+        } else {
+            Log::info("No se encontró la instancia con id_instancia: $id_instancia, id_curso: $cursoId");
+        }*/
+
+        return $instancia;
+    } catch (\Exception $e) {
+        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener la instancia: ' . $e->getMessage());
+        throw $e; 
     }
+}
+
     
 
     public function delete(CursoInstancia $instancia, int $cursoId) :?bool 
@@ -129,7 +157,15 @@ class CursoInstanciaService
             $maxIdInstancia = CursoInstancia::where('id_curso', $cursoId)
                                             ->max('id_instancia');
             
-            return $maxIdInstancia;
+        
+                                            if (!empty($maxIdInstancia)) {
+                                                return $maxIdInstancia;
+                                            } else {
+                                                return 0;
+                                            }
+                                            
+
+            
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el id_instancia más grande del curso' . $e->getMessage());
             throw $e;
@@ -152,8 +188,42 @@ class CursoInstanciaService
         ->where('id_instancia', $instanciaId)
         ->value('modalidad');
     }
-  
+
+
+    public function getDocumentacion(int $instanciaId, int $cursoId)
+{
+    try {
+        
+        // Verificar si hay anexos asociados a la instancia
+        if ($instancia->anexos->isEmpty()) {
+            return response()->json(['message' => 'No hay anexos relacionados con este curso.'], 404);
+        }
+
+        // Obtener los anexos
+        $formularios = $instancia->anexos;
+
+        // Retornar los anexos encontrados
+        return response()->json(['formularios' => $formularios], 200);
+        
+    } catch (\Exception $e) {
+        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener la documentación: ' . $e->getMessage());
+        return response()->json(['error' => 'Hubo un error al obtener los anexos.'], 500);
+    }
+}
+
+
+    public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId) {
+        $instancia = $this->getInstanceById($instanciaId, $cursoId);
+   dd($instancia);
+        $anexo = $instancia->anexos()->where('anexos.formulario_id', $formulario_id)->first();
     
+        return $anexo;
+    }
+    
+
+    public function getAnexos(){
+        return Anexo::all();
+    }
     
 
 }

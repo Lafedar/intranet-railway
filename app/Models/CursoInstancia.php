@@ -4,6 +4,7 @@ namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Anexo;
 
 class CursoInstancia extends Model
 {
@@ -45,4 +46,13 @@ class CursoInstancia extends Model
 {
     return $this->hasMany(EnrolamientoCurso::class, 'id_instancia', 'id_instancia');
 }
+
+public function anexos()
+    {
+        return $this->belongsToMany(Anexo::class, 'relacion_curso_instancia_anexo', 'id_curso', 'formulario_id')
+                    ->withPivot('id_instancia', 'tipo'); // Incluye columna adicional de la tabla intermedia
+    }
+
+
+    
 }

@@ -68,6 +68,17 @@
             <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}">
         </div>
         <div class="form-group">
+    <label for="anexos">Anexos</label>
+    <select name="anexos[]" class="form-control select2" multiple="multiple">
+        @foreach($anexos as $formulario)
+            <option value="{{ $formulario->formulario_id }}"
+                @if(in_array($formulario->formulario_id, $selectedAnexos)) selected @endif>
+                {{ $formulario->formulario_id }}
+            </option>
+        @endforeach
+    </select>
+</div>
+        <div class="form-group">
             <label for="estado">Estado</label>
             <select name="estado" class="form-control" required>
                 <option value="" disabled>Selecciona una opción</option>

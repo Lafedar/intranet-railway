@@ -20,6 +20,7 @@ use App\Models\Anexo;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CursoInstanciaAnexo;
 
 
  
@@ -97,7 +98,10 @@ class CursoInstanciaController extends Controller
                 return $instancia;
             });
 
-            return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability'));
+            $cantInstancias = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
+               
+
+            return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability', 'cantInstancias'));
 
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
@@ -125,12 +129,14 @@ class CursoInstanciaController extends Controller
         }
     }
 
-    public function create($cursoId)
+    public function create($instanciaId, $cursoId)
     {
         try{
             $curso = Curso::findOrFail($cursoId); 
             $personas = $this->personaService->getAll();
-            return view('cursos.instancias.create', compact('curso', 'personas')); 
+            $anexos = $this->cursoInstanciaService->getAnexos();
+            
+            return view('cursos.instancias.create', compact('curso', 'personas', 'anexos')); 
         }
         catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar el curso a cursos.instancias.create' . $e->getMessage());
@@ -152,6 +158,8 @@ class CursoInstanciaController extends Controller
             'lugar' => 'nullable|string|max:255',
             'estado' => 'required|string|in:Activo,No Activo',
             'version' => 'nullable|string|max:255',
+            'anexos' => 'nullable|array', // Asegurarse de que los anexos sean un arreglo
+            
         ]);
         $capacitador = $request->input('capacitador');
 
@@ -185,6 +193,20 @@ class CursoInstanciaController extends Controller
         $data['id_instancia'] = $nextInstanciaId;
 
         $this->cursoInstanciaService->create($data);
+        
+        // Asociar anexos a la instancia si se proporcionan
+        if ($request->has('anexos') && is_array($request->input('anexos'))) {
+            foreach ($request->input('anexos') as $anexoId) {
+                $anexo = $this->cursoInstanciaService->getDocumentacionById($anexoId, $nextInstanciaId, $cursoId);
+                CursoInstanciaAnexo::create([
+                    'id_curso' => $cursoId,
+                    'id_instancia' => $nextInstanciaId,
+                    'formulario_id' => $anexoId,
+                    'tipo' => $anexo->tipo,
+
+                ]);
+            }
+        }
 
         return redirect()->route('cursos.instancias.index', $cursoId)
                          ->with('success', 'Instancia creada exitosamente.');
@@ -229,8 +251,10 @@ public function destroy(int $cursoId, int $instanciaId)
             $capacitador = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->capacitador;
             $personas = $this->personaService->getAll();
             $modalidad = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->modalidad;
+            $anexos = $this->cursoInstanciaService->getAnexos();
+            $selectedAnexos = $instancia->anexos->pluck('formulario_id')->toArray();
         
-            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad'));
+            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad', 'anexos', 'selectedAnexos'));
         }
         catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
@@ -620,7 +644,17 @@ public function verPlanillaPrevia(string $formulario_id, int $cursoId)
     return view('cursos.planillaPrevia', compact('anexo', 'imageBase64'));
 }
 
+public function getDocumentacion(int $instanciaId, int $cursoId)
+    {
+        // Aquí puedes hacer la lógica para obtener los documentos relacionados con el curso
+        $documentos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
+        $instancia = $this->cursoService->getInstanceById($instanciaId, $cursoId);
 
+        //$documentos = $curso->anexos;  // Por ejemplo, obtener los anexos relacionados
+       
+    
+        return view('cursos.documentacion', compact('documentos', 'instancia'));
+    }
 
 
 

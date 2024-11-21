@@ -1,5 +1,8 @@
 @extends('cursos.layouts.layout')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
+<!-- Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 @section('content')
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
@@ -67,6 +70,26 @@
             <label for="lugar">Lugar</label>
             <input type="text" class="form-control" id="lugar" name="lugar">
         </div>
+        <div class="form-group">
+    <label for="anexos">Anexos</label>
+    <div id="anexos">
+        @foreach($anexos as $formulario)
+            <div class="form-check">
+                <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    name="anexos[]" 
+                    id="anexo_{{ $formulario->formulario_id }}" 
+                    value="{{ $formulario->formulario_id }}">
+                <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
+                    {{ $formulario->formulario_id }}
+                </label>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+
         <div class="form-group">
             <label for="estado">Estado</label>
             <select name="estado" class="form-control" required>

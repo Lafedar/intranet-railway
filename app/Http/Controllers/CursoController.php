@@ -394,16 +394,7 @@ public function store(Request $request)
         }
        
     }
-    public function getDocumentacion($cursoId)
-    {
-        // Aquí puedes hacer la lógica para obtener los documentos relacionados con el curso
-        $documentos = $this->cursoService->getDocumentacion($cursoId);
-        $curso = $this->cursoService->getById($cursoId);
-        //$documentos = $curso->anexos;  // Por ejemplo, obtener los anexos relacionados
-       
     
-        return view('cursos.documentacion', compact('documentos', 'curso'));
-    }
 
 
     

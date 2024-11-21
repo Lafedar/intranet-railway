@@ -2,7 +2,7 @@
 
 namespace App\Models;
 use App\Area;
-use App\Models\Anexo;
+
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,9 +30,6 @@ public function enrolamientos()
         return $this->belongsToMany(Persona::class, 'enrolamiento_cursos', 'id_curso', 'id_persona')
         ->withPivot('id_instancia', 'evaluacion');
     }
-    public function anexos()
-{
-    return $this->belongsToMany(Anexo::class, 'relacion_curso_anexo', 'id_curso', 'formulario_id');
-}
+   
     
 }

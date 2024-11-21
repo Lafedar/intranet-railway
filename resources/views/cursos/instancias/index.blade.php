@@ -24,9 +24,9 @@
 @endif
 <div class="container mt-5">
 @role(['administrador', 'Gestor-cursos'])
-    <a href="{{ route('cursos.instancias.create', $curso->id) }}" class="btn btn-warning btn-sm">
-        Crear Nueva Instancia
-    </a>
+<a href="{{ route('cursos.instancias.create', ['instanciaId' => $cantInstancias, 'curso' => $curso->id]) }}" class="btn btn-warning btn-sm">
+    Crear Nueva Instancia
+</a>
 @endrole
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
     <table class="table table-bordered text-center">

@@ -539,7 +539,7 @@ Route::group(['middleware' => ['auth']], function ()
     //Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
     ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
-    Route::get('cursos/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
+    Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
     Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
     Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy')->middleware('role:administrador|Gestor-cursos');
