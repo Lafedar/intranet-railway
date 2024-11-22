@@ -253,6 +253,10 @@ public function destroy(int $cursoId, int $instanciaId)
                              ->withErrors('La instancia no fue encontrada.');
         }
 
+        DB::table('relacion_curso_instancia_anexo')
+            ->where('id_instancia', $instanciaId) 
+            ->where('id_curso', $cursoId)        
+            ->delete(); 
         
         $this->cursoInstanciaService->delete($instancia, $cursoId);
         

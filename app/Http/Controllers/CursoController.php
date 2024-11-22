@@ -13,6 +13,7 @@ use App\Area;
 use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
+use DB;
 
 class CursoController extends Controller
 {
@@ -296,7 +297,10 @@ class CursoController extends Controller
                 $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id); 
                 $this->cursoInstanciaService->delete($instancia, $curso->id);
             }
-
+            DB::table('relacion_curso_instancia_anexo')
+            ->where('id_curso', $id)        
+            ->delete(); 
+        
             
             $this->cursoService->delete($curso);
             return redirect()->route('cursos.index')->with('success', 'El curso y sus instancias fueron eliminados exitosamente.');
