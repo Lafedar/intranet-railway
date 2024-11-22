@@ -162,34 +162,35 @@ class CursoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
-
-    
-    
     public function store(Request $request)
-{
-    try {
-        // Validación de los datos del formulario
-        $validatedData = $request->validate([
-            'titulo' => 'required|string|max:253',
-            'descripcion' => 'nullable|string|max:253',
-            'obligatorio' => 'required|boolean',
-            'codigo' => 'nullable|string',
-            'tipo' => 'required|string',
-            'area' => 'required|array',  
-        ]);
+    {
+        try {
         
-    
-        $curso = $this->cursoService->create($validatedData);
-        $curso->areas()->attach($validatedData['area']);  // Usar attach para asociar las áreas
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:253',
+                'descripcion' => 'nullable|string|max:253',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+                'area' => 'required|array|min:1',  
+            ]);
+            
+            
+            if (empty($validatedData['area'])) {
+                return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+            }
         
-        
-        return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
-    } catch (Exception $e) {
-        // Registrar el error y redirigir con un mensaje de error
-        Log::error('Error in class: ' . get_class($this) . ' .Error al crear el curso: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Hubo un problema al crear el curso.');
+            $curso = $this->cursoService->create($validatedData);
+            
+            $curso->areas()->attach($validatedData['area']);
+            
+            return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator->errors()); //errores en el validateData
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
+        }
     }
-}
 
 
 

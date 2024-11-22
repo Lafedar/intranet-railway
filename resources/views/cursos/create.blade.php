@@ -1,11 +1,20 @@
 @extends('cursos.layouts.layout')
 
 @section('content')
-<!-- Agregar el CSS de Select2 -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
-<!-- Agregar el JavaScript de Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+@if ($errors->any())
+    <div class="alert alert-danger" style="text-align: center;">
+        <ul style="list-style-type: none; padding: 0; text-align: center;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Crear Curso</h1>
@@ -56,7 +65,7 @@
             @endforeach
         </div>
         
-        
+    
 
 
         <div class="form-group">
