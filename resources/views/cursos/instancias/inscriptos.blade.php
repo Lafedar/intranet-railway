@@ -46,11 +46,14 @@
                 @csrf
                 <button type="submit" class="btn btn-primary">Desaprobar a todos</button>
             </form>
-            <form action="{{ route('verPlanilla', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="GET" style="margin-bottom: 20px;">
-           
-            <button type="submit" class="btn btn-success">Ver Planilla</button>
-
-        </form>
+            
+            @if($anexos != null)
+                <form action="{{ route('verPlanilla', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'tipo' => 'ane' ]) }}" method="GET" style="margin-bottom: 20px;">
+                    <button type="submit" class="btn btn-success">Ver Anexo</button>
+                </form>
+            @else
+                Agregue un Anexo para ver la planilla
+            @endif
            
         </div>
 

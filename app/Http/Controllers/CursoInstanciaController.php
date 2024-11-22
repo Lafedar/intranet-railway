@@ -195,7 +195,7 @@ class CursoInstanciaController extends Controller
         $this->cursoInstanciaService->create($data);
         
        
-        if ($request->has('anexos') && is_array($request->input('anexos'))) {
+        /*if ($request->has('anexos') && is_array($request->input('anexos'))) {
             foreach ($request->input('anexos') as $anexoId) {
                 
                 CursoInstanciaAnexo::create([
@@ -206,7 +206,32 @@ class CursoInstanciaController extends Controller
 
                 ]);
             }
+        }*/
+        if ($request->has('anexos') && is_array($request->input('anexos'))) {
+            foreach ($request->input('anexos') as $anexoId) {
+                
+                // Obtener el tipo desde la tabla 'anexos' para cada formulario_id
+                $tipoAnexo = DB::table('anexos')
+                                ->where('formulario_id', $anexoId) // Filtra por formulario_id
+                                ->value('tipo');  // Obtiene el tipo del anexo
+        
+                // Verificamos si el tipo de anexo existe
+                if ($tipoAnexo) {
+                    // Ahora creamos la relación en la tabla 'relacion_curso_instancia_anexo' 
+                    // con el 'tipo' del anexo desde la tabla 'anexos'
+                    DB::table('relacion_curso_instancia_anexo')->insert([
+                        'id_curso' => $cursoId,
+                        'id_instancia' => $nextInstanciaId,
+                        'formulario_id' => $anexoId,
+                        'tipo' => $tipoAnexo, // Asocia el tipo de anexo
+                    ]);
+                } else {
+                    // Si no se encuentra el tipo, puedes manejar el error o continuar
+                    Log::warning("Tipo de anexo no encontrado para formulario_id: $anexoId");
+                }
+            }
         }
+        
 
         return redirect()->route('cursos.instancias.index', $cursoId)
                          ->with('success', 'Instancia creada exitosamente.');
@@ -316,20 +341,34 @@ public function destroy(int $cursoId, int $instanciaId)
             $instancia->update($data);
 
             if ($request->has('anexos') && is_array($request->input('anexos'))) {
-                //eliminar las relaciones actuales con los anexos para esta instancia y curso
+                // Eliminar las relaciones actuales con los anexos para esta instancia y curso
                 DB::table('relacion_curso_instancia_anexo')
                     ->where('id_instancia', $instanciaId)
                     ->where('id_curso', $cursoId)
                     ->delete();
-                
-                //agregar las nuevas relaciones
-                $anexos = $request->input('anexos'); 
+            
+                // Obtener los anexos seleccionados desde el formulario
+                $anexos = $request->input('anexos');
+            
                 foreach ($anexos as $formulario_id) {
-                    DB::table('relacion_curso_instancia_anexo')->insert([
-                        'id_instancia' => $instanciaId,
-                        'id_curso' => $cursoId,
-                        'formulario_id' => $formulario_id,
-                    ]);
+                   
+                    $tipoAnexo = DB::table('anexos')
+                        ->where('formulario_id', $formulario_id) 
+                        ->value('tipo'); 
+            
+                   
+                    if ($tipoAnexo) {
+                        // Insertar la nueva relación en la tabla 'relacion_curso_instancia_anexo' con el tipo
+                        DB::table('relacion_curso_instancia_anexo')->insert([
+                            'id_instancia' => $instanciaId,
+                            'id_curso' => $cursoId,
+                            'formulario_id' => $formulario_id,
+                            'tipo' => $tipoAnexo,  // Asociamos el tipo de anexo
+                        ]);
+                    } else {
+                        
+                        Log::warning("Tipo de anexo no encontrado para formulario_id: $formulario_id");
+                    }
                 }
             }
             
@@ -343,7 +382,7 @@ public function destroy(int $cursoId, int $instanciaId)
     }
 
 
-    public function getAsistentesInstancia(int $instanciaId, int $cursoId)
+    public function getAsistentesInstancia(int $instanciaId, int $cursoId, string $tipo)
     {
         try {
             
@@ -354,10 +393,12 @@ public function destroy(int $cursoId, int $instanciaId)
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $curso = $this->cursoService->getById($cursoId);
 
+            $anexos= $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
+
             $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
                 $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
             });
-            return view('cursos.instancias.inscriptos', compact('curso', 'inscriptos', 'inscriptosCount', 'instancia'));
+            return view('cursos.instancias.inscriptos', compact('curso', 'inscriptos', 'inscriptosCount', 'instancia', 'anexos'));
             
         } catch (Exception $e) {
             Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia: ' . $e->getMessage());
@@ -516,13 +557,13 @@ public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, 
 
 
 
-public function verPlanilla(int $instanciaId, int $cursoId)
+public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
 {
     
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
-    $anexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
+    $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
     
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
         $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
@@ -541,31 +582,24 @@ public function verPlanilla(int $instanciaId, int $cursoId)
         
         $imageBase64 = null;
     }
-    return view('cursos.planillaCursos', compact('inscriptos', 'anexos', 'instancia', 'curso', 'imageBase64'));
+    return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64'));
 }
 
 
 
 
 
-public function generarPDF(int $instanciaId, int $cursoId) {
+public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId) {
     
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
-
-    
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
 
-    $anexo = $this->cursoService->getDocumentacion($cursoId);
-    $anexosFiltrados = $curso->anexos()
-        ->where('anexos.tipo', 'ane')            
-        ->orderBy('created_at', 'desc')   
-        ->get();                          
-
-    
-    $anexoMasReciente = $anexosFiltrados->first(); 
-
-   
+    $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
+    if (!$anexo) {
+        // Si no hay anexo, redirige o muestra un mensaje
+        return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
+    }
     $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
     
     if (file_exists($imagePath)) {
@@ -581,7 +615,7 @@ public function generarPDF(int $instanciaId, int $cursoId) {
     }
 
     // Cargar la vista para el PDF y pasar la variable de la imagen
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexoMasReciente', 'imageBase64'))->render();
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64'))->render();
 
     // Cargar el HTML para el PDF usando SnappyPdf
     $pdf = SnappyPdf::loadHTML($html)
@@ -631,7 +665,9 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
     
     return view('cursos.documentacion', compact('documentos', 'instancia', 'curso'));
 }
-    
+
+
+
 
 
    

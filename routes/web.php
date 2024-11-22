@@ -537,7 +537,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
     //Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
-    Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas', [CursoInstanciaController::class, 'getAsistentesInstancia'])
+    Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas/{tipo}', [CursoInstanciaController::class, 'getAsistentesInstancia'])
     ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
     Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
@@ -555,10 +555,11 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
     Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos');
 
-    Route::get('/cursos/{instanciaId}/{cursoId}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
-    Route::get('/cursos/generar-pdf/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
+    Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
+    Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
     Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos');
     Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia');
+    
   });
 
 

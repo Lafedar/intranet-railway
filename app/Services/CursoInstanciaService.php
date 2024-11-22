@@ -190,8 +190,6 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
     
 }
 
-
-
 public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
 {
     
@@ -201,7 +199,7 @@ public function getDocumentacionById(string $formulario_id, int $cursoId, int $i
                         ->where('formulario_id', $formulario_id) 
                         ->value('formulario_id');
 
-   
+  
     if (!$formulario) {
         return null; 
     }
@@ -220,7 +218,35 @@ public function getAnexos()
     return Anexo::all();
 }
 
+public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo){
+    $formulario = DB::table('relacion_curso_instancia_anexo')
+                        ->where('id_instancia', $instanciaId) 
+                        ->where('id_curso', $cursoId) 
+                        ->where('tipo', $tipo)
+                        ->orderBy('id', 'desc') 
+                        ->first(); 
+  
+    if ($formulario) {
+        $formularioId = $formulario->formulario_id;
+    } else {
+            $formularioId = null; 
+    }
+
     
+    $anexo = DB::table('anexos')
+                ->where('formulario_id', $formularioId) 
+                ->first(); 
+
+    return $anexo;
+}
     
+public function validarAnexo(string $formulario_id, int $cursoId, int $instanciaId){
+    $formulario = DB::table('relacion_curso_instancia_anexo')
+                        ->where('id_instancia', $instanciaId) 
+                        ->where('id_curso', $cursoId) 
+                        ->where('formulario_id', $formulario_id) 
+                        ->value('formulario_id');
+
+}
 
 }

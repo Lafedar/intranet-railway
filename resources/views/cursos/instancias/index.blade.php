@@ -29,6 +29,8 @@
 </a>
 @endrole
     <h1 class="mb-4">Instancias del Curso: {{ $curso->titulo }}</h1>
+    <a href="{{ route('cursos.index') }}" class="btn btn-secondary">Regresar al listado de Cursos</a>
+    <br><br>
     <table class="table table-bordered text-center">
         <thead>
             <tr>
@@ -113,7 +115,7 @@
                     
                     
                     
-                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-secondary btn-sm">
+                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" class="btn btn-secondary btn-sm">
                         Ver personas inscriptas
                     </a>
 
@@ -132,7 +134,7 @@
     </table>
 
     
-    <a href="{{ route('cursos.index') }}" class="btn btn-secondary">Regresar al listado de Cursos</a>
+   
 </div>
 
 
