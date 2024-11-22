@@ -21,6 +21,7 @@ use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
 use Illuminate\Support\Facades\Storage;
 use App\Models\CursoInstanciaAnexo;
+use Illuminate\Database\Eloquent\Collection;
 
 
  
@@ -56,14 +57,32 @@ class CursoInstanciaController extends Controller
     {
         try {
             
-            $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId)->sortByDesc('created_at');
+            
             $curso = $this->cursoService->getById($cursoId);
 
             if (!$curso) {
                 throw new Exception('Curso no encontrado.');
             }
 
-           
+            $userDni = auth()->user()->dni;
+            $personaDni = $this->personaService->getByDni($userDni);
+            $persona = $this->personaService->getById($personaDni->id_p);
+            $instanciasIds = $this->enrolamientoCursoService->getInstancesByPersonId($cursoId, $persona->id_p); 
+            $instancias = new Collection(); 
+            if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
+                $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId)->sortByDesc('created_at');
+            } else {
+                foreach ($instanciasIds as $idInstancia) {
+                    // Llamas al método para obtener la instancia completa
+                    $instancia = $this->cursoInstanciaService->getInstanceById($idInstancia, $cursoId);
+                
+                    // Verificas si la instancia existe y la agregas a la colección
+                    if ($instancia) {
+                        $instancias->push($instancia);  // Usar 'push' para agregar a la colección
+                    }
+                }
+            
+            }
             $availability = $this->cursoInstanciaService->checkAvailability($instancias);
 
             $userDni = Auth::user()->dni;
@@ -195,30 +214,16 @@ class CursoInstanciaController extends Controller
         $this->cursoInstanciaService->create($data);
         
        
-        /*if ($request->has('anexos') && is_array($request->input('anexos'))) {
-            foreach ($request->input('anexos') as $anexoId) {
-                
-                CursoInstanciaAnexo::create([
-                    'id_curso' => $cursoId,
-                    'id_instancia' => $nextInstanciaId,
-                    'formulario_id' => $anexoId,
-                    
-
-                ]);
-            }
-        }*/
         if ($request->has('anexos') && is_array($request->input('anexos'))) {
             foreach ($request->input('anexos') as $anexoId) {
                 
-                // Obtener el tipo desde la tabla 'anexos' para cada formulario_id
+                
                 $tipoAnexo = DB::table('anexos')
-                                ->where('formulario_id', $anexoId) // Filtra por formulario_id
-                                ->value('tipo');  // Obtiene el tipo del anexo
+                                ->where('formulario_id', $anexoId) 
+                                ->value('tipo');  
         
                 // Verificamos si el tipo de anexo existe
                 if ($tipoAnexo) {
-                    // Ahora creamos la relación en la tabla 'relacion_curso_instancia_anexo' 
-                    // con el 'tipo' del anexo desde la tabla 'anexos'
                     DB::table('relacion_curso_instancia_anexo')->insert([
                         'id_curso' => $cursoId,
                         'id_instancia' => $nextInstanciaId,
@@ -226,7 +231,7 @@ class CursoInstanciaController extends Controller
                         'tipo' => $tipoAnexo, // Asocia el tipo de anexo
                     ]);
                 } else {
-                    // Si no se encuentra el tipo, puedes manejar el error o continuar
+                    
                     Log::warning("Tipo de anexo no encontrado para formulario_id: $anexoId");
                 }
             }

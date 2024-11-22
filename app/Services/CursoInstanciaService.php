@@ -218,6 +218,7 @@ public function getAnexos()
     return Anexo::all();
 }
 
+
 public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo){
     $formulario = DB::table('relacion_curso_instancia_anexo')
                         ->where('id_instancia', $instanciaId) 
@@ -239,6 +240,8 @@ public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo){
 
     return $anexo;
 }
+
+
     
 public function validarAnexo(string $formulario_id, int $cursoId, int $instanciaId){
     $formulario = DB::table('relacion_curso_instancia_anexo')
@@ -248,5 +251,7 @@ public function validarAnexo(string $formulario_id, int $cursoId, int $instancia
                         ->value('formulario_id');
 
 }
+
+
 
 }

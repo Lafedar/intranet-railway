@@ -362,5 +362,15 @@ class EnrolamientoCursoService
        
         
     }
-    
+    public function getInstancesByPersonId(int $cursoId, int $persona_id)
+{
+    try {
+        return EnrolamientoCurso::where('id_curso', $cursoId)
+            ->where('id_persona', $persona_id)
+            ->pluck('id_instancia');  
+    } catch (Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las instancias de enrolamiento: ' . $e->getMessage());
+        throw $e;
+    }
+}
 }

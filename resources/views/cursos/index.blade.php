@@ -56,7 +56,11 @@
     </a>
 @endrole
 
-    <h1 class="mb-4 text-center">Listado de Cursos</h1>
+<h1 class="mb-4 text-center">Listado de Cursos
+    @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+        de: {{ Auth::user()->name }}
+    @endif
+</h1>
     <div class="row justify-content-center">
         <div class="col-md-15"> 
             <table class="table table-bordered table-striped text-center">

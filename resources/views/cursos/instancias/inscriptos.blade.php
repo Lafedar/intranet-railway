@@ -21,6 +21,10 @@
     <h1>Inscriptos en el Curso:</h1>
     <h3>{{ $curso->titulo }}</h3>
     <br>
+    <h4>Instancia Nro: {{ $instancia->id_instancia }}</h4>
+    
+
+    <br>
     
     <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" style="margin-bottom: 10px;">Volver</a>
 
