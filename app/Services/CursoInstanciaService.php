@@ -195,19 +195,20 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
 public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
 {
     
-    $formularioId = DB::table('relacion_curso_instancia_anexo')
+    $formulario = DB::table('relacion_curso_instancia_anexo')
                         ->where('id_instancia', $instanciaId) 
                         ->where('id_curso', $cursoId) 
+                        ->where('formulario_id', $formulario_id) 
                         ->value('formulario_id');
 
    
-    if (!$formularioId) {
+    if (!$formulario) {
         return null; 
     }
 
     
     $anexo = DB::table('anexos')
-                ->where('formulario_id', $formularioId) 
+                ->where('formulario_id', $formulario) 
                 ->first(); 
 
     return $anexo; 

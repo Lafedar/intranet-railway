@@ -77,7 +77,9 @@
                     type="checkbox" 
                     name="anexos[]" 
                     id="anexo_{{ $formulario->formulario_id }}" 
-                    value="{{ $formulario->formulario_id }}">
+                    value="{{ $formulario->formulario_id }}"
+                    @if(in_array($formulario->formulario_id, $selectedAnexos->pluck('formulario_id')->toArray())) checked @endif
+                >
                 <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
                     {{ $formulario->formulario_id }}
                 </label>
@@ -85,6 +87,7 @@
         @endforeach
     </div>
 </div>
+
         <div class="form-group">
             <label for="estado">Estado</label>
             <select name="estado" class="form-control" required>

@@ -12,7 +12,7 @@
       <!-- Fila 1 -->
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda" style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-        
+      
         <b>{{$anexo->valor_formulario}}</b>
         </div>
         <div class="celda-derecha" style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">

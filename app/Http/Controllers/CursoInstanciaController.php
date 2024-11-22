@@ -255,7 +255,6 @@ public function destroy(int $cursoId, int $instanciaId)
             $selectedAnexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
             
 
-            
             return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad', 'anexos', 'selectedAnexos'));
         }
         catch(Exception $e){
@@ -279,6 +278,8 @@ public function destroy(int $cursoId, int $instanciaId)
                 'lugar' => 'nullable|string|max:255',
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
+                'anexos' => 'nullable|array',
+
             ]);
             $capacitador = $request->input('capacitador');
             
@@ -313,6 +314,24 @@ public function destroy(int $cursoId, int $instanciaId)
             $data = $request->all();
             $data['capacitador'] = $capacitador;
             $instancia->update($data);
+
+            if ($request->has('anexos') && is_array($request->input('anexos'))) {
+                //eliminar las relaciones actuales con los anexos para esta instancia y curso
+                DB::table('relacion_curso_instancia_anexo')
+                    ->where('id_instancia', $instanciaId)
+                    ->where('id_curso', $cursoId)
+                    ->delete();
+                
+                //agregar las nuevas relaciones
+                $anexos = $request->input('anexos'); 
+                foreach ($anexos as $formulario_id) {
+                    DB::table('relacion_curso_instancia_anexo')->insert([
+                        'id_instancia' => $instanciaId,
+                        'id_curso' => $cursoId,
+                        'formulario_id' => $formulario_id,
+                    ]);
+                }
+            }
             
             return redirect()->route('cursos.instancias.index', $instancia->id_curso)
                              ->with('success', 'Instancia actualizada exitosamente.');
