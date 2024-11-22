@@ -30,6 +30,10 @@ public function enrolamientos()
         return $this->belongsToMany(Persona::class, 'enrolamiento_cursos', 'id_curso', 'id_persona')
         ->withPivot('id_instancia', 'evaluacion');
     }
-   
+    public function anexos()
+    {
+        return $this->belongsToMany(Anexo::class, 'relacion_curso_instancia_anexo', 'curso_id', 'anexo_id')
+                    ->withPivot('formulario_id');  
+    }
     
 }

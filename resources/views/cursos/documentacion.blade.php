@@ -13,16 +13,22 @@
                 </thead>
                 <tbody>
                     
-                    @foreach($documentos as $doc)
-                    <tr>
-                        <td>{{ $doc->formulario_id ?? "No hay anexos"}}</td>
-                        <td>
-                        
+                @foreach($documentos as $doc)
+    <tr>
+        <td>{{ $doc->formulario_id ?? "No hay anexos" }}</td>
+        <td>
+            @if($doc->formulario_id) 
+                <form action="{{ route('verPlanillaPrevia', ['formularioId' => $doc->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}" method="GET" style="margin-bottom: 20px;">
+                    @csrf
+                    <button type="submit" class="btn btn-success">Ver</button>
+                </form>
+            @else
+                
+            @endif
+        </td>
+    </tr>
+@endforeach
 
-                        </td>
-                        
-                       
-                    @endforeach
                 </tbody>
             </table>
 @endsection

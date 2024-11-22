@@ -81,37 +81,15 @@ class CursoInstanciaService
         }
     }
 
-    /*public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
-    {
-        try {
-            return CursoInstancia::with('anexos')
-                                ->where('id_instancia', $id_instancia)
-                                 ->where('id_curso', $cursoId)
-                                 ->first(); 
-        } catch (\Exception $e) {
-            
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la instancia' . $e->getMessage());
-            throw $e; 
-        }
-    }*/
+    
     public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
 {
     try {
-        
         
         $instancia = CursoInstancia::with('anexos')
             ->where('id_instancia', $id_instancia)
             ->where('id_curso', $cursoId)
             ->first();
-
-        
-        /*if ($instancia) {
-            foreach ($instancia->anexos as $anexo) {
-                Log::info("Anexo: {$anexo->nombre}, Tipo: {$anexo->pivot->tipo}");
-            }
-        } else {
-            Log::info("No se encontró la instancia con id_instancia: $id_instancia, id_curso: $cursoId");
-        }*/
 
         return $instancia;
     } catch (\Exception $e) {
@@ -191,62 +169,55 @@ class CursoInstanciaService
     }
 
 
-    /*public function getDocumentacion(int $instanciaId, int $cursoId)
-{
-    try {
-        // Obtener la instancia del curso
-        $instancia = $this->getInstanceById($instanciaId, $cursoId);
-        
-        // Verificar si la instancia tiene anexos asociados
-        $anexos = $instancia->anexos()->wherePivot('id_curso', $cursoId)->get();
-dd($anexos);
-        // Verificar si no hay anexos encontrados
-        if ($anexos->isEmpty()) {
-            return response()->json(['message' => 'No hay anexos relacionados con este curso e instancia.'], 404);
-        }
 
-        // Retornar los anexos encontrados
-        return response()->json($anexos);
-    } catch (\Exception $e) {
-        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los anexos: ' . $e->getMessage());
-        return response()->json(['error' => 'Hubo un error al obtener los anexos.'], 500);
-    }
-}*/
-
-
-public function getDocumentacion(int $instanciaId, int $cursoId)  //cambiar luego
+public function getDocumentacion(int $instanciaId, int $cursoId)  
 {
     try {
         $anexos = DB::table('relacion_curso_instancia_anexo')
                     ->join('anexos', 'relacion_curso_instancia_anexo.formulario_id', '=', 'anexos.formulario_id')
                     ->where('relacion_curso_instancia_anexo.id_instancia', $instanciaId)
                     ->where('relacion_curso_instancia_anexo.id_curso', $cursoId)
-                    ->select('anexos.*') // Seleccionar los campos de la tabla anexos
+                    ->select('anexos.*') 
                     ->get();
 
-        if ($anexos->isEmpty()) {
-            return response()->json(['message' => 'No hay anexos relacionados con este curso e instancia.'], 404);
-        }
-
+        
+        
         return $anexos;
-    } catch (\Exception $e) {
-        Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los anexos: ' . $e->getMessage());
-        return response()->json(['error' => 'Hubo un error al obtener los anexos.'], 500);
-    }
+    } catch(Exception $e){
+        Log::error('Error in class: ' . get_class($this) . ' .Error al contar las instancias del curso' . $e->getMessage());
+        throw $e;
+       }
+    
 }
 
-    public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId) {
-        $instancia = $this->getInstanceById($instanciaId, $cursoId);
-    dd($instancia);
-        $anexo = $instancia->anexos()->where('anexos.formulario_id', $formulario_id)->first();
-    
-        return $anexo;
-    }
-    
 
-    public function getAnexos(){
-        return Anexo::all();
+
+public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
+{
+    
+    $formularioId = DB::table('relacion_curso_instancia_anexo')
+                        ->where('id_instancia', $instanciaId) 
+                        ->where('id_curso', $cursoId) 
+                        ->value('formulario_id');
+
+   
+    if (!$formularioId) {
+        return null; 
     }
+
+    
+    $anexo = DB::table('anexos')
+                ->where('formulario_id', $formularioId) 
+                ->first(); 
+
+    return $anexo; 
+}
+
+
+public function getAnexos()
+{
+    return Anexo::all();
+}
 
     
     

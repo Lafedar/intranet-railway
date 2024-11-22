@@ -556,9 +556,9 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos');
 
     Route::get('/cursos/{instanciaId}/{cursoId}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
-    Route::get('/cursos/generar-pdf/{instanciaId}/{cursoId}', [CursoinstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
+    Route::get('/cursos/generar-pdf/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
     Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos');
-    Route::get('/ver-planilla-previa/{formularioId}/{cursoId}', [CursoinstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia');
+    Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia');
   });
 
 

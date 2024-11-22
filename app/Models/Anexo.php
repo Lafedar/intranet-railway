@@ -13,18 +13,22 @@ class Anexo extends Model
     protected $primaryKey = 'formulario_id';
     
 
-    // Si formulario_id no es autoincremental, asegúrate de que esta opción esté desactivada
+    // Si formulario_id no es autoincremental
     public $incrementing = false;
     
     // Indica el tipo de la clave primaria, si es necesario (en caso de que sea string, por ejemplo)
     protected $keyType = 'string';
-    /*public function cursosInstancias()
-    {
-        return $this->belongsToMany(CursoInstancia::class, 'relacion_curso_instancia_anexo', 'formulario_id', 'id_curso')
-                    ->withPivot('id_instancia', 'tipo');
-    }*/
+
+
     public function instancias()
-{
-    return $this->belongsToMany(CursoInstancia::class, 'relacion_curso_instancia_anexo', 'formulario_id', 'id_instancia');
-}
+    {
+        return $this->belongsToMany(Instancia::class, 'relacion_curso_instancia_anexo', 'id_curso', 'id_instancia')
+                    ->withPivot('formulario_id');
+    }
+
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'relacion_curso_instancia_anexo', 'id_instancia', 'id_curso')
+                    ->withPivot('formulario_id');
+    }
 }
