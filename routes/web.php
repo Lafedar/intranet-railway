@@ -538,7 +538,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
     //Route::get('/cursos/{cursoId}', [CursoController::class, 'validateDestroy'])->name('cursos.validate.destroy')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas/{tipo}', [CursoInstanciaController::class, 'getAsistentesInstancia'])
-    ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
+    ->name('cursos.instancias.inscriptos');//->middleware('role:administrador|Gestor-cursos');
     Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
     Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
@@ -548,7 +548,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas')->middleware('role:administrador|Gestor-cursos');
     Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])
     ->name('inscribir.persona')->middleware('role:administrador|Gestor-cursos');
-    Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos');//->middleware('role:administrador|Gestor-cursos');
     Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count');
     Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
     Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');

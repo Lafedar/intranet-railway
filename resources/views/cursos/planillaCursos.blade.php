@@ -27,7 +27,7 @@
       <div class="fila-2" style="display: table-row; width: 80%;">  <!-- Cambié el ancho de la fila -->
         <!-- Celda izquierda (Logo) -->
         <div class="celda-izquierda-2" style="display: table-cell; border-right: 2px solid black; box-sizing: border-box; height: 50px; vertical-align: middle; text-align: center;">
-  <img src="{{ $imageBase64 }}" alt="Logo" width="100" height="70" />
+  <img src="{{ $imageBase64 }}" alt="Logo" width="100" height="50" />
 </div>
 
 

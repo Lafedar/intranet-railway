@@ -44,8 +44,9 @@
                 <th>Lugar</th>
                 <th>Estado</th>
                 <th>Version</th>
+                <th>Acciones</th>
                 @role(['administrador', 'Gestor-cursos'])
-                    <th>Acciones</th>
+                    
                 @endrole
 
             </tr>
@@ -82,8 +83,9 @@
                 <td>{{ $instance->estado }}</td>
                 
                 <td>{{ $instance->version }}</td>
-                @role(['administrador', 'Gestor-cursos'])
+                
                     <td>
+                    @role(['administrador', 'Gestor-cursos'])
                     @php
                             // Verificar la disponibilidad de la instancia
                             $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
@@ -111,21 +113,15 @@
                         </form>
                     @endif
                 
-                    
-                    
-                    
-                    
-                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" class="btn btn-secondary btn-sm">
-                        Ver personas inscriptas
-                    </a>
-
                     <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}" class="btn btn-primary btn-sm">
                         Ver documentos
                     </a>
 
-                    </td>
                 @endrole
-                                
+                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" class="btn btn-secondary btn-sm">
+                        Ver personas inscriptas
+                </a>
+            </td>             
             </tr>
             @endforeach
           
