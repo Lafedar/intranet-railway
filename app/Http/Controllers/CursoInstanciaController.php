@@ -576,7 +576,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
-    
+    $inscriptosChunks = array_chunk($inscriptos->where('evaluacion', 'Aprobado')->toArray(), 17);
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
         $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
     });
@@ -594,7 +594,7 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
         
         $imageBase64 = null;
     }
-    return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64'));
+    return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64', 'inscriptosChunks'));
 }
 
 
@@ -606,7 +606,7 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-
+    $inscriptosChunks = array_chunk($inscriptos->where('evaluacion', 'Aprobado')->toArray(), 17);
     $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
     if (!$anexo) {
         // Si no hay anexo, redirige o muestra un mensaje
@@ -627,7 +627,7 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
     }
 
     // Cargar la vista para el PDF y pasar la variable de la imagen
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64'))->render();
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks'))->render();
 
     // Cargar el HTML para el PDF usando SnappyPdf
     $pdf = SnappyPdf::loadHTML($html)
