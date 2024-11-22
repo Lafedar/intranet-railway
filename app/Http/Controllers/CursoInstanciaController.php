@@ -59,7 +59,10 @@ class CursoInstanciaController extends Controller
             
             
             $curso = $this->cursoService->getById($cursoId);
-
+            $personaDni = Auth::user()->dni;
+            $persona = $this->personaService->getByDni($personaDni);
+            $evaluacion = $this->enrolamientoCursoService->getEvaluacion($cursoId, $persona->id_p);
+            
             if (!$curso) {
                 throw new Exception('Curso no encontrado.');
             }
@@ -120,7 +123,7 @@ class CursoInstanciaController extends Controller
             $cantInstancias = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
                
 
-            return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability', 'cantInstancias'));
+            return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability', 'cantInstancias', 'persona', 'evaluacion'));
 
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error

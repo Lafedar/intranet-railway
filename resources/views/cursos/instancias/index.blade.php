@@ -37,14 +37,16 @@
                 <th>ID</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
-                <th>Cupo</th>
-                <th>Cupos Restantes</th>
-                <th>Modalidad</th>
-                <th>Capacitador</th>
-                <th>Lugar</th>
-                <th>Estado</th>
-                <th>Version</th>
-                <th>Acciones</th>
+                @role(['administrador', 'Gestor-cursos'])
+                    <th>Cupo</th>
+                    <th>Cupos Restantes</th>
+                    <th>Modalidad</th>
+                    <th>Capacitador</th>
+                    <th>Lugar</th>
+                    <th>Estado</th>
+                    <th>Version</th>
+                @endrole
+                    <th>Acciones</th>
                 
 
             </tr>
@@ -56,6 +58,7 @@
                 <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
 
                 <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
+                @role(['administrador', 'Gestor-cursos'])
                 <td>
                     {{ $instance->cupo }}
                 </td>
@@ -82,7 +85,7 @@
                 <td>{{ $instance->estado }}</td>
                 
                 <td>{{ $instance->version }}</td>
-                
+                @endrole
                 <td>
                     @role(['administrador', 'Gestor-cursos'])
                         @php
@@ -116,10 +119,20 @@
                             Ver documentos
                         </a>
 
-                    @endrole
+                    
                     <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" class="btn btn-secondary btn-sm">
                             Ver personas inscriptas
                     </a>
+                    @endrole
+                    @if(Auth::user()->dni == $persona->dni && $evaluacion == "Aprobado") 
+                        @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            <form action="{{ route('generarCertificado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Certificado</button>
+                                </form>
+                        @endif
+                            
+                    @endif
                 </td>             
             </tr>
             @endforeach

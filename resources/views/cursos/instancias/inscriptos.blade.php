@@ -123,13 +123,18 @@
                             @endif
                         @endrole
                        
-
+                        @role(['administrador', 'Gestor-cursos'])
+                            <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Certificado</button>
+                                </form>
+                        @endrole
                         @if(Auth::user()->dni == $enrolamiento->persona->dni && $enrolamiento->evaluacion == "Aprobado") 
-    <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-success">Certificado</button>
-    </form>
-@endif
+                            <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Certificado</button>
+                            </form>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>

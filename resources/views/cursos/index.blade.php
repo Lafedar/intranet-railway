@@ -69,11 +69,15 @@
                         <th>Título</th>
                         <th>Descripción</th>
                         <th>Obligatorio</th>
-                        <th>Codigo</th>
-                        <th>Area</th>
+                        @role(['administrador', 'Gestor-cursos'])
+                            <th>Codigo</th>
+                            <th>Area</th>
+                        @endrole
                         <th>Fecha de Creación</th>
+                        @role(['administrador', 'Gestor-cursos'])
                         <th>Cant. Inscriptos</th>
                         <th>% Aprobados</th>
+                        @endrole
                         <th>Instancias</th>
                         @role(['administrador', 'Gestor-cursos'])
                             <th>Acciones</th>
@@ -87,6 +91,7 @@
                         <td>{{ $curso->titulo }}</td>
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
+                        @role(['administrador', 'Gestor-cursos'])
                         <td>{{ $curso->codigo ?? 'N/A'}}</td>
                         <td>
                             
@@ -102,9 +107,12 @@
                                 @endif
                             @endif
                         </td>
+                        @endrole
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
+                        @role(['administrador', 'Gestor-cursos'])
                         <td>{{ $curso->cantInscriptos}}</td>
                         <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
+                        @endrole
                         <td>                            
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-primary btn-sm">
                                 Ver Instancias

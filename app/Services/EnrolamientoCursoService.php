@@ -373,4 +373,23 @@ class EnrolamientoCursoService
         throw $e;
     }
 }
+
+public function getEvaluacion(int $cursoId, int $persona_id)
+{
+    try {
+        
+        $evaluacion = EnrolamientoCurso::where('id_curso', $cursoId)
+            ->where('id_persona', $persona_id)
+            ->value('evaluacion');
+        return $evaluacion;
+    } catch (\Exception $e) {
+      
+        Log::error('Error en la clase: ' . get_class($this) . '. Error al obtener la evaluación: ' . $e->getMessage());
+        throw $e; 
+    }
+}
+
+
+
+
 }
