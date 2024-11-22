@@ -671,8 +671,69 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
 }
 
 
+public function generarCertificado(int $instanciaId, int $cursoId, int $id_persona){
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+    $persona = $this->personaService->getById($id_persona);
+    $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
+    $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
+    
+    if (file_exists($imagePath)) {
+       
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
 
+        // Crear la cadena de imagen Base64
+        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+    } else {
+       
+        $imageBase64 = null;
+    }
 
+   
+
+    return view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64','fecha'));
+}
+
+public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona) {
+    
+    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+    $curso = $this->cursoService->getById($cursoId);
+    $persona = $this->personaService->getById($id_persona);
+    $fecha = now()->format('d/m/Y');  
+
+    
+    $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
+    
+    if (file_exists($imagePath)) {
+       
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+        // Crear la cadena de imagen Base64
+        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+    } else {
+       
+        $imageBase64 = null;
+    }
+
+    // Cargar la vista para el PDF y pasar la variable de la imagen
+    $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha'))->render();
+
+    // Generar el PDF usando SnappyPdf
+    $pdf = SnappyPdf::loadHTML($html)
+                ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
+                ->setOption('enable-local-file-access', true)
+                ->setOption('enable-javascript', true)
+                ->setOption('javascript-delay', 200)
+                ->setOption('margin-top', 10)
+                ->setOption('margin-right', 10)
+                ->setOption('margin-bottom', 10)
+                ->setOption('margin-left', 10);
+
+    // Descargar el PDF generado
+    return $pdf->download('certificado.pdf');
+}
 
    
 

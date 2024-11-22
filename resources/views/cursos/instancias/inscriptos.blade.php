@@ -93,6 +93,11 @@
                                     @csrf
                                     <button type="submit" class="btn btn-success">Desaprobar</button>
                                 </form>
+
+                                <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Certificado</button>
+                                </form>
                             @else
                                 <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">
                                     @csrf
