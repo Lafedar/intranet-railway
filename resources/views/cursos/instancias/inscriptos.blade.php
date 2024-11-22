@@ -2,21 +2,28 @@
 
 @section('content')
 <div class="container">
-    @if (session('success'))
-        <div class="alert alert-success text-center">
-            {{ session('success') }}
-        </div>
-    @endif
+@if (session('success'))
+    <div class="alert alert-success text-center alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger text-center">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@if ($errors->any())
+    <div class="alert alert-danger text-center alert-dismissible fade show" role="alert">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }} 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
     <h1>Inscriptos en el Curso:</h1>
     <h3>{{ $curso->titulo }}</h3>
@@ -94,13 +101,20 @@
                                 @csrf
                                 <button type="submit" class="btn btn-danger">Desuscribir</button>
                             </form>
-                            @if($enrolamiento->evaluacion == "Aprobado") 
+                            @if($enrolamiento->evaluacion == "N/A")
+                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Desaprobar</button>
+                                </form>
+                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Aprobar</button>
+                                </form>
+                            @elseif($enrolamiento->evaluacion == "Aprobado") 
                                 <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success">Desaprobar</button>
                                 </form>
-
-                                
                             @else
                                 <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">
                                     @csrf
