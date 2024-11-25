@@ -567,69 +567,82 @@ public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, 
 }
 
 
-
-
 public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
 {
-    
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
-    $inscriptosChunks = array_chunk($inscriptos->where('evaluacion', 'Aprobado')->toArray(), 17);
+    
+    
+    $inscriptos = $inscriptos->where('evaluacion', 'Aprobado'); 
+    
+    $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
+
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
         $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
     });
 
-    
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); // Usa storage_path para obtener la ruta de la imagen
-
-                  // Verificar si la imagen existe
+    $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
     if (file_exists($imagePath)) {
-                      // Convertir la imagen a Base64
         $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+        $mimeType = mime_content_type($imagePath);
         $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
     } else {
-        
         $imageBase64 = null;
     }
+
     return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64', 'inscriptosChunks'));
 }
 
 
 
 
-
-public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId) {
-    
+public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId)
+{
+    $is_pdf = true;
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-    $inscriptosChunks = array_chunk($inscriptos->where('evaluacion', 'Aprobado')->toArray(), 17);
+    $inscriptos = $inscriptos->where('evaluacion', 'Aprobado'); 
+    
+    $inscriptosArray = $inscriptos->toArray();
+
+    // Dividir la lista de inscriptos en páginas (cada página tendrá 17 inscriptos)
+    $inscriptosChunks = array_chunk($inscriptosArray, 17);
+
+    foreach ($inscriptosChunks as &$pagina) {
+        while (count($pagina) < 17) {
+            $pagina[] = [
+                'fecha_enrolamiento' => null,
+                'persona' => [
+                    'nombre_p' => null,
+                    'apellido' => null
+                ]
+            ];
+        }
+    }
+
+    
     $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
     if (!$anexo) {
-        // Si no hay anexo, redirige o muestra un mensaje
         return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
     }
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
-    
-    if (file_exists($imagePath)) {
-       
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
 
-        // Crear la cadena de imagen Base64
+    
+    $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+    if (file_exists($imagePath)) {
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $mimeType = mime_content_type($imagePath);
         $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
     } else {
-        // Si no se encuentra la imagen, puedes asignar un valor predeterminado
         $imageBase64 = null;
     }
 
-    // Cargar la vista para el PDF y pasar la variable de la imagen
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks'))->render();
+    
+    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf'))->render();
 
-    // Cargar el HTML para el PDF usando SnappyPdf
+    
     $pdf = SnappyPdf::loadHTML($html)
                      ->setOption('enable-local-file-access', true)
                      ->setOption('enable-javascript', true)
@@ -639,9 +652,9 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
                      ->setOption('margin-bottom', 10)
                      ->setOption('margin-left', 10);
 
-    // Generar y descargar el PDF
     return $pdf->download('planilla.pdf');
 }
+
 
 
 
@@ -718,17 +731,17 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
         $imageData = base64_encode(file_get_contents($imagePath));
         $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
 
-        // Crear la cadena de imagen Base64
+        
         $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
     } else {
        
         $imageBase64 = null;
     }
 
-    // Cargar la vista para el PDF y pasar la variable de la imagen
+    
     $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha'))->render();
 
-    // Generar el PDF usando SnappyPdf
+    
     $pdf = SnappyPdf::loadHTML($html)
                 ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
                 ->setOption('enable-local-file-access', true)
@@ -739,7 +752,7 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
                 ->setOption('margin-bottom', 10)
                 ->setOption('margin-left', 10);
 
-    // Descargar el PDF generado
+    
     return $pdf->download('certificado.pdf');
 }
 
