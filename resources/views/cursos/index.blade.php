@@ -3,166 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vista de Cursos</title>
+    <title>Cursos</title>
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-
-<a href="{{ url('/home') }}" class="img-logo">
-    <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-</a>
-
-    <div class="container mt-5 table-container">
-        @role(['administrador', 'Gestor-cursos'])
-        <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
-        <div class="filter-container">
-    <div class="filter-item">
-        <input type="text" name="nombre_curso" class="form-control" placeholder="Buscar por título"
-            value="{{ old('nombre_curso', $nombreCurso) }}">
-    </div>
-    <div class="filter-item">
-        <select name="area_id" class="form-control">
-            <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
-            <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
-
-            @foreach ($areas as $area)
-                <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
-                    {{ $area->nombre_a }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="filter-item">
-        <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
-    </div>
-</div>
-
-        </form>
-        @endrole
-
-        <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
-            Crear Curso
-        </a>
-
-        <div class="row justify-content-center">
-            <div class="col-md-15"> 
-                <table class="table table-bordered table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Descripción</th>
-                            <th>Obligatorio</th>
-                            @role(['administrador', 'Gestor-cursos'])
-                            <th>Codigo</th>
-                            <th>Area</th>
-                            @endrole
-                            <th>Fecha de Creación</th>
-                            @role(['administrador', 'Gestor-cursos'])
-                            <th>Cant. Inscriptos</th>
-                            <th>% Aprobados</th>
-                            @endrole
-                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                            <th>Certificado</th>
-                            @else
-                            <th>Instancias</th>
-                            @endrole
-                            @role(['administrador', 'Gestor-cursos'])
-                            <th>Acciones</th>
-                            @endrole
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($cursosData as $curso)
-                        <tr>
-                            <td>{{ $curso->titulo }}</td>
-                            <td>{{ $curso->descripcion }}</td>
-                            <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
-                            @role(['administrador', 'Gestor-cursos'])
-                            <td>{{ $curso->codigo ?? 'N/A'}}</td>
-                            <td>
-                                @if($curso->areas->isEmpty()) 
-                                    <span>N/A</span>
-                                @else
-                                    @if($curso->areas->count() == $totalAreas)
-                                        <span>Todas las áreas</span>
-                                    @else
-                                        @foreach($curso->areas as $area)
-                                            <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
-                                        @endforeach
-                                    @endif
-                                @endif
-                            </td>
-                            @endrole
-                            <td>{{ $curso->created_at->format('d/m/Y') }}</td>
-                            @role(['administrador', 'Gestor-cursos'])
-                            <td>{{ $curso->cantInscriptos}}</td>
-                            <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
-                            @endrole
-                            <td>            
-                            @role(['administrador', 'Gestor-cursos'])                
-                                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn">
-                                <img src="{{ asset('storage/cursos/tocar.png') }}" alt="Ver Instancia">
-                                </a>
-                            @endrole
-                                @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
-                                    @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                                    <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">Certificado</button>
-                                    </form>
-                                    @endif
-                                @endif
-                            </td>
-                            @role(['administrador', 'Gestor-cursos'])
-                            <td>
-                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn ">
-                                    <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar">
-                                </a>
-                                @if($curso->cantInscriptos == 0)
-                                    <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar">
-                                        </button>
-
-                                    </form>
-                                @endif
-                            </td>
-                            @endrole
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <footer >
-        <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
-    </footer> 
-    <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
-    <script src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            setTimeout(function() {
-                $('#successMessage').fadeOut('slow');
-            }, 3000);
-
-            setTimeout(function() {
-                $('#errorMessage').fadeOut('slow');
-            }, 3000);
-        });
-    </script>
-
-</body>
-</html>
-
-
-
-
-<style>
+    <style>
 /*BOTON CREAR CURSO*/
 #BCC {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
@@ -379,14 +223,16 @@ button.btn-danger img {
 }
 
 footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background: rgba(15, 79, 141, 0.83);
-    color: white; 
-    text-align: center; 
-    padding: 20px;  
-    width: 100%; 
-    bottom: 0; 
-    font-family: 'Inter', sans-serif; 
-    font-weight: 200; 
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
 }
 
 footer p {
@@ -404,3 +250,160 @@ footer p {
 
 }
 </style>
+
+</head>
+<body>
+
+<a href="{{ url('/home') }}" class="img-logo">
+    <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
+</a>
+
+    <div class="container mt-5 table-container">
+        @role(['administrador', 'Gestor-cursos'])
+        <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
+        <div class="filter-container">
+    <div class="filter-item">
+        <input type="text" name="nombre_curso" class="form-control" placeholder="Buscar por título"
+            value="{{ old('nombre_curso', $nombreCurso) }}">
+    </div>
+    <div class="filter-item">
+        <select name="area_id" class="form-control">
+            <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
+            <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
+
+            @foreach ($areas as $area)
+                <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
+                    {{ $area->nombre_a }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="filter-item">
+        <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+    </div>
+</div>
+
+        </form>
+        @endrole
+
+        <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
+            Crear Curso
+        </a>
+
+        <div class="row justify-content-center">
+            <div class="col-md-15"> 
+                <table class="table table-bordered table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Obligatorio</th>
+                            @role(['administrador', 'Gestor-cursos'])
+                            <th>Codigo</th>
+                            <th>Area</th>
+                            @endrole
+                            <th>Fecha de Creación</th>
+                            @role(['administrador', 'Gestor-cursos'])
+                            <th>Cant. Inscriptos</th>
+                            <th>% Aprobados</th>
+                            @endrole
+                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            <th>Certificado</th>
+                            @else
+                            <th>Instancias</th>
+                            @endrole
+                            @role(['administrador', 'Gestor-cursos'])
+                            <th>Acciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($cursosData as $curso)
+                        <tr>
+                            <td>{{ $curso->titulo }}</td>
+                            <td>{{ $curso->descripcion }}</td>
+                            <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
+                            @role(['administrador', 'Gestor-cursos'])
+                            <td>{{ $curso->codigo ?? 'N/A'}}</td>
+                            <td>
+                                @if($curso->areas->isEmpty()) 
+                                    <span>N/A</span>
+                                @else
+                                    @if($curso->areas->count() == $totalAreas)
+                                        <span>Todas las áreas</span>
+                                    @else
+                                        @foreach($curso->areas as $area)
+                                            <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
+                                        @endforeach
+                                    @endif
+                                @endif
+                            </td>
+                            @endrole
+                            <td>{{ $curso->created_at->format('d/m/Y') }}</td>
+                            @role(['administrador', 'Gestor-cursos'])
+                            <td>{{ $curso->cantInscriptos}}</td>
+                            <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
+                            @endrole
+                            <td>            
+                            @role(['administrador', 'Gestor-cursos'])                
+                                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn">
+                                <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
+                                </a>
+                            @endrole
+                                @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
+                                    @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                                    <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Certificado</button>
+                                    </form>
+                                    @endif
+                                @endif
+                            </td>
+                            @role(['administrador', 'Gestor-cursos'])
+                            <td>
+                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn ">
+                                    <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar">
+                                </a>
+                                @if($curso->cantInscriptos == 0)
+                                    <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar">
+                                        </button>
+
+                                    </form>
+                                @endif
+                            </td>
+                            @endrole
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer >
+        <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
+    </footer> 
+    <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
+    <script src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#successMessage').fadeOut('slow');
+            }, 3000);
+
+            setTimeout(function() {
+                $('#errorMessage').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
