@@ -365,6 +365,7 @@ class EnrolamientoCursoService
     public function getInstancesByPersonId(int $cursoId, int $persona_id)
 {
     try {
+        
         return EnrolamientoCurso::where('id_curso', $cursoId)
             ->where('id_persona', $persona_id)
             ->pluck('id_instancia');  
@@ -377,7 +378,7 @@ class EnrolamientoCursoService
 public function getEvaluacion(int $cursoId, int $persona_id)
 {
     try {
-        
+       
         $evaluacion = EnrolamientoCurso::where('id_curso', $cursoId)
             ->where('id_persona', $persona_id)
             ->value('evaluacion');

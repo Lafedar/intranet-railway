@@ -78,7 +78,11 @@
                         <th>Cant. Inscriptos</th>
                         <th>% Aprobados</th>
                         @endrole
-                        <th>Instancias</th>
+                        @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            <th>Certificado</th>
+                        @else
+                            <th>Instancias</th>
+                        @endrole
                         @role(['administrador', 'Gestor-cursos'])
                             <th>Acciones</th>
                         @endrole
@@ -113,10 +117,22 @@
                         <td>{{ $curso->cantInscriptos}}</td>
                         <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
                         @endrole
-                        <td>                            
+                        <td>            
+                        @role(['administrador', 'Gestor-cursos'])                
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-primary btn-sm">
                                 Ver Instancias
                             </a>
+                        @endrole
+                           
+                            @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
+                                @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                                    <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Certificado</button>
+                                    </form>
+                                @endif
+            
+                            @endif
                         </td>
                         @role(['administrador', 'Gestor-cursos'])
                             <td>

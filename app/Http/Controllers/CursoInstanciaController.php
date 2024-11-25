@@ -677,8 +677,8 @@ public function getDocumentacion(int $instanciaId, int $cursoId)
     return view('cursos.documentacion', compact('documentos', 'instancia', 'curso'));
 }
 
-
-public function generarCertificado(int $instanciaId, int $cursoId, int $id_persona){
+//DEJO ESTO POR SI EN ALGUN MOMENTO SE LLEGA A USAR - GENERA CERTIFICADO PARA CADA INSTANCIA
+/*public function generarCertificado(int $instanciaId, int $cursoId, int $id_persona){
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $persona = $this->personaService->getById($id_persona);
@@ -740,7 +740,7 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
 
     
     return $pdf->download('certificado.pdf');
-}
+}*/
 
    
 

@@ -14,6 +14,8 @@ use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
 use DB;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use PDF;
 
 class CursoController extends Controller
 {
@@ -47,12 +49,13 @@ class CursoController extends Controller
 
             $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
-            $persona = $this->personaService->getById($personaDni->id_p);
+            
+           
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $cursosData = $this->cursoService->getAll()->load('areas');
             } else {
-                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($persona->id_p); 
+                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p); 
             
             }
 
@@ -88,20 +91,21 @@ class CursoController extends Controller
                 return $curso;
             });
 
-            $cursosData = $cursosData->map(function ($curso) {
+            
+            $cursosData = $cursosData->map(function ($curso) use ($personaDni) {
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
-                
-                // Ahora se calcula el porcentaje de aprobados para cada curso
-                $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id, $curso->id);
+                $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion( $curso->id, $personaDni->id_p);
+                $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
                 
                 return $curso;
             });
+            
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
             
            
-        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas'));
+        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
@@ -327,8 +331,69 @@ class CursoController extends Controller
         }
        
     }
+    public function generarCertificado(int $cursoId, int $id_persona){
+        
+        $curso = $this->cursoService->getById($cursoId);
+        
+        $persona = $this->personaService->getById($id_persona);
+        $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
+        
+        if (file_exists($imagePath)) {
+           
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
     
-
+            // Crear la cadena de imagen Base64
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+           
+            $imageBase64 = null;
+        }
+    
+       
+    
+        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64','fecha'));
+    }
+    public function generarPDFcertificado(int $cursoId, int $id_persona) {
+        $is_pdf = true;
+        $curso = $this->cursoService->getById($cursoId);
+        $persona = $this->personaService->getById($id_persona);
+        $fecha = now()->format('d/m/Y');  
+    
+        
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
+        
+        if (file_exists($imagePath)) {
+           
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+    
+            
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+           
+            $imageBase64 = null;
+        }
+    
+        
+        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
+    
+        
+        $pdf = SnappyPdf::loadHTML($html)
+                    ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
+                    ->setOption('enable-local-file-access', true)
+                    ->setOption('enable-javascript', true)
+                    ->setOption('javascript-delay', 200)
+                    ->setOption('margin-top', 10)
+                    ->setOption('margin-right', 10)
+                    ->setOption('margin-bottom', 5)
+                    ->setOption('margin-left', 10);
+    
+        
+        return $pdf->download('certificado.pdf');
+    }
+    
 
     
     }

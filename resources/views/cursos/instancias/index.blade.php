@@ -124,15 +124,7 @@
                             Ver personas inscriptas
                     </a>
                     @endrole
-                    @if(Auth::user()->dni == $persona->dni && $evaluacion == "Aprobado") 
-                        @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                            <form action="{{ route('generarCertificado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">Certificado</button>
-                                </form>
-                        @endif
-                            
-                    @endif
+                    
                 </td>             
             </tr>
             @endforeach
