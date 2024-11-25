@@ -37,11 +37,12 @@
         </div>
     </div>
 
-    
-    <form action="{{ route('cursos.generarPDFcertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="GET" class="hide-when-pdf">
-        @csrf
-        <button type="submit" class="btn btn-primary">Generar PDF</button>
-    </form>
+    @if(empty($is_pdf))
+        <form action="{{ route('cursos.generarPDFcertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="GET" class="hide-when-pdf">
+            @csrf
+            <button type="submit" class="btn btn-primary">Generar PDF</button>
+        </form>
+    @endif
 </body>
 </html>
 
@@ -61,7 +62,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 90vh;
     width: 100vw;
     overflow: hidden;
 }
@@ -71,7 +72,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 50px;
-    height: 100%;
+    height: 95%;
     width: 100%;
 }
 

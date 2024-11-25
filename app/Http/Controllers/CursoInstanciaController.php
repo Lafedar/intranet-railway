@@ -703,7 +703,7 @@ public function generarCertificado(int $instanciaId, int $cursoId, int $id_perso
 }
 
 public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona) {
-    
+    $is_pdf = true;
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $persona = $this->personaService->getById($id_persona);
@@ -725,7 +725,7 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
     }
 
     
-    $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha'))->render();
+    $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
 
     
     $pdf = SnappyPdf::loadHTML($html)
@@ -735,7 +735,7 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
                 ->setOption('javascript-delay', 200)
                 ->setOption('margin-top', 10)
                 ->setOption('margin-right', 10)
-                ->setOption('margin-bottom', 10)
+                ->setOption('margin-bottom', 5)
                 ->setOption('margin-left', 10);
 
     
