@@ -538,7 +538,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
 
     Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas/{tipo}', [CursoInstanciaController::class, 'getAsistentesInstancia'])
-    ->name('cursos.instancias.inscriptos');//->middleware('role:administrador|Gestor-cursos');
+    ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
     Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index');
     Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
@@ -549,16 +549,16 @@ Route::group(['middleware' => ['auth']], function ()
     Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])
     ->name('inscribir.persona')->middleware('role:administrador|Gestor-cursos');
     Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
-    Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count');
+    Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count')->middleware('role:administrador|Gestor-cursos');
     Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
     Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
     Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
-    Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos');
+    Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos')->middleware('role:administrador|Gestor-cursos');
 
-    Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla');
-    Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF');
-    Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos');
-    Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia');
+    Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos')->middleware('role:administrador|Gestor-cursos');
+    Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia')->middleware('role:administrador|Gestor-cursos');
     Route::post('/generar-certificado/{instanciaId}/{cursoId}/{personaId}', [CursoInstanciaController::class, 'generarCertificado'])->name('generarCertificado');
     Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CursoInstanciaController::class, 'generarPDFcertificado'])->name('cursos.generarPDFcertificado');
     

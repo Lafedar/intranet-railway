@@ -325,20 +325,6 @@ public function destroy(int $cursoId, int $instanciaId)
                 
                 
             }
-            if ($request->input('fecha_inicio') !== null) {
-                $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
-                $fechaActual = Carbon::now();
-            
-                // Verifica si la fecha de inicio es menor que la fecha actual
-                if ($fechaInicio < $fechaActual->startOfDay()) {
-                    return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
-                }
-            }
-            
-            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
-                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
-            }
-
             
             $inscriptosCount = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instanciaId, $cursoId);
             $cupo = $request->input('cupo');

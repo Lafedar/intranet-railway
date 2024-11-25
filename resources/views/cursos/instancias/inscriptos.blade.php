@@ -96,45 +96,48 @@
                         <td>{{ $instancia->version ?? 'N/A' }}</td>
                         <td>{{ $enrolamiento->evaluacion }}</td>
                         <td>
-                        @role(['administrador', 'Gestor-cursos'])
-                            <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Desuscribir</button>
-                            </form>
-                            @if($enrolamiento->evaluacion == "N/A")
-                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">Desaprobar</button>
-                                </form>
-                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">Aprobar</button>
-                                </form>
-                            @elseif($enrolamiento->evaluacion == "Aprobado") 
-                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">Desaprobar</button>
-                                </form>
-                            @else
-                                <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">Aprobar</button>
-                                </form>
-                            @endif
-                        @endrole
-                       
-                        @role(['administrador', 'Gestor-cursos'])
-                            <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">Certificado</button>
-                                </form>
-                        @endrole
-                        @if(Auth::user()->dni == $enrolamiento->persona->dni && $enrolamiento->evaluacion == "Aprobado") 
-                            <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-success">Certificado</button>
-                            </form>
-                        @endif
+    @role(['administrador', 'Gestor-cursos'])
+
+        @if($enrolamiento->evaluacion == "No Aprobado")
+            <form action="{{ route('desinscribir', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-danger btn-sm">Desuscribir</button>
+            </form>
+        @endif
+        @if($enrolamiento->evaluacion == "N/A")
+            <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Desaprobar</button>
+            </form>
+            <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+            </form>
+        @elseif($enrolamiento->evaluacion == "Aprobado") 
+            <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 1]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Desaprobar</button>
+            </form>
+        @else
+            <form action="{{ route('evaluarInstancia', ['userId' => $enrolamiento->id_persona, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'bandera' => 0]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+            </form>
+        @endif
+    @endrole
+
+    @role(['administrador', 'Gestor-cursos'])
+        @if($enrolamiento->evaluacion == "Aprobado")
+            <form action="{{ route('generarCertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}" method="POST" style="display: inline-block; margin-right: 10px;">
+                @csrf
+                <button type="submit" class="btn btn-success btn-sm">Certificado</button>
+            </form>
+        @endif
+    @endrole
+    
+    
+</td>
+
                     </tr>
                 @endforeach
             </tbody>

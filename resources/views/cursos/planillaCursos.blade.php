@@ -78,11 +78,11 @@
         <table class="tabla-datos" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
           <thead>
             <tr style="border: 1px solid black;">
-              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 20px;">Fecha</th>
-              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Nombre y Apellido del Entrenado</th>
-              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Firma Entrenado</th>
-              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Firma Entrenador</th>
-              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Observaciones</th>
+              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Fecha</b></th>
+              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Nombre y Apellido del Entrenado</b></th>
+              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma Entrenado</b></th>
+              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma Entrenador</b></th>
+              <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Observaciones</b></th>
             </tr>
           </thead>
           <tbody>
