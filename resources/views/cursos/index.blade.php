@@ -353,6 +353,7 @@ footer p {
                             <th>% Aprobados</th>
                             @endrole
                             @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            <th>Evaluación</th>
                             <th>Certificado</th>
                             @else
                             <th>Instancias</th>
@@ -389,6 +390,13 @@ footer p {
                             <td>{{ $curso->cantInscriptos}}</td>
                             <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
                             @endrole
+                            
+                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            <td>
+                                {{$curso->evaluacion}}
+                                </td>
+                            @endif
+                            
                             <td>            
                             @role(['administrador', 'Gestor-cursos'])                
                                 <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn" title="Ver Instancia">

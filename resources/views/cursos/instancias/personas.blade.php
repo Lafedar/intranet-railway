@@ -102,8 +102,7 @@
         
         /*FILTRO*/
         #filtro {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: 1px solid #357AAB;  
+            background: grey; 
             color: rgba(255, 255, 255, 1) !important; 
             padding: 10px; 
             font-size: 16px; 
