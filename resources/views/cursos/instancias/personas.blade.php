@@ -301,7 +301,7 @@
                                     <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
                                         @csrf
                                         @method('POST')
-                                        <button type="submit" class="btn btn-danger">Desuscribir</button>
+                                        <button type="submit" style="border: none; background: none; padding: 0;" title="Desuscribir"><img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" style="width:27px; height:27px;"></button>
                                         
                                     </form>
                                 @else
