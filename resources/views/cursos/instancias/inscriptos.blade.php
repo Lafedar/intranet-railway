@@ -260,8 +260,8 @@
             <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
         </a>
         <div id="encabezados" style="text-align: center;">
-            <h1 id="titulo">Inscriptos en el Curso: {{ $curso->titulo }}</h1>
-            <h2 id="titulo-sec">Número de Instancia: {{ $instancia->id_instancia }}</h2>
+            <h1 id="titulo">Inscriptos del Curso: {{ $curso->titulo }}</h1>
+            <h2 id="titulo-sec">Instancia: {{ $instancia->id_instancia }}</h2>
         </div>
         <!-- Información del curso e instancia -->
         

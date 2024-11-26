@@ -252,6 +252,25 @@ public function validarAnexo(string $formulario_id, int $cursoId, int $instancia
 
 }
 
+public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera){
+    $instancia = CursoInstancia::where('id_instancia', $instanciaId)
+                                ->where('id_curso', $cursoId)
+                                ->first();
+
+    if ($instancia && $bandera == "No") {
+        $instancia->estado = 'No Activo';
+        $instancia->save();     
+        session()->flash('success', 'La instancia ha sido cerrada correctamente.');
+    } elseif ($instancia && $bandera == "Si") {
+        $instancia->estado = 'Activo';
+        $instancia->save(); 
+        session()->flash('success', 'La instancia ha sido abierta correctamente.');
+    } else {
+        session()->flash('error', 'No se encontró la instancia o el estado no es válido.');
+    }
+                            
+    return redirect()->back();
+}
 
 
 

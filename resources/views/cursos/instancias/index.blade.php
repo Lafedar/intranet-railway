@@ -375,9 +375,11 @@
             @endif
         @else
         @endif
-        <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" style="margin: 5px" title="Editar Instancia">
-            <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" style="width:30px; height:30px;">
-        </a>
+        @if($instance->estado=="Activo")
+            <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" style="margin: 5px" title="Editar Instancia">
+                <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" style="width:30px; height:30px;">
+            </a>
+        @endif
         
         @if ($instance->restantes == $instance->cupo)
             <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
@@ -396,6 +398,18 @@
         <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" title="Ver Inscriptos" style="margin: 5px;">
             <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" style="width:35px; height:35px;">
         </a>
+        @if($instance->estado=="Activo")
+                        <a href="{{ route('cambiarEstado', ['instanciaId'=> $instance->id_instancia, 'cursoId'=> $curso->id, 'bandera'=> 'No']) }}" title="Cerrar Instancia">
+                            <img src="{{ asset('storage/cursos/cerrar.png') }}" alt="Cerrar" style="width:30px; height:30px;">
+                        </a>
+                    @else
+                        <a href="{{ route('cambiarEstado', ['instanciaId'=> $instance->id_instancia, 'cursoId'=> $curso->id, 'bandera'=> 'Si']) }}" title="Abrir Instancia">
+                            <img src="{{ asset('storage/cursos/abrir.png') }}" alt="Abrir" style="width:30px; height:30px;">
+                        </a>
+                    @endif
+
+
+
     @endrole
 </td>
 

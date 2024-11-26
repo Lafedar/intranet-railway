@@ -742,6 +742,10 @@ public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_pe
     return $pdf->download('certificado.pdf');
 }*/
 
-   
+public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera){
+    $this->cursoInstanciaService->cambiarEstadoInstancia($instanciaId, $cursoId, $bandera);
+    return redirect()->back();
+}
+
 
 }
