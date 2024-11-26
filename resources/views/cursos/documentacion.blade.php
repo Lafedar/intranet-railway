@@ -174,67 +174,7 @@
             color: white;
         }
 
-        /*FILTRO*/
-        .filter-container {
-            display: flex;              
-            justify-content: center;    
-            align-items: center;        
-            gap: 10px;                  
-            height: 10vh;              
-        }
-
-        .filter-item {
-            width: 300px;                
-            min-width: 100px;          
-        }
-
-        .filter-item input {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: 1px solid #357AAB;  
-            color: rgba(255, 255, 255, 1) !important; 
-            padding: 10px; 
-            font-size: 16px; 
-            border-radius: 5px;
-            width: 150%; 
-            height: 45px;
-            margin-top: 85px;
-        }
-        .filter-item input::placeholder {
-            color: rgba(255, 255, 255, 1); 
-        }
-
-        .filter-item select {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: 1px solid #357AAB;  
-            color: rgba(255, 255, 255, 1); 
-            padding: 10px;
-            font-size: 16px; 
-            border-radius: 5px;
-            width: 150%; 
-            height: 45px;
-            margin-left: 150px;
-            margin-top: 85px;
-        }
-
-        .filter-item button {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            color: rgba(255, 255, 255, 1); 
-            border: none; 
-            padding: 10px 20px; 
-            font-size: 16px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background 0.3s ease; 
-            height: 45px;
-            width: 150%;
-            margin-left: 300px;
-            margin-top: 85px;
-        }
-
-        .filter-item button:hover {
-            background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-        }
-
+        
 
         /*BOTON ELIMINAR*/
         button.btn-danger {
