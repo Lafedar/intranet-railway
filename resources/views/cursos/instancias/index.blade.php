@@ -297,7 +297,9 @@
 
         
         <div class="buttons-title-container">
-            <h1 id="titulo">Instancias del Curso: {{ $curso->titulo }}</h1>
+        <h1 id="titulo">Curso: {{ $curso->titulo }} <br> {{ $curso->created_at->format('d/m/Y') }}</h1>
+
+            </h1>
 
             @role(['administrador', 'Gestor-cursos'])
                 <a href="{{ route('cursos.instancias.create', ['instanciaId' => $cantInstancias, 'curso' => $curso->id]) }}" class="btn btn-warning btn-sm mb-3" id="BCI">

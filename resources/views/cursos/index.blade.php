@@ -249,10 +249,54 @@ footer p {
     color: rgba(255, 255, 255, 0.6);
 
 }
+
+/* Filtros en una línea para resoluciones específicas y más pequeños */
+@media (max-width: 1366px) and (min-width: 1280px), 
+       (max-width: 1360px) and (min-width: 1280px), 
+       (max-width: 1280px) {
+    .filter-container {
+        display: flex;            
+        align-items: center;           
+        margin-top: 20px;                  
+        margin-left: 180px;
+    }
+
+    .filter-item {
+        width: 15%;               
+        min-width: 100px;         
+        box-sizing: border-box;   
+    }
+
+    .filter-item input,
+    .filter-item select,
+    .filter-item button {
+        width: 100%;             
+        font-size: 14px;         
+        padding: 8px;            
+    }
+
+    
+    .img-logo {
+        margin-top: 10px;        
+    }
+}
+
+
 </style>
 
 </head>
 <body>
+@if(session('success'))
+    <div class="alert alert-success" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+        {{ session('error') }}
+    </div>
+@endif
 
 <a href="{{ url('/home') }}" class="img-logo">
     <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
@@ -387,20 +431,16 @@ footer p {
     <footer >
         <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
     </footer> 
-    <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
-    <script src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            setTimeout(function() {
-                $('#successMessage').fadeOut('slow');
-            }, 3000);
-
-            setTimeout(function() {
-                $('#errorMessage').fadeOut('slow');
-            }, 3000);
-        });
-    </script>
-
+    $(document).ready(function() {
+        // Ocultar los mensajes de éxito y error después de 3 segundos
+        setTimeout(function() {
+            $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
+        }, 3000); // 3000 milisegundos = 3 segundos
+    });
+</script>
 </body>
 </html>
 

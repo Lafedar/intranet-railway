@@ -205,6 +205,41 @@
             background: rgba(15, 79, 141, 0.83) !important; 
             color: white;
         }
+
+
+        @media (max-width: 1366px) and (min-width: 1280px), 
+       (max-width: 1360px) and (min-width: 1280px), 
+       (max-width: 1280px) {
+    
+    .form-acciones {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;  
+        margin-top: 20px;
+    }
+   
+    
+    #BI {
+        width: auto;  
+        font-size: 16px;  
+        padding: 8px 16px;  
+    }
+
+    #BI:hover {
+        background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    }
+
+    
+    form button {
+        margin-left: 0px; 
+    }
+
+    
+    .row.justify-content-center {
+        display: flex;
+        justify-content: flex-start; 
+    }
+}
     </style>
 </head>
 <body>
