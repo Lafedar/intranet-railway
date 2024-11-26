@@ -279,27 +279,17 @@
         <div id="modalContainer"></div>
 
         <!-- Mensajes de éxito y error -->
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+        @if(session('success'))
+    <div class="alert alert-success" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+        {{ session('success') }}
+    </div>
+@endif
 
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+@if(session('error'))
+    <div class="alert alert-danger" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+        {{ session('error') }}
+    </div>
+@endif
         <a href="{{ url('/home') }}" class="img-logo">
             <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
         </a>
@@ -383,7 +373,7 @@
             @endif
         @else
         @endif
-        <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" style="margin: 5px" title="Editar">
+        <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" style="margin: 5px" title="Editar Instancia">
             <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" style="width:30px; height:30px;">
         </a>
         
@@ -391,7 +381,7 @@
             <form action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" style="margin: 5px">
+                <button type="submit" class="btn btn-danger btn-sm" style="margin: 5px" title="Eliminar Instancia">
                     <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" style="width:27px; height:27px;">
                 </button>
             </form>
@@ -416,19 +406,16 @@
     
 
     <!-- Scripts de Bootstrap y jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyfU7lmcd6CU9Lyj6UXbdfABpCkBTSXELRkJG4xA" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8FqFjcJzK0wthp8A5OGwWxFme6m9HuCSKhPz4vF3T21tGo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Ocultar los mensajes de éxito y error después de 3 segundos
-            $('.alert').each(function() {
-                var alert = $(this);
-                setTimeout(function() {
-                    alert.fadeOut('slow');
-                }, 3000);
-            });
-        });
-    </script>
+    $(document).ready(function() {
+        // Ocultar los mensajes de éxito y error después de 3 segundos
+        setTimeout(function() {
+            $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
+        }, 3000); // 3000 milisegundos = 3 segundos
+    });
+</script>
 
 </body>
 </html>

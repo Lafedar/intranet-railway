@@ -347,29 +347,29 @@ footer p {
                             @endrole
                             <td>            
                             @role(['administrador', 'Gestor-cursos'])                
-                                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn">
+                                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn" title="Ver Instancia">
                                 <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
                                 </a>
                             @endrole
                                 @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
                                     @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                                    <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST">
+                                    <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">Certificado</button>
+                                        <button type="submit" class="btn btn-success" style="border: none; background: none; padding: 0;"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" style="width:30px; height:30px;"></button>
                                     </form>
                                     @endif
                                 @endif
                             </td>
                             @role(['administrador', 'Gestor-cursos'])
                             <td>
-                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn ">
+                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn" title="Editar Curso">
                                     <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar">
                                 </a>
                                 @if($curso->cantInscriptos == 0)
                                     <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar Curso">
                                             <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar">
                                         </button>
 

@@ -220,9 +220,9 @@
                             <!-- El formulario ahora tiene el formulario_id correspondiente a cada fila -->
                             <form action="{{ route('verPlanillaPrevia', ['formularioId' => $doc->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}" method="GET" >
                                 @csrf
-                                <button type="submit" style="border: none; background: none; padding: 0;">
-    <img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" style="width:30px; height:30px;">
-</button>
+                                <button type="submit" style="border: none; background: none; padding: 0;" title="Ver Documento">
+                                    <img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" style="width:30px; height:30px;">
+                                </button>
 
                             </form>
                             @else
