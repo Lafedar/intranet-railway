@@ -30,7 +30,7 @@
 
         <div class="form-group">
             <label for="cupo">Cupos</label>
-            <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instancia->cupo }}" required>
+            <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instancia->cupo }}" required min="0" max="999999999" oninput="limitInputLength(this)" >
         </div>
         
         <div class="form-group">
@@ -60,12 +60,12 @@
         <div id="otroCapacitadorInput" style="display: none;">
             <label for="otro_capacitador">Escribe el nombre del capacitador</label>
             <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" 
-                value="{{ old('otro_capacitador', $capacitador) }}">
+                value="{{ old('otro_capacitador', $capacitador) }}" maxlength="60">
         </div>
 
         <div class="form-group">
             <label for="lugar">Lugar</label>
-            <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}">
+            <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}" maxlength="100">
         </div>
         <div class="form-group">
     <label for="anexos">Anexos</label>
@@ -81,7 +81,7 @@
                     @if(in_array($formulario->formulario_id, $selectedAnexos->pluck('formulario_id')->toArray())) checked @endif
                 >
                 <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                    {{ $formulario->formulario_id }}
+                    {{ $formulario->valor2 }}
                 </label>
             </div>
         @endforeach
@@ -98,7 +98,7 @@
         </div>
         <div class="form-group">
             <label for="version">Version</label>
-            <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}">
+            <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}" min="0" max="999999999" oninput="limitInputLength(this)" >
         </div>
         <button type="submit" class="btn btn-primary">Editar Instancia</button>
         <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary">Volver</a>
@@ -156,5 +156,12 @@
         });
     });
 </script>
-
+<script>
+    // Función para limitar la longitud del input a 11 caracteres
+    function limitInputLength(input) {
+        if (input.value.length > 9) {
+            input.value = input.value.slice(0, 9);
+        }
+    }
+</script>
 @endsection

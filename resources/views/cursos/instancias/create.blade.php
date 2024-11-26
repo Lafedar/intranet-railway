@@ -30,10 +30,11 @@
     <label for="fecha_fin">Fecha Fin</label>
     <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
 </div>
-        <div class="form-group">
-            <label for="cupo">Cupos</label>
-            <input type="number" class="form-control" id="cupo" name="cupo" required>
-        </div>
+<div class="form-group">
+    <label for="cupo">Cupos</label>
+    <input type="number" class="form-control" id="cupo" name="cupo" required 
+           min="0" max="999999999" oninput="limitInputLength(this)" >
+</div>
         <div class="form-group">
             <label for="modalidad">Modalidad</label>
             <select class="form-control" id="modalidad" name="modalidad">
@@ -64,12 +65,12 @@
 
 <div id="otroCapacitadorInput" style="display: none;">
     <label for="otro_capacitador">Escribe el nombre del capacitador</label>
-    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador">
+    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" maxlength="60">
 </div>
-        <div class="form-group">
-            <label for="lugar">Lugar</label>
-            <input type="text" class="form-control" id="lugar" name="lugar">
-        </div>
+<div class="form-group">
+    <label for="lugar">Lugar</label>
+    <input type="text" class="form-control" id="lugar" name="lugar" maxlength="100">
+</div>
         <div class="form-group">
     <label for="anexos">Anexos</label>
     <div id="anexos">
@@ -82,7 +83,7 @@
                     id="anexo_{{ $formulario->formulario_id }}" 
                     value="{{ $formulario->formulario_id }}">
                 <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                    {{ $formulario->formulario_id }}
+                    {{ $formulario->valor2 }}
                 </label>
             </div>
         @endforeach
@@ -100,7 +101,7 @@
         </div>
         <div class="form-group">
             <label for="version">Version</label>
-            <input type="number" name="version" class="form-control">
+            <input type="number" name="version" class="form-control" min="0" max="999999999" oninput="limitInputLength(this)" >
 
         </div>
         
@@ -186,4 +187,12 @@
             }
         });
     });
+</script>
+<script>
+    // Función para limitar la longitud del input a 11 caracteres
+    function limitInputLength(input) {
+        if (input.value.length > 9) {
+            input.value = input.value.slice(0, 9);
+        }
+    }
 </script>
