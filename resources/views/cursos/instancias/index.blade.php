@@ -7,271 +7,10 @@
     <title>Instancias del Curso</title>
     <!-- Link de Bootstrap -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
-    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
 
-    <style>
-        /*BOTON VOLVER*/
-        #volver{
-            margin-top: 43px;
-            margin-left: 12px;
-            height:45px;
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: none; 
-            color: white; 
-            padding: 10px 20px; 
-            font-size: 18px; 
-            font-weight: bold;
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background 0.3s ease; 
-            margin-top: 55px;
-            margin-left: 12px;
-            margin-bottom: 10px;
-            width: 100px;
-            height: 47px;
-            font-family: 'Inter', sans-serif;
-            
-        }
-        #volver:hover {
-            background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-        }
-        
-        #titulo{
-            
-            margin-top: 100px;
-            text-align: center;
-            margin-left: 600px;
-            font-family: 'Poppins';
-            font-size: 39px;
-            font-weight: 600;
-            line-height: 46.8px;
-            letter-spacing: -0.03em;
-            text-align: center;
-            text-underline-position: from-font;
-            text-decoration-skip-ink: none;
-
-        }
-        h1{
-            color: rgba(0, 51, 102, 1);
-
-        }
-
-        /*BOTON CREAR CURSO*/
-        #BCI {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: none; 
-            color: white; 
-            padding: 10px 20px; 
-            font-size: 18px; 
-            font-weight: bold;
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background 0.3s ease; 
-            margin-top: 60px;
-            margin-left: 5px;
-            margin-bottom: 10px;
-            width: 300px;
-            font-family: 'Inter', sans-serif;
-        
-        }
-        #BCI:hover {
-            background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-        }
-
-        /* LOGO LAFEDAR */
-        .img-logo img {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            margin-left: 15px;
-            margin-top: 50px;
-            width: 400px; 
-            height: auto;
-        }
-
-        /* ENCABEZADO */
-        table thead {
-            background: rgba(15, 79, 141, 0.83)!important;
-
-        }
-
-        table thead th {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 800;
-            line-height: 19.2px;
-            letter-spacing: -0.03em;
-            text-align: center !important;  /* Centrado horizontal */
-            vertical-align: middle !important; /* Centrado vertical */
-            color: rgba(255, 255, 255, 1); 
-        }
-
-
-        /* FILAS */
-        table {
-            border: none !important;
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 0 10px; /* Espacio entre filas (10px vertical) */
-            
-        }
-
-        table td, table th {
-            border: none !important; 
-            padding: 10px; 
-        }
-
-        table thead th {
-            background: rgba(15, 79, 141, 0.83)!important;
-        }
-
-
-        table tbody tr {
-            background: rgba(217, 217, 217, 0.6); 
-        }
-
-
-        table tbody tr {
-            margin-bottom: 10px; 
-        }
-
-        /* Para redondear las celdas de la primera y última columna */
-        table thead th:first-child {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-
-        table thead th:last-child {
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-
-        /* Asegurarse que el contenedor de la tabla ocupe todo el ancho */
-        .container {
-            width: 100% !important; 
-            max-width: none !important; 
-            padding: 0 15px; 
-        }
-
-        /* Centrar el contenedor de la tabla */
-        .row.justify-content-center {
-            display: flex;
-            justify-content: center; 
-            width: 100%;
-        }
-
-        .col-md-15 {
-            width: 100%;
-            padding-left: 25px;
-            padding-right: 0;
-        }
-
-        /* Espaciado entre las filas */
-        table tbody tr {
-            margin-bottom: 10px; 
-        }
-
-        /*ESTILO PARA EL CONTENIDO*/
-        table tbody td {
-            font-family: 'Inter', sans-serif;   
-            font-size: 17px;                    
-            font-weight: 500;                  
-            line-height: 18px;                 
-            letter-spacing: -0.03em;            
-            text-align: left;                   
-            text-underline-position: from-font; 
-            text-decoration-skip-ink: none;     
-            color: rgba(15, 79, 141, 0.83);  
-            background: rgba(217, 217, 217, 0.6);
-        
-            text-align: center;
-        }
-
-        /* Estilos para el encabezado de la tabla */
-        table thead th {
-            background: rgba(15, 79, 141, 0.83) !important; 
-            color: white;
-        }
-
-        /*FILTRO*/
-        .filter-container {
-            display: flex;              
-            justify-content: center;    
-            align-items: center;        
-            gap: 10px;                  
-            height: 10vh;              
-        }
-
-        .filter-item {
-            width: 300px;                
-            min-width: 100px;          
-        }
-
-        .filter-item input {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: 1px solid #357AAB;  
-            color: rgba(255, 255, 255, 1) !important; 
-            padding: 10px; 
-            font-size: 16px; 
-            border-radius: 5px;
-            width: 150%; 
-            height: 45px;
-            margin-top: 85px;
-        }
-        .filter-item input::placeholder {
-            color: rgba(255, 255, 255, 1); 
-        }
-
-        .filter-item select {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            border: 1px solid #357AAB;  
-            color: rgba(255, 255, 255, 1); 
-            padding: 10px;
-            font-size: 16px; 
-            border-radius: 5px;
-            width: 150%; 
-            height: 45px;
-            margin-left: 150px;
-            margin-top: 85px;
-        }
-
-        .filter-item button {
-            background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-            color: rgba(255, 255, 255, 1); 
-            border: none; 
-            padding: 10px 20px; 
-            font-size: 16px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background 0.3s ease; 
-            height: 45px;
-            width: 150%;
-            margin-left: 300px;
-            margin-top: 85px;
-        }
-
-        .filter-item button:hover {
-            background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-        }
-
-
-        /*BOTON ELIMINAR*/
-        button.btn-danger {
-            padding: 0; 
-            border: none; 
-            background: none; 
-            cursor: pointer; 
-        }
-
-        button.btn-danger img {
-            width: 25px; 
-            height: 25px; 
-        }
-
-
-    </style>
-
+    
 </head>
 <body>
 
@@ -280,13 +19,13 @@
 
         <!-- Mensajes de éxito y error -->
         @if(session('success'))
-    <div class="alert alert-success" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+    <div class="alert alert-success" id="success">
         {{ session('success') }}
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+    <div class="alert alert-danger" id="danger">
         {{ session('error') }}
     </div>
 @endif
@@ -296,10 +35,12 @@
 
 
         
-        <div class="buttons-title-container">
-        <h1 id="titulo">Curso: {{ $curso->titulo }} <br> {{ $curso->created_at->format('d/m/Y') }}</h1>
+            <div id="encabezados">
+                <h1 id="titulo">Curso: {{ $curso->titulo }} <br> {{ $curso->created_at->format('d/m/Y') }}</h1>
+            </div>
+            
 
-            </h1>
+            
 
             @role(['administrador', 'Gestor-cursos'])
                 <a href="{{ route('cursos.instancias.create', ['instanciaId' => $cantInstancias, 'curso' => $curso->id]) }}" class="btn btn-warning btn-sm mb-3" id="BCI">
@@ -308,10 +49,10 @@
             @endrole
 
             <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver">Volver</a>
-        </div>
+       
    
 
-        <table class="table table-bordered text-center">
+        <table >
             <thead>
                 <tr>
                     <th>ID</th>
@@ -369,7 +110,7 @@
             @if ($availabilityItem['enabled'])
                 @if ($instance->restantes > 0)
                     <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}" style="margin: 5px" title="Inscribir personas">
-                        <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" style="width:30px; height:30px;">
+                        <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
                     </a>
                 @endif
             @endif
@@ -377,7 +118,7 @@
         @endif
         @if($instance->estado=="Activo")
             <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}" style="margin: 5px" title="Editar Instancia">
-                <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" style="width:30px; height:30px;">
+                <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono">
             </a>
         @endif
         
@@ -386,25 +127,25 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" style="margin: 5px" title="Eliminar Instancia">
-                    <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" style="width:27px; height:27px;">
+                    <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
                 </button>
             </form>
         @endif
 
         <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}" title="Ver Documentos" style="margin: 5px;">
-            <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Inscriptos" style="width:30px; height:30px;">
+            <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Inscriptos" id="img-icono">
         </a>
 
         <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo'=> 'ane']) }}" title="Ver Inscriptos" style="margin: 5px;">
-            <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" style="width:35px; height:35px;">
+            <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
         </a>
         @if($instance->estado=="Activo")
                         <a href="{{ route('cambiarEstado', ['instanciaId'=> $instance->id_instancia, 'cursoId'=> $curso->id, 'bandera'=> 'No']) }}" title="Cerrar Instancia">
-                            <img src="{{ asset('storage/cursos/cerrar.png') }}" alt="Cerrar" style="width:30px; height:30px;">
+                            <img src="{{ asset('storage/cursos/cerrar.png') }}" alt="Cerrar" id="img-icono">
                         </a>
                     @else
                         <a href="{{ route('cambiarEstado', ['instanciaId'=> $instance->id_instancia, 'cursoId'=> $curso->id, 'bandera'=> 'Si']) }}" title="Abrir Instancia">
-                            <img src="{{ asset('storage/cursos/abrir.png') }}" alt="Abrir" style="width:30px; height:30px;">
+                            <img src="{{ asset('storage/cursos/abrir.png') }}" alt="Abrir" id="img-icono">
                         </a>
                     @endif
 

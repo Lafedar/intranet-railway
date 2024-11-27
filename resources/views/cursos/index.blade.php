@@ -6,294 +6,19 @@
     <title>Cursos</title>
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-/*BOTON CREAR CURSO*/
-#BCC {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none; 
-    color: white; 
-    padding: 10px 20px; 
-    font-size: 18px; 
-    font-weight: bold;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
-    margin-top: 50px;
-    margin-left: 12px;
-    margin-bottom: 10px;
-    width: 200px;
-    height: 60px;
-    font-family: 'Inter', sans-serif;
+    <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
    
-}
-
-
-#BCC:hover {
-    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-}
-
-/* LOGO LAFEDAR */
-.img-logo img {
-    position: absolute;
-    top: 0; 
-    left: 0; 
-    margin-left: 20px;
-    margin-top: 50px;
-    width: 400px; 
-    height: auto;
-}
-
-/* ENCABEZADO */
-table thead {
-    background: rgba(15, 79, 141, 0.83)!important;
-
-}
-
-table thead th {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    line-height: 19.2px;
-    letter-spacing: -0.03em;
-    text-align: center !important;  /* Centrado horizontal */
-    vertical-align: middle !important; /* Centrado vertical */
-    color: rgba(255, 255, 255, 1); 
-}
-
-
-/* FILAS */
-table {
-    border: none !important;
-    width: 100%; 
-    border-collapse: separate; 
-    border-spacing: 0 10px; /* Espacio entre filas (10px vertical) */
-    
-}
-
-table td, table th {
-    border: none !important; 
-    padding: 10px; 
-}
-
-table thead th {
-    background: rgba(15, 79, 141, 0.83)!important;
-}
-
-
-table tbody tr {
-    background: rgba(217, 217, 217, 0.6); 
-}
-
-
-table tbody tr {
-    margin-bottom: 10px; 
-}
-
-/* Para redondear las celdas de la primera y última columna */
-table thead th:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-table thead th:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-/* Asegurarse que el contenedor de la tabla ocupe todo el ancho */
-.container {
-    width: 100% !important; 
-    max-width: none !important; 
-    padding: 0 15px; 
-}
-
-/* Centrar el contenedor de la tabla */
-.row.justify-content-center {
-    display: flex;
-    justify-content: center; 
-    width: 100%;
-}
-
-.col-md-15 {
-    width: 100%;
-    padding-left: 25px;
-    padding-right: 0;
-}
-
-/* Espaciado entre las filas */
-table tbody tr {
-    margin-bottom: 10px; 
-}
-
-/*ESTILO PARA EL CONTENIDO*/
-table tbody td {
-    font-family: 'Inter', sans-serif;   
-    font-size: 17px;                    
-    font-weight: 500;                  
-    line-height: 18px;                 
-    letter-spacing: -0.03em;            
-    text-align: left;                   
-    text-underline-position: from-font; 
-    text-decoration-skip-ink: none;     
-    color: rgba(15, 79, 141, 0.83);  
-    background: rgba(217, 217, 217, 0.6);
-   
-    text-align: center;
-}
-
-/* Estilos para el encabezado de la tabla */
-table thead th {
-    background: rgba(15, 79, 141, 0.83) !important; 
-    color: white;
-}
-
-/*FILTRO*/
-.filter-container {
-    display: flex;              
-    justify-content: center;    
-    align-items: center;        
-    gap: 10px;                  
-    height: 10vh;              
-}
-
-.filter-item {
-    width: 300px;                
-    min-width: 100px;          
-}
-
-.filter-item input {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: 1px solid #357AAB;  
-    color: rgba(255, 255, 255, 1) !important; 
-    padding: 10px; 
-    font-size: 16px; 
-    border-radius: 5px;
-    width: 150%; 
-    height: 45px;
-    margin-top: 85px;
-}
-.filter-item input::placeholder {
-    color: rgba(255, 255, 255, 1); 
-}
-
-.filter-item select {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: 1px solid #357AAB;  
-    color: rgba(255, 255, 255, 1); 
-    padding: 10px;
-    font-size: 16px; 
-    border-radius: 5px;
-    width: 150%; 
-    height: 45px;
-    margin-left: 150px;
-    margin-top: 85px;
-}
-
-.filter-item button {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    color: rgba(255, 255, 255, 1); 
-    border: none; 
-    padding: 10px 20px; 
-    font-size: 16px; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
-    height: 45px;
-    width: 150%;
-    margin-left: 300px;
-    margin-top: 85px;
-}
-
-.filter-item button:hover {
-    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-}
-
-
-/*BOTON ELIMINAR*/
-button.btn-danger {
-    padding: 0; 
-    border: none; 
-    background: none; 
-    cursor: pointer; 
-}
-
-button.btn-danger img {
-    width: 25px; 
-    height: 25px; 
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(15, 79, 141, 0.83);
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 200;
-}
-
-footer p {
-    margin: 0; 
-    padding: 0;
-    font-family: Spline Sans;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 16.8px;
-    letter-spacing: 0.06em;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: rgba(255, 255, 255, 0.6);
-
-}
-
-/* Filtros en una línea para resoluciones específicas y más pequeños */
-@media (max-width: 1366px) and (min-width: 1280px), 
-       (max-width: 1360px) and (min-width: 1280px), 
-       (max-width: 1280px) {
-    .filter-container {
-        display: flex;            
-        align-items: center;           
-        margin-top: 20px;                  
-        margin-left: 180px;
-    }
-
-    .filter-item {
-        width: 15%;               
-        min-width: 100px;         
-        box-sizing: border-box;   
-    }
-
-    .filter-item input,
-    .filter-item select,
-    .filter-item button {
-        width: 100%;             
-        font-size: 14px;         
-        padding: 8px;            
-    }
-
-    
-    .img-logo {
-        margin-top: 10px;        
-    }
-}
-
-
-</style>
 
 </head>
 <body>
 @if(session('success'))
-    <div class="alert alert-success" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+    <div class="alert alert-success" id="success">
         {{ session('success') }}
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger" style="text-align: center; display: inline-block; position: fixed; top: 5%; left: 50%; transform: translate(-50%, -50%);">
+    <div class="alert alert-danger" id="danger">
         {{ session('error') }}
     </div>
 @endif
@@ -335,9 +60,9 @@ footer p {
             Crear Curso
         </a>
 
-        <div class="row justify-content-center">
-            <div class="col-md-15"> 
-                <table class="table table-bordered table-striped text-center">
+        <div>
+            <div> 
+                <table>
                     <thead>
                         <tr>
                             <th>Título</th>
@@ -407,22 +132,22 @@ footer p {
                                     @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                                     <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
                                         @csrf
-                                        <button type="submit" class="btn btn-success" style="border: none; background: none; padding: 0;"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" style="width:30px; height:30px;"></button>
+                                        <button type="submit" class="btn btn-success" style=""><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                                     </form>
                                     @endif
                                 @endif
                             </td>
                             @role(['administrador', 'Gestor-cursos'])
                             <td>
-                                <a href="{{ route('cursos.edit', $curso->id) }}" class="btn" title="Editar Curso">
+                                <a href="{{ route('cursos.edit', $curso->id) }}" title="Editar Curso">
                                     <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar">
                                 </a>
                                 @if($curso->cantInscriptos == 0)
-                                    <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
+                                    <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" id="icono" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar Curso">
-                                            <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar">
+                                        <button type="submit"  title="Eliminar Curso" id="icono" >
+                                            <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" id="icono">
                                         </button>
 
                                     </form>
