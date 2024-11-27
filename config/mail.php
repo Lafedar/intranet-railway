@@ -49,7 +49,7 @@ return [
     */
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'notificaciones@lafedar.com'),
-        'name' => env('MAIL_FROM_NAME', 'Notificaciones'),
+        'name' => env('MAIL_FROM_NAME', 'Capacitaciones Lafedar'),
     ],
     /*
     |--------------------------------------------------------------------------
