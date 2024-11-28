@@ -22,10 +22,13 @@ use PDF;
 use Illuminate\Support\Facades\Storage;
 use App\Models\CursoInstanciaAnexo;
 use Illuminate\Database\Eloquent\Collection;
+use App\Mail\InscripcionCursoMail;
 use Illuminate\Support\Facades\Mail;
 
 
- 
+
+
+
 
 
 
@@ -53,17 +56,17 @@ class CursoInstanciaController extends Controller
      * @param int $cursoId
      * @return \Illuminate\View\View
      */
-    
+
     public function index($cursoId)
     {
         try {
-            
-            
+
+
             $curso = $this->cursoService->getById($cursoId);
             $personaDni = Auth::user()->dni;
             $persona = $this->personaService->getByDni($personaDni);
             $evaluacion = $this->enrolamientoCursoService->getEvaluacion($cursoId, $persona->id_p);
-            
+
             if (!$curso) {
                 throw new Exception('Curso no encontrado.');
             }
@@ -71,38 +74,38 @@ class CursoInstanciaController extends Controller
             $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
             $persona = $this->personaService->getById($personaDni->id_p);
-            $instanciasIds = $this->enrolamientoCursoService->getInstancesByPersonId($cursoId, $persona->id_p); 
-            $instancias = new Collection(); 
+            $instanciasIds = $this->enrolamientoCursoService->getInstancesByPersonId($cursoId, $persona->id_p);
+            $instancias = new Collection();
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $instancias = $this->cursoInstanciaService->getInstancesByCourse($cursoId)->sortByDesc('created_at');
             } else {
                 foreach ($instanciasIds as $idInstancia) {
                     // Llamas al método para obtener la instancia completa
                     $instancia = $this->cursoInstanciaService->getInstanceById($idInstancia, $cursoId);
-                
+
                     // Verificas si la instancia existe y la agregas a la colección
                     if ($instancia) {
                         $instancias->push($instancia);  // Usar 'push' para agregar a la colección
                     }
                 }
-            
+
             }
             $availability = $this->cursoInstanciaService->checkAvailability($instancias);
 
             $userDni = Auth::user()->dni;
 
-           
+
             $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni) {
-                
+
                 $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id_instancia);
                 $instancia->isEnrolled = $isEnrolled;
                 return $instancia;
-                
+
             });
 
-           
+
             $instanciasConRestantes = $instancias->map(function ($instancia) use ($curso) {
-                
+
                 $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
                
@@ -114,15 +117,15 @@ class CursoInstanciaController extends Controller
                 } else {
                     $restantes = $cupo - $cantInscriptos;
                 }*/
-                    
+
                 $restantes = $cupo - $cantInscriptos;
                 $instancia->restantes = $restantes;
-                
+
                 return $instancia;
             });
 
             $cantInstancias = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
-               
+
 
             return view('cursos.instancias.index', compact('instancesEnrollment', 'curso', 'availability', 'cantInstancias', 'persona', 'evaluacion'));
 
@@ -140,7 +143,7 @@ class CursoInstanciaController extends Controller
     {
         try {
 
-            $userDni = Auth::user()->dni; 
+            $userDni = Auth::user()->dni;
             $enroll = $this->enrolamientoCursoService->enroll($userDni, $instanceId);
             return redirect()->route('cursos.instancias.index', $courseId);
 
@@ -154,161 +157,25 @@ class CursoInstanciaController extends Controller
 
     public function create($instanciaId, $cursoId)
     {
-        try{
-            $curso = Curso::findOrFail($cursoId); 
+        try {
+            $curso = Curso::findOrFail($cursoId);
             $personas = $this->personaService->getAll();
             $anexos = $this->cursoInstanciaService->getAnexos();
-            
-            return view('cursos.instancias.create', compact('curso', 'personas', 'anexos')); 
-        }
-        catch(Exception $e){
+
+            return view('cursos.instancias.create', compact('curso', 'personas', 'anexos'));
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al retornar el curso a cursos.instancias.create' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al retornar el curso a cursos.instancias.create.');
         }
-        
+
     }
 
     public function store(Request $request, $cursoId)
-{
-    try {
-        $request->validate([
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'nullable|date',  
-            'cupo' => 'required|integer',
-            'modalidad' => 'nullable|string|max:255',
-            'capacitador' => 'nullable|string|max:255',
-            'otro_capacitador' => 'nullable|string|max:255',
-            'lugar' => 'nullable|string|max:255',
-            'estado' => 'required|string|in:Activo,No Activo',
-            'version' => 'nullable|string|max:255',
-            'anexos' => 'nullable|array', 
-            
-        ]);
-        $capacitador = $request->input('capacitador');
-
-       
-        if ($request->input('otro_capacitador')) {
-            $capacitador = $request->input('otro_capacitador');
-            
-        }
-    
-        if ($request->input('fecha_inicio') !== null) {
-            $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
-            $fechaActual = Carbon::now();
-        
-            
-            if ($fechaInicio < $fechaActual->startOfDay()) {
-                return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
-            }
-        }
-
-        
-        if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
-            return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
-        }
-
-        $data = $request->all();
-        $data['id_curso'] = $cursoId;
-        $data['capacitador'] = $capacitador;
-
-       
-        $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
-        $data['id_instancia'] = $nextInstanciaId;
-
-        $this->cursoInstanciaService->create($data);
-        
-       
-        if ($request->has('anexos') && is_array($request->input('anexos'))) {
-            foreach ($request->input('anexos') as $anexoId) {
-                
-                
-                $tipoAnexo = DB::table('anexos')
-                                ->where('formulario_id', $anexoId) 
-                                ->value('tipo');  
-        
-                // Verificamos si el tipo de anexo existe
-                if ($tipoAnexo) {
-                    DB::table('relacion_curso_instancia_anexo')->insert([
-                        'id_curso' => $cursoId,
-                        'id_instancia' => $nextInstanciaId,
-                        'formulario_id' => $anexoId,
-                        'tipo' => $tipoAnexo, // Asocia el tipo de anexo
-                    ]);
-                } else {
-                    
-                    Log::warning("Tipo de anexo no encontrado para formulario_id: $anexoId");
-                }
-            }
-        }
-        
-
-        return redirect()->route('cursos.instancias.index', $cursoId)
-                         ->with('success', 'Instancia creada exitosamente.');
-    } catch (Exception $e) {
-        Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
-    }
-}
-
-
-public function destroy(int $cursoId, int $instanciaId)
-{
-    try {
-        
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-       
-        if (!$instancia) {
-            return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
-                             ->withErrors('La instancia no fue encontrada.');
-        }
-
-        DB::table('relacion_curso_instancia_anexo')
-            ->where('id_instancia', $instanciaId) 
-            ->where('id_curso', $cursoId)        
-            ->delete(); 
-        
-        $this->cursoInstanciaService->delete($instancia, $cursoId);
-        
-        return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
-                         ->with('success', 'Instancia eliminada exitosamente.');
-    } catch (Exception $e) {
-        
-        Log::error('Error en clase: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
-    }
-}
-
-
-
-
-    public function edit($instanciaId, $cursoId)
-    {
-        try{
-            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-            $curso = $this->cursoService->getById($cursoId);
-            $capacitador = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->capacitador;
-            $personas = $this->personaService->getAll();
-            $modalidad = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->modalidad;
-            $anexos = $this->cursoInstanciaService->getAnexos();
-            $selectedAnexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
-            
-
-            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad', 'anexos', 'selectedAnexos'));
-        }
-        catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al retornar la instancia a cursos.instancias.edit.');
-        }
-        
-        
-    }
-    
-    public function update(Request $request, $instanciaId, $cursoId)
     {
         try {
             $request->validate([
                 'fecha_inicio' => 'required|date',
-                'fecha_fin' => 'nullable|date',  
+                'fecha_fin' => 'nullable|date',
                 'cupo' => 'required|integer',
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
@@ -320,13 +187,147 @@ public function destroy(int $cursoId, int $instanciaId)
 
             ]);
             $capacitador = $request->input('capacitador');
-            
+
+
             if ($request->input('otro_capacitador')) {
                 $capacitador = $request->input('otro_capacitador');
-                
-                
+
             }
-            
+
+            if ($request->input('fecha_inicio') !== null) {
+                $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
+                $fechaActual = Carbon::now();
+
+
+                if ($fechaInicio < $fechaActual->startOfDay()) {
+                    return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
+                }
+            }
+
+
+            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
+                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            }
+
+            $data = $request->all();
+            $data['id_curso'] = $cursoId;
+            $data['capacitador'] = $capacitador;
+
+
+            $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
+            $data['id_instancia'] = $nextInstanciaId;
+
+            $this->cursoInstanciaService->create($data);
+
+
+            if ($request->has('anexos') && is_array($request->input('anexos'))) {
+                foreach ($request->input('anexos') as $anexoId) {
+
+
+                    $tipoAnexo = DB::table('anexos')
+                        ->where('formulario_id', $anexoId)
+                        ->value('tipo');
+
+                    // Verificamos si el tipo de anexo existe
+                    if ($tipoAnexo) {
+                        DB::table('relacion_curso_instancia_anexo')->insert([
+                            'id_curso' => $cursoId,
+                            'id_instancia' => $nextInstanciaId,
+                            'formulario_id' => $anexoId,
+                            'tipo' => $tipoAnexo, // Asocia el tipo de anexo
+                        ]);
+                    } else {
+
+                        Log::warning("Tipo de anexo no encontrado para formulario_id: $anexoId");
+                    }
+                }
+            }
+
+
+            return redirect()->route('cursos.instancias.index', $cursoId)
+                ->with('success', 'Instancia creada exitosamente.');
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia del curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al crear la instancia del curso.');
+        }
+    }
+
+
+    public function destroy(int $cursoId, int $instanciaId)
+    {
+        try {
+
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+
+            if (!$instancia) {
+                return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
+                    ->withErrors('La instancia no fue encontrada.');
+            }
+
+            DB::table('relacion_curso_instancia_anexo')
+                ->where('id_instancia', $instanciaId)
+                ->where('id_curso', $cursoId)
+                ->delete();
+
+            $this->cursoInstanciaService->delete($instancia, $cursoId);
+
+            return redirect()->route('cursos.instancias.index', ['cursoId' => $cursoId])
+                ->with('success', 'Instancia eliminada exitosamente.');
+        } catch (Exception $e) {
+
+            Log::error('Error en clase: ' . get_class($this) . ' .Error al eliminar la instancia del curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al eliminar la instancia del curso.');
+        }
+    }
+
+
+
+
+    public function edit($instanciaId, $cursoId)
+    {
+        try {
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+            $curso = $this->cursoService->getById($cursoId);
+            $capacitador = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->capacitador;
+            $personas = $this->personaService->getAll();
+            $modalidad = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId)->modalidad;
+            $anexos = $this->cursoInstanciaService->getAnexos();
+            $selectedAnexos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
+
+
+            return view('cursos.instancias.edit', compact('instancia', 'curso', 'capacitador', 'personas', 'modalidad', 'anexos', 'selectedAnexos'));
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al retornar la instancia a cursos.instancias.edit' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al retornar la instancia a cursos.instancias.edit.');
+        }
+
+
+    }
+
+    public function update(Request $request, $instanciaId, $cursoId)
+    {
+        try {
+            $request->validate([
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'nullable|date',
+                'cupo' => 'required|integer',
+                'modalidad' => 'nullable|string|max:255',
+                'capacitador' => 'nullable|string|max:255',
+                'otro_capacitador' => 'nullable|string|max:255',
+                'lugar' => 'nullable|string|max:255',
+                'estado' => 'required|string|in:Activo,No Activo',
+                'version' => 'nullable|string|max:255',
+                'anexos' => 'nullable|array',
+
+            ]);
+            $capacitador = $request->input('capacitador');
+
+            if ($request->input('otro_capacitador')) {
+                $capacitador = $request->input('otro_capacitador');
+
+
+            }
+
             $inscriptosCount = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instanciaId, $cursoId);
             $cupo = $request->input('cupo');
             if ($cupo < $inscriptosCount) {
@@ -334,7 +335,7 @@ public function destroy(int $cursoId, int $instanciaId)
             }
 
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-            
+
             $data = $request->all();
             $data['capacitador'] = $capacitador;
             $instancia->update($data);
@@ -345,17 +346,17 @@ public function destroy(int $cursoId, int $instanciaId)
                     ->where('id_instancia', $instanciaId)
                     ->where('id_curso', $cursoId)
                     ->delete();
-            
+
                 // Obtener los anexos seleccionados desde el formulario
                 $anexos = $request->input('anexos');
-            
+
                 foreach ($anexos as $formulario_id) {
-                   
+
                     $tipoAnexo = DB::table('anexos')
-                        ->where('formulario_id', $formulario_id) 
-                        ->value('tipo'); 
-            
-                   
+                        ->where('formulario_id', $formulario_id)
+                        ->value('tipo');
+
+
                     if ($tipoAnexo) {
                         // Insertar la nueva relación en la tabla 'relacion_curso_instancia_anexo' con el tipo
                         DB::table('relacion_curso_instancia_anexo')->insert([
@@ -365,28 +366,28 @@ public function destroy(int $cursoId, int $instanciaId)
                             'tipo' => $tipoAnexo,  // Asociamos el tipo de anexo
                         ]);
                     } else {
-                        
+
                         Log::warning("Tipo de anexo no encontrado para formulario_id: $formulario_id");
                     }
                 }
             }
-            
+
             return redirect()->route('cursos.instancias.index', $instancia->id_curso)
-                             ->with('success', 'Instancia actualizada exitosamente.');
-        }catch(Exception $e){
+                ->with('success', 'Instancia actualizada exitosamente.');
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar la instancia' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar la instancia.');
         }
-       
+
     }
 
 
     public function getAsistentesInstancia(int $instanciaId, int $cursoId, string $tipo)
     {
         try {
-            
+
             $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-            
+
             $inscriptosCount = $inscriptos->count();
 
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
@@ -406,27 +407,28 @@ public function destroy(int $cursoId, int $instanciaId)
 
 
     public function getCountAsistentes(int $instanciaId, int $cursoId)
-    {  
-        try{
-            $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
+    {
+        try {
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
             $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
             $countInscriptos = $inscriptos->count();
+            $countInscriptos = $inscriptos->count();
             $instancia->cantInscriptos = $countInscriptos;
-    
-            
+
+
             return view('cursos.instancias.index', compact('countInscriptos'));
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener los asistentes de la instancia.');
         }
-        
+
     }
 
 
     public function getPersonas(int $cursoId, int $instanciaId)
     {
         try {
-            
+
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $curso = $this->cursoService->getById($cursoId);
 
@@ -448,14 +450,14 @@ public function destroy(int $cursoId, int $instanciaId)
                 return $persona;
             });
 
-            $personasConEstado = $personasConEstado->sortByDesc('estadoEnrolado'); 
+            $personasConEstado = $personasConEstado->sortByDesc('estadoEnrolado');
 
-        
+
             $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
-            
+
             $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
             $restantes = $cupo - $cantInscriptos;
-        
+
             if ($filtro = request('filtro')) {
                 $personasConEstado = $personasConEstado->filter(function ($persona) use ($filtro) {
                     return stripos($persona->nombre_p, $filtro) !== false || stripos($persona->apellido, $filtro) !== false || stripos($persona->legajo, $filtro) !== false;
@@ -472,84 +474,100 @@ public function destroy(int $cursoId, int $instanciaId)
 
 
 
+
     public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
     {
-        try{
+        try {
             $personasSeleccionadas = $request->input('personas', []);
-    
+
             if (empty($personasSeleccionadas)) {
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
             }
+            $imagePath2 = storage_path('app/public/cursos/firma.jpg');
+
+            if (file_exists($imagePath2)) {
+                $imageData = base64_encode(file_get_contents($imagePath2));
+                $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
+                $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+            } else {
+                $imageBase64Firma = null;
+            }
+
             foreach ($personasSeleccionadas as $id_persona => $inscribir) {
                 $user = $this->personaService->getById($id_persona);
-                
-               
+
+                // Inscribir a la persona
                 $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
+
+                // Enviar el correo de inscripción
+                $curso = $this->cursoService->getById($cursoId)->titulo; // Aquí deberías obtener el nombre real del curso
+                $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
+
+                // Enviar el correo
+                Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
             }
-    
-            
-            return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
-        }catch(Exception $e){
+
+            return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
         }
-        
     }
+
 
     public function desinscribirPersona(int $userId, int $instanciaId, int $cursoId)
-{
-    try{
-        $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $cursoId);
-        return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
-    }
-    catch(Exception $e){
-        Log::error('Error in class: ' . get_class($this) . ' .Error al desinscribir la persona' . $e->getMessage());
+    {
+        try {
+            $this->enrolamientoCursoService->unEnroll($userId, $instanciaId, $cursoId);
+            return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al desinscribir la persona' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al desinscribir la persona.');
+        }
+
     }
-    
-}
 
 
 
 
-public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
-{
-    try {
-        
-        $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanciaId, $cursoId, $bandera);
-        return redirect()->back()
-                         ->with('success', 'La instancia fue evaluada correctamente.');
+    public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
+    {
+        try {
 
-    } catch (Exception $e) {
-        Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
+            $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanciaId, $cursoId, $bandera);
+            return redirect()->back()
+                ->with('success', 'La persona fue evaluada correctamente.');
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al evaluar la persona.');
             
        
     }
 }
 
-public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, $bandera)
-{
-    try {
-        
-        // Obtener todas las personas inscritas en esta instancia
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+    public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, $bandera)
+    {
+        try {
 
-        // Aprobar a todas las personas
-        foreach ($inscriptos as $enrolamiento) {
-            $this->enrolamientoCursoService->evaluarInstancia($enrolamiento->id_persona, $instanciaId, $cursoId, $bandera); 
+            // Obtener todas las personas inscritas en esta instancia
+            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+
+            // Aprobar a todas las personas
+            foreach ($inscriptos as $enrolamiento) {
+                $this->enrolamientoCursoService->evaluarInstancia($enrolamiento->id_persona, $instanciaId, $cursoId, $bandera);
+            }
+            if ($bandera == 0) {
+                return redirect()->back()->with('success', 'Todas las personas fueron aprobadas correctamente.');
+            } else {
+                return redirect()->back()->with('success', 'Todas las personas fueron desaprobadas correctamente.');
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error en la clase: ' . get_class($this) . ' .Error al aprobar a todas las personas: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al aprobar a todas las personas.');
         }
-        if($bandera==0){
-            return redirect()->back()->with('success', 'Todas las personas fueron aprobadas correctamente.');
-        }else{
-            return redirect()->back()->with('success', 'Todas las personas fueron desaprobadas correctamente.');
-        }
-        
-    } catch (Exception $e) {
-        Log::error('Error en la clase: ' . get_class($this) . ' .Error al aprobar a todas las personas: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Hubo un problema al aprobar a todas las personas.');
     }
-}
 
 
 public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
@@ -568,17 +586,17 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
 
     $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
 
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-    if (file_exists($imagePath)) {
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath);
-        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-        $imageBase64 = null;
-    }
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath);
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+            $imageBase64 = null;
+        }
 
-    return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64', 'inscriptosChunks'));
-}
+        return view('cursos.planillaCursos', compact('inscriptos', 'anexo', 'instancia', 'curso', 'imageBase64', 'inscriptosChunks'));
+    }
 
 
 
@@ -593,88 +611,88 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
     
     $inscriptosArray = $inscriptos->toArray();
 
-    // Dividir la lista de inscriptos en páginas (cada página tendrá 17 inscriptos)
-    $inscriptosChunks = array_chunk($inscriptosArray, 17);
+        // Dividir la lista de inscriptos en páginas (cada página tendrá 17 inscriptos)
+        $inscriptosChunks = array_chunk($inscriptosArray, 17);
 
-    foreach ($inscriptosChunks as &$pagina) {
-        while (count($pagina) < 17) {
-            $pagina[] = [
-                'fecha_enrolamiento' => null,
-                'persona' => [
-                    'nombre_p' => null,
-                    'apellido' => null
-                ]
-            ];
+        foreach ($inscriptosChunks as &$pagina) {
+            while (count($pagina) < 17) {
+                $pagina[] = [
+                    'fecha_enrolamiento' => null,
+                    'persona' => [
+                        'nombre_p' => null,
+                        'apellido' => null
+                    ]
+                ];
+            }
         }
+
+
+        $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
+        if (!$anexo) {
+            return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
+        }
+
+
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath);
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+            $imageBase64 = null;
+        }
+
+
+        $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf'))->render();
+
+
+        $pdf = SnappyPdf::loadHTML($html)
+            ->setOption('enable-local-file-access', true)
+            ->setOption('enable-javascript', true)
+            ->setOption('javascript-delay', 200)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 10)
+            ->setOption('margin-left', 10);
+
+        return $pdf->download('planilla.pdf');
     }
 
-    
-    $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
-    if (!$anexo) {
-        return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
+
+
+
+
+    public function verPlanillaPrevia(string $formulario_id, int $cursoId, int $instanciaId)
+    {
+        $curso = $this->cursoService->getById($cursoId);
+        $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+
+        if (file_exists($imagePath)) {
+
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+
+            $imageBase64 = null;
+        }
+
+
+        return view('cursos.planillaPrevia', compact('anexo', 'imageBase64'));
     }
 
-    
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-    if (file_exists($imagePath)) {
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath);
-        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-        $imageBase64 = null;
+    public function getDocumentacion(int $instanciaId, int $cursoId)
+    {
+
+        $documentos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+
+        return view('cursos.documentacion', compact('documentos', 'instancia', 'curso'));
     }
-
-    
-    $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf'))->render();
-
-    
-    $pdf = SnappyPdf::loadHTML($html)
-                     ->setOption('enable-local-file-access', true)
-                     ->setOption('enable-javascript', true)
-                     ->setOption('javascript-delay', 200)
-                     ->setOption('margin-top', 10)
-                     ->setOption('margin-right', 10)
-                     ->setOption('margin-bottom', 10)
-                     ->setOption('margin-left', 10);
-
-    return $pdf->download('planilla.pdf');
-}
-
-
-
-
-
-public function verPlanillaPrevia(string $formulario_id, int $cursoId, int $instanciaId)
-{
-    $curso = $this->cursoService->getById($cursoId);
-    $anexo= $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
-    $imagePath = storage_path('app/public/cursos/logo-lafedar.png'); 
-    
-    if (file_exists($imagePath)) {
-       
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-        // Crear la cadena de imagen Base64
-        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-       
-        $imageBase64 = null;
-    }
-    
-
-    return view('cursos.planillaPrevia', compact('anexo', 'imageBase64'));
-}
-
-public function getDocumentacion(int $instanciaId, int $cursoId)
-{
-    
-    $documentos = $this->cursoInstanciaService->getDocumentacion($instanciaId, $cursoId);
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
-    
-    return view('cursos.documentacion', compact('documentos', 'instancia', 'curso'));
-}
 
 
 public function enviarCertificado($cursoId, $instanciaId)
