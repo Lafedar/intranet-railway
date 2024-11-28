@@ -410,7 +410,7 @@ public function destroy(int $cursoId, int $instanciaId)
         try{
             $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
             $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-            $countInscriptos = $inscritos->count();
+            $countInscriptos = $inscriptos->count();
             $instancia->cantInscriptos = $countInscriptos;
     
             
@@ -524,8 +524,7 @@ public function evaluarInstancia($userId, $instanciaId, $cursoId, $bandera)
         Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al evaluar la persona.');
             
-        return redirect()->back()
-                         ->withErrors('Ocurrió un error al aprobar la instancia: ' . $e->getMessage());
+       
     }
 }
 
@@ -720,13 +719,15 @@ public function enviarCertificado($cursoId, $instanciaId)
             'fecha' => now()->format('d/m/Y'),
             'imageBase64' => $imageBase64,
         ];
-
-        // Ruta base para el archivo PDF
-        $filePath = public_path('storage/certificados/certificado-' . $persona->id_p . '.pdf');
         
+        if (!defined('CERTIFICADO_BASE_PATH')) {
+            define('CERTIFICADO_BASE_PATH', public_path('storage/certificados/certificado-'));
+        }
+
+        $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '.pdf';
         
         if (file_exists($filePath)) {
-            $filePath = public_path('storage/certificados/certificado-' . $persona->id_p . '-' . time() . '.pdf');
+            $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '-' . time() . '.pdf';
         }
 
         // Asegurarse de que la carpeta exista antes de guardar el archivo
