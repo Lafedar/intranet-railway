@@ -687,7 +687,7 @@ public function enviarCertificado($cursoId, $instanciaId)
     if ($aprobados->isEmpty()) {
         return "No hay personas aprobadas para este curso e instancia.";
     }
-
+    //logo lafedar
     $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
 
     if (file_exists($imagePath)) {
@@ -696,6 +696,17 @@ public function enviarCertificado($cursoId, $instanciaId)
         $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
     } else {
         $imageBase64 = null;
+    }
+
+    //firma lafedar
+    $imagePath2 = storage_path('app/public/cursos/firma.jpg'); 
+
+    if (file_exists($imagePath2)) {
+        $imageData = base64_encode(file_get_contents($imagePath2));
+        $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
+        $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+    } else {
+        $imageBase64Firma = null;
     }
 
     $successCount = 0;
@@ -718,6 +729,7 @@ public function enviarCertificado($cursoId, $instanciaId)
             'curso' => $curso->titulo,
             'fecha' => now()->format('d/m/Y'),
             'imageBase64' => $imageBase64,
+            'imageBase64Firma' => $imageBase64Firma,
         ];
         
         if (!defined('CERTIFICADO_BASE_PATH')) {
@@ -743,11 +755,13 @@ public function enviarCertificado($cursoId, $instanciaId)
                 
         $pdf->save($filePath);  
 
-        
+       
+
+  
         if (file_exists($filePath)) {
             // Enviar por correo con el archivo adjunto
             Mail::to($persona->correo)
-            ->send(new \App\Mail\CertificadoMail($filePath, $data['nombre'], $data['apellido'], $data['curso']));
+            ->send(new \App\Mail\CertificadoMail($filePath, $data['nombre'], $data['apellido'], $data['curso'], $data['imageBase64Firma']));
            
             // Eliminar el archivo temporal si no es necesario guardarlo
             unlink($filePath);

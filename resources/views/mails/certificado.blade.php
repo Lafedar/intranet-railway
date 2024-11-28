@@ -9,7 +9,7 @@
     <p>Hola, {{$nombre}} {{$apellido}}</p>
     <p>Adjunto encontrarás tu certificado del curso: "{{$curso}}" completado.</p>
     <p>¡Felicitaciones!</p>
-    <img src="{{ asset('storage/cursos/firma.jpg') }}">
+    <img src="{{ $imageBase64Firma }}" alt="Firma">
 </body>
 
 </html>
