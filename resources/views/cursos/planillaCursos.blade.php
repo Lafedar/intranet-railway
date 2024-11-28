@@ -149,7 +149,8 @@
               @foreach ($paginaInscriptos as $enrolamiento)
                 <tr>
                   <td style="border: 1px solid black; text-align: center; height:55px">
-                  {{ $enrolamiento['fecha_enrolamiento'] ? \Carbon\Carbon::parse($enrolamiento['fecha_enrolamiento'])->format('d/m/Y') : '' }}
+                  {{ $enrolamiento['fecha_enrolamiento'] ?? '' }}
+
 
                   </td>
                   <td style="border: 1px solid black; text-align: center;">

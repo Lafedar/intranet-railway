@@ -560,11 +560,14 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
     $curso = $this->cursoService->getById($cursoId);
     $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
     
-    $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
+    
 
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
-        $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
+        $inscripto->fecha_enrolamiento = Carbon::parse($this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona))
+                                       ->format('d/m/Y');
     });
+
+    $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
 
     $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
     if (file_exists($imagePath)) {
