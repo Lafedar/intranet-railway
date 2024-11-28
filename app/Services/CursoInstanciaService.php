@@ -92,8 +92,8 @@ class CursoInstanciaService
                 ->first();
 
             return $instancia;
-        } catch (\Exception $e) {
-            Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener la instancia: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener la instancia por id: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -186,7 +186,7 @@ class CursoInstanciaService
 
             return $anexos;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al contar las instancias del curso' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la documentacion de la instancia' . $e->getMessage());
             throw $e;
         }
 

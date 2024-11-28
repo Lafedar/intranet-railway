@@ -536,7 +536,7 @@ class CursoInstanciaController extends Controller
 
             $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanciaId, $cursoId, $bandera);
             return redirect()->back()
-                ->with('success', 'La instancia fue evaluada correctamente.');
+                ->with('success', 'La persona fue evaluada correctamente.');
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());

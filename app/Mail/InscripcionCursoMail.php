@@ -10,11 +10,11 @@ class InscripcionCursoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $curso;
-    public $fechaInicio;
+    private $user;
+    private $curso;
+    private $fechaInicio;
 
-    public $imageBase64Firma;
+    private $imageBase64Firma;
 
     public function __construct($user, $curso, $fechaInicio, $imageBase64Firma)
     {
