@@ -33,9 +33,7 @@ class EmpleadoController extends Controller{
         $this->cursoService = $cursoService;
     }
     public function index(Request $request){
-        /*$empleados = Empleado::Relacion()->get();
-
-        return view ('empleado.index', array('empleados' => $empleados));*/
+        
         $search = $request->input('search', '');
         $filtroJefe = $request->has('filtroJefe');
         $filtroActividad = $request->has('filtroActividad');
@@ -46,6 +44,7 @@ class EmpleadoController extends Controller{
             $query->where(function($q) use ($search) {
                 $q->where('apellido', 'like', "%{$search}%")
                   ->orWhere('nombre_p', 'like', "%{$search}%")
+                  ->orWhere('nombre_a', 'like', "%{$search}%")
                   ->orWhere('dni', 'like', "%{$search}%");
             });
         }
@@ -68,6 +67,8 @@ class EmpleadoController extends Controller{
             'filtroActividad' => $filtroActividad
         ]);
     }
+    
+
 
     public function store(Request $request){
         $aux= DB::table('personas')->where('personas.dni',$request['dni'])->first();
