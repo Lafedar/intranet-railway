@@ -410,7 +410,7 @@ public function destroy(int $cursoId, int $instanciaId)
         try{
             $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId);
             $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-            $countInscriptos = $inscritos->count();
+            $countInscriptos = $inscriptos->count();
             $instancia->cantInscriptos = $countInscriptos;
     
             
@@ -560,9 +560,6 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
     $curso = $this->cursoService->getById($cursoId);
     $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
     
-    
-    $inscriptos = $inscriptos->where('evaluacion', 'Aprobado'); 
-    
     $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
 
     $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
@@ -590,7 +587,7 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
     $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
     $curso = $this->cursoService->getById($cursoId);
     $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-    $inscriptos = $inscriptos->where('evaluacion', 'Aprobado'); 
+   
     
     $inscriptosArray = $inscriptos->toArray();
 
