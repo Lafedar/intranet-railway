@@ -27,7 +27,7 @@
     <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
 </a>
 
-    <div class="container mt-5 table-container">
+    <div class="container">
         @role(['administrador', 'Gestor-cursos'])
         <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
         <div class="filter-container">
@@ -49,14 +49,14 @@
     </div>
 
     <div class="filter-item">
-        <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+        <button type="submit">Filtrar</button>
     </div>
 </div>
 
         </form>
         @endrole
 
-        <a href="{{ route('cursos.create') }}" class="btn btn-warning btn-sm" id="BCC">
+        <a href="{{ route('cursos.create') }}" id="BCC">
             Crear Curso
         </a>
 

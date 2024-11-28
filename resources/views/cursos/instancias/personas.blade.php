@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +8,22 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
-    
+
 </head>
+
 <body>
     <div class="container mt-4">
-    @if(session('success'))
-    <div class="alert alert-success" id="success">
-        {{ session('success') }}
-    </div>
-@endif
+        @if(session('success'))
+            <div class="alert alert-success" id="success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-@if(session('error'))
-    <div class="alert alert-danger" id="danger">
-        {{ session('error') }}
-    </div>
-@endif
+        @if(session('error'))
+            <div class="alert alert-danger" id="danger">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <a href="{{ url('/home') }}" class="img-logo">
             <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
@@ -30,25 +32,30 @@
             <h1 id="titulo">Inscripción para el curso: {{ $curso->titulo }}</h1>
             <h2 id="titulo-sec">Número de Instancia: {{ $instancia->id_instancia }}</h2>
         </div>
-        <h5 id ="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5> 
-        
+        <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
+
         <div class="form-group">
-            <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
+            <input type="text" id="filtro" class="form-control"
+                placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
-        
-        <form action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
+
+        <form
+            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            method="POST">
             @csrf
-            <table >
+            <table>
                 <thead>
-                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px" id="BI">Inscribir seleccionados</button>
-                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary" id="volver">Volver</a>
-                    
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
+                        id="BI">Inscribir seleccionados</button>
+                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
+                        class="btn btn-secondary" id="volver">Volver</a>
+
                     <tr>
                         <th>Legajo</th>
                         <th>Nombre y Apellido</th>
                         <th>Área</th>
-                        <th >Inscribir</th>
-                        <th >Acciones</th>
+                        <th>Inscribir</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,21 +75,26 @@
                                 @if($persona->estadoEnrolado)
                                     <p>Ya inscripto</p>
                                 @else
-                                    <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]" value="1">
+                                    <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
+                                        value="1">
                                 @endif
                             </td>
-                            
+
                             <td>
                                 @if($persona->estadoEnrolado)
-                                
-                                    <form action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}" method="POST">
+
+                                    <form
+                                        action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                                        method="POST">
                                         @csrf
                                         @method('POST')
-                                        <button type="submit" id="icono" title="Desuscribir"><img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></button>
-                                        
+                                        <button type="submit" id="icono" title="Desuscribir"><img
+                                                src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar"
+                                                id="img-icono"></button>
+
                                     </form>
                                 @else
-                                    N/A 
+                                    N/A
                                 @endif
                             </td>
                         </tr>
@@ -94,14 +106,15 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    
+
 </body>
+
 </html>
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Función para actualizar el cupo disponible
         function actualizarCupo() {
             var totalSeleccionados = $("input[name^='personas']:checked").length;
@@ -125,22 +138,22 @@
         actualizarCupo();
 
         // Escuchar el cambio en los checkboxes
-        $("input[name^='personas']").change(function() {
+        $("input[name^='personas']").change(function () {
             actualizarCupo();
         });
 
         // Filtrado en tiempo real
-        $('#filtro').on('input', function() {
+        $('#filtro').on('input', function () {
             var filtro = $(this).val().toLowerCase();
 
             // Iterar sobre las filas de la tabla
-            $('table tbody tr').each(function() {
+            $('table tbody tr').each(function () {
                 var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); //segunda columna
                 var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); //primera columna
                 var area = $(this).find('td:nth-child(3)').text().toLowerCase(); //tercera columna
-                
+
                 // Si el filtro no coincide ni con nombre/apellido ni con legajo, ocultar la fila
-                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1 ) {
+                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1) {
                     $(this).hide();  // Si no coincide, ocultar la fila
                 } else {
                     $(this).show();  // Si coincide, mostrar la fila
@@ -150,11 +163,10 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Ocultar los mensajes de éxito y error después de 3 segundos
-        setTimeout(function() {
+        setTimeout(function () {
             $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
         }, 3000); // 3000 milisegundos = 3 segundos
     });
 </script>
-

@@ -1,69 +1,73 @@
 /*GLOBALES*/
-#success{
-    text-align: center; 
-    display: inline-block; 
-    position: fixed; 
-    top: 5%; 
-    left: 50%; 
+#success {
+    text-align: center;
+    display: inline-block;
+    position: fixed;
+    top: 5%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }
 
-#danger{
-    text-align: center; 
-    display: inline-block; 
-    position: fixed; 
-    top: 5%; 
-    left: 50%; 
+#danger {
+    text-align: center;
+    display: inline-block;
+    position: fixed;
+    top: 5%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }
 
-#icono{
-    border: none; 
-    background: none; 
+#icono {
+    border: none;
+    background: none;
     padding: 0;
 }
 
-#contenedor-botones{
-    display: flex; 
-    gap: 10px; 
+#contenedor-botones {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
 #encabezados {
     display: flex;
-    flex-direction: column; 
-    align-items: center;    
-    gap: 10px;  
-    margin-left: 500px;  
-    text-align: center;          
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-left: 500px;
+    text-align: center;
 }
-#img-icono{
-    width: 27px; 
-    height:27px;
+
+#img-icono {
+    width: 27px;
+    height: 27px;
 }
-#form{
-    display: inline-block; 
+
+#form {
+    display: inline-block;
     margin-right: 10px;
-    
+
 }
-#sacar-borde-negro{
-    border: none; 
-    background: none; 
+
+#sacar-borde-negro {
+    border: none;
+    background: none;
     padding: 0;
 }
 
 #titulo {
-    margin-top: 50px; 
+    margin-top: 50px;
     font-family: 'Poppins';
     font-size: 39px;
     font-weight: 600;
     line-height: 46.8px;
     letter-spacing: -0.03em;
     color: rgba(0, 51, 102, 1);
-    text-align: center; 
+    text-align: center;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
 }
+
 #titulo-sec {
     font-family: 'Poppins';
     font-size: 39px;
@@ -71,32 +75,33 @@
     line-height: 46.8px;
     letter-spacing: -0.03em;
     color: rgba(0, 51, 102, 1);
-    text-align: center; 
+    text-align: center;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
-    max-width: 450px;  
+    max-width: 450px;
 }
 
 /*boton volver*/
-#volver{
+#volver {
     margin-left: 12px;
-    height:45px;
+    height: 45px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none; 
-    color: white; 
-    font-size: 18px; 
+    border: none;
+    color: white;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
     margin-top: 12px;
     margin-left: 4px;
-    padding: 10px 20px; 
+    padding: 10px 20px;
     width: 100px;
     height: 47px;
     font-family: 'Inter', sans-serif;
     margin-bottom: 10px;
 }
+
 #volver:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
@@ -104,23 +109,25 @@
 /*boton inscribir*/
 #BI {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none; 
-    color: white; 
-    padding: 10px 20px; 
-    font-size: 18px; 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
     margin-top: 10px;
     margin-right: 0px;
     margin-bottom: 10px;
     width: 250px;
     font-family: 'Inter', sans-serif;
+    text-align: center;
 }
 
 
 #BI:hover {
+    text-decoration: none;
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
 
@@ -129,58 +136,63 @@
 /*logo lafedar */
 .img-logo img {
     position: absolute;
-    top: 0; 
-    left: 0; 
+    top: 0;
+    left: 0;
     margin-left: 15px;
     margin-top: 50px;
-    width: 400px; 
+    width: 400px;
     height: auto;
 }
 
 /*encabezado de la tabla */
 table thead {
-    background: rgba(15, 79, 141, 0.83)!important;
+    background: rgba(15, 79, 141, 0.83) !important;
 
 }
+
 table thead th {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     font-weight: 800;
     line-height: 19.2px;
     letter-spacing: -0.03em;
-    text-align: center !important;  /* Centrado horizontal */
-    vertical-align: middle !important; /* Centrado vertical */
-    color: rgba(255, 255, 255, 1); 
+    text-align: center !important;
+    /* Centrado horizontal */
+    vertical-align: middle !important;
+    /* Centrado vertical */
+    color: rgba(255, 255, 255, 1);
 }
 
 
 /*filas */
 table {
     border: none !important;
-    width: 100%; 
-    border-collapse: separate; 
-    border-spacing: 0 10px; /* Espacio entre filas (10px vertical) */
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Espacio entre filas (10px vertical) */
     margin-top: 10px;
-    
+
 }
 
-table td, table th {
-    border: none !important; 
-    padding: 10px; 
+table td,
+table th {
+    border: none !important;
+    padding: 10px;
 }
 
 table thead th {
-    background: rgba(15, 79, 141, 0.83)!important;
+    background: rgba(15, 79, 141, 0.83) !important;
 }
 
 
 table tbody tr {
-    background: rgba(217, 217, 217, 0.6); 
+    background: rgba(217, 217, 217, 0.6);
 }
 
 
 table tbody tr {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 
 /* Para redondear las celdas de la primera y última columna */
@@ -196,15 +208,16 @@ table thead th:last-child {
 
 
 .container {
-    width: 100% !important; 
-    max-width: none !important; 
-    padding: 0 15px; 
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 15px;
+    margin-top: 3rem;
 }
 
 
 .row.justify-content-center {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     width: 100%;
 }
 
@@ -216,20 +229,20 @@ table thead th:last-child {
 
 /* Espaciado entre las filas */
 table tbody tr {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 
 /*contenido de la tabla*/
 table tbody td {
-    font-family: 'Inter', sans-serif;   
-    font-size: 17px;                    
-    font-weight: 500;                  
-    line-height: 18px;                 
-    letter-spacing: -0.03em;            
-    text-align: left;                   
-    text-underline-position: from-font; 
-    text-decoration-skip-ink: none;     
-    color: rgba(15, 79, 141, 0.83);  
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: -0.03em;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(15, 79, 141, 0.83);
     background: rgba(217, 217, 217, 0.6);
 
     text-align: center;
@@ -237,14 +250,14 @@ table tbody td {
 
 /* estilos para el encabezado de la tabla */
 table thead th {
-    background: rgba(15, 79, 141, 0.83) !important; 
+    background: rgba(15, 79, 141, 0.83) !important;
     color: white;
 }
 
 
 /*PERSONAS*/
-#cupo{
-    
+#cupo {
+
     margin-top: 0px;
     font-family: 'Poppins';
     font-size: 25px;
@@ -255,31 +268,33 @@ table thead th {
     text-decoration-skip-ink: none;
     color: rgba(0, 51, 102, 1);
 }
+
 #filtro {
-    background: grey; 
-    color: rgba(255, 255, 255, 1) !important; 
-    padding: 10px; 
-    font-size: 16px; 
+    background: grey;
+    color: rgba(255, 255, 255, 1) !important;
+    padding: 10px;
+    font-size: 16px;
     border-radius: 5px;
-    width: 150%; 
+    width: 150%;
     height: 45px;
     margin-top: 20px;
 }
+
 #filtro::placeholder {
-    color: rgba(255, 255, 255, 1); 
+    color: rgba(255, 255, 255, 1);
 }
 
 /*INSTANCIAS INDEX*/
 #BCI {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none; 
-    color: white; 
-    padding: 10px 20px; 
-    font-size: 18px; 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
     margin-top: 18px;
     margin-left: 5px;
     margin-bottom: 10px;
@@ -287,6 +302,7 @@ table thead th {
     font-family: 'Inter', sans-serif;
 
 }
+
 #BCI:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
@@ -294,64 +310,76 @@ table thead th {
 /*CURSOS*/
 #BCC {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none; 
-    color: white; 
-    padding: 10px 20px; 
-    font-size: 18px; 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
     margin-top: 50px;
-    margin-left: 12px;
+    margin-left: 3px;
     margin-bottom: 10px;
     width: 200px;
     height: 60px;
     font-family: 'Inter', sans-serif;
-   
+    text-align: center;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.5;
+    font-weight: 400;
+    text-transform: none;
+    border: 1px solid transparent;
 }
-
 
 #BCC:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    text-decoration: none;
 }
 
+
+
+
+
 .filter-container {
-    display: flex;              
-    justify-content: center;    
-    align-items: center;        
-    gap: 10px;                  
-    height: 10vh;              
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 10vh;
 }
 
 .filter-item {
-    width: 300px;                
-    min-width: 100px;          
+    width: 310px;
+    min-width: 100px;
 }
 
 .filter-item input {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: 1px solid #357AAB;  
-    color: rgba(255, 255, 255, 1) !important; 
-    padding: 10px; 
-    font-size: 16px; 
+    border: 1px solid #357AAB;
+    color: rgba(255, 255, 255, 1) !important;
+    padding: 10px;
+    font-size: 16px;
     border-radius: 5px;
-    width: 150%; 
+    width: 150%;
     height: 45px;
     margin-top: 85px;
 }
+
 .filter-item input::placeholder {
-    color: rgba(255, 255, 255, 1); 
+    color: rgba(255, 255, 255, 1);
 }
 
 .filter-item select {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: 1px solid #357AAB;  
-    color: rgba(255, 255, 255, 1); 
+    border: 1px solid #357AAB;
+    color: rgba(255, 255, 255, 1);
     padding: 10px;
-    font-size: 16px; 
+    font-size: 16px;
     border-radius: 5px;
-    width: 150%; 
+    width: 150%;
     height: 45px;
     margin-left: 150px;
     margin-top: 85px;
@@ -359,13 +387,13 @@ table thead th {
 
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    color: rgba(255, 255, 255, 1); 
-    border: none; 
-    padding: 10px 20px; 
-    font-size: 16px; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background 0.3s ease; 
+    color: rgba(255, 255, 255, 1);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
     height: 45px;
     width: 150%;
     margin-left: 300px;
@@ -390,7 +418,7 @@ footer {
 }
 
 footer p {
-    margin: 0; 
+    margin: 0;
     padding: 0;
     font-family: Spline Sans;
     font-size: 14px;
@@ -405,67 +433,67 @@ footer p {
 }
 
 
-@media (max-width: 1366px) and (min-width: 1280px), 
-(max-width: 1360px) and (min-width: 1280px), 
+@media (max-width: 1366px) and (min-width: 1280px),
+(max-width: 1360px) and (min-width: 1280px),
 (max-width: 1280px) {
 
-.form-acciones {
-display: flex;
-gap: 10px;
-justify-content: flex-start;  
-margin-top: 20px;
-}
-
-
-#BI {
-width: auto;  
-font-size: 16px;  
-padding: 8px 16px;  
-}
-
-#BI:hover {
-background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
-}
-
-
-form button {
-margin-left: 0px; 
-}
-
-
-.row.justify-content-center {
-display: flex;
-justify-content: flex-start; 
-}
-
-
-@media (max-width: 1366px) and (min-width: 1280px), 
-       (max-width: 1360px) and (min-width: 1280px), 
-       (max-width: 1280px) {
-    .filter-container {
-        display: flex;            
-        align-items: center;           
-        margin-top: 20px;                  
-        margin-left: 180px;
+    .form-acciones {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        margin-top: 20px;
     }
 
-    .filter-item {
-        width: 15%;               
-        min-width: 100px;         
-        box-sizing: border-box;   
+
+    #BI {
+        width: auto;
+        font-size: 16px;
+        padding: 8px 16px;
     }
 
-    .filter-item input,
-    .filter-item select,
-    .filter-item button {
-        width: 100%;             
-        font-size: 14px;         
-        padding: 8px;            
+    #BI:hover {
+        background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
     }
 
-    
-    .img-logo {
-        margin-top: 10px;        
+
+    form button {
+        margin-left: 0px;
     }
-}
+
+
+    .row.justify-content-center {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+
+    @media (max-width: 1366px) and (min-width: 1280px),
+    (max-width: 1360px) and (min-width: 1280px),
+    (max-width: 1280px) {
+        .filter-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            margin-left: 180px;
+        }
+
+        .filter-item {
+            width: 15%;
+            min-width: 100px;
+            box-sizing: border-box;
+        }
+
+        .filter-item input,
+        .filter-item select,
+        .filter-item button {
+            width: 100%;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+
+        .img-logo {
+            margin-top: 10px;
+        }
+    }
 }
