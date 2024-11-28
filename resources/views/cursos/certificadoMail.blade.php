@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificado de Aprobación</title>
-    <link rel="stylesheet" href="styles.css">
     
 </head>
 <body>
@@ -20,9 +19,9 @@
                 
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
-                    <h2 class="recipient-name">{{$persona->nombre_p}} {{$persona->apellido}}</h2>
+                    <h2 class="recipient-name">{{$nombre}} {{$apellido}}</h2>
                     <p>por haber completado satisfactoriamente el curso</p>
-                    <h3 class="course-title">{{$curso->titulo}}</h3>
+                    <h3 class="course-title">{{$curso}}</h3>
                     
                 </div>
                 
@@ -38,12 +37,6 @@
         </div>
     </div>
 
-    @if(empty($is_pdf))
-        <form action="{{ route('cursos.generarPDFcertificado', ['cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="GET" class="hide-when-pdf">
-            @csrf
-            <button type="submit" class="btn btn-primary">Generar PDF</button>
-        </form>
-    @endif
 </body>
 </html>
 
@@ -63,8 +56,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
-    width: 100vw;
+    height: 60vh;
+    width: 90vw;
     overflow: hidden;
 }
 
@@ -73,13 +66,13 @@ body {
     justify-content: center;
     align-items: center;
     padding: 50px;
-    height: 95%;
-    width: 100%;
+    height: 90%;
+    width: 90%;
 }
 
 .certificate-border {
     width: 1200px; 
-    height: 800px; 
+    height: 790px; 
     padding: 30px;
     background: #fff;
     border: 6px solid #003366;
@@ -95,6 +88,7 @@ body {
     border: 1px solid #003366;
     text-align: center;
     flex-grow: 1;
+    height: 710px;
 }
 
 .certificate-header {

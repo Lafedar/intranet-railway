@@ -391,6 +391,35 @@ public function getEvaluacion(int $cursoId, int $persona_id)
 }
 
 
+public function getAprobados(int $cursoId, int $instanciaId)
+{
+    try {
+        // Obtener la lista de id_persona de los aprobados
+        $aprobados = EnrolamientoCurso::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->where('evaluacion', 'Aprobado')
+            ->pluck('id_persona'); // pluck retorna una colección de los valores de la columna
 
+        return $aprobados;
+        
+    } catch (\Exception $e) {
+        Log::error('Error en la clase: ' . get_class($this) . '. Error al obtener la evaluación: ' . $e->getMessage());
+        throw $e; 
+    }
+}
+
+public function getCountAprobadosInstancia(int $cursoId, int $instanciaId){
+    try{
+        return EnrolamientoCurso::where('id_curso', $cursoId)
+        ->where('id_instancia', $instanciaId)
+        ->where('evaluacion', 'Aprobado')
+        ->count();
+    }
+    catch(Exception $e){
+        Log::error('Error in class: ' . get_class($this) . ' .Error al contar los aprobados de la instancia.' . $e->getMessage());
+        throw $e;
+    }
+   
+}
 
 }

@@ -561,6 +561,7 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia')->middleware('role:administrador|Gestor-cursos');
     Route::post('/generar-certificado/{cursoId}/{personaId}', [CursoController::class, 'generarCertificado'])->name('generarCertificado');
     Route::get('/cursos/generar-pdf-certificado/{cursoId}/{personaId}', [CursoController::class, 'generarPDFcertificado'])->name('cursos.generarPDFcertificado');
+    Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'enviarCertificado'])->name('enviarMail');
     Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'cambiarEstadoInstancia'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
   });
 
