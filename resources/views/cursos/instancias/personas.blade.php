@@ -36,8 +36,7 @@
         <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
 
         <div class="form-group">
-            <input type="text" id="filtro" class="form-control"
-                placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
+            
             <input type="text" id="filtro" class="form-control"
                 placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
@@ -82,8 +81,7 @@
                                 @if($persona->estadoEnrolado)
                                     <p>Ya inscripto</p>
                                 @else
-                                    <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
-                                        value="1">
+                                    
                                     <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
                                         value="1">
                                 @endif
@@ -127,11 +125,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-    $(document).ready(function () {
         // Función para actualizar el cupo disponible
         function actualizarCupo() {
             var totalSeleccionados = $("input[name^='personas']:checked").length;
-            var cupoMaximo = {{ $restantes}};  // El valor del cupo original
+            var cupoMaximo = {{ $restantes }};  // El valor del cupo original
             var cupoDisponible = cupoMaximo - totalSeleccionados;
             $("#cupoDisponible").text(cupoDisponible);
 
@@ -152,25 +149,20 @@
 
         // Escuchar el cambio en los checkboxes
         $("input[name^='personas']").change(function () {
-        $("input[name^='personas']").change(function () {
             actualizarCupo();
         });
 
         // Filtrado en tiempo real
         $('#filtro').on('input', function () {
-        $('#filtro').on('input', function () {
             var filtro = $(this).val().toLowerCase();
 
             // Iterar sobre las filas de la tabla
             $('table tbody tr').each(function () {
-            $('table tbody tr').each(function () {
-                var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); //segunda columna
-                var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); //primera columna
-                var area = $(this).find('td:nth-child(3)').text().toLowerCase(); //tercera columna
-
+                var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase(); // Segunda columna
+                var legajo = $(this).find('td:nth-child(1)').text().toLowerCase(); // Primera columna
+                var area = $(this).find('td:nth-child(3)').text().toLowerCase(); // Tercera columna
 
                 // Si el filtro no coincide ni con nombre/apellido ni con legajo, ocultar la fila
-                if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1) {
                 if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1) {
                     $(this).hide();  // Si no coincide, ocultar la fila
                 } else {
@@ -180,11 +172,10 @@
         });
     });
 </script>
+
 <script>
     $(document).ready(function () {
-    $(document).ready(function () {
         // Ocultar los mensajes de éxito y error después de 3 segundos
-        setTimeout(function () {
         setTimeout(function () {
             $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
         }, 3000); // 3000 milisegundos = 3 segundos

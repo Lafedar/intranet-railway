@@ -235,6 +235,12 @@ class CursoInstanciaService
         } else {
             $formularioId = null;
         }
+        $anexo = DB::table('anexos')
+            ->where('formulario_id', $formularioId)
+            ->first();
+
+        return $anexo;
+    }
 
 public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera){
     $instancia = CursoInstancia::where('id_instancia', $instanciaId)
@@ -256,12 +262,8 @@ public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $b
     return redirect()->back();
 }
 
-        $anexo = DB::table('anexos')
-            ->where('formulario_id', $formularioId)
-            ->first();
-
-        return $anexo;
-    }
+        
+    
 
 
 
