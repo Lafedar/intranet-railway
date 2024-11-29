@@ -39,24 +39,24 @@ class CursoController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    
-    
+
+
     public function listAll(Request $request)
     {
-        try{
+        try {
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
 
             $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
-            
-           
+
+
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $cursosData = $this->cursoService->getAll()->load('areas');
             } else {
-                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p); 
-            
+                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p);
+
             }
 
             //filtros
@@ -67,22 +67,22 @@ class CursoController extends Controller
             }
 
             if ($areaId && $areaId !== 'all') {
-                
+
                 $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
                     return $curso->areas->contains('id_a', $areaId);
                 });
             }
 
             if ($areaId === 'all') {
-                
+
                 $cursosData = $cursosData->filter(function ($curso) {
-                    return $curso->areas->count() === $this->areaService->getAll()->count(); 
+                    return $curso->areas->count() === $this->areaService->getAll()->count();
                 });
             }
-            
+
             if ($areaId && $areaId !== 'all') {
                 $cursosData = $cursosData->filter(function ($curso) {
-                    
+
                     return $curso->areas->count() !== $this->areaService->getAll()->count();
                 });
             }
@@ -91,30 +91,30 @@ class CursoController extends Controller
                 return $curso;
             });
 
-            
+
             $cursosData = $cursosData->map(function ($curso) use ($personaDni) {
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
-                $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion( $curso->id, $personaDni->id_p);
+                $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion($curso->id, $personaDni->id_p);
                 $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
-                
+
                 return $curso;
             });
-            
+
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
-            
-           
-        return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
+
+
+            return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
-            
-            return redirect()->back()->withErrors('Hubo un problema al mostrar los cursos.');
+
+            return redirect()->back();
         }
     }
 
-    
+
 
 
 
@@ -135,7 +135,7 @@ class CursoController extends Controller
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al mostrar el curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al mostrar el curso.');
+            return redirect()->back();
         }
     }
 
@@ -146,17 +146,17 @@ class CursoController extends Controller
      */
     public function create()
     {
-        try{
+        try {
             $areas = $this->areaService->getAll();  // Recupera todas las áreas
-            $anexos = Anexo::select('formulario_id')->distinct()->get(); 
-        
+            $anexos = Anexo::select('formulario_id')->distinct()->get();
+
             return view('cursos.create', compact('areas', 'anexos'));
-        }catch(Exception $e){
+        } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.create: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al mostrar la vista cursos.create.');
+            return redirect()->back();
         }
-        
+
     }
 
     /**
@@ -169,29 +169,29 @@ class CursoController extends Controller
     public function store(Request $request)
     {
         try {
-        
+
             $validatedData = $request->validate([
                 'titulo' => 'required|string|max:253',
                 'descripcion' => 'nullable|string|max:253',
                 'obligatorio' => 'required|boolean',
                 'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
-                'area' => 'required|array|min:1',  
+                'area' => 'required|array|min:1',
             ]);
-            
-            
+
+
             if (empty($validatedData['area'])) {
                 return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
             }
-        
+
             $curso = $this->cursoService->create($validatedData);
-            
+
             $curso->areas()->attach($validatedData['area']);
-            
+
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->validator->errors()); //errores en el validateData
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
         }
     }
@@ -199,7 +199,7 @@ class CursoController extends Controller
 
 
 
-     
+
     /**
      * Mostrar el formulario para editar un curso existente.
      *
@@ -211,8 +211,8 @@ class CursoController extends Controller
         try {
             $curso = $this->cursoService->getById($id);
             $areas = $this->areaService->getAll();
-           
-            
+
+
             if (!$curso) {
                 throw new Exception('El curso no fue encontrado.');
             }
@@ -220,10 +220,10 @@ class CursoController extends Controller
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al abrir la vista cursos.edit: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al obtener la vista cursos.edit.');
+            return redirect()->back();
         }
     }
-    
+
     /**
      * Actualizar un curso en la base de datos.
      *
@@ -231,51 +231,51 @@ class CursoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    
 
-     public function update(Request $request, int $id)
-     {
-         try {
-             // Obtener el curso a editar
-             $curso = $this->cursoService->getById($id);
-     
-             if (!$curso) {
-                 return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
-             }
-     
-             $validatedData = $request->validate([
-                 'titulo' => 'required|string|max:100',
-                 'descripcion' => 'nullable|string|max:65530',
-                 'obligatorio' => 'required|boolean',
-                 'codigo' => 'nullable|string',
-                 'tipo' => 'required|string',
-                 'area' => 'nullable|array',
-                 
-             ]);
-     
-             // Actualizar el curso con los datos validados
-             $curso->update($validatedData);
-     
-             // Actualizar las áreas (sincroniza las áreas seleccionadas)
-             if (isset($validatedData['area'])) {
-                 $curso->areas()->sync($validatedData['area']);
-             }
-     
-             
-     
-             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
-     
-         } catch (Exception $e) {
-             session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
-             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
-             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
-         }
-     }
-     
-    
-    
 
-    
+    public function update(Request $request, int $id)
+    {
+        try {
+            // Obtener el curso a editar
+            $curso = $this->cursoService->getById($id);
+
+            if (!$curso) {
+                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
+            }
+
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:100',
+                'descripcion' => 'nullable|string|max:65530',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+                'area' => 'nullable|array',
+
+            ]);
+
+            // Actualizar el curso con los datos validados
+            $curso->update($validatedData);
+
+            // Actualizar las áreas (sincroniza las áreas seleccionadas)
+            if (isset($validatedData['area'])) {
+                $curso->areas()->sync($validatedData['area']);
+            }
+
+
+
+            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
+
+        } catch (Exception $e) {
+            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
+        }
+    }
+
+
+
+
+
 
     /**
      * Eliminar un curso de la base de datos.
@@ -283,9 +283,9 @@ class CursoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    
-   
-    
+
+
+
     public function destroy(int $id)
     {
         try {
@@ -293,20 +293,20 @@ class CursoController extends Controller
             if (!$curso) {
                 throw new Exception('El curso no fue encontrado.');
             }
-            
-            
+
+
             $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
-            
-            
+
+
             foreach ($instancias as $instancia) {
-                $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id); 
+                $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id);
                 $this->cursoInstanciaService->delete($instancia, $curso->id);
             }
             DB::table('relacion_curso_instancia_anexo')
-            ->where('id_curso', $id)        
-            ->delete(); 
-        
-            
+                ->where('id_curso', $id)
+                ->delete();
+
+
             $this->cursoService->delete($curso);
             return redirect()->route('cursos.index')->with('success', 'El curso y sus instancias fueron eliminados exitosamente.');
         } catch (Exception $e) {
@@ -319,84 +319,86 @@ class CursoController extends Controller
 
 
 
-    public function getInscriptos(int $cursoId){
-        try{
+    public function getInscriptos(int $cursoId)
+    {
+        try {
             $inscritos = $this->enrolamientoCursoService->getPersonsByCourseId($cursoId);
             $curso = $this->cursoService->getById($cursoId);
             return view('cursos.inscriptos', compact('inscritos', 'curso'));
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error en el controlador al obtener los incriptos del curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener los incriptos del curso.');
         }
-       
+
     }
-    public function generarCertificado(int $cursoId, int $id_persona){
-        
+    public function generarCertificado(int $cursoId, int $id_persona)
+    {
+
         $curso = $this->cursoService->getById($cursoId);
-        
+
         $persona = $this->personaService->getById($id_persona);
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
-        
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+
         if (file_exists($imagePath)) {
-           
+
             $imageData = base64_encode(file_get_contents($imagePath));
             $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-    
+
             // Crear la cadena de imagen Base64
             $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
         } else {
-           
+
             $imageBase64 = null;
         }
-    
-       
-    
-        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64','fecha'));
+
+
+
+        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha'));
     }
-    public function generarPDFcertificado(int $cursoId, int $id_persona) {
+    public function generarPDFcertificado(int $cursoId, int $id_persona)
+    {
         $is_pdf = true;
         $curso = $this->cursoService->getById($cursoId);
         $persona = $this->personaService->getById($id_persona);
-        $fecha = now()->format('d/m/Y');  
-    
-        
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
-        
+        $fecha = now()->format('d/m/Y');
+
+
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+
         if (file_exists($imagePath)) {
-           
+
             $imageData = base64_encode(file_get_contents($imagePath));
             $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-    
-            
+
+
             $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
         } else {
-           
+
             $imageBase64 = null;
         }
-    
-        
+
+
         $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
-    
-        
+
+
         $pdf = SnappyPdf::loadHTML($html)
-                    ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
-                    ->setOption('enable-local-file-access', true)
-                    ->setOption('enable-javascript', true)
-                    ->setOption('javascript-delay', 200)
-                    ->setOption('margin-top', 10)
-                    ->setOption('margin-right', 10)
-                    ->setOption('margin-bottom', 5)
-                    ->setOption('margin-left', 10);
-    
-        
+            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
+            ->setOption('enable-local-file-access', true)
+            ->setOption('enable-javascript', true)
+            ->setOption('javascript-delay', 200)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 5)
+            ->setOption('margin-left', 10);
+
+
         return $pdf->download('certificado.pdf');
     }
-    
 
-    
-    }
 
-   
+
+}
+
+
 

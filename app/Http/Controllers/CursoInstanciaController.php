@@ -108,7 +108,7 @@ class CursoInstanciaController extends Controller
 
                 $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
-               
+
                 //valido si el cupo es null para los cursos viejos
                 /*if ($cupo == 0 || $cupo == null) {
                     $restantes = 0;
@@ -132,28 +132,11 @@ class CursoInstanciaController extends Controller
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener las instancias del curso: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al obtener las instancias del curso.');
-        }
-    }
-
-
-
-
-    public function inscription($courseId, $instanceId)
-    {
-        try {
-
-            $userDni = Auth::user()->dni;
-            $enroll = $this->enrolamientoCursoService->enroll($userDni, $instanceId);
-            return redirect()->route('cursos.instancias.index', $courseId);
-
-        } catch (Exception $e) {
-
-            Log::error('Error in class: ' . get_class($this) . ' .Error al incribir al usuario ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al intentar inscribir al usuario.');
+            return redirect()->route('home');
 
         }
     }
+
 
     public function create($instanciaId, $cursoId)
     {
@@ -392,13 +375,13 @@ class CursoInstanciaController extends Controller
 
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $curso = $this->cursoService->getById($cursoId);
-            $anexos= $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
+            $anexos = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
             $cantAprobados = $this->enrolamientoCursoService->getCountAprobadosInstancia($curso->id, $instancia->id_instancia);
             $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
                 $inscripto->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona);
             });
             return view('cursos.instancias.inscriptos', compact('curso', 'inscriptos', 'inscriptosCount', 'instancia', 'anexos', 'cantAprobados'));
-            
+
         } catch (Exception $e) {
             Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener los asistentes de la instancia: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener los asistentes de la instancia.');
@@ -409,9 +392,8 @@ class CursoInstanciaController extends Controller
     public function getCountAsistentes(int $instanciaId, int $cursoId)
     {
         try {
-            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId);
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
             $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-            $countInscriptos = $inscriptos->count();
             $countInscriptos = $inscriptos->count();
             $instancia->cantInscriptos = $countInscriptos;
 
@@ -541,10 +523,10 @@ class CursoInstanciaController extends Controller
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al evaluar la persona.');
-            
-       
+
+
+        }
     }
-}
 
     public function evaluarInstanciaTodos(Request $request, $cursoId, $instanciaId, $bandera)
     {
@@ -570,21 +552,21 @@ class CursoInstanciaController extends Controller
     }
 
 
-public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
-{
-    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
-    $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
-    
-    
+    public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
+    {
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+        $anexo = $this->cursoInstanciaService->getAnexoByTipo($cursoId, $instanciaId, $tipo);
 
-    $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
-        $inscripto->fecha_enrolamiento = Carbon::parse($this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona))
-                                       ->format('d/m/Y');
-    });
 
-    $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
+
+        $inscriptos->each(function ($inscripto) use ($instanciaId, $cursoId) {
+            $inscripto->fecha_enrolamiento = Carbon::parse($this->enrolamientoCursoService->getFechaCreacion($instanciaId, $cursoId, $inscripto->id_persona))
+                ->format('d/m/Y');
+        });
+
+        $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
 
         $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
         if (file_exists($imagePath)) {
@@ -601,15 +583,15 @@ public function verPlanilla(int $instanciaId, int $cursoId, string $tipo)
 
 
 
-public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId)
-{
-    $is_pdf = true;
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
-    $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-   
-    
-    $inscriptosArray = $inscriptos->toArray();
+    public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId)
+    {
+        $is_pdf = true;
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
+
+
+        $inscriptosArray = $inscriptos->toArray();
 
         // Dividir la lista de inscriptos en páginas (cada página tendrá 17 inscriptos)
         $inscriptosChunks = array_chunk($inscriptosArray, 17);
@@ -695,158 +677,160 @@ public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId
     }
 
 
-public function enviarCertificado($cursoId, $instanciaId)
-{
-   
-    $aprobados = $this->enrolamientoCursoService->getAprobados($cursoId, $instanciaId);
-    $curso = $this->cursoService->getById($cursoId);
+    public function enviarCertificado($cursoId, $instanciaId)
+    {
 
-    
-    if ($aprobados->isEmpty()) {
-        return "No hay personas aprobadas para este curso e instancia.";
-    }
-    //logo lafedar
-    $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
+        $aprobados = $this->enrolamientoCursoService->getAprobados($cursoId, $instanciaId);
+        $curso = $this->cursoService->getById($cursoId);
 
-    if (file_exists($imagePath)) {
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-        $imageBase64 = null;
-    }
 
-    //firma lafedar
-    $imagePath2 = storage_path('app/public/cursos/firma.jpg'); 
-
-    if (file_exists($imagePath2)) {
-        $imageData = base64_encode(file_get_contents($imagePath2));
-        $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
-        $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-        $imageBase64Firma = null;
-    }
-
-    $successCount = 0;
-    $errorCount = 0;
-
-    
-    foreach ($aprobados as $personaId) {
-       
-        $persona = $this->personaService->getById($personaId);
-
-        
-        if (!$persona || empty($persona->correo)) {
-            continue;
+        if ($aprobados->isEmpty()) {
+            return "No hay personas aprobadas para este curso e instancia.";
         }
-        
-        
-        $data = [
-            'nombre' => $persona->nombre_p,
-            'apellido' => $persona->apellido,
-            'curso' => $curso->titulo,
-            'fecha' => now()->format('d/m/Y'),
-            'imageBase64' => $imageBase64,
-            'imageBase64Firma' => $imageBase64Firma,
-        ];
-        
-        if (!defined('CERTIFICADO_BASE_PATH')) {
-            define('CERTIFICADO_BASE_PATH', public_path('storage/certificados/certificado-'));
+        //logo lafedar
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+            $imageBase64 = null;
         }
 
-        $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '.pdf';
-        
-        if (file_exists($filePath)) {
-            $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '-' . time() . '.pdf';
+        //firma lafedar
+        $imagePath2 = storage_path('app/public/cursos/firma.jpg');
+
+        if (file_exists($imagePath2)) {
+            $imageData = base64_encode(file_get_contents($imagePath2));
+            $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
+            $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+            $imageBase64Firma = null;
         }
 
-        // Asegurarse de que la carpeta exista antes de guardar el archivo
-        $directory = dirname($filePath);
-        if (!file_exists($directory)) {
-            mkdir($directory, 0775, true); // Crear la carpeta si no existe
-        }
-       
-        // Generar el PDF y guardarlo en la ruta
-        $pdf = SnappyPdf::loadView('cursos.certificadoMail', $data)
+        $successCount = 0;
+        $errorCount = 0;
+
+
+        foreach ($aprobados as $personaId) {
+
+            $persona = $this->personaService->getById($personaId);
+
+
+            if (!$persona || empty($persona->correo)) {
+                continue;
+            }
+
+
+            $data = [
+                'nombre' => $persona->nombre_p,
+                'apellido' => $persona->apellido,
+                'curso' => $curso->titulo,
+                'fecha' => now()->format('d/m/Y'),
+                'imageBase64' => $imageBase64,
+                'imageBase64Firma' => $imageBase64Firma,
+            ];
+
+            if (!defined('CERTIFICADO_BASE_PATH')) {
+                define('CERTIFICADO_BASE_PATH', public_path('storage/certificados/certificado-'));
+            }
+
+            $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '.pdf';
+
+            if (file_exists($filePath)) {
+                $filePath = CERTIFICADO_BASE_PATH . $persona->id_p . '-' . time() . '.pdf';
+            }
+
+            // Asegurarse de que la carpeta exista antes de guardar el archivo
+            $directory = dirname($filePath);
+            if (!file_exists($directory)) {
+                mkdir($directory, 0775, true); // Crear la carpeta si no existe
+            }
+
+            // Generar el PDF y guardarlo en la ruta
+            $pdf = SnappyPdf::loadView('cursos.certificadoMail', $data)
                 ->setPaper('a4')
                 ->setOrientation('landscape');
-                
-        $pdf->save($filePath);  
 
-       
+            $pdf->save($filePath);
 
-  
-        if (file_exists($filePath)) {
-            // Enviar por correo con el archivo adjunto
-            Mail::to($persona->correo)
-            ->send(new \App\Mail\CertificadoMail($filePath, $data['nombre'], $data['apellido'], $data['curso'], $data['imageBase64Firma']));
-           
-            // Eliminar el archivo temporal si no es necesario guardarlo
-            unlink($filePath);
 
-            $successCount++; 
-        } else {
-            
-            Log::error("No se pudo guardar el archivo PDF para la persona ID: " . $persona->id_p);
-            $errorCount++; 
+
+
+            if (file_exists($filePath)) {
+                // Enviar por correo con el archivo adjunto
+                Mail::to($persona->correo)
+                    ->send(new \App\Mail\CertificadoMail($filePath, $data['nombre'], $data['apellido'], $data['curso'], $data['imageBase64Firma']));
+
+                // Eliminar el archivo temporal si no es necesario guardarlo
+                unlink($filePath);
+
+                $successCount++;
+            } else {
+
+                Log::error("No se pudo guardar el archivo PDF para la persona ID: " . $persona->id_p);
+                $errorCount++;
+            }
         }
+
+
+        if ($successCount > 0) {
+            return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados por correo.");
+        } else {
+            return redirect()->back()->with('error', 'Hubo un problema al enviar los certificados.');
+        }
+
+
+
     }
 
-    
-    if ($successCount > 0) {
-        return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados por correo.");
-    } else {
-        return redirect()->back()->with('error', 'Hubo un problema al enviar los certificados.');
+    public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona)
+    {
+        $is_pdf = true;
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $curso = $this->cursoService->getById($cursoId);
+        $persona = $this->personaService->getById($id_persona);
+        $fecha = now()->format('d/m/Y');
+
+
+        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+
+        if (file_exists($imagePath)) {
+
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+
+            $imageBase64 = null;
+        }
+
+
+        $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
+
+
+        $pdf = SnappyPdf::loadHTML($html)
+            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
+            ->setOption('enable-local-file-access', true)
+            ->setOption('enable-javascript', true)
+            ->setOption('javascript-delay', 200)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 5)
+            ->setOption('margin-left', 10);
+
+
+        return $pdf->download('certificado.pdf');
     }
 
-
-   
-}
-
-public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona) {
-    $is_pdf = true;
-    $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-    $curso = $this->cursoService->getById($cursoId);
-    $persona = $this->personaService->getById($id_persona);
-    $fecha = now()->format('d/m/Y');  
-
-    
-    $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png'); 
-    
-    if (file_exists($imagePath)) {
-       
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-        
-        $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-    } else {
-       
-        $imageBase64 = null;
+    public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
+    {
+        $this->cursoInstanciaService->cambiarEstadoInstancia($instanciaId, $cursoId, $bandera);
+        return redirect()->back();
     }
-
-    
-    $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
-
-    
-    $pdf = SnappyPdf::loadHTML($html)
-                ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
-                ->setOption('enable-local-file-access', true)
-                ->setOption('enable-javascript', true)
-                ->setOption('javascript-delay', 200)
-                ->setOption('margin-top', 10)
-                ->setOption('margin-right', 10)
-                ->setOption('margin-bottom', 5)
-                ->setOption('margin-left', 10);
-
-    
-    return $pdf->download('certificado.pdf');
-}
-
-public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera){
-    $this->cursoInstanciaService->cambiarEstadoInstancia($instanciaId, $cursoId, $bandera);
-    return redirect()->back();
-}
 
 
 }

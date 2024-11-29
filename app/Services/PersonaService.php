@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Persona;
-use App\Area;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 
 class PersonaService
@@ -18,7 +18,7 @@ class PersonaService
             throw new \InvalidArgumentException('El nombre es obligatorio.');
         }
     }
-    
+
     /**
      * Obtener todas las personas.
      *
@@ -26,32 +26,30 @@ class PersonaService
      */
     public function getAll(): Collection
     {
-        try{
-            return Persona::with('area') 
-            ->where('activo', 1) 
-            ->orderBy('apellido')
-            ->get();
-        }
-        catch(Exception $e){
+        try {
+            return Persona::with('area')
+                ->where('activo', 1)
+                ->orderBy('apellido')
+                ->get();
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas' . $e->getMessage());
             throw $e;
         }
-        
+
     }
     public function getPersonsByArea(array $areas)
     {
-        try{
-            return Persona::whereIn('area', $areas) 
-            ->where('activo', 1)
-            ->orderBy('apellido')
-            ->with('area')  
-            ->get();
-        }
-        catch(Exception $e){
+        try {
+            return Persona::whereIn('area', $areas)
+                ->where('activo', 1)
+                ->orderBy('apellido')
+                ->with('area')
+                ->get();
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas de las areas' . $e->getMessage());
             throw $e;
         }
-        
+
     }
     /**
      * Obtener una persona por su ID.
@@ -61,25 +59,23 @@ class PersonaService
      */
     public function getById(int $id): ?Persona
     {
-        try{
+        try {
             return Persona::find($id);
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
             throw $e;
         }
-        
+
     }
     public function getByDni(int $dni)
     {
-        try{
-            return Persona::where('dni', $dni)->first(); 
-        }
-        catch(Exception $e){
+        try {
+            return Persona::where('dni', $dni)->first();
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Dni ' . $e->getMessage());
             throw $e;
         }
-        
+
     }
 
     /**
@@ -90,7 +86,7 @@ class PersonaService
      */
     public function create(array $data): Persona
     {
-    
+
         $this->validateData($data);
         return Persona::create($data);
     }
@@ -116,18 +112,17 @@ class PersonaService
      */
     public function delete(Persona $persona): ?bool
     {
-        try{
+        try {
             return $persona->delete();
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar la persona' . $e->getMessage());
             throw $e;
         }
-       
+
     }
 
-    
 
 
-   
+
+
 }

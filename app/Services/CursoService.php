@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Models\Curso;
 use App\Models\CursoInstancia;
-use Illuminate\Database\Eloquent\Collection; 
+use Illuminate\Database\Eloquent\Collection;
+use Exception;
+use Log;
 
 class CursoService
 {
-   
+
     private function validateData(array $data): void
     {
         if (empty($data['titulo'])) {
@@ -17,53 +19,53 @@ class CursoService
         if (empty($data['tipo'])) {
             throw new \InvalidArgumentException('El tipo del curso es obligatorio.');
         }
-       
+
     }
-    
+
     public function getAll(): Collection
     {
-        try{
+        try {
             return Curso::with('areas')
-            ->orderBy('created_at','desc')
+                ->orderBy('created_at', 'desc')
                 ->get();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos' . $e->getMessage());
             throw $e;
         }
-        
+
     }
 
     public function getById($id): ?Curso
-{
-    try {
-        return Curso::with('areas')  // Asegúrate de cargar 'anexos' aquí
-            ->find($id);
-    } catch (Exception $e) {
-        Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso por Id' . $e->getMessage());
-        throw $e;
+    {
+        try {
+            return Curso::with('areas')  // Asegúrate de cargar 'anexos' aquí
+                ->find($id);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso por Id' . $e->getMessage());
+            throw $e;
+        }
     }
-}
 
     public function getAreasByCourseId(int $cursoId)
     {
-        try{
+        try {
             $curso = Curso::with('areas')->find($cursoId);
             if (!$curso) {
-                
-                return null;  
+
+                return null;
             }
-    
+
             return $curso->areas;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las areas del curso' . $e->getMessage());
             throw $e;
         }
-        
+
     }
 
     public function create(array $data)
     {
-        try{
+        try {
             $curso = Curso::create([
                 'titulo' => $data['titulo'],
                 'descripcion' => $data['descripcion'],
@@ -71,37 +73,36 @@ class CursoService
                 'codigo' => $data['codigo'],
                 'tipo' => $data['tipo'],
             ]);
-        
+
             return $curso;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al crear el curso' . $e->getMessage());
             throw $e;
         }
-        
+
     }
 
     public function update(Curso $curso, array $data): bool
     {
-        try{
+        try {
             $this->validateData($data);
             return $curso->update($data);
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function delete(Curso $curso) :?bool 
+    public function delete(Curso $curso): ?bool
     {
-        try{
+        try {
             return $curso->delete();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar el curso' . $e->getMessage());
             throw $e;
         }
-        
+
     }
-    
-    
+
+
 }

@@ -6,9 +6,9 @@ use App\Models\CursoInstancia;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Log;
-
 use App\Models\Anexo;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class CursoInstanciaService
 {
@@ -242,28 +242,29 @@ class CursoInstanciaService
         return $anexo;
     }
 
-public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera){
-    $instancia = CursoInstancia::where('id_instancia', $instanciaId)
-                                ->where('id_curso', $cursoId)
-                                ->first();
+    public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
+    {
+        $instancia = CursoInstancia::where('id_instancia', $instanciaId)
+            ->where('id_curso', $cursoId)
+            ->first();
 
-    if ($instancia && $bandera == "No") {
-        $instancia->estado = 'No Activo';
-        $instancia->save();     
-        session()->flash('success', 'La instancia ha sido cerrada correctamente.');
-    } elseif ($instancia && $bandera == "Si") {
-        $instancia->estado = 'Activo';
-        $instancia->save(); 
-        session()->flash('success', 'La instancia ha sido abierta correctamente.');
-    } else {
-        session()->flash('error', 'No se encontró la instancia o el estado no es válido.');
+        if ($instancia && $bandera == "No") {
+            $instancia->estado = 'No Activo';
+            $instancia->save();
+            session()->flash('success', 'La instancia ha sido cerrada correctamente.');
+        } elseif ($instancia && $bandera == "Si") {
+            $instancia->estado = 'Activo';
+            $instancia->save();
+            session()->flash('success', 'La instancia ha sido abierta correctamente.');
+        } else {
+            session()->flash('error', 'No se encontró la instancia o el estado no es válido.');
+        }
+
+        return redirect()->back();
     }
-                            
-    return redirect()->back();
-}
 
-        
-    
+
+
 
 
 
