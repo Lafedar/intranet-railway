@@ -688,7 +688,7 @@ class CursoInstanciaController extends Controller
             return "No hay personas aprobadas para este curso e instancia.";
         }
         //logo lafedar
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
         if (file_exists($imagePath)) {
             $imageData = base64_encode(file_get_contents($imagePath));
@@ -794,7 +794,7 @@ class CursoInstanciaController extends Controller
         $fecha = now()->format('d/m/Y');
 
 
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
         if (file_exists($imagePath)) {
 

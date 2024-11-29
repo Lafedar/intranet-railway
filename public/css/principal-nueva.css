@@ -556,7 +556,7 @@ footer p {
         margin-top: -150px;
     }
 
-    .carousel-item-chico img {
+    #carousel-item-chico img {
         height: 150px;
         object-fit: cover;
         border-radius: 10px;

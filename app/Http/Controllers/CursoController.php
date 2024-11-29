@@ -356,45 +356,6 @@ class CursoController extends Controller
 
         return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha'));
     }
-    public function generarPDFcertificado(int $cursoId, int $id_persona)
-    {
-        $is_pdf = true;
-        $curso = $this->cursoService->getById($cursoId);
-        $persona = $this->personaService->getById($id_persona);
-        $fecha = now()->format('d/m/Y');
-
-
-        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-
-            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $imageBase64 = null;
-        }
-
-
-        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
-
-
-        $pdf = SnappyPdf::loadHTML($html)
-            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
-            ->setOption('enable-local-file-access', true)
-            ->setOption('enable-javascript', true)
-            ->setOption('javascript-delay', 200)
-            ->setOption('margin-top', 10)
-            ->setOption('margin-right', 10)
-            ->setOption('margin-bottom', 5)
-            ->setOption('margin-left', 10);
-
-
-        return $pdf->download('certificado.pdf');
-    }
 
 
 

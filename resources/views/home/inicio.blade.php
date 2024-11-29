@@ -92,7 +92,7 @@
                 <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
                 <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
-                <a href="/visitas" class="nav-btn">Cursos <span style="margin-left:137px;">></span></a>
+                <a href="/cursos" class="nav-btn">Cursos <span style="margin-left:137px;">></span></a>
             </div>
         @else
             <div class="nav-group">
@@ -181,7 +181,7 @@
                     <div id="carousel{{ $novedad->id }}" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             @foreach($imagenes as $key => $imagen)
-                                <div class="carousel-item-chico {{ $key === 0 ? 'active' : '' }}">
+                                <div id="carousel-item-chico" class="carousel-item {{ $key === 0 ? 'active' : '' }}">
                                     <img src="{{ asset('storage/' . $imagen) }}" class="d-block w-100" alt="Imagen de {{ $novedad->titulo }}">
                                 </div>
                             @endforeach
