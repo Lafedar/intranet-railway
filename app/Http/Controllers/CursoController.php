@@ -16,7 +16,7 @@ use Exception;
 use DB;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
-
+use Normalizer;
 class CursoController extends Controller
 {
     private CursoService $cursoService;
@@ -121,7 +121,7 @@ class CursoController extends Controller
     function removeAccents($string)
     {
         // Normaliza la cadena y elimina los acentos
-        $string = \Normalizer::normalize($string, \Normalizer::FORM_D);
+        $string = Normalizer::normalize($string, Normalizer::FORM_D);
         // Elimina los caracteres no ASCII (acentos, diacríticos, etc.)
         $string = preg_replace('/\pM/u', '', $string);
         return $string;
