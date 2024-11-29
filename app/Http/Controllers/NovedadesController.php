@@ -6,6 +6,8 @@ use App\Services\NovedadService;
 use App\Novedad;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Exception;
+use Log;
 
 class NovedadesController extends Controller
 {

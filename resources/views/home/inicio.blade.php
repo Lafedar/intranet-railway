@@ -147,13 +147,13 @@
     <div id="main-carousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('storage/novedades/portada.jpg') }}" class="d-block w-100" alt="Imagen 1">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/portada.jpg') }}" class="d-block w-100" alt="Imagen 1">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('storage/novedades/portada4.jpg') }}" class="d-block w-100" alt="Imagen 2">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/portada4.jpg') }}" class="d-block w-100" alt="Imagen 2">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('storage/novedades/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
             </div>
         </div>
         
