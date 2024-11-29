@@ -166,7 +166,7 @@ class CursoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
-    public function store(Request $request)
+    /*public function store(Request $request)
     {
         try {
 
@@ -194,7 +194,49 @@ class CursoController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
         }
+    }*/
+    public function store(Request $request)
+    {
+        try {
+
+            // Validar los datos del formulario
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:253',
+                'descripcion' => 'nullable|string|max:253',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+                'area' => 'required|array|min:1',
+            ]);
+
+            // Si no se ha seleccionado ninguna área, mostrar un error
+            if (empty($validatedData['area'])) {
+                return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+            }
+
+            // Crear el curso usando el servicio
+            $curso = $this->cursoService->create($validatedData);
+
+            // Verificar si se seleccionó "Todas las Áreas" (es decir, el valor 'tod')
+            if (in_array('tod', $validatedData['area'])) {
+                // Si 'tod' está presente, asociamos solo el área 'tod'
+                $curso->areas()->attach(['tod']); // Solo asignamos 'tod'
+            } else {
+                // Si no se seleccionó 'tod', asociamos las áreas seleccionadas
+                $curso->areas()->attach($validatedData['area']);
+            }
+
+            // Redirigir con éxito
+            return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Si hay errores de validación, retornamos con los errores
+            return redirect()->back()->withErrors($e->validator->errors());
+        } catch (Exception $e) {
+            // Capturar cualquier otro error y redirigir con un mensaje de error
+            return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
+        }
     }
+
 
 
 
@@ -233,7 +275,7 @@ class CursoController extends Controller
      */
 
 
-    public function update(Request $request, int $id)
+    /*public function update(Request $request, int $id)
     {
         try {
             // Obtener el curso a editar
@@ -270,7 +312,54 @@ class CursoController extends Controller
             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
         }
+    }*/
+    public function update(Request $request, int $id)
+    {
+        try {
+
+            $curso = $this->cursoService->getById($id);
+
+            if (!$curso) {
+                return redirect()->route('cursos.index')->withErrors('El curso no fue encontrado.');
+            }
+
+
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:100',
+                'descripcion' => 'nullable|string|max:65530',
+                'obligatorio' => 'required|boolean',
+                'codigo' => 'nullable|string',
+                'tipo' => 'required|string',
+                'area' => 'nullable|array',
+            ]);
+
+
+            $curso->update($validatedData);
+
+
+            if (isset($validatedData['area']) && in_array('tod', $validatedData['area'])) {
+
+                $curso->areas()->sync(['tod']);
+            } elseif (isset($validatedData['area'])) {
+
+                $curso->areas()->sync($validatedData['area']);
+            } else {
+
+                $curso->areas()->detach();
+            }
+
+            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
+
+        } catch (Exception $e) {
+            session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error en la clase: ' . get_class($this) . '. Error al actualizar el curso: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
+        }
     }
+
+
+
+
 
 
 

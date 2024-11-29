@@ -37,7 +37,7 @@ class PersonaService
         }
 
     }
-    public function getPersonsByArea(array $areas)
+    /*public function getPersonsByArea(array $areas)
     {
         try {
             return Persona::whereIn('area', $areas)
@@ -50,7 +50,31 @@ class PersonaService
             throw $e;
         }
 
+    }*/
+    public function getPersonsByArea(array $areas)
+    {
+        try {
+
+            if (in_array('tod', $areas)) {
+                return Persona::where('activo', 1)
+                    ->orderBy('apellido')
+                    ->with('area')
+                    ->get();
+            }
+
+
+            return Persona::whereIn('area', $areas)
+                ->where('activo', 1)
+                ->orderBy('apellido')
+                ->with('area')
+                ->get();
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas de las areas' . $e->getMessage());
+            throw $e;
+        }
     }
+
     /**
      * Obtener una persona por su ID.
      *
