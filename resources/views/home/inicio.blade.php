@@ -16,7 +16,7 @@
 <body class="{{ Auth::check() ? 'authenticated' : '' }}">
 <header>
     <div class="logo">
-        <img src="{{ asset('storage/Imagenes principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
+        <img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
 
@@ -49,7 +49,7 @@
             @csrf
             <div class="icono_usuario">
                 <label>
-                    <img src="{{ asset('storage/Imagenes principal-nueva/USUARIO.png') }}" style="width: 30px; height: auto; margin-right: 5px;">
+                    <img src="{{ asset('storage/Imagenes-principal-nueva/USUARIO.png') }}" style="width: 30px; height: auto; margin-right: 5px;">
                     <b>Ingresa tu Usuario</b>
                 </label>
             </div>
@@ -58,7 +58,7 @@
             </div>
             <div class="icono_contraseña">
                 <label>
-                    <img src="{{ asset('storage/Imagenes principal-nueva/LLAVE.png') }}" style="width: 25px; height: auto; margin-right: 5px;">
+                    <img src="{{ asset('storage/Imagenes-principal-nueva/LLAVE.png') }}" style="width: 25px; height: auto; margin-right: 5px;">
                     <b>Ingresa tu Contraseña</b>
                 </label>
             </div>
@@ -86,7 +86,7 @@
             </div>
             <div class="nav-group">
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:75px;">></span></a>
-                <a href="/powerbis" class="nav-btn">Power BI <span style="margin-left:123px;">></span></a>
+                
             </div>
             <div class="nav-group">
                 <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
@@ -231,8 +231,8 @@
 </div>
 </section>
   
-    <footer >
-        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A    </p>
+    <footer>
+        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A </p>
     </footer> 
 </body>
 </html>
@@ -500,6 +500,13 @@ nav {
     height: 450px;
 }
 
+.authenticated .footer {
+    height: 5px !important;    /* Reduces la altura */
+    padding: 0 !important;     /* Elimina cualquier padding */
+    margin: 0 !important;      /* Elimina márgenes */
+    overflow: hidden;          /* Evita que el contenido haga que el footer se expanda */
+    box-sizing: border-box;    /* Asegura que los rellenos y bordes se cuenten dentro del tamaño */
+}
 /* LOGIN */   
 .login {
     background-color: #E0E0E0BF;
