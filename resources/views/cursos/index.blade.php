@@ -28,13 +28,25 @@
 <div class="container">
     @role(['administrador', 'Gestor-cursos'])
     <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
-        <div class="filter-container">
-            <div class="filter-item">
-                <input type="text" name="nombre_curso" class="form-control" placeholder="Buscar por título"
+    <div class="filter-container">
+        <!-- Filtro para Nombre -->
+        <div class="filter-item">
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    name="nombre_curso" 
+                    class="form-control" 
+                    placeholder="Buscar por título"
                     value="{{ old('nombre_curso', $nombreCurso) }}">
             </div>
-            <div class="filter-item">
-                <select name="area_id" class="form-control">
+        </div>
+
+        <!-- Filtro para Área -->
+        <div class="filter-item">
+            <div class="select-wrapper">
+                <select 
+                    name="area_id" 
+                    class="form-control">
                     <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
                     <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
 
@@ -45,12 +57,16 @@
                     @endforeach
                 </select>
             </div>
-
-            <div class="filter-item">
-                <button type="submit">Filtrar</button>
-            </div>
         </div>
-    </form>
+
+        <div class="filter-item">
+            <button type="submit">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+
+
     @endrole
 
     <a href="{{ route('cursos.create') }}" id="BCC">
