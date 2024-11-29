@@ -1,0 +1,818 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.btn-cs {
+    height: 45px;
+    width: 120px;
+    margin-top: 1px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #FF5733 0.66%, #C70039 109.41%);
+    color: white;
+    border: none;
+    display: inline;
+    cursor: pointer
+}
+
+.btn-cs:hover {
+    box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
+    color: black;
+}
+
+.titulo-novedades {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    /*overflow: hidden; /* Saco el scroll */
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.btn-cerrar-sesion {
+    margin-left: 120px;
+
+}
+
+/* CONTAINER LOGIN Y NOVEDADES */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 40px 20px;
+    margin-top: 75px;
+}
+
+/*MENSAJE DE ERROR LOGIN*/
+#toast {
+    transition: opacity 0.5s ease;
+    text-align: center;
+    width: auto;
+    max-width: 90%;
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f44336;
+    color: white;
+    padding: 16px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+/* BARRA DE BUSQUEDA */
+.search-bar {
+    background-color: #1E78C8;
+    margin: 0px 20px;
+    margin-left: 110px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 30px;
+    flex: 1;
+    color: white;
+    height: 60px;
+}
+
+.search-bar::placeholder {
+    color: white;
+}
+
+header .logo img {
+    max-width: 400px;
+}
+
+
+/* NAV CON BOTONES */
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px 0;
+    gap: 2px;
+
+}
+
+
+.nav-buttons {
+    margin-top: -93px;
+    margin-left: -30px;
+
+
+}
+
+.nav-buttons a {
+    text-decoration: none;
+}
+
+.nav-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: flex-start;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nav-btn {
+    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 8px 16px;
+    margin: 10px 0;
+    cursor: pointer;
+    width: 250px;
+    height: 45px;
+    box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
+    font-family: Inter;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: left;
+    margin-left: 54px;
+    text-decoration: none;
+}
+
+.nav-btn:hover {
+    background-color: white;
+    color: #004a99;
+}
+
+
+/*LUEGO DE LOGUEARSE*/
+.authenticated .nav-btn {
+    margin-top: -5px;
+}
+
+.authenticated .carousel-item img {
+    height: 180px;
+    object-fit: cover;
+
+}
+
+.authenticated .novedades {
+    margin-top: -37px;
+}
+
+.authenticated .card {
+    width: 300px;
+    height: 345px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.authenticated .main-carousel {
+    height: 600px;
+}
+
+.authenticated #main-carousel {
+    margin-top: 43px;
+    height: 700px;
+}
+
+.authenticated #main-carousel img {
+    max-height: 500px;
+    height: 500px;
+}
+
+.authenticated .footer {
+    height: 5px !important;
+    /* Reduces la altura */
+    padding: 0 !important;
+    /* Elimina cualquier padding */
+    margin: 0 !important;
+    /* Elimina márgenes */
+    overflow: hidden;
+    /* Evita que el contenido haga que el footer se expanda */
+    box-sizing: border-box;
+    /* Asegura que los rellenos y bordes se cuenten dentro del tamaño */
+}
+
+/* LOGIN */
+.login {
+    background-color: #E0E0E0BF;
+    padding: 20px;
+    max-width: 300px;
+    margin-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 330px;
+    width: 300px;
+    margin-top: 65px;
+}
+
+.login h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 25px;
+    color: #1C547C;
+    font-family: Arial;
+    font-weight: 900;
+    line-height: 22.99px;
+    text-align: center;
+
+
+}
+
+.login label {
+    display: block;
+    margin-bottom: 5px;
+    color: rgba(28, 84, 124, 1);
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19.36px;
+    text-align: center;
+
+}
+
+.login input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login button {
+    width: 100%;
+    padding: 10px;
+    background: rgba(30, 120, 200, 1);
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 5px;
+    width: 110px;
+
+    height: 35px;
+    top: 642px;
+    left: 98px;
+    gap: 0px;
+    border-radius: 10px 10px 10px 10px;
+    opacity: 0px;
+
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 19.36px;
+    letter-spacing: 0.01em;
+    text-align: center;
+
+}
+
+.login button:hover {
+    background-color: #003a7a;
+}
+
+#img-usuario {
+    width: 30px;
+    height: auto;
+    margin-right: 5px;
+}
+
+#img-contraseña {
+    width: 25px;
+    height: auto;
+    margin-right: 5px;
+}
+
+/*CAROUSEL*/
+.carousel-container {
+    position: absolute;
+    margin-top: -380px;
+    margin-left: 382px;
+    width: 77%;
+    max-height: 340px;
+    height: 800px;
+    z-index: 2;
+    overflow: hidden;
+    border-radius: 10px;
+
+}
+
+.carousel-item img {
+    height: 340px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    height: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* NOVEDADES */
+.novedades {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: -65px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.novedades h1 {
+    margin-top: 53px;
+    /*53*/
+    margin-bottom: 10px;
+    color: #196AB2;
+    font-weight: 900;
+    font-size: 45px;
+    text-align: center;
+    width: 100%;
+    font-family: Arial;
+
+
+}
+
+.cards-contenedor {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 100px;
+    /* espacio entre las tarjetas */
+    margin-top: 10px;
+    margin-left: -150px;
+    width: 110%;
+}
+
+.card {
+    width: 300px;
+    height: 335px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    /* Número de líneas que se mostrarán */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.card img {
+    width: 100%;
+    max-width: 300px;
+    height: 170px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+/*BOTONES DE LAS CARD*/
+.botones-cards {
+    display: flex;
+    gap: 5px;
+
+
+}
+
+.botones-cards a {
+    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    height: 40px;
+
+}
+
+/* FOOTER */
+footer {
+    background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+}
+
+
+/*DESPLEGABLE BARRA DE BUSQUEDA*/
+.results-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    width: 100%;
+    max-width: calc(100% - 2px);
+    display: none;
+}
+
+.results-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.results-dropdown li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.results-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+
+
+/*RESPONSIVE*/
+/*Pantallas 1366x768 */
+@media (max-width: 1366px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* Alinea a la izquierda */
+        margin: 40px 20px;
+    }
+
+    .search-bar {
+        width: 90%;
+        font-size: 18px;
+        margin: 10px 50px;
+    }
+
+    nav {
+        position: absolute;
+        left: -7px;
+        top: 100px;
+        display: flex;
+        /*Flex para apilar botones */
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .nav-btn span {
+        display: none;
+        /* Oculta el contenido del span */
+    }
+
+    .nav-btn {
+        width: 250px;
+        margin-bottom: 10px;
+        text-decoration: none;
+    }
+
+    .login {
+        position: absolute;
+        left: 20px;
+        top: 400px;
+    }
+
+    .novedades {
+        width: 100%;
+        text-align: center;
+        margin: 200px 350px 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .novedades h1 {
+        font-size: 28px;
+    }
+
+    .authenticated .novedades h1 {
+        margin-top: 300px;
+    }
+
+    .cards-contenedor {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 50px;
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-bottom: 40px;
+        margin-left: -50px;
+
+    }
+
+    .card {
+        width: calc(45% - 20px);
+        max-width: 300px;
+        margin: 10px;
+        width: 280px;
+        height: 300px;
+    }
+
+    .authenticated .cards-contenedor {
+        gap: 50px;
+        margin-top: 15px;
+
+    }
+
+    .carousel-container {
+        position: absolute;
+        margin-top: -80px;
+        margin-left: 320px;
+        width: 62.5%;
+        max-height: 300px;
+        height: 800px;
+        z-index: 2;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .authenticated .carousel-container {
+        margin-top: -150px;
+    }
+
+    .carousel-item-chico img {
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        height: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .footer {
+        position: relative;
+    }
+}
+
+/*Pantallas 1360x768 */
+@media (max-width: 1360px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 40px 20px;
+    }
+
+    .search-bar {
+        width: 90%;
+        font-size: 18px;
+        margin: 10px 50px;
+    }
+
+    nav {
+        position: absolute;
+        left: -7px;
+        top: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .nav-btn span {
+        display: none;
+    }
+
+    .nav-btn {
+        width: 250px;
+        margin-bottom: 10px;
+    }
+
+    .login {
+        position: absolute;
+        left: 20px;
+        margin-top: 40px;
+    }
+
+    .novedades {
+        width: 100%;
+        text-align: center;
+        margin: 200px 350px 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .novedades h1 {
+        font-size: 28px;
+        margin-top: 20px;
+    }
+
+    .cards-contenedor {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-bottom: 40px;
+        margin-left: -50px;
+
+    }
+
+    .card {
+        width: calc(45% - 20px);
+        max-width: 300px;
+        margin: 10px;
+        width: 280px;
+        height: 300px;
+    }
+
+    .authenticated .card {
+        height: 300px;
+
+    }
+
+    .authenticated .cards-contenedor {
+        gap: 50px;
+
+    }
+
+    .carousel-container {
+        position: absolute;
+        margin-top: -90px;
+        margin-left: 320px;
+        width: 62.5%;
+        max-height: 300px;
+        height: 800px;
+        z-index: 2;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+
+    .carousel-item img {
+        height: 270px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        height: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .footer {
+        position: relative;
+    }
+}
+
+/*Pantallas 1280x720 */
+@media (max-width: 1280px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 40px 20px;
+    }
+
+    .search-bar {
+        width: 90%;
+        font-size: 18px;
+        margin: 10px 50px;
+    }
+
+    nav {
+        position: absolute;
+        left: -7px;
+        top: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .nav-btn span {
+        display: none;
+    }
+
+    .nav-btn {
+        width: 250px;
+        margin-bottom: 10px;
+    }
+
+    .login {
+        position: absolute;
+        left: 20px;
+        margin-top: 40px;
+    }
+
+    .novedades {
+        width: 100%;
+        text-align: center;
+        margin: 200px 350px 100px;
+        margin-left: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .novedades h1 {
+        font-size: 28px;
+    }
+
+    .authenticated .novedades h1 {
+        margin-top: 25px;
+    }
+
+    .cards-contenedor {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-bottom: 40px;
+        margin-left: -50px;
+
+    }
+
+    .card {
+        width: calc(45% - 20px);
+        max-width: 300px;
+        margin: 10px;
+        width: 280px;
+        height: 300px;
+    }
+
+    .authenticated .cards-contenedor {
+        gap: 50px;
+    }
+
+    .authenticated .novedades {
+        margin-top: 225px;
+    }
+
+    .carousel-container {
+        position: absolute;
+        margin-top: -90px;
+        margin-left: 320px;
+        width: 60%;
+        max-height: 300px;
+        height: 800px;
+        z-index: 2;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+
+    .carousel-item img {
+        height: 270px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        height: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .footer {
+        position: relative;
+        font-family: Inter;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 19.36px;
+        text-align: left;
+
+    }
+
+
+}
