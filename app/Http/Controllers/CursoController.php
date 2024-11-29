@@ -338,7 +338,7 @@ class CursoController extends Controller
 
         $persona = $this->personaService->getById($id_persona);
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
         if (file_exists($imagePath)) {
 
@@ -364,7 +364,7 @@ class CursoController extends Controller
         $fecha = now()->format('d/m/Y');
 
 
-        $imagePath = storage_path('app/public/Imagenes principal-nueva/LOGO-LAFEDAR.png');
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
         if (file_exists($imagePath)) {
 

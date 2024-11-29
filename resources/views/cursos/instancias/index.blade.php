@@ -131,11 +131,11 @@
                                             <form
                                                 action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}"
                                                 method="POST" style="display:inline;"
-                                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');">
+                                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');"
+                                                id="icono">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" style="margin: 5px"
-                                                    title="Eliminar Instancia">
+                                                <button type="submit" id="icono" title="Eliminar Instancia">
                                                     <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
                                                 </button>
                                             </form>
