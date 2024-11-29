@@ -62,7 +62,10 @@ class CursoController extends Controller
             //filtros
             if ($nombreCurso) {
                 $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
-                    return str_contains(strtolower($curso->titulo), strtolower($nombreCurso));
+                    $tituloCursoSinTildes = $this->removeAccents($curso->titulo);
+                    $nombreCursoSinTildes = $this->removeAccents($nombreCurso);
+
+                    return str_contains(strtolower($tituloCursoSinTildes), strtolower($nombreCursoSinTildes));
                 });
             }
 
@@ -115,7 +118,14 @@ class CursoController extends Controller
     }
 
 
-
+    function removeAccents($string)
+    {
+        // Normaliza la cadena y elimina los acentos
+        $string = \Normalizer::normalize($string, \Normalizer::FORM_D);
+        // Elimina los caracteres no ASCII (acentos, diacríticos, etc.)
+        $string = preg_replace('/\pM/u', '', $string);
+        return $string;
+    }
 
 
     /**

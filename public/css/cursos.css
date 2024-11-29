@@ -286,30 +286,33 @@ table thead th {
 
 
 #filtro:focus {
-    color: rgba(255, 255, 255, 1) !important;  
-    background: #333;  
-    border: 2px solid #fff;  
+    color: rgba(255, 255, 255, 1) !important;
+    background: #333;
+    border: 2px solid #fff;
 }
-.input-wrapper, .select-wrapper {
+
+.input-wrapper,
+.select-wrapper {
     position: relative;
     display: block;
     width: 100%;
-    padding: 10px; 
-    box-sizing: border-box; 
-    cursor: pointer; 
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
 .form-control {
-    width: 100%; 
-    padding: 12px; 
-    font-size: 16px; 
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
     border: 1px solid #ccc;
-    outline: none; 
+    outline: none;
 }
 
 .form-control:focus {
-    border-color: #007bff; 
+    border-color: #007bff;
 }
+
 /*INSTANCIAS INDEX*/
 #BCI {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
@@ -431,7 +434,7 @@ table thead th {
 }
 
 footer {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     left: 0;
     width: 100%;
