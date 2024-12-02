@@ -337,14 +337,11 @@ class CursoController extends Controller
             $curso->update($validatedData);
 
 
-            if (isset($validatedData['area']) && in_array('tod', $validatedData['area'])) {
-
-                $curso->areas()->sync(['tod']);
-            } elseif (isset($validatedData['area'])) {
-
-                $curso->areas()->sync($validatedData['area']);
+            if (!empty($validatedData['area'])) {
+                $curso->areas()->sync(
+                    in_array('tod', $validatedData['area']) ? ['tod'] : $validatedData['area']
+                );
             } else {
-
                 $curso->areas()->detach();
             }
 
