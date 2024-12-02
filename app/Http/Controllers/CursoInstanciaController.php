@@ -581,15 +581,12 @@ class CursoInstanciaController extends Controller
     }
 
 
-
-
-    public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId)
+    public function generarPDF(string $formulario_id, int $cursoId, int $instanciaId, Request $request)
     {
         $is_pdf = true;
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         $curso = $this->cursoService->getById($cursoId);
         $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
-
 
         $inscriptosArray = $inscriptos->toArray();
 
@@ -608,12 +605,21 @@ class CursoInstanciaController extends Controller
             }
         }
 
+        foreach ($pagina as &$inscripto) {
+            if (!empty($inscripto['fecha_enrolamiento'])) {
+
+                $inscripto['fecha_enrolamiento'] = Carbon::parse($inscripto['fecha_enrolamiento'])->format('d/m/Y');
+            }
+        }
+
+
+        $fechaSeleccionada = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
+
 
         $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $cursoId, $instanciaId);
         if (!$anexo) {
             return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
         }
-
 
         $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
         if (file_exists($imagePath)) {
@@ -625,7 +631,7 @@ class CursoInstanciaController extends Controller
         }
 
 
-        $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf'))->render();
+        $html = view('cursos.planillaCursos', compact('inscriptos', 'instancia', 'curso', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf', 'fechaSeleccionada'))->render();
 
 
         $pdf = SnappyPdf::loadHTML($html)
@@ -637,8 +643,11 @@ class CursoInstanciaController extends Controller
             ->setOption('margin-bottom', 10)
             ->setOption('margin-left', 10);
 
+
         return $pdf->download('planilla.pdf');
     }
+
+
 
 
 
@@ -776,7 +785,7 @@ class CursoInstanciaController extends Controller
 
 
         if ($successCount > 0) {
-            return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados por correo.");
+            return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados de aprobación por correo, a las personas aprobadas.");
         } else {
             return redirect()->back()->with('error', 'Hubo un problema al enviar los certificados.');
         }

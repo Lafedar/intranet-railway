@@ -61,26 +61,36 @@
                         <button type="submit" id="BI">Ver Anexo</button>
                     </form>
                 @else
-                    <p><b>Agregue un Anexo para ver la planilla</b></p>
-                @endif
-                
-                    @if($cantAprobados > 0)
-                        <form action="{{ route('enviarMail', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-primary" id="BI">Enviar Certificado</button>
-                        </form>
-                    @else
-                        <form action="{{ route('enviarMail', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-primary" id="BI" disabled>Enviar Certificado</button>
-                        </form>
-                    @endif
-
-
-                    <form action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-primary" id="BI" style="margin-left: 480px">Aprobar a todos</button>
+                    <form action="#" method="GET">
+                        <button type="submit" id="BI" disabled>Ver Anexo</button>
                     </form>
+
+                @endif
+
+                @if($cantAprobados > 0)
+                    <form
+                        action="{{ route('enviarMail', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+                        method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" id="BI">Enviar Certificado</button>
+                    </form>
+                @else
+                    <form
+                        action="{{ route('enviarMail', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+                        method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" id="BI" disabled>Enviar Certificado</button>
+                    </form>
+                @endif
+
+
+                <form
+                    action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}"
+                    method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary" id="BI" style="margin-left: 480px">Aprobar a
+                        todos</button>
+                </form>
 
                 <form
                     action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}"

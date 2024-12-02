@@ -270,7 +270,7 @@ table thead th {
 }
 
 #filtro {
-    background: grey;
+    
     color: rgba(255, 255, 255, 1) !important;
     padding: 10px;
     font-size: 16px;
@@ -383,6 +383,8 @@ table thead th {
 .filter-item {
     width: 310px;
     min-width: 100px;
+   
+       
 }
 
 .filter-item input {
@@ -413,7 +415,13 @@ table thead th {
     margin-left: 150px;
     margin-top: 85px;
 }
-
+.filter-item select:focus {
+    color: white !important; /* Forzar color blanco cuando está seleccionado */
+    
+}
+.filter-item select option{
+    color:black;
+}
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     color: rgba(255, 255, 255, 1);
@@ -503,21 +511,20 @@ footer p {
             display: flex;
             align-items: center;
             margin-top: 20px;
-            margin-left: 180px;
+            margin-left: 100px;
         }
 
         .filter-item {
-            width: 15%;
-            min-width: 100px;
+            width: 12%;
             box-sizing: border-box;
         }
 
         .filter-item input,
         .filter-item select,
         .filter-item button {
-            width: 100%;
             font-size: 14px;
             padding: 8px;
+            gap: 2px;
         }
 
 
