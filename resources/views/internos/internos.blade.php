@@ -17,7 +17,7 @@
   <div id="custom-container-internos">
     <!-- Buscador -->
     <div id="filtro-internos">
-      <input type="text" class="form-control" id="search" placeholder="Buscar">
+      <input type="text" class="form-control" id="search" placeholder="Buscar por nombre, apellido, area...">
     </div>
 
 

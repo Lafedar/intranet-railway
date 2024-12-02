@@ -1,7 +1,8 @@
 /* Custom image styles */
 .custom-img {
     height: 90px;
-    margin-left: 8px; /* Moves image 8px to the right */
+    margin-left: 8px;
+    /* Moves image 8px to the right */
 }
 
 /* Custom text styles */
@@ -9,18 +10,21 @@
     font-family: Calibri, sans-serif;
     font-size: 22px;
     font-weight: bold;
-    color: #236192; /* Custom color */
+    color: #236192;
+    /* Custom color */
     margin-top: 5px;
-    margin-left: -4px; /* Moves text 4px to the left */
+    margin-left: -4px;
+    /* Moves text 4px to the left */
 }
 
 
 
 .table-container {
-    padding-bottom: 50px; /* Ajusta el valor según lo que necesites */
+    padding-bottom: 50px;
+    /* Ajusta el valor según lo que necesites */
 }
 
-
+/*ESTILOS PARA LAS TABLAS*/
 .img-logo img {
     position: absolute;
     top: 0;
@@ -141,35 +145,44 @@ table thead th {
     color: white;
 }
 
+
+
+
+
 /*INTERNOS*/
 #custom-container-internos {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 15px; /* Padding izquierdo por defecto */
-    padding-right: 15px; /* Padding derecho por defecto */
+    padding-left: 15px;
+    /* Padding izquierdo por defecto */
+    padding-right: 15px;
+    /* Padding derecho por defecto */
     margin-top: 3rem;
-    
 }
 
 /*filtro internos*/
-#filtro-internos{
+#filtro-internos {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     height: 10vh;
-    
-
+    margin-left: 450px;
+    margin-top: 80px;
 }
-#filtro-internos input{
+
+#filtro-internos input {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    color:white;
-}
-#filtro-internos input::placeholder {
-    color: white; /* Cambia el color del texto del placeholder a blanco */
+    color: white;
+    height: 6vh;
 }
 
-#tabla-internos{
-    margin-top: 30px;
+#filtro-internos input::placeholder {
+    color: white;
+}
+
+/*tabla de internos*/
+#tabla-internos {
+    margin-top: 40px;
 }
