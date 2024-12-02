@@ -77,7 +77,8 @@
         @role('administrador')
             <!--dejo el css inline para distanciar los > de las palabras-->
             <div class="nav-group">
-                <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left:107px;">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span style="margin-left:128px;">></span></a>
+
                 <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
             </div>
             <div class="nav-group">
@@ -96,7 +97,8 @@
             </div>
         @else
             <div class="nav-group">
-                <a href="{{ route('solicitudes.index') }}" class="nav-btn">Solicitudes <span style="margin-left:107px;">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span style="margin-left:107px;">></span></a>
+
                 @role(['jefe', 'rrhh'])
                 <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
                 @endrole
@@ -150,7 +152,7 @@
                 <img src="{{ asset('storage/Imagenes-principal-nueva/portada.jpg') }}" class="d-block w-100" alt="Imagen 1">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('storage/Imagenes-principal-nueva/portada4.jpg') }}" class="d-block w-100" alt="Imagen 2">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/portada2.jpg') }}" class="d-block w-100" alt="Imagen 2">
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('storage/Imagenes-principal-nueva/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">

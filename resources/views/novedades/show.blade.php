@@ -21,9 +21,10 @@
             </div>
         @endif
 
-        <div class="mt-4 text-center">
-            <p class="lead">{{ $novedad->descripcion }}</p>
-        </div>
+        <div class="mt-4 text-left">
+    <p class="lead" style="white-space: pre-wrap;">{{ $novedad->descripcion }}</p>
+</div>
+
 
         @if($novedad->imagenes_sec)
     @php
