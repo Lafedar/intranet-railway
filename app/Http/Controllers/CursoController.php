@@ -176,9 +176,11 @@ class CursoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
+
     public function store(Request $request)
     {
         try {
+
 
             $validatedData = $request->validate([
                 'titulo' => 'required|string|max:253',
@@ -189,26 +191,33 @@ class CursoController extends Controller
                 'area' => 'required|array|min:1',
             ]);
 
-
+            // Si no se ha seleccionado ninguna área, mostrar un error
             if (empty($validatedData['area'])) {
                 return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
             }
 
+
             $curso = $this->cursoService->create($validatedData);
 
-            $curso->areas()->attach($validatedData['area']);
+            if (count($validatedData['area']) >= 6) {
+                $curso->areas()->attach(['tod']);
+            } else {
+                if (in_array('tod', $validatedData['area'])) {
+                    $curso->areas()->attach(['tod']); // Solo asignamos 'tod'
+                } else {
+                    $curso->areas()->attach($validatedData['area']);
+                }
+            }
 
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->validator->errors()); //errores en el validateData
+            
+            return redirect()->back()->withErrors($e->validator->errors());
         } catch (Exception $e) {
+           
             return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
         }
     }
-
-
-
-
 
     /**
      * Mostrar el formulario para editar un curso existente.
@@ -246,7 +255,7 @@ class CursoController extends Controller
     public function update(Request $request, int $id)
     {
         try {
-            // Obtener el curso a editar
+
             $curso = $this->cursoService->getById($id);
 
             if (!$curso) {
@@ -260,27 +269,36 @@ class CursoController extends Controller
                 'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
                 'area' => 'nullable|array',
-
             ]);
 
-            // Actualizar el curso con los datos validados
+            
             $curso->update($validatedData);
 
-            // Actualizar las áreas (sincroniza las áreas seleccionadas)
-            if (isset($validatedData['area'])) {
-                $curso->areas()->sync($validatedData['area']);
+           
+            if (!empty($validatedData['area'])) {
+                if (count($validatedData['area']) >= 6) {
+                    $curso->areas()->sync(['tod']);
+                } else {
+                    $curso->areas()->sync(
+                        in_array('tod', $validatedData['area']) ? ['tod'] : $validatedData['area']
+                    );
+                }
+            } else {
+                $curso->areas()->detach();
             }
-
-
 
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
 
         } catch (Exception $e) {
             session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());
-            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el curso: ' . $e->getMessage());
+            Log::error('Error en la clase: ' . get_class($this) . '. Error al actualizar el curso: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al actualizar el curso.');
         }
     }
+
+
+
+
 
 
 

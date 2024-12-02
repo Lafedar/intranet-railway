@@ -48,9 +48,8 @@
                     name="area_id" 
                     class="form-control">
                     <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
-                    <option value="all" {{ old('area_id', $areaId) == 'all' ? 'selected' : '' }}>Todas las áreas</option> 
-
-                    @foreach ($areas as $area)
+                    <!-- Mostrar el área 'Todas las Áreas' primero -->
+                    @foreach ($areas->sortBy(function($area) { return $area->id_a === 'tod' ? -1 : 1; }) as $area)
                         <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
                             {{ $area->nombre_a }}
                         </option>
@@ -58,6 +57,7 @@
                 </select>
             </div>
         </div>
+
 
         <div class="filter-item">
             <button type="submit">Filtrar</button>
