@@ -21,4 +21,155 @@
 }
 
 
-  
+.img-logo img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 15px;
+    margin-top: 50px;
+    width: 400px;
+    height: auto;
+}
+
+/*encabezado de la tabla */
+table thead {
+    background: rgba(15, 79, 141, 0.83) !important;
+
+}
+
+table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 19.2px;
+    letter-spacing: -0.03em;
+    text-align: center !important;
+    /* Centrado horizontal */
+    vertical-align: middle !important;
+    /* Centrado vertical */
+    color: rgba(255, 255, 255, 1);
+}
+
+
+/*filas */
+table {
+    border: none !important;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Espacio entre filas (10px vertical) */
+    margin-top: 10px;
+
+}
+
+table td,
+table th {
+    border: none !important;
+    padding: 10px;
+}
+
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+}
+
+
+table tbody tr {
+    background: rgba(217, 217, 217, 0.6);
+}
+
+
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/* Para redondear las celdas de la primera y última columna */
+table thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+table thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 15px;
+    margin-top: 3rem;
+}
+
+
+.row.justify-content-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.col-md-15 {
+    width: 100%;
+    padding-left: 25px;
+    padding-right: 0;
+}
+
+/* Espaciado entre las filas */
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/*contenido de la tabla*/
+table tbody td {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: -0.03em;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(15, 79, 141, 0.83);
+    background: rgba(217, 217, 217, 0.6);
+
+    text-align: center;
+}
+
+/* estilos para el encabezado de la tabla */
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+    color: white;
+}
+
+/*INTERNOS*/
+#custom-container-internos {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px; /* Padding izquierdo por defecto */
+    padding-right: 15px; /* Padding derecho por defecto */
+    margin-top: 3rem;
+    
+}
+
+/*filtro internos*/
+#filtro-internos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 10vh;
+    
+
+}
+#filtro-internos input{
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    color:white;
+}
+#filtro-internos input::placeholder {
+    color: white; /* Cambia el color del texto del placeholder a blanco */
+}
+
+#tabla-internos{
+    margin-top: 30px;
+}
