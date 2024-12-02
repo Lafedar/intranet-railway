@@ -143,6 +143,7 @@ class CursoInstanciaController extends Controller
         try {
             $curso = Curso::findOrFail($cursoId);
             $personas = $this->personaService->getAll();
+            
             $anexos = $this->cursoInstanciaService->getAnexos();
 
             return view('cursos.instancias.create', compact('curso', 'personas', 'anexos'));

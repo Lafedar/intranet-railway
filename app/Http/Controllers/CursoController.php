@@ -99,6 +99,7 @@ class CursoController extends Controller
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
                 $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion($curso->id, $personaDni->id_p);
                 $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
+                $curso->cantInstancias = $this->cursoInstanciaService->getCountInstances($curso->id);
 
                 return $curso;
             });
@@ -106,7 +107,7 @@ class CursoController extends Controller
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
-
+           
 
             return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
 

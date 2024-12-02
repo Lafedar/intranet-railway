@@ -31,7 +31,7 @@
         </a>
         <div id="encabezados">
             <h1 id="titulo">Inscripción para el curso: {{ $curso->titulo }}</h1>
-            <h2 id="titulo-sec">Número de Instancia: {{ $instancia->id_instancia }}</h2>
+            
         </div>
         <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
 

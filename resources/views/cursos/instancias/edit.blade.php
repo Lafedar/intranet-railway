@@ -108,53 +108,71 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const selectCapacitador = document.getElementById('capacitador');
-        const otroLink = document.getElementById('otroCapacitadorLink');
-        const cerrarLink = document.getElementById('cerrarCapacitadorLink');
-        const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
-        const otroCapacitadorInput = document.getElementById('otro_capacitador');
+    const selectCapacitador = document.getElementById('capacitador');
+    const otroLink = document.getElementById('otroCapacitadorLink');
+    const cerrarLink = document.getElementById('cerrarCapacitadorLink');
+    const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
+    const otroCapacitadorInput = document.getElementById('otro_capacitador');
 
-        // Verificar si el capacitador seleccionado es "Otro"
-        if (selectCapacitador.value === "") {
-            inputOtroCapacitador.style.display = 'block'; // Mostrar el input "Otro" si no hay selección
-            selectCapacitador.disabled = true; // Bloquear el select
-            cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
-            otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
-        }
+    // Verificar si el capacitador seleccionado es "Otro" o no
+    if (selectCapacitador.value === "") {
+        // Si no hay capacitador seleccionado, mostrar el input "Otro" y bloquear el select
+        inputOtroCapacitador.style.display = 'block';
+        selectCapacitador.disabled = true;
+        cerrarLink.style.display = 'inline';
+        otroLink.style.display = 'none';
+    } else if (selectCapacitador.value === "otro") {
+        // Si el capacitador seleccionado es "Otro", mostrar el input "Otro" con el valor prellenado
+        inputOtroCapacitador.style.display = 'block';
+        selectCapacitador.disabled = true;
+        cerrarLink.style.display = 'inline';
+        otroLink.style.display = 'none';
+        otroCapacitadorInput.value = selectCapacitador.value;  // Completa el valor con el capacitador ingresado
+    } else {
+        // Si hay un capacitador seleccionado, aseguramos que el input "Otro" esté oculto
+        inputOtroCapacitador.style.display = 'none';
+        selectCapacitador.disabled = false;
+        cerrarLink.style.display = 'none';
+        otroLink.style.display = 'inline';
+    }
 
-        // Mostrar el input cuando se hace clic en el enlace "Otro"
-        otroLink.addEventListener('click', function() {
-            inputOtroCapacitador.style.display = 'block'; // Mostrar el input
-            selectCapacitador.disabled = true; // Bloquear el select
-            cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
-            otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
-            // Limpiar el campo de texto
-            otroCapacitadorInput.value = '';
-        });
-
-        // Mostrar el enlace "Otro" y ocultar el input cuando se hace clic en "Cerrar"
-        cerrarLink.addEventListener('click', function() {
-            inputOtroCapacitador.style.display = 'none'; // Ocultar el input de "Otro"
-            selectCapacitador.disabled = false; // Habilitar el select
-            otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
-            cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-            // Limpiar el campo de texto
-            otroCapacitadorInput.value = ''; // Limpiar el valor del input "Otro"
-        });
-
-        // Mostrar el input cuando se selecciona "Otro" en el select
-        selectCapacitador.addEventListener('change', function() {
-            if (selectCapacitador.value !== "") {
-                inputOtroCapacitador.style.display = 'none'; // Ocultar el input
-                selectCapacitador.disabled = false; // Desbloquear el select
-                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-                otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
-            } else {
-                inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
-                cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-            }
-        });
+    // Mostrar el input "Otro" cuando se hace clic en el enlace "Otro"
+    otroLink.addEventListener('click', function () {
+        selectCapacitador.value = ""; // Cambiar el valor del select a "Seleccione un capacitador"
+        inputOtroCapacitador.style.display = 'block'; // Mostrar el input
+        selectCapacitador.disabled = true; // Bloquear el select
+        cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
+        otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
+        
+        // Limpiar el campo de texto
+        otroCapacitadorInput.value = '';
     });
+
+    // Cuando se hace clic en el botón "Cerrar"
+    cerrarLink.addEventListener('click', function () {
+        inputOtroCapacitador.style.display = 'none'; // Ocultar el input de "Otro"
+        selectCapacitador.disabled = false; // Habilitar el select
+        otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+        cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+        
+        // Limpiar el valor del input de "Otro" (si es necesario)
+        otroCapacitadorInput.value = ''; 
+    });
+
+    // Mostrar el input "Otro" cuando se selecciona un capacitador
+    selectCapacitador.addEventListener('change', function () {
+        if (selectCapacitador.value !== "") {
+            inputOtroCapacitador.style.display = 'none'; // Ocultar el input si se elige un capacitador
+            selectCapacitador.disabled = false; // Desbloquear el select
+            cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+            otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+        } else {
+            inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
+            cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+        }
+    });
+});
+
 </script>
 <script>
     // Función para limitar la longitud del input a 11 caracteres

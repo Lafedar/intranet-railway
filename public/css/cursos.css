@@ -258,7 +258,9 @@ table thead th {
 /*PERSONAS*/
 #cupo {
 
-    margin-top: 0px;
+    margin-top: 55px;
+    margin-left: 5px;
+    
     font-family: 'Poppins';
     font-size: 25px;
     font-weight: 600;
@@ -271,13 +273,14 @@ table thead th {
 
 #filtro {
     
-    color: rgba(255, 255, 255, 1) !important;
+    color: white !important;
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
     width: 150%;
     height: 45px;
     margin-top: 20px;
+    background-color: grey;
 }
 
 #filtro::placeholder {
@@ -286,8 +289,8 @@ table thead th {
 
 
 #filtro:focus {
-    color: rgba(255, 255, 255, 1) !important;
-    background: #333;
+    color: white !important;
+    background: grey;
     border: 2px solid #fff;
 }
 

@@ -87,6 +87,7 @@
                         @endrole
                         <th>Fecha de Creación</th>
                         @role(['administrador', 'Gestor-cursos'])
+                        <th>Cant. Instancias</th>
                         <th>Cant. Inscriptos</th>
                         <th>% Aprobados</th>
                         @endrole
@@ -125,6 +126,7 @@
                         @endrole
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         @role(['administrador', 'Gestor-cursos'])
+                        <td>{{$curso->cantInstancias}}</td>
                         <td>{{ $curso->cantInscriptos}}</td>
                         <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
                         @endrole
