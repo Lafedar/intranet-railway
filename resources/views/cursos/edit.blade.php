@@ -6,12 +6,12 @@
 
 <!-- Agregar el JavaScript de Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Editar Curso</h1>
     <form action="{{ route('cursos.update', $curso->id) }}" method="POST">
         @csrf
         @method('PUT')
-
 
         <div class="form-group">
             <label for="titulo">Título</label>
@@ -34,38 +34,31 @@
                 <option value="0" {{ $curso->obligatorio == 0 ? 'selected' : '' }}>No</option>
             </select>
         </div>
-        <!--<div class="form-group">                 //input para areas con filtro
-        <label for="area">Áreas</label>
-        <select name="area[]" class="form-control select2" multiple="multiple" required>
-            @foreach($areas as $area)
-                <option value="{{ $area->id_a }}" 
-                    @if($curso->areas->contains('id_a', $area->id_a)) selected @endif>
-                    {{ $area->nombre_a }}
-                </option>
-            @endforeach
-        </select>
-    </div>-->
-        <div class="form-group">
-            <input type="checkbox" id="selectAll" name="area[]" class="form-check-input" value="tod">
-            <label for="selectAll" class="form-check-label">Todas las áreas</label>
-        </div>
 
+        <!-- Áreas -->
         <div class="form-group">
             <label for="area">Áreas</label><br>
+
             @foreach($areas as $area)
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]"
-                        value="{{ $area->id_a }}" @if($curso->areas->contains('id_a', $area->id_a)) checked @endif>
-                    <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
-                </div>
+                @if($area->id_a == 'tod')
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]"
+                            value="{{ $area->id_a }}" @if($curso->areas->contains('id_a', $area->id_a)) checked @endif>
+                        <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
+                    </div>
+                @endif
+            @endforeach
+
+            @foreach($areas as $area)
+                @if($area->id_a != 'tod')
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input area-checkbox" id="area_{{ $area->id_a }}" name="area[]"
+                            value="{{ $area->id_a }}" @if($curso->areas->contains('id_a', $area->id_a)) checked @endif>
+                        <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
+                    </div>
+                @endif
             @endforeach
         </div>
-
-
-
-
-
-
 
         <div class="form-group">
             <label for="codigo">Código</label>
@@ -87,49 +80,56 @@
 
     </form>
 </div>
+
 <script>
     $(document).ready(function () {
+        // Inicializar select2 si es necesario
         $('.select2').select2();
     });
-</script>
-<script>
-    // Seleccionamos el checkbox "Todas las áreas" y todos los checkboxes de áreas
-    const selectAllCheckbox = document.getElementById('selectAll');
-    const areaCheckboxes = document.querySelectorAll('input[name="area[]"]:not(#selectAll)');
+
+    // Función para manejar la lógica de "Seleccionar todas las áreas"
+    const selectAllCheckbox = document.querySelector('input[name="area[]"][value="tod"]');
+    const areaCheckboxes = document.querySelectorAll('input[name="area[]"]:not([value="tod"])');
 
     // Función para activar/desactivar los checkboxes de áreas
     selectAllCheckbox.addEventListener('change', function () {
         const isChecked = selectAllCheckbox.checked;
 
         areaCheckboxes.forEach(function (checkbox) {
-            checkbox.checked = isChecked;  // Si "Todas las áreas" está marcado, los demás también
-            checkbox.disabled = isChecked; // Deshabilitar los demás checkboxes cuando "Todas las áreas" está seleccionado
+            checkbox.checked = isChecked;  // Marcar o desmarcar todos los checkboxes de área
+            checkbox.disabled = isChecked; // Deshabilitar o habilitar los demás checkboxes
         });
+
+        if (isChecked) {
+            // Si "Todas las Áreas" está seleccionada, desmarcar "indeterminate"
+            selectAllCheckbox.indeterminate = false;
+        } else {
+            // Si "Todas las Áreas" no está seleccionada, marcar "indeterminate" en caso de que algunos checkboxes estén seleccionados
+            selectAllCheckbox.indeterminate = Array.from(areaCheckboxes).some(cb => cb.checked);
+        }
     });
 
-    // Si los checkboxes individuales se seleccionan, también tenemos que ajustar "Todas las áreas"
+    // Si los checkboxes individuales se seleccionan, también tenemos que ajustar "Todas las Áreas"
     areaCheckboxes.forEach(function (checkbox) {
         checkbox.addEventListener('change', function () {
-            // Verifica si todos los checkboxes de áreas están seleccionados
             const allChecked = Array.from(areaCheckboxes).every(function (cb) {
                 return cb.checked;
             });
 
-            // Si todos están seleccionados, marca "Todas las áreas"
+            // Si todos los checkboxes están seleccionados, marca "Todas las Áreas"
             selectAllCheckbox.checked = allChecked;
-
-            // Si hay algún checkbox desmarcado, desmarcar "Todas las áreas"
-            selectAllCheckbox.indeterminate = !allChecked && Array.from(areaCheckboxes).some(function (cb) {
-                return cb.checked;
-            });
         });
     });
+
+    // Al cargar la página, verificamos si "Todas las Áreas" está seleccionada
+    window.addEventListener('DOMContentLoaded', (event) => {
+        if (selectAllCheckbox.checked) {
+            areaCheckboxes.forEach(function (checkbox) {
+                checkbox.disabled = true; // Deshabilitamos los demás checkboxes si "Todas las Áreas" está seleccionada
+            });
+        }
+    });
 </script>
-
-
-
-
-
 
 <script>
     // Función para actualizar el contador de caracteres
@@ -157,9 +157,5 @@
     updateCharacterCount("titulo", "titulo-count");
     updateCharacterCount("descripcion", "descripcion-count");
 </script>
-<script>
-    $(document).ready(function () {
-        $('.select2').select2();
-    });
-</script>
+
 @endsection
