@@ -180,18 +180,14 @@ nav {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.authenticated .main-carousel {
-    height: 600px;
+.authenticated .carousel-container {
+    height: 550px;
+    margin-top: -330px;
 }
 
-.authenticated #main-carousel {
-    margin-top: 43px;
-    height: 700px;
-}
-
-.authenticated #main-carousel img {
-    max-height: 500px;
-    height: 500px;
+.authenticated .carousel-container img {
+    max-height: 600px;
+    height: 550px;
 }
 
 .authenticated .footer {
@@ -309,6 +305,8 @@ nav {
     border-radius: 10px;
 
 }
+
+
 
 .carousel-item img {
     height: 340px;
@@ -508,6 +506,7 @@ footer p {
 
     .novedades h1 {
         font-size: 28px;
+        margin-left: 130px;
     }
 
     .authenticated .novedades h1 {
@@ -522,7 +521,7 @@ footer p {
         max-width: 1000px;
         margin: 0 auto;
         margin-bottom: 40px;
-        margin-left: -50px;
+        margin-left: 0px;
 
     }
 
@@ -533,7 +532,9 @@ footer p {
         width: 280px;
         height: 300px;
     }
-
+    .authenticated .card{
+        height: 300px;
+    }
     .authenticated .cards-contenedor {
         gap: 50px;
         margin-top: 15px;
@@ -544,7 +545,7 @@ footer p {
         position: absolute;
         margin-top: -80px;
         margin-left: 320px;
-        width: 62.5%;
+        width: 70%;
         max-height: 300px;
         height: 800px;
         z-index: 2;
@@ -627,6 +628,7 @@ footer p {
     .novedades h1 {
         font-size: 28px;
         margin-top: 20px;
+        margin-left: 90px;
     }
 
     .cards-contenedor {
@@ -637,7 +639,7 @@ footer p {
         max-width: 1000px;
         margin: 0 auto;
         margin-bottom: 40px;
-        margin-left: -50px;
+        margin-left: -20px;
 
     }
 
@@ -663,7 +665,7 @@ footer p {
         position: absolute;
         margin-top: -90px;
         margin-left: 320px;
-        width: 62.5%;
+        width:70%;
         max-height: 300px;
         height: 800px;
         z-index: 2;
@@ -743,6 +745,7 @@ footer p {
 
     .novedades h1 {
         font-size: 28px;
+        margin-left: 140px;
     }
 
     .authenticated .novedades h1 {
@@ -757,7 +760,7 @@ footer p {
         max-width: 1000px;
         margin: 0 auto;
         margin-bottom: 40px;
-        margin-left: -50px;
+        margin-left: 20px;
 
     }
 
@@ -781,7 +784,7 @@ footer p {
         position: absolute;
         margin-top: -90px;
         margin-left: 320px;
-        width: 60%;
+        width: 70%;
         max-height: 300px;
         height: 800px;
         z-index: 2;
