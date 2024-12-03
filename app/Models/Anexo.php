@@ -22,7 +22,7 @@ class Anexo extends Model
 
     public function instancias()
     {
-        return $this->belongsToMany(Instancia::class, 'relacion_curso_instancia_anexo', 'id_curso', 'id_instancia')
+        return $this->belongsToMany(CursoInstancia::class, 'relacion_curso_instancia_anexo', 'id_curso', 'id_instancia')
                     ->withPivot('formulario_id');
     }
 

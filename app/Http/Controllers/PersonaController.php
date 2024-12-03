@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
-use App\Models\Persona;    //agrego \Models
+use App\Models\Persona;    
 use App\Permiso;
 use App\Empleado;
 use App\User;
 use Auth;
 use DB;
 Use Session;
+use App\Models\MiAgenda;
+use App\Empresa;
 use Illuminate\Routing\Controller;
 
 class PersonaController extends Controller
 {
     public function index(Request $request)
     {
-        $personas = Persona::orderBy('nombre','asc')
+        $personas = MiAgenda::orderBy('nombre','asc')
         ->Empresa($request->get('empresa'))
         ->Nombre($request->get('nombre'))
         ->paginate(50);

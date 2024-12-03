@@ -78,7 +78,8 @@
 
 @include('persona.edit')
 
-{{ $personas->appends($_GET)->links() }}
+
+{{ $personas->links('pagination::bootstrap-4') }}  <!--paginacion-->
 </div>
 
 <script> 
