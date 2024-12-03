@@ -7,7 +7,7 @@
     <title>Novedades</title>
 
     <!-- Vinculamos el archivo CSS externo -->
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/novedades.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 
     <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
