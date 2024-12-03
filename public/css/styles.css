@@ -165,6 +165,11 @@
     color: rgba(255, 255, 255, 0.6);
 
 }
+
+#novedades-descripcion{
+    white-space: pre-wrap;
+}
+
 @media (max-width: 1366px) and (min-width: 1280px),
 (max-width: 1360px) and (min-width: 1280px),
 (max-width: 1280px) {

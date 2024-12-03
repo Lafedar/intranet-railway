@@ -28,9 +28,9 @@
     
     <nav>
       
-        <a href="/internos" class="nav-btn">Internos <span style="margin-left:130px;">></span></a>
-        <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span style="margin-left:107px;">></span></a>
-        <a href="/documentos" class="nav-btn">Documentos<span style="margin-left:98px;">></span></a>
+        <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
+        <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
+        <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
             
     </nav>
 
@@ -77,55 +77,55 @@
         @role('administrador')
             <!--dejo el css inline para distanciar los > de las palabras-->
             <div class="nav-group">
-            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span style="margin-left:128px;">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
 
-                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:109px;">></span></a>
-                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:123px;">></span></a>
+                <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal">></span></a>
             </div>
             <div class="nav-group">
-                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:75px;">></span></a>
+                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
                 
             </div>
             <div class="nav-group">
-                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
-                <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
-                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
-                <a href="/cursos" class="nav-btn">Cursos <span style="margin-left:137px;">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal">></span></a>
+                <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
             </div>
         @else
             <div class="nav-group">
-            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span style="margin-left:107px;">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
 
                 @role(['jefe', 'rrhh'])
-                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span style="margin-left:120px;">></span></a>
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal2">></span></a>
                 @endrole
             </div>
             <div class="nav-group">
                 @role(['recepcion', 'rrhh'])
-                <a href="/persona" class="nav-btn">Recepcion <span style="margin-left:107px;">></span></a>
+                <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal2">></span></a>
                 @endrole
                 @role('ingenieria')
-                <a href="/sistemas" class="nav-btn">Sistemas <span style="margin-left:123px;">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal2">></span></a>
                 @endrole
             </div>
             <div class="nav-group">
                 
-            <a href="/mantenimiento" class="nav-btn">Mantenimiento <span style="margin-left:75px;">></span></a>
+            <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
                 
                 
             </div>
             <div class="nav-group">
                 @role('rrhh')
-                <a href="/empleado" class="nav-btn">Personal <span style="margin-left:125px;">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal2">></span></a>
                 @endrole
                 @role(['medico', 'rrhh'])
-                <a href="/medico" class="nav-btn">Medico <span style="margin-left:135px;">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span id="medico-principal2">></span></a>
                 @endrole
                 @role(['guardia', 'rrhh'])
-                <a href="/visitas" class="nav-btn">Guardia <span style="margin-left:131px;">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
                 @endrole
             </div>
         @endrole

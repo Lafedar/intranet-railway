@@ -155,6 +155,84 @@ nav {
     color: #004a99;
 }
 
+#powerbi-principal{
+    margin-left: 128px;
+}
+
+#permisos-principal {
+    margin-left: 120px;
+}
+
+#recepcion-principal {
+    margin-left: 109px;
+}
+
+#sistemas-principal {
+    margin-left: 123px;
+}
+
+#mantenimiento-principal {
+    margin-left: 75px;
+}
+
+#empleado-principal {
+    margin-left: 125px;
+}
+
+#medico-principal {
+    margin-left: 135px;
+}
+
+#guardia-principal {
+    margin-left: 131px;
+}
+
+#cursos-principal {
+    margin-left: 137px;
+}
+
+
+
+#internos-principal{
+    margin-left:130px;
+}
+#calendario-principal{
+    margin-left:107px;
+}
+#documentos-principal{
+    margin-left:98px;
+}
+#powerbi-principal2 {
+    margin-left: 107px;
+}
+
+#permisos-principal2 {
+    margin-left: 120px;
+}
+
+#recepcion-principal2 {
+    margin-left: 107px;
+}
+
+#sistemas-principal2 {
+    margin-left: 123px;
+}
+
+#mantenimiento-principal2 {
+    margin-left: 75px;
+}
+
+#empleado-principal2 {
+    margin-left: 125px;
+}
+
+#medico-principal2 {
+    margin-left: 135px;
+}
+
+#guardia-principal2 {
+    margin-left: 131px;
+}
 
 /*LUEGO DE LOGUEARSE*/
 .authenticated .nav-btn {
@@ -478,9 +556,9 @@ footer p {
         margin-bottom: 20px;
     }
 
-    .nav-btn span {
+    .nav-btn {
         display: none;
-        /* Oculta el contenido del span */
+        /* Oculta el contenido del */
     }
 
     .nav-btn {
@@ -601,7 +679,7 @@ footer p {
         margin-bottom: 20px;
     }
 
-    .nav-btn span {
+    .nav-btn {
         display: none;
     }
 
@@ -718,7 +796,7 @@ footer p {
         margin-bottom: 20px;
     }
 
-    .nav-btn span {
+    .nav-btn {
         display: none;
     }
 
