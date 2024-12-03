@@ -58,7 +58,6 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
                     @role(['administrador', 'Gestor-cursos'])
@@ -76,7 +75,7 @@
             <tbody>
                 @foreach($instancesEnrollment as $instance)
                                 <tr>
-                                    <td>{{ $instance->id_instancia }}</td>
+                                    
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     @role(['administrador', 'Gestor-cursos'])

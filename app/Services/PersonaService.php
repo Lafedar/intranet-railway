@@ -29,7 +29,7 @@ class PersonaService
         try {
             return Persona::with('area')
                 ->where('activo', 1)
-                ->orderBy('apellido')
+                ->orderBy('apellido', 'asc')
                 ->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas' . $e->getMessage());
