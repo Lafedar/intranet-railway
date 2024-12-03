@@ -22,7 +22,7 @@
         @endif
 
         <div class="mt-4 text-left">
-    <p class="lead" id="novedades-descripcion">{{ $novedad->descripcion }}</p>
+    <p class="lead" id="novedades-descripcion" style="white-space: pre-wrap;">{{ $novedad->descripcion }}</p>
 </div>
 
 
