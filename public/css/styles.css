@@ -103,13 +103,13 @@ table thead th:last-child {
     border-bottom-right-radius: 10px;
 }
 
-
-.container {
+/*Lo comento porque puede servir luego*/
+/*.container {
     width: 100% !important;
     max-width: none !important;
     padding: 0 15px;
-    margin-top: 3rem;
-}
+    margin-top: 3rem;f
+}*/
 
 
 .row.justify-content-center {
