@@ -159,7 +159,7 @@ nav {
     flex-direction: column;
     align-items: flex-start;
     margin-top: 150px;
-    gap: 2px;
+    gap: 20px;
 }
 
 .nav-buttons {
@@ -297,14 +297,18 @@ nav {
 }
 
 .authenticated .nav {
-    margin-top: -20px;
+    gap: 2px;
+   
 }
 
 /*LUEGO DE LOGUEARSE*/
 .authenticated .nav-btn {
+   
     margin-top: -7px;
 }
-
+.authenticated .nav-grid {
+    margin-top: 20px;
+}
 .authenticated .carousel-item img {
     height: 180px;
     object-fit: cover;
@@ -312,6 +316,9 @@ nav {
 
 .authenticated .novedades {
     margin-top: -37px;
+}
+.authenticated .novedades h1 {
+    margin-top: 40px;
 }
 
 .authenticated .card {
@@ -325,7 +332,7 @@ nav {
 
 .authenticated .carousel-container {
     height: 550px;
-    margin-top: -400px;
+    margin-top: -335px;
 }
 
 .authenticated .carousel-container img {
@@ -357,7 +364,7 @@ nav {
     text-align: center;
     height: 330px;
     width: 300px;
-    margin-top: 65px;
+    margin-top: 10px;
 }
 
 .login h2 {
@@ -432,7 +439,7 @@ nav {
 /*CAROUSEL*/
 .carousel-container {
     position: absolute;
-    margin-top: -350px;
+    margin-top: -410px;
     margin-left: 382px;
     width: 77%;
     max-height: 340px;
@@ -467,7 +474,7 @@ nav {
 }
 
 .novedades h1 {
-    margin-top: 55px;
+    margin-top: 0px;
     /*53*/
     margin-bottom: 10px;
     color: #196AB2;
