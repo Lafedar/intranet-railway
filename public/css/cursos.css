@@ -41,6 +41,7 @@
 #img-icono {
     width: 27px;
     height: 27px;
+    border: none;
 }
 
 #form {
@@ -343,6 +344,18 @@ table thead th {
     opacity: 0.5;
     border: none;
     background: none;
+}
+
+#iconos-instancias {
+    margin: 5px;
+}
+
+#iconos-disabled {
+    opacity: 0.5;
+}
+
+#btn-eliminar {
+    display: inline;
 }
 
 /*CURSOS*/
