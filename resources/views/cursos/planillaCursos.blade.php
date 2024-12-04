@@ -204,20 +204,21 @@
 
   @if(!empty($instancia->id_instancia) && empty($is_pdf))
     <div class="centrado-horizontal">
-      <form
-        action="{{ route('cursos.generarPDF', ['formulario_id' => $anexo->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
-        method="GET">
-        @csrf
-        <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">
-        <button type="submit" class="btn btn-primary">Generar PDF</button>
-      </form>
+
     </div>
     <div style="text-align: center; margin-top: 20px;">
-      <label for="fechaSeleccionada"><b>Seleccionar Fecha:</b></label>
-      <input type="date" id="fechaSeleccionada" name="fechaSeleccionada"
-        style="padding: 10px; font-size: 16px; margin-right: 10px;">
-      <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
-        Fechas</button>
+    <label for="fechaSeleccionada"><b>Seleccionar Fecha:</b></label>
+    <input type="date" id="fechaSeleccionada" name="fechaSeleccionada"
+      style="padding: 10px; font-size: 16px; margin-right: 10px;">
+    <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
+      Fechas</button>
+    <form
+      action="{{ route('cursos.generarPDF', ['formulario_id' => $anexo->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+      method="GET">
+      @csrf
+      <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">
+      <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Generar PDF</button>
+    </form>
     </div>
 
     <script>

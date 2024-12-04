@@ -39,7 +39,9 @@
     color: #004a99;
     margin-top: 0px;
 }
-
+.no-role .novedades-titulo{
+    margin-top:150px;
+}
 /* Botones */
 .novedades-botones-cards {
     display: flex;

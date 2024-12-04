@@ -81,10 +81,14 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#crearNovedadModal"
-            id="crear-novedad">
-            Crear Novedad
-        </button>
+        @if(auth()->user() && (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')))
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#crearNovedadModal" id="crear-novedad">
+        Crear Novedad
+    </button>
+@endif
+
+<body class="{{ auth()->user() && (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) ? '' : 'no-role' }}"></body>
+
         <!-- Título de la página -->
         <h1 class="novedades-titulo">Novedades</h1>
         <br>
@@ -168,7 +172,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+</body>
     <!-- JavaScript para mostrar el modal -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {

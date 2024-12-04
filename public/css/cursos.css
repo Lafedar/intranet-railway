@@ -260,7 +260,7 @@ table thead th {
 
     margin-top: 55px;
     margin-left: 5px;
-    
+
     font-family: 'Poppins';
     font-size: 25px;
     font-weight: 600;
@@ -272,7 +272,7 @@ table thead th {
 }
 
 #filtro {
-    
+
     color: white !important;
     padding: 10px;
     font-size: 16px;
@@ -339,6 +339,12 @@ table thead th {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
 
+#btn-disabled {
+    opacity: 0.5;
+    border: none;
+    background: none;
+}
+
 /*CURSOS*/
 #BCC {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
@@ -386,8 +392,8 @@ table thead th {
 .filter-item {
     width: 310px;
     min-width: 100px;
-   
-       
+
+
 }
 
 .filter-item input {
@@ -418,13 +424,17 @@ table thead th {
     margin-left: 150px;
     margin-top: 85px;
 }
+
 .filter-item select:focus {
-    color: white !important; /* Forzar color blanco cuando está seleccionado */
-    
+    color: white !important;
+    /* Forzar color blanco cuando está seleccionado */
+
 }
-.filter-item select option{
-    color:black;
+
+.filter-item select option {
+    color: black;
 }
+
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     color: rgba(255, 255, 255, 1);

@@ -360,6 +360,24 @@ class EnrolamientoCursoService
 
 
     }
+
+    public function getPorcentajeAprobacionInstancia(int $instanciaId, int $cursoId)
+    {
+        try {
+            $cantInscriptos = $this->getCountPersonsByInstanceId($instanciaId, $cursoId);
+            $cantAprobados = $this->getCountAprobadosInstancia($cursoId, $instanciaId, );
+            if ($cantInscriptos == 0) {
+                return 0;
+            }
+            $porcentaje = ($cantAprobados * 100) / $cantInscriptos;
+            return $porcentaje;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al calcular el % de aprobacion.' . $e->getMessage());
+            throw $e;
+        }
+
+
+    }
     public function getInstancesByPersonId(int $cursoId, int $persona_id)
     {
         try {

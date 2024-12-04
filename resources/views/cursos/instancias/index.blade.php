@@ -68,6 +68,7 @@
                     <th>Lugar</th>
                     <th>Estado</th>
                     <th>Version</th>
+                    <th>% de Aprobación</th>
                     @endrole
                     <th>Acciones</th>
                 </tr>
@@ -75,7 +76,7 @@
             <tbody>
                 @foreach($instancesEnrollment as $instance)
                                 <tr>
-                                    
+
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     @role(['administrador', 'Gestor-cursos'])
@@ -100,6 +101,8 @@
                                     <td>{{ $instance->lugar }}</td>
                                     <td>{{ $instance->estado }}</td>
                                     <td>{{ $instance->version }}</td>
+                                    <td>{{ number_format($instance->porcentajeAPR, 2) }}%</td>
+
                                     @endrole
                                     <td>
                                         @role(['administrador', 'Gestor-cursos'])
@@ -108,21 +111,28 @@
                                             $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
                                         @endphp
 
-                                        @if ($availabilityItem)
-                                            @if ($availabilityItem['enabled'])
-                                                @if ($instance->restantes > 0)
-                                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}"
-                                                        style="margin: 5px" title="Inscribir personas">
-                                                        <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
-                                                    </a>
-                                                @endif
-                                            @endif
+                                        @if ($availabilityItem && $availabilityItem['enabled'] && $instance->restantes > 0)
+                                            <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}"
+                                                style="margin: 5px" title="Inscribir personas" @if(!$availabilityItem['enabled']) disabled
+                                                @endif>
+                                                <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
+                                            </a>
                                         @else
+                                            <a href="#" style="margin: 5px" title="Inscribir personas" disabled>
+                                                <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono"
+                                                    style="opacity: 0.5;">
+                                            </a>
                                         @endif
+
                                         @if($instance->estado == "Activo")
                                             <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}"
-                                                style="margin: 5px" title="Editar Instancia">
+                                                style="margin: 5px" title="Editar Instancia" @if($instance->restantes == 0) disabled @endif>
                                                 <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono">
+                                            </a>
+                                        @else
+                                            <a href="#" style="margin: 5px" title="Editar Instancia" disabled>
+                                                <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"
+                                                    style="opacity: 0.5;">
                                             </a>
                                         @endif
 
@@ -134,24 +144,33 @@
                                                 id="icono">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" id="icono" title="Eliminar Instancia">
+                                                <button type="submit" id="icono" title="Eliminar Instancia" @if($instance->restantes != $instance->cupo) disabled @endif>
                                                     <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
                                                 </button>
                                             </form>
+                                        @else
+                                            <button type="button" id="btn-disabled"disabled>
+                                                <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"
+                                                    style="border: none;">
+                                            </button>
+
                                         @endif
 
                                         <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}"
-                                            title="Ver Documentos" style="margin: 5px;">
+                                            title="Ver Documentos" style="margin: 5px" @if(!$instance->estado == 'Activo') disabled
+                                            @endif>
                                             <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Inscriptos" id="img-icono">
                                         </a>
 
                                         <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo' => 'ane']) }}"
-                                            title="Ver Inscriptos" style="margin: 5px;">
+                                            title="Ver Inscriptos" style="margin: 5px" @if(!$instance->estado == 'Activo') disabled
+                                            @endif>
                                             <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
                                         </a>
+
                                         @if($instance->estado == "Activo")
                                             <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'bandera' => 'No']) }}"
-                                                title="Cerrar Instancia">
+                                                title="Cerrar Instancia" @if(!$instance->restantes > 0) disabled @endif>
                                                 <img src="{{ asset('storage/cursos/cerrar.png') }}" alt="Cerrar" id="img-icono">
                                             </a>
                                         @else
@@ -160,9 +179,6 @@
                                                 <img src="{{ asset('storage/cursos/abrir.png') }}" alt="Abrir" id="img-icono">
                                             </a>
                                         @endif
-
-
-
                                         @endrole
                                     </td>
 
