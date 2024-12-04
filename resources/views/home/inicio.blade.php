@@ -1,3 +1,4 @@
+@extends('layouts.nuevo')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,12 +12,22 @@
     <link rel="stylesheet" href="{{ asset('css/principal-nueva.css') }}">
 </head>
 <body class="{{ Auth::check() ? 'authenticated' : '' }}">
-<header>
+<header class="page-header">
     <div class="logo">
-        <img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
+        <img src="{{ asset('storage/Imagenes-principal-nueva/Logo-sinfondo.png') }}" alt="Logo de la empresa">
     </div>
     
-  </header>
+</header>
+<!--<header class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    
+                </div>
+                
+            </div>
+        </div>
+</header>-->
   
     <div id="results-dropdown" class="results-dropdown">
         <ul id="results-list"></ul>
@@ -223,9 +234,7 @@
 </div>
 </section>
   
-    <footer>
-        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A </p>
-    </footer> 
+   
 </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
