@@ -24,7 +24,7 @@
     
     
     <nav>
-      
+        <a href="{{ route('novedades.index') }}" class="nav-btn">Novedades<span id="novedades-principal">></span></a>
         <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
         <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
         <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
