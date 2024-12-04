@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +16,6 @@
         <img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
     </div>
     
-
   </header>
   
     <div id="results-dropdown" class="results-dropdown">
@@ -31,8 +28,7 @@
         <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
         <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
         <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
-        <a href="{{ route('novedades.index') }}" class="nav-btn">Novedades<span id="novedades-principal">></span></a>
-            
+
     </nav>
 
     <section class="container">
@@ -72,45 +68,52 @@
         </form>
     </div>
 </section>
-
 <section class="nav-buttons" {{ Auth::check() ? '' : 'style=display:none;' }}>
     <nav class="nav-grid">
         @role('administrador')
             <!--dejo el css inline para distanciar los > de las palabras-->
             <div class="nav-group">
-                <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
-                    <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal">></span></a>
-                    <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal">></span></a>
-                    <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal">></span></a>
-                    <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
-                    <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
-                    <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
-                    <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal">></span></a>
-                    <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
+
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal">></span></a>
+            </div>
+            <div class="nav-group">
+                <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal">></span></a>
+                <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal">></span></a>
+            </div>
+            <div class="nav-group">
+                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
+
+            </div>
+            <div class="nav-group">
+                <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
+                <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal">></span></a>
+                <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
             </div>
         @else
             <div class="nav-group">
-                <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
+            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
 
-                    @role(['jefe', 'rrhh'])
-                    <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal2">></span></a>
-                    @endrole
-            
-                
-                    @role(['recepcion', 'rrhh'])
-                    <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal2">></span></a>
-                    @endrole
-                    @role('ingenieria')
-                    <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal2">></span></a>
-                    @endrole
-           
-            
-                
-                <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
-                
-                
-            
-            
+                @role(['jefe', 'rrhh'])
+                <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal2">></span></a>
+                @endrole
+            </div>
+            <div class="nav-group">
+                @role(['recepcion', 'rrhh'])
+                <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal2">></span></a>
+                @endrole
+                @role('ingenieria')
+                <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal2">></span></a>
+                @endrole
+            </div>
+            <div class="nav-group">
+
+            <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
+
+
+            </div>
+            <div class="nav-group">
                 @role('rrhh')
                 <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal2">></span></a>
                 @endrole
@@ -136,7 +139,6 @@
     </div>
     </nav>
 </section>
-
 <!-- Carousel -->
 <section class="carousel-container">
     <div id="main-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -154,10 +156,8 @@
         
     </div>
 </section>
-
         <div class="novedades">
         <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">____________________NOVEDADES____________________</a></h1>
-
     <div class="cards-contenedor">
     @foreach($novedades as $novedad)
             <div class="col-md-4 mb-4">
@@ -171,7 +171,6 @@
                             $imagenes = array_merge($imagenes, explode(',', $novedad->imagenes_sec)); // Agrega imágenes secundarias
                         }
                     @endphp
-
                     @if(count($imagenes) > 0)
                     <div id="carousel{{ $novedad->id }}" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
@@ -193,7 +192,6 @@
                         @endif
                     </div>
                     @endif
-
                     <div class="card-body">
                             <h5 class="card-title">{{ $novedad->titulo }}</h5>
                             <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
@@ -203,7 +201,6 @@
                                     <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer más</a>
                                 </div>
                                 
-
                                 @role('administrador')
                                     <div>
                                         <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
@@ -243,7 +240,6 @@
             document.getElementById('toast').style.display = 'none';
         }, 3000);
     @endif
-
     // Mensaje de éxito
     @if (session('success'))
         document.getElementById('toast-message-success').innerText = "{{ session('success') }}";
@@ -253,12 +249,10 @@
         }, 3000);
     @endif
 </script>
-
 <script> //filtro general
     const searchInput = document.getElementById('search-input');
     const resultsDropdown = document.getElementById('results-dropdown');
     const resultsList = document.getElementById('results-list');
-
     const shortcuts = [
         { name: 'Internos', url: '/internos' },
         { name: 'Permisos', url: '/permisos' },
@@ -285,16 +279,13 @@
         { name: 'Software Instalado', url: '/Instalado' },
         { name: 'Novedades', url: '/novedades' },
     ];
-
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         resultsList.innerHTML = ''; // Limpiar resultados previos
-
         if (searchTerm) {
             const filteredShortcuts = shortcuts.filter(shortcut =>
                 shortcut.name.toLowerCase().includes(searchTerm)
             );
-
             if (filteredShortcuts.length > 0) {
                 filteredShortcuts.forEach(shortcut => {
                     const li = document.createElement('li');
@@ -312,7 +303,6 @@
             resultsDropdown.style.display = 'none'; 
         }
     });
-
     // Ocultar el dropdown si se hace clic fuera de él
     document.addEventListener('click', function(event) {
         if (!searchInput.contains(event.target) && !resultsDropdown.contains(event.target)) {
@@ -320,5 +310,3 @@
         }
     });
 </script>
-
-
