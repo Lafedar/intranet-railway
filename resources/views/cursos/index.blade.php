@@ -117,12 +117,16 @@
                                 @if($curso->areas->count() == $totalAreas)
                                     <span>Todas las áreas</span>
                                 @else
-                                    @foreach($curso->areas as $area)
+                                    @foreach($curso->areas->take(5) as $area)
                                         <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
                                     @endforeach
+                                    @if($curso->areas->count() > 5)
+                                        <span>...</span>
+                                    @endif
                                 @endif
                             @endif
                         </td>
+
                         @endrole
                         <td>{{ $curso->created_at->format('d/m/Y') }}</td>
                         @role(['administrador', 'Gestor-cursos'])
@@ -158,6 +162,7 @@
                             <a href="{{ route('cursos.edit', $curso->id) }}" title="Editar Curso">
                                 <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar">
                             </a>
+
                             @if($curso->cantInscriptos == 0)
                                 <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" id="icono" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
                                     @csrf
@@ -166,7 +171,14 @@
                                         <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" id="icono">
                                     </button>
                                 </form>
+                            @else
+                            <button type="submit"  title="Eliminar Curso" id="btn-disabled" disabled>
+                                        <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" id="icono">
+                                    </button>
                             @endif
+                            <a href="{{ route('cursos.verCurso', $curso->id) }}" title="Ver datos del curso" id="icono">
+                                <img src="{{ asset('storage/cursos/ver.png') }}" loading="lazy" alt="Ver" id="img-icono">
+                            </a>
                         </td>
                         @endrole
                     </tr>

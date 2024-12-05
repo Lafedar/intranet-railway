@@ -199,8 +199,10 @@ class CursoController extends Controller
 
 
             $curso = $this->cursoService->create($validatedData);
+            $curso->areas()->attach($validatedData['area']);
 
-            if (count($validatedData['area']) >= 6) {
+            /*si el curso tiene 6 o mas areas, se asigna "tod"*/
+            /*if (count($validatedData['area']) >= 6) {
                 $curso->areas()->attach(['tod']);
             } else {
                 if (in_array('tod', $validatedData['area'])) {
@@ -208,7 +210,7 @@ class CursoController extends Controller
                 } else {
                     $curso->areas()->attach($validatedData['area']);
                 }
-            }
+            }*/
 
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -274,9 +276,16 @@ class CursoController extends Controller
 
             
             $curso->update($validatedData);
-
-           
+             
             if (!empty($validatedData['area'])) {
+                $curso->areas()->sync($validatedData['area']);
+            } else {
+                
+                $curso->areas()->detach();
+            }
+           
+            /*si el curso tiene 6 o mas areas, se asigna "tod"*/
+            /*if (!empty($validatedData['area'])) {
                 if (count($validatedData['area']) >= 6) {
                     $curso->areas()->sync(['tod']);
                 } else {
@@ -286,7 +295,7 @@ class CursoController extends Controller
                 }
             } else {
                 $curso->areas()->detach();
-            }
+            }*/
 
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
 
@@ -384,6 +393,12 @@ class CursoController extends Controller
 
 
         return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha'));
+    }
+
+    public function verCurso($cursoId){
+        $curso = $this->cursoService->getById($cursoId);
+        $areas = $this->cursoService->getAreasByCourseId(($cursoId));
+        return view('cursos.verCurso', compact('curso', 'areas'));
     }
 
 

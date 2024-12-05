@@ -531,6 +531,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');
   Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/ver/{cursoId}', [CursoController::class, 'verCurso'])->name('cursos.verCurso')->middleware('role:administrador|Gestor-cursos');
 
   Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
