@@ -12,10 +12,9 @@
     font-family: Calibri, sans-serif;
     font-size: 22px;
     font-weight: bold;
-    color: #236192;
+    color: black;
     /* Custom color */
-    color: #236192;
-    /* Custom color */
+
     margin-top: 5px;
     margin-left: -4px;
     /* Moves text 4px to the left */
@@ -141,7 +140,7 @@ table tbody td {
     text-decoration-skip-ink: none;
     color: rgba(15, 79, 141, 0.83);
     background: rgba(217, 217, 217, 0.6);
-
+    font-weight: 600;
     text-align: center;
 }
 
@@ -174,8 +173,9 @@ table thead th {
     align-items: center;
     gap: 10px;
     height: 10vh;
-    margin-left: 450px;
-    margin-top: 80px;
+    margin-left: 2px;
+    margin-top: 100px;
+    width: 30%;
 }
 
 #filtro-internos input {
@@ -190,5 +190,6 @@ table thead th {
 
 /*tabla de internos*/
 #tabla-internos {
-    margin-top: 40px;
+    margin-top: 0px;
+
 }

@@ -1,3 +1,4 @@
+@extends('layouts.nuevo')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,18 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Internos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 
 <body>
-  <a href="{{ url('/home') }}" class="img-logo">
-    <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
-  </a>
+
   <div id="custom-container-internos">
     <!-- Buscador -->
     <div id="filtro-internos">
-      <input type="text" class="form-control" id="search" placeholder="Buscar por nombre, apellido, area...">
+      <input type="text" class="form-control" id="search" placeholder="Buscar por nombre, apellido, área...">
     </div>
 
 
