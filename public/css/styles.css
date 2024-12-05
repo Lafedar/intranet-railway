@@ -1,3 +1,97 @@
+/* Estilos del encabezado */
+.header-icon {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+
+}
+
+.logo {
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+#logo {
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.menu {
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    width: 100%;
+
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+footer {
+    background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
+
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+}
+
+.menu a {
+    margin: 0;
+    color: white;
+    text-decoration: none;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+
+
+}
+
+.header-icon img {
+    width: 60px;
+    height: 60px;
+    margin-left: 0px;
+}
+
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, white 14%, #1C547C 85%, #1E78C8 100%);
+    padding: 20px;
+    text-align: center;
+    z-index: 10;
+    height: 80px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: #343a40;
+}
+
+.page-header .subtitulo {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+.page-header .btn {
+    margin-top: 10px;
+}
+
+
 /* Custom image styles */
 .custom-img {
     height: 90px;
@@ -140,7 +234,7 @@ table tbody td {
     text-decoration-skip-ink: none;
     color: rgba(15, 79, 141, 0.83);
     background: rgba(217, 217, 217, 0.6);
-    font-weight: 600;
+    /*agregar font para internos*/
     text-align: center;
 }
 
@@ -149,10 +243,6 @@ table thead th {
     background: rgba(15, 79, 141, 0.83) !important;
     color: white;
 }
-
-
-
-
 
 /*INTERNOS*/
 #custom-container-internos {

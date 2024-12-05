@@ -55,8 +55,29 @@
     padding: 0;
 }
 
+#encabezados {
+    width: 50%;
+
+    margin: 0 auto;
+
+}
+
 #titulo {
     margin-top: 50px;
+    font-family: 'Poppins';
+    font-size: 39px;
+    font-weight: 600;
+    line-height: 46.8px;
+    letter-spacing: -0.03em;
+    color: rgba(0, 51, 102, 1);
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+
+}
+
+#titulo-personas {
+    margin-top: 90px;
     font-family: 'Poppins';
     font-size: 39px;
     font-weight: 600;
@@ -101,6 +122,27 @@
     font-family: 'Inter', sans-serif;
     margin-bottom: 10px;
 }
+
+#volver-instancias {
+    margin-left: 12px;
+    height: 45px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+    margin-left: 4px;
+    padding: 10px 20px;
+    width: 100px;
+    height: 47px;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 10px;
+}
+
 
 #volver:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
@@ -258,9 +300,8 @@ table thead th {
 /*PERSONAS*/
 #cupo {
 
-    margin-top: 55px;
+    margin-top: 0px;
     margin-left: 5px;
-    
     font-family: 'Poppins';
     font-size: 25px;
     font-weight: 600;
@@ -272,7 +313,7 @@ table thead th {
 }
 
 #filtro {
-    
+
     color: white !important;
     padding: 10px;
     font-size: 16px;
@@ -327,9 +368,9 @@ table thead th {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-top: 18px;
+    margin-top: 15px;
     margin-left: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     width: 300px;
     font-family: 'Inter', sans-serif;
 
@@ -350,7 +391,7 @@ table thead th {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-top: 50px;
+    margin-top: -70px;
     margin-left: 3px;
     margin-bottom: 10px;
     width: 200px;
@@ -371,10 +412,6 @@ table thead th {
     text-decoration: none;
 }
 
-
-
-
-
 .filter-container {
     display: flex;
     justify-content: center;
@@ -386,8 +423,12 @@ table thead th {
 .filter-item {
     width: 310px;
     min-width: 100px;
-   
-       
+
+}
+
+#btn-filtrar {
+    height: 37px;
+    padding: 2px;
 }
 
 .filter-item input {
@@ -398,7 +439,7 @@ table thead th {
     font-size: 16px;
     border-radius: 5px;
     width: 150%;
-    height: 45px;
+    height: 37px;
     margin-top: 85px;
 }
 
@@ -410,21 +451,25 @@ table thead th {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     border: 1px solid #357AAB;
     color: rgba(255, 255, 255, 1);
-    padding: 10px;
+
     font-size: 16px;
     border-radius: 5px;
     width: 150%;
-    height: 45px;
+    height: 70px;
     margin-left: 150px;
     margin-top: 85px;
 }
+
 .filter-item select:focus {
-    color: white !important; /* Forzar color blanco cuando está seleccionado */
-    
+    color: white !important;
+    /* Forzar color blanco cuando está seleccionado */
+
 }
-.filter-item select option{
-    color:black;
+
+.filter-item select option {
+    color: black;
 }
+
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     color: rgba(255, 255, 255, 1);
@@ -444,33 +489,7 @@ table thead th {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
 
-footer {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(15, 79, 141, 0.83);
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 200;
-}
 
-footer p {
-    margin: 0;
-    padding: 0;
-    font-family: Spline Sans;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 16.8px;
-    letter-spacing: 0.06em;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: rgba(255, 255, 255, 0.6);
-
-}
 
 
 @media (max-width: 1366px) and (min-width: 1280px),

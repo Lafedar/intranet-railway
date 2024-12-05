@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,9 +22,7 @@
     </div>
 @endif
 
-<a href="{{ url('/home') }}" class="img-logo">
-    <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
-</a>
+
 
 <div class="container">
     @role(['administrador', 'Gestor-cursos'])
@@ -60,7 +59,7 @@
 
 
         <div class="filter-item">
-            <button type="submit">Filtrar</button>
+            <button type="submit" id="btn-filtrar">Filtrar</button>
         </div>
     </div>
 </form>
@@ -177,9 +176,7 @@
     </div>
 </div>
 
-<footer>
-    <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
-</footer> 
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

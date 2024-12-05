@@ -1,4 +1,4 @@
-@extends('layouts.nuevo')
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -58,6 +58,10 @@
       </div>
     </div>
   </div>
+  
+  <footer>
+        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A </p>
+    </footer>
 
   <script>
     $(document).ready(function () {

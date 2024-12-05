@@ -5,15 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{{ URL::to('/img/ico.png') }}">
-    <link rel="stylesheet" href="{{ asset('styles.css') }}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <title>Intranet Lafedar</title>
     <link rel="stylesheet" href="{{ asset('css/principal-nueva.css') }}">
-</head>
-
-<body class="{{ Auth::check() ? 'authenticated' : '' }}">
     <header class="page-header">
         <div class="logo">
             <a href="{{ route('home.inicio') }}">
@@ -24,6 +21,10 @@
         <div class="menu">
         </div>
     </header>
+</head>
+
+<body class="{{ Auth::check() ? 'authenticated' : '' }}">
+   
 
     <main>
         @yield('content')

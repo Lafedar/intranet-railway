@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -31,14 +32,12 @@
                 {{ session('error') }}
             </div>
         @endif
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-        </a>
+
 
 
 
         <div id="encabezados">
-            <h1 id="titulo">Curso: {{ $curso->titulo }} <br> {{ $curso->created_at->format('d/m/Y') }}</h1>
+            <h1 id="titulo">Curso: {{ $curso->titulo }} </h1>
         </div>
 
 
@@ -51,7 +50,7 @@
         </a>
         @endrole
 
-        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver">Volver</a>
+        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver-instancias">Volver</a>
 
 
 
@@ -75,7 +74,7 @@
             <tbody>
                 @foreach($instancesEnrollment as $instance)
                                 <tr>
-                                    
+
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     @role(['administrador', 'Gestor-cursos'])

@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -26,9 +27,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
-        </a>
+      
         <!-- Modal Crear Novedad -->
         <div class="modal fade" id="crearNovedadModal" tabindex="-1" role="dialog"
             aria-labelledby="crearNovedadModalLabel" aria-hidden="true">
@@ -160,9 +159,7 @@
         </div>
 
     </div>
-    <footer id="novedades-footer">
-        <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
-    </footer>
+  
 
     <!-- JavaScript para Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

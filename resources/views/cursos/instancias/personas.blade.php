@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -26,17 +27,15 @@
             </div>
         @endif
 
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-        </a>
+
         <div id="encabezados">
-            <h1 id="titulo">Inscripción para el curso: {{ $curso->titulo }}</h1>
-            
+            <h1 id="titulo-personas">Inscripción para el curso: {{ $curso->titulo }}</h1>
+
         </div>
         <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
 
         <div class="form-group">
-            
+
             <input type="text" id="filtro" class="form-control"
                 placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
@@ -45,71 +44,71 @@
             action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
             method="POST">
 
-        <form
-            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-            method="POST">
-            @csrf
-            <table>
-                <thead>
-                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
-                        id="BI">Inscribir seleccionados</button>
-                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
-                        class="btn btn-secondary" id="volver">Volver</a>
+            <form
+                action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                method="POST">
+                @csrf
+                <table>
+                    <thead>
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
+                            id="BI">Inscribir seleccionados</button>
+                        <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
+                            class="btn btn-secondary" id="volver">Volver</a>
 
-                    <tr>
-                        <th>Legajo</th>
-                        <th>Nombre y Apellido</th>
-                        <th>Área</th>
-                        <th>Inscribir</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($personasConEstado as $persona)
                         <tr>
-                            <td>{{ $persona->legajo }}</td>
-                            <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
-                            <td>
-                                @if($persona->area)
-                                    {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
-                                @else
-                                    N/A
-                                @endif
-                            </td>
-
-                            <td>
-                                @if($persona->estadoEnrolado)
-                                    <p>Ya inscripto</p>
-                                @else
-                                    
-                                    <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
-                                        value="1">
-                                @endif
-                            </td>
-
-                            <td>
-                                @if($persona->estadoEnrolado)
-
-                                    <form
-                                        action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                                        method="POST"
-                                        onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
-                                        @csrf
-                                        @method('POST')
-                                        <button type="submit" id="icono" title="Desuscribir"><img
-                                                src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar"
-                                                id="img-icono"></button>
-
-                                    </form>
-                                @else
-                                    N/A
-                                @endif
-                            </td>
+                            <th>Legajo</th>
+                            <th>Nombre y Apellido</th>
+                            <th>Área</th>
+                            <th>Inscribir</th>
+                            <th>Acciones</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </form>
+                    </thead>
+                    <tbody>
+                        @foreach($personasConEstado as $persona)
+                            <tr>
+                                <td>{{ $persona->legajo }}</td>
+                                <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
+                                <td>
+                                    @if($persona->area)
+                                        {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+
+                                <td>
+                                    @if($persona->estadoEnrolado)
+                                        <p>Ya inscripto</p>
+                                    @else
+
+                                        <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
+                                            value="1">
+                                    @endif
+                                </td>
+
+                                <td>
+                                    @if($persona->estadoEnrolado)
+
+                                        <form
+                                            action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
+                                            @csrf
+                                            @method('POST')
+                                            <button type="submit" id="icono" title="Desuscribir"><img
+                                                    src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar"
+                                                    id="img-icono"></button>
+
+                                        </form>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </form>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

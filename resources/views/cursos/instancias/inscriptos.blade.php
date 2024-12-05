@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 
@@ -30,12 +31,10 @@
             </div>
         @endif
 
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-        </a>
+
         <div id="encabezados">
             <h1 id="titulo">Inscriptos del Curso: {{ $curso->titulo }}</h1>
-            
+
         </div>
 
         <br>
