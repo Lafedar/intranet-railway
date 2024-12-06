@@ -172,7 +172,7 @@
                                     </button>
                                 </form>
                             @else
-                            <button type="submit"  title="Eliminar Curso" id="btn-disabled" disabled>
+                            <button type="submit"  title="Eliminacion no disponible" id="btn-disabled" disabled>
                                         <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" id="icono">
                                     </button>
                             @endif

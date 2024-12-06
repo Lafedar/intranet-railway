@@ -111,17 +111,25 @@
                                             $availabilityItem = $availability->firstWhere('idInstance', $instance->id);
                                         @endphp
 
-                                        @if ($availabilityItem && $availabilityItem['enabled'] && $instance->restantes > 0)
-                                            <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}"
-                                                id="iconos-instancias" title="Inscribir personas" @if(!$availabilityItem['enabled'])
-                                                disabled @endif>
-                                                <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
-                                            </a>
-                                        @else
-                                            <a href="#" id="iconos-instancias" title="Inscribir personas" disabled>
-                                                <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono"
-                                                    id="iconos-disabled">
-                                            </a>
+                                        @if ($availabilityItem)
+                                            @if ($availabilityItem['enabled'])
+                                                @if ($instance->restantes > 0)
+                                                    <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}"
+                                                        style="margin: 5px" title="Inscribir personas">
+                                                        <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
+                                                    </a>
+                                                @else
+                                                    <!-- Botón deshabilitado cuando no hay cupos restantes -->
+                                                    <a href="javascript:void(0)" id="btn-disabled" title="Inscripción no disponible">
+                                                        <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <!-- Botón deshabilitado cuando el ítem no está habilitado -->
+                                                <a href="javascript:void(0)" id="btn-disabled" title="Inscripción no disponible">
+                                                    <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
+                                                </a>
+                                            @endif
                                         @endif
 
                                         @if($instance->estado == "Activo")
@@ -150,17 +158,26 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <button type="button" id="btn-disabled" disabled>
+                                            <button type="button" id="btn-disabled" title="Eliminación no disponible" disabled>
                                                 <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
                                             </button>
 
                                         @endif
 
-                                        <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}"
-                                            title="Ver Documentos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled
-                                            @endif>
-                                            <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Inscriptos" id="img-icono">
-                                        </a>
+                                        @if($instance->cantAnexos == 0)
+                                            <a href="javascript:void(0);" title="No hay documentos asociados" id="btn-disabled" disabled>
+                                                <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Documentos" id="img-icono"
+                                                    disabled>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}"
+                                                title="Ver Documentos" id="iconos-instancias" @if($instance->estado != 'Activo') disabled
+                                                @endif>
+                                                <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Documentos" id="img-icono"
+                                                    @if($instance->estado != 'Activo') disabled @endif>
+                                            </a>
+                                        @endif
+
 
                                         <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo' => 'ane']) }}"
                                             title="Ver Inscriptos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled

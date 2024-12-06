@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CursoInstancia;
+use App\Models\CursoInstanciaAnexo;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Log;
@@ -285,6 +286,12 @@ class CursoInstanciaService
             ->value('fecha_inicio');
     }
 
+    public function getCountAnexosInstancia(int $cursoId, int $instanciaId)
+    {
+        return CursoInstanciaAnexo::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->count() ?? 0;
+    }
 
 
 }

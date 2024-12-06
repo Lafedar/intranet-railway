@@ -344,6 +344,8 @@ table thead th {
     opacity: 0.5;
     border: none;
     background: none;
+    margin: 5px; 
+    cursor: not-allowed;
 }
 
 #iconos-instancias {

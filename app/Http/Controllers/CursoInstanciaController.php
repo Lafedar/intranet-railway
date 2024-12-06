@@ -109,6 +109,7 @@ class CursoInstanciaController extends Controller
                 $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
                 $porcentajeAPR = $this->enrolamientoCursoService->getPorcentajeAprobacionInstancia($instancia->id_instancia, $curso->id);
+                $cantAnexos = $this->cursoInstanciaService->getCountAnexosInstancia($curso->id, $instancia->id_instancia);
                 //valido si el cupo es null para los cursos viejos
                 /*if ($cupo == 0 || $cupo == null) {
                     $restantes = 0;
@@ -121,6 +122,7 @@ class CursoInstanciaController extends Controller
                 $restantes = $cupo - $cantInscriptos;
                 $instancia->restantes = $restantes;
                 $instancia->porcentajeAPR = $porcentajeAPR;
+                $instancia->cantAnexos = $cantAnexos;
 
                 return $instancia;
             });
