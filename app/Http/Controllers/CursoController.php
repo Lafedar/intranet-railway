@@ -201,17 +201,7 @@ class CursoController extends Controller
             $curso = $this->cursoService->create($validatedData);
             $curso->areas()->attach($validatedData['area']);
 
-            /*si el curso tiene 6 o mas areas, se asigna "tod"*/
-            /*if (count($validatedData['area']) >= 6) {
-                $curso->areas()->attach(['tod']);
-            } else {
-                if (in_array('tod', $validatedData['area'])) {
-                    $curso->areas()->attach(['tod']); // Solo asignamos 'tod'
-                } else {
-                    $curso->areas()->attach($validatedData['area']);
-                }
-            }*/
-
+           
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             
@@ -284,18 +274,6 @@ class CursoController extends Controller
                 $curso->areas()->detach();
             }
            
-            /*si el curso tiene 6 o mas areas, se asigna "tod"*/
-            /*if (!empty($validatedData['area'])) {
-                if (count($validatedData['area']) >= 6) {
-                    $curso->areas()->sync(['tod']);
-                } else {
-                    $curso->areas()->sync(
-                        in_array('tod', $validatedData['area']) ? ['tod'] : $validatedData['area']
-                    );
-                }
-            } else {
-                $curso->areas()->detach();
-            }*/
 
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
 
