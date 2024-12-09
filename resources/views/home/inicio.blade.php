@@ -1,4 +1,4 @@
-@extends('layouts.nuevo')
+@extends('layouts.home')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,17 +18,8 @@
     </div>
     
 </header>
-<!--<header class="page-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    
-                </div>
-                
-            </div>
-        </div>
-</header>-->
-  
+
+
     <div id="results-dropdown" class="results-dropdown">
         <ul id="results-list"></ul>
     </div>
