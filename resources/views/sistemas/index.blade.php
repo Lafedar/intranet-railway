@@ -1,4 +1,5 @@
-@extends('sistemas.layouts.layout')
+@extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 @section('content')
 
 
