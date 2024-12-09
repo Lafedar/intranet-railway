@@ -6,18 +6,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
-@if(Session::has('message'))
-  <div class="container" id="div.alert">
-    <div class="row">
-    <div class="col-1"></div>
-    <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-      {{Session::get('message')}}
-    </div>
-    </div>
-  </div>
-@endif
 <div class="container-fluid">
+  @if(Session::has('message'))
+    <div class="container" id="div.alert">
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
+      {{Session::get('message')}}
+      </div>
+    </div>
+    </div>
+  @endif
+
   <div id="permisos-nav">
     <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" type="submit"
       id="permisos-crear">Nuevo permiso</a>
@@ -74,8 +74,7 @@
       <td class="text-center">{{$permiso->motivo}}</td>
       <td align="center" width="95">
       <form action="{{route('destroy_permiso', $permiso->id)}}" method="put">
-        <a href="#" class="btn btn-info btn-sm"
-        data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}"
+        <a href="#" data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}"
         data-fecha_desde="{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format('d-m-Y') !!}"
         data-fecha_hasta="{!! \Carbon\Carbon::parse($permiso->fecha_hasta)->format('d-m-Y') !!}"
         data-horario="{{'de ' . $permiso->hora_desde . ' a ' . $permiso->hora_hasta}}"
@@ -83,9 +82,12 @@
         data-solicitante="{{$permiso->nombre_autorizado . ' ' . $permiso->apellido_autorizado}}"
         data-area="{{$permiso->area}}"
         data-autorizante="{{$permiso->nombre_autorizante . ' ' . $permiso->apellido_autorizante}}"
-        data-toggle="modal" data-target="#ver">Ver
+        data-toggle="modal" data-target="#ver" title="Ver"><img src="{{ asset('storage/cursos/ver.png') }}"
+        alt="Editar" id="img-icono">
         </a>
-        <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar">X</button>
+        <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar" id="icono"
+        title="Eliminar"><img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Editar"
+        id="img-icono"></button>
       </form>
       </td>
       </tr>
