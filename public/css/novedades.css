@@ -140,15 +140,15 @@
 
 }
 
-#novedades-descripcion{
+#novedades-descripcion {
     white-space: pre-wrap;
 }
 
 @media (max-width: 1366px) and (min-width: 1280px),
 (max-width: 1360px) and (min-width: 1280px),
 (max-width: 1280px) {
-    #crear-novedad{
-        margin-left:900px;
+    #crear-novedad {
+        margin-left: 900px;
     }
 }
 
