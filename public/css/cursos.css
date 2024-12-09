@@ -141,9 +141,12 @@
     height: 47px;
     font-family: 'Inter', sans-serif;
     margin-bottom: 10px;
+    text-decoration: none;
 }
 
-
+#volver-instancias:hover {
+    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+}
 #volver:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }

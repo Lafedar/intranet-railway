@@ -1,6 +1,4 @@
 @extends('layouts.app')
-<!DOCTYPE html>
-<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -46,7 +44,7 @@
             <!-- Formulario para crear planilla -->
             @role(['administrador', 'Gestor-cursos'])
             <div id="contenedor-botones">
-                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="BI">Volver</a>
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="volver-instancias">Volver</a>
                 <form
                     action="{{ route('exportarInscriptos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
                     method="GET">

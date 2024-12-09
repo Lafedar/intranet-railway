@@ -191,9 +191,22 @@ table thead th {
 }
 
 
-
 /*POWERBIS*/
-#powerbis-conteiner{
-    margin-top:120px;
+#powerbis-conteiner {
+    margin-top: 120px;
 }
 
+
+/*PERMISOS*/
+#permisos-nav {
+    margin-top: 130px;
+}
+
+#permisos-crear {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    margin-bottom: 20px;
+}
+
+#permisos-buscar {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
