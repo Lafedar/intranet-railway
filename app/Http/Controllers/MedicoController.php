@@ -23,7 +23,7 @@ class MedicoController extends Controller
             ->Paciente($request->get('paciente'))
             ->Fecha($request->get('fecha'))
             ->orderBy('id', 'desc')
-            ->paginate(10)->withQueryString();
+            ->paginate(20)->withQueryString();
 
         return view('medico.index', array('consultas' => $consultas, 'paciente' => $request->get('paciente'), 'fecha' => $request->get('fecha')));
     }

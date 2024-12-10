@@ -73,20 +73,23 @@
         <td>{{$persona->celular}}</td>
         <td width="153">
         <form action="{{route('destroy_contacto', $persona->id)}}" method="put">
-          <a href="#" class="btn btn-info btn-sm" data-nombre="{{$persona->nombre . ' ' . $persona->apellido}}"
+          <a href="#"  data-nombre="{{$persona->nombre . ' ' . $persona->apellido}}"
           data-empresa="{{$persona->empresa}}" data-direccion="{{$persona->direccion}}"
           data-celular="{{$persona->celular}}" data-telefono="{{$persona->telefono}}"
-          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#ver"> Ver</a>
+          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#ver" title="Ver"><img src="{{ asset('storage/cursos/ver.png') }}"
+          alt="Ver" id="img-icono"></a>
 
 
-          <a href="#" class="btn btn-primary btn-sm" data-id="{{$persona->id}}" data-nombre="{{$persona->nombre}}"
+          <a href="#"  data-id="{{$persona->id}}" data-nombre="{{$persona->nombre}}"
           data-apellido="{{$persona->apellido}}" data-direccion="{{$persona->direccion}}"
           data-empresa="{{$persona->empresa}}" data-interno="{{$persona->interno}}"
           data-celular="{{$persona->celular}}" data-telefono="{{$persona->telefono}}"
-          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#editar"> Editar</a>
+          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#editar" title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}"
+          alt="Editar" id="img-icono"></a>
 
 
-          <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar"> X</button>
+          <button type="submit" class="btn-borrar" data-tooltip="Borrar" id="icono" title="Eliminar"><img src="{{ asset('storage/cursos/eliminar.png') }}"
+          alt="Eliminar" id="img-icono"></button>
         </form>
       </div>
       </td>
@@ -112,7 +115,7 @@
   $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
-    }, 5000); // 5 secs
+    }, 3000); // 5 secs
 
   });
 </script>
@@ -182,7 +185,7 @@
         row.fadeOut();
         $('#alert').show();
         $('#alert').html(result.message)
-        setTimeout(function () { $('#alert').fadeOut(); }, 5000);
+        setTimeout(function () { $('#alert').fadeOut(); }, 3000);
       }).fail(function () {
         $('#alert').show();
         $('#alert').html("Algo salió mal");

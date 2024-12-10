@@ -86,8 +86,10 @@
         alt="Editar" id="img-icono">
         </a>
         <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar" id="icono"
-        title="Eliminar"><img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Editar"
-        id="img-icono"></button>
+        title="Eliminar">
+        <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
+        </button>
+
       </form>
       </td>
       </tr>
