@@ -17,7 +17,7 @@
 
 
 </head>
-
+@stack('modales') <!--para cargar una vista al final de la pagina y que no interfiera con otra vista en esa misma pagina-->
 <body class="d-flex flex-column min-vh-100">
 	<!-- Header -->
 	<header class="page-header ">

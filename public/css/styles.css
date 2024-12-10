@@ -286,6 +286,7 @@ table thead th {
     width: 25px;
     height: 25px;
     margin: 2px;
+    
 }
 
 #icono {
@@ -361,7 +362,7 @@ table thead th {
 }
 
 .alert {
-    margin-top: 80px;
+    margin-top: -10px;
 }
 
 .alert {
@@ -409,4 +410,41 @@ table thead th {
 
 #guardia-consulta-table {
     margin-top: -30px;
+}
+
+/*DOCUMENTOS*/
+#documentos-politicas-container {
+    margin-top: 100px;
+}
+
+#documentos-planos-container {
+    margin-top: 100px;
+}
+
+#planos-btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#planos-table {
+    margin-top: -20px;
+
+}
+#documentos-proyectos-container{
+    margin-top: 110px;
+}
+
+#proyectos-btn-agregar{
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+#proyectos-table{
+    margin-top:-30px;
+}
+#documentos-instructivos-container{
+    margin-top:110px;
+}
+#instructivos-btn-agregar{
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }

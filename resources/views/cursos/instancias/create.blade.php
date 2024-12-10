@@ -84,7 +84,7 @@
                         <input class="form-check-input" type="checkbox" name="anexos[]"
                             id="anexo_{{ $formulario->formulario_id }}" value="{{ $formulario->formulario_id }}">
                         <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                            {{ $formulario->valor2 }}
+                        {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
                         </label>
                     </div>
                 @endforeach

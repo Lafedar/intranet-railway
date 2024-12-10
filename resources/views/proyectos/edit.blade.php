@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="editar" role="dialog" align="center">
     <div class="modal-dialog">
        <div class="modal-content">           
@@ -51,8 +52,8 @@
                         <input type="checkbox"value="1" id="eliminar_mpp" name="eliminar_mpp">
                     </div>
                 </div>     
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
             </div>
         </div>
     </form>                

@@ -83,7 +83,7 @@
                             @if(in_array($formulario->formulario_id, $selectedAnexos->pluck('formulario_id')->toArray()))
                             checked @endif>
                         <label class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                            {{ $formulario->valor2 }}
+                        {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
                         </label>
                     </div>
                 @endforeach
