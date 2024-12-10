@@ -1,66 +1,79 @@
-@extends('mantenimiento.layouts.layout')
+@extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-@section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!DOCTYPE html>
-<html lang="es">
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $novedad->titulo }}</title>
 </head>
+
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">{{ $novedad->titulo }}</h1>
+    <div id="novedades-container">
+        <div class="container mt-5">
+            <h1 class="mb-4">{{ $novedad->titulo }}</h1>
 
-        @if($novedad->portada)
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <img src="{{ asset('storage/' . $novedad->portada) }}" class="img-fluid novedad-imagen rounded" alt="Portada de {{ $novedad->titulo }}">
-                </div>
-            </div>
-        @endif
-
-        <div class="mt-4 text-left">
-    <p class="lead" id="novedades-descripcion" style="white-space: pre-wrap;">{{ $novedad->descripcion }}</p>
-</div>
-
-
-        @if($novedad->imagenes_sec)
-    @php
-        $imagenesSecundarias = explode(',', $novedad->imagenes_sec);
-    @endphp
-
-    <div class="row d-flex flex-wrap">
-        @foreach($imagenesSecundarias as $imagen)
-            @if($imagen !== $novedad->portada) <!-- Asegura que la portada no se incluya -->
-                <div class="col-md-4 mb-4 d-flex justify-content-center">
-                    <img src="{{ asset('storage/' . $imagen) }}" class="img-fluid novedad-imagen rounded" alt="Imagen secundaria de {{ $novedad->titulo }}" style="height: 200px; object-fit: cover;">
+            @if($novedad->portada)
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <img src="{{ asset('storage/' . $novedad->portada) }}" class="img-fluid novedad-imagen rounded"
+                            alt="Portada de {{ $novedad->titulo }}">
+                    </div>
                 </div>
             @endif
-        @endforeach
-    </div>
-@endif
 
-        <div class="mt-4">
-            <ul class="list-unstyled">
-                <li><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</li>
-            </ul>
+            <div class="mt-4 text-left">
+                <p class="lead" id="novedades-descripcion" style="white-space: pre-wrap;">{{ $novedad->descripcion }}
+                </p>
+            </div>
+
+
+            @if($novedad->imagenes_sec)
+                        @php
+                            $imagenesSecundarias = explode(',', $novedad->imagenes_sec);
+                        @endphp
+
+                        <div class="row d-flex flex-wrap">
+                            @foreach($imagenesSecundarias as $imagen)
+                                @if($imagen !== $novedad->portada) <!-- Asegura que la portada no se incluya -->
+                                    <div class="col-md-4 mb-4 d-flex justify-content-center">
+                                        <img src="{{ asset('storage/' . $imagen) }}" class="img-fluid novedad-imagen rounded"
+                                            alt="Imagen secundaria de {{ $novedad->titulo }}" style="height: 200px; object-fit: cover;">
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+            @endif
+
+            <div class="mt-4">
+                <ul class="list-unstyled">
+                    <li><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ route('novedades.index') }}" class="btn btn-primary">Volver a Novedades</a>
+            </div>
         </div>
 
-        <div class="mt-4">
-            <a href="{{ route('novedades.index') }}" class="btn btn-primary">Volver a Novedades</a>
-        </div>
     </div>
 
 </body>
+
 </html>
 
-    <!-- Scripts de Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Scripts de Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
 
 <style>
@@ -91,7 +104,7 @@
 
     .lead {
         font-size: 1.1rem;
-        color: #2c3e50;  
+        color: #2c3e50;
         word-wrap: break-word;
         white-space: normal;
         overflow: hidden;
@@ -130,9 +143,7 @@
 
     .carousel-item img {
         width: 100%;
-        height: auto; 
+        height: auto;
         object-fit: cover;
     }
 </style>
-
-@endsection

@@ -94,10 +94,33 @@ footer p {
     margin-top: 10px;
 }
 
+#img-icono-user {
+    width: 40px;
+    height: 40px;
+    margin: 2px;
 
-
-/*CALENDARIO*/
-#calendar-container{
-    margin-top: 60px;
 }
 
+#icono-user {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/*CALENDARIO*/
+#calendar-container {
+    margin-top: 60px;
+}
