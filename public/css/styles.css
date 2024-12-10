@@ -458,3 +458,62 @@ table thead th {
 #novedades-container {
     margin-top: 100px;
 }
+
+
+/*EQUIPAMIENTO*/
+#equipamiento-container {
+    margin-top: 130px;
+}
+
+#img-icono-equip {
+    width: 17px;
+    height: 17px;
+
+}
+
+#equipamiento-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+#equipamiento-btn a {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*USUARIOS*/
+#usuarios-container {
+    margin-top: 130px;
+}
+
+#usuarios-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+#usuarios-btn button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*ROLES*/
+#roles-container {
+    margin-top: 130px;
+}
+
+
+/*PUESTOS*/
+#puestos-container {
+    margin-top: 130px;
+}
+
+#puestos-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#puestos-table {
+    margin-top: -20px;
+}
