@@ -517,3 +517,58 @@ table thead th {
 #puestos-table {
     margin-top: -20px;
 }
+
+
+/*INCIDENTES*/
+#incidentes-container {
+    margin-top: 100px;
+}
+
+#incidentes-table {
+    margin-top: -20px;
+}
+
+
+/*SOFTWARE*/
+#software-container {
+    margin-top: 100px;
+}
+
+#software-table {
+    margin-top: -30px;
+}
+
+
+/*BUSCA IP*/
+#buscaip-container {
+    margin-top: 100px;
+}
+
+#buscaip-table {
+    margin-top: -30px;
+}
+
+/*SOFTWARE INSTALADO*/
+#versof-container {
+    margin-top: 100px;
+}
+
+#versof-table {
+    margin-top: -30px;
+}
+
+/*PARAMETROS SISTEMAS*/
+#parametros-gen-container {
+    margin-top: 100px;
+}
+
+#parametros-gen-table {
+    margin-top: -30px;
+}
+
+#parametros-gen-btn button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    margin-bottom: 20px;
+
+
+}

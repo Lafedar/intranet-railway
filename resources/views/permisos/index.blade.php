@@ -167,7 +167,7 @@
   $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
-    }, 5000); // 5 secs
+    }, 3000); // 5 secs
 
   });
 
