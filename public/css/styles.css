@@ -572,3 +572,77 @@ table thead th {
 
 
 }
+
+
+/*SOFTWARE INSTALADO*/
+#equipos-container {
+    margin-top: 100px;
+}
+
+#equipos-table {
+    margin-top: -15px;
+}
+#equipos-btn{
+    margin-bottom:15px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*PARAMETROS MANT*/
+#parametros-mant-container{
+    margin-top:70px;
+}
+
+/*AREAS*/
+#areas-container{
+    margin-top:100px;
+}
+#areas-btn{
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*LOCALZACIONES*/
+#localizaciones-container{
+    margin-top:100px;
+    
+}
+#localizaciones-btn{
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*ESTADOS*/
+#estados-container{
+    margin-top: 100px;
+}
+
+
+/*FALLAS*/
+#fallas-container{
+    margin-top:100px;
+}
+
+/*TIPOS DE EQUIPOS*/
+#tipo-equip-container{
+    margin-top: 100px;
+}
+#tipo-equip-btn{
+    margin-bottom:20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*TIPOS SOLICITUDES*/
+#tipos-sol-container{
+    margin-top:100px;
+}
+#tipos-sol-btn{
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+
+/*PARAMETROS GEN*/
+#parametros-gen-btn{
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}

@@ -17,7 +17,7 @@ class LocalizacionController extends Controller
         $localizaciones = Localizacion::Index($request->get('localizaciones'))
         ->orderBy('nombre_a')
         ->orderBy('nombre')
-        ->paginate(20);
+        ->paginate(20)->withQueryString();
 
         return view ('localizaciones.index',   
             array('localizaciones' => $localizaciones));
