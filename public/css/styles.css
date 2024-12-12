@@ -807,14 +807,18 @@ table thead th {
 
 
 /*RESET PASSWORD*/
-#reset-password-container {
+#mail-password-container {
     margin-top: 200px;
 }
 
-#reset-password-titulo {
+#mail-password-titulo {
     text-align: center;
 }
 
-#reset-password-btn {
+#mail-password-btn {
     text-align: center;
+}
+
+#reset-password-container {
+    margin-top: 130px;
 }

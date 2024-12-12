@@ -7,11 +7,11 @@
 @section('content')
 <br>
 <div class="container">
-    <div id="reset-password-container">
+    <div id="mail-password-container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header" id="reset-password-titulo"><b>{{ __('Cambiar contraseña') }}</b></div>
+                    <div class="card-header" id="mail-password-titulo"><b>{{ __('Cambiar contraseña') }}</b></div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -41,7 +41,7 @@
                             </div>
 
                             <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4" id="reset-password-btn">
+                                <div class="col-md-6 offset-md-4" id="mail-password-btn">
                                     <button type="submit" class="btn btn-primary" id="asignar-btn">
                                         {{ __('Enviar enlace de restablecimiento de contraseña') }}
                                     </button>
