@@ -1,20 +1,36 @@
 /*GLOBALES*/
 #success {
     text-align: center;
-    display: inline-block;
     position: fixed;
-    top: 5%;
+    top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: #2ac04d;
+    color: rgb(255, 255, 255);
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+    
 }
+
 
 #danger {
     text-align: center;
-    display: inline-block;
     position: fixed;
-    top: 5%;
+    top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: #d13a20;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
 }
 
 #icono {
@@ -147,6 +163,7 @@
 #volver-instancias:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
+
 #volver:hover {
     background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
 }
@@ -454,7 +471,7 @@ table thead th {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     border: 1px solid #357AAB;
     color: rgba(255, 255, 255, 1);
-    padding:0px;
+    padding: 0px;
     font-size: 16px;
     border-radius: 5px;
     width: 150%;

@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- alertas -->
 <div id="documentos-instructivos-container" class="container-fluid">
@@ -209,6 +210,11 @@
           var modalDialog = myModal._element.querySelector('.modal-dialog');
           modalDialog.classList.remove('modal-sm');
           modalDialog.classList.add('modal-lg');
+
+          //para cerrar modales
+          closeButton.on('click', function () {
+            myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+          });
         });
       },
     });
@@ -216,14 +222,14 @@
 </script>
 <script>
   var ruta_store = '{{ route('store_instructivo') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_instructivo/";
-    $.get(url, function(data) {
+    $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
 
@@ -241,7 +247,7 @@
       $('#myForm').attr('action', ruta_store);
 
       // Construir el select
-      $.get('select_tipo_instructivos/', function(data) {
+      $.get('select_tipo_instructivos/', function (data) {
         var html_select = '<option value="">Seleccione</option>';
 
         for (var i = 0; i < data.length; i++) {
@@ -258,6 +264,11 @@
         var modalDialog = myModal._element.querySelector('.modal-dialog');
         modalDialog.classList.remove('modal-sm');
         modalDialog.classList.remove('modal-lg');
+
+        //para cerrar modales
+        closeButton.on('click', function () {
+          myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+        });
       });
     });
   }

@@ -5,7 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 
 
 <div id="puestos-container" class="container-fluid">
@@ -144,8 +144,8 @@
 <script>
     var ruta_update = '{{ route('update_puesto') }}';
     var ruta_store = '{{ route('store_puesto') }}';
-    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-    var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+    var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
     function fnOpenModalStore() {
         var myModal = new bootstrap.Modal(document.getElementById('show2'));
@@ -174,6 +174,10 @@
             var modalDialog = myModal._element.querySelector('.modal-dialog');
             modalDialog.classList.remove('modal-sm');
             modalDialog.classList.remove('modal-lg');
+            //para cerrar modales
+closeButton.on('click', function () {
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+    });
         });
         $('#show2').on('show.bs.modal', function (event) {
             $.get('select_area/', function (data) {
@@ -283,6 +287,10 @@
             var modalDialog = myModal._element.querySelector('.modal-dialog');
             modalDialog.classList.remove('modal-sm');
             modalDialog.classList.remove('modal-lg');
+            //para cerrar modales
+closeButton.on('click', function () {
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+    });
 
 
             // Aquí puedes colocar el código que depende de los datos de puesto,

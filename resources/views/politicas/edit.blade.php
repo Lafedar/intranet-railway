@@ -1,4 +1,4 @@
-<!-- Modal Editar -->
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="editarLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -28,8 +28,8 @@
                 <label><strong>Archivo PDF:</strong> <a href="#" id="pdf_link" target="_blank">Ver archivo</a></label>
               </div>
 
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="submit" class="btn btn-info">Guardar</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+              <button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>
             </div>
           </div>
         </div>

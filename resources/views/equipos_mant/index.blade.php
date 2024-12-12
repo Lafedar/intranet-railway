@@ -5,6 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
@@ -186,8 +187,8 @@
 <script>
   var ruta_create = '{{ route('store_equipo_mant') }}';
   var ruta_update = '{{ route('update_equipo_mant') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
   //modal store
   function fnOpenModalStore() {

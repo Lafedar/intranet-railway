@@ -459,6 +459,10 @@ table thead th {
     margin-top: 100px;
 }
 
+/*NOVEDADES EDIT*/
+#novedades-edit-container {
+    margin-top: 110px;
+}
 
 /*EQUIPAMIENTO*/
 #equipamiento-container {
@@ -566,7 +570,7 @@ table thead th {
     margin-top: -30px;
 }
 
-#parametros-gen-btn button {
+#parametros-gen-btn {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     margin-bottom: 20px;
 
@@ -654,77 +658,148 @@ table thead th {
 
 
 /*VENTAS*/
-#ventas-container{
-    margin-top:100px;
+#ventas-container {
+    margin-top: 100px;
 }
 
-#ventas-table{
-    margin-top:-30px;
+#ventas-table {
+    margin-top: -30px;
 }
 
-#ventas-btn{
+#ventas-btn {
     margin-bottom: 20px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 /*COSTOS*/
-#costos-container{
-    margin-top:100px;
+#costos-container {
+    margin-top: 100px;
 }
-#costos-btn{
+
+#costos-btn {
     margin-bottom: 20px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
-#costos-table{
+
+#costos-table {
     margin-top: -30px;
 }
 
 /*COMPRAS*/
-#compras-container{
+#compras-container {
     margin-top: 130px;
 }
-#compras-table{
+
+#compras-table {
     margin-top: -30px;
 }
-#compras-btn{
+
+#compras-btn {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 /*PRODUCCIONES*/
-#producciones-container{
+#producciones-container {
     margin-top: 100px;
 }
-#producciones-table{
-    margin-top:-30px;
+
+#producciones-table {
+    margin-top: -30px;
 }
-#producciones-btn{
+
+#producciones-btn {
     margin-bottom: 20px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 /*CALIDAD*/
-#calidad-container{
+#calidad-container {
     margin-top: 100px;
 }
-#calidad-btn{
-    margin-bottom:20px;
+
+#calidad-btn {
+    margin-bottom: 20px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
-#calidad-table{
+
+#calidad-table {
     margin-top: -30px;
 }
 
 /*RRHH*/
-#rrhh-container{
+#rrhh-container {
     margin-top: 100px;
 }
-#rrhh-btn{
+
+#rrhh-btn {
     margin-bottom: 20px;
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 
-#rrhh-table{
-    margin-top:-30px;
+#rrhh-table {
+    margin-top: -30px;
+}
+
+
+
+/*SOLICITUDES*/
+#solicitudes-container {
+    margin-top: 90px;
+}
+
+#solicitudes-btn {
+    margin-bottom: 20px;
+    margin-left: 20px;
+
+
+}
+
+#solicitudes-btn button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#solicitudes-paginacion {
+    margin-bottom: 40px;
+    /* Ajusta el valor a lo que necesites */
+}
+
+
+/*CURSOS-INSTANCIAS EDIT Y CREATE*/
+#cursos-instancias-edit-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-instancias-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-edit-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-create-container label {
+    font-weight: bold;
+}
+
+#cursos-instancias-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+}
+
+#cursos-instancias-create-container label {
+    font-weight: bold;
 }

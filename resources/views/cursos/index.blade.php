@@ -7,9 +7,15 @@
     <title>Cursos</title>
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
+   
 </head>
 <body>
+
+
+
+<div class="container">
 @if(session('success'))
     <div class="alert alert-success" id="success">
         {{ session('success') }}
@@ -22,9 +28,6 @@
     </div>
 @endif
 
-
-
-<div class="container">
     @role(['administrador', 'Gestor-cursos'])
     <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
     <div class="filter-container">

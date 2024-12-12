@@ -5,6 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -25,7 +26,7 @@
   </div>
 @endif
 <div class="container-fluid">
-  <div id="recepcion-nav" >
+  <div id="recepcion-nav">
     <div id="recepcion-botones">
       <a class="btn btn-secondary" href="/internos">Internos</a>&nbsp
       <button class="btn btn-info" data-toggle="modal" data-target="#agregar"> Agregar</button>
@@ -52,7 +53,7 @@
   </div>
 
   <div id="recepcion-tabla">
-    <table class="table table-striped table-bordered" >
+    <table class="table table-striped table-bordered">
       <thead>
         <th class="text-center">Nombre</th>
         <th class="text-center">Apellido</th>
@@ -73,40 +74,40 @@
         <td>{{$persona->celular}}</td>
         <td width="153">
         <form action="{{route('destroy_contacto', $persona->id)}}" method="put">
-          <a href="#"  data-nombre="{{$persona->nombre . ' ' . $persona->apellido}}"
+          <a href="#" data-nombre="{{$persona->nombre . ' ' . $persona->apellido}}"
           data-empresa="{{$persona->empresa}}" data-direccion="{{$persona->direccion}}"
           data-celular="{{$persona->celular}}" data-telefono="{{$persona->telefono}}"
-          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#ver" title="Ver"><img src="{{ asset('storage/cursos/ver.png') }}"
-          alt="Ver" id="img-icono"></a>
+          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#ver" title="Ver"><img
+          src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></a>
 
 
-          <a href="#"  data-id="{{$persona->id}}" data-nombre="{{$persona->nombre}}"
+          <a href="#" data-id="{{$persona->id}}" data-nombre="{{$persona->nombre}}"
           data-apellido="{{$persona->apellido}}" data-direccion="{{$persona->direccion}}"
           data-empresa="{{$persona->empresa}}" data-interno="{{$persona->interno}}"
           data-celular="{{$persona->celular}}" data-telefono="{{$persona->telefono}}"
-          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#editar" title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}"
-          alt="Editar" id="img-icono"></a>
+          data-correo="{{$persona->correo}}" data-toggle="modal" data-target="#editar" title="Editar"><img
+          src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></a>
 
 
-          <button type="submit" class="btn-borrar" data-tooltip="Borrar" id="icono" title="Eliminar"><img src="{{ asset('storage/cursos/eliminar.png') }}"
-          alt="Eliminar" id="img-icono"></button>
+          <button type="submit" class="btn-borrar" data-tooltip="Borrar" id="icono" title="Eliminar"><img
+          src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></button>
         </form>
       </div>
       </td>
       </tr>
     @endforeach
       @endif
-    </tbody>
-    </table>
+  </tbody>
+  </table>
 
-    @include('persona.show')    
+  @include('persona.show')    
 
-    @include('persona.edit')
-    @include('persona.create')
+  @include('persona.edit')
+  @include('persona.create')
 
 
-  </div>
-  {{ $personas->links('pagination::bootstrap-4') }} <!--paginacion-->
+</div>
+{{ $personas->links('pagination::bootstrap-4') }} <!--paginacion-->
 </div>
 
 

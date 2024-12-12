@@ -7,10 +7,7 @@
 	<!-- Custom CSS -->
 	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
 
-	<!-- Scripts -->
-	<script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+	
 
 </head>
 
@@ -49,20 +46,20 @@
 
 	<!-- Main content -->
 	<main class="flex-grow-1">
-		<div class="container py-4">
+		<div class="container-fluid py-4">
 			<div class="row">
 				@yield('content')
 			</div>
 		</div>
 	</main>
-
+	@stack('modales') 
 	<!-- Footer -->
 	<footer>
 		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
 	</footer>
 
 	<!-- Bootstrap JS (ensure Popper.js and Bootstrap JS are loaded) -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	
 </body>
 
 </html>

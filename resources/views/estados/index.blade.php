@@ -78,8 +78,8 @@
 <script>
   var ruta_create = '{{ route('store_estado') }}';
   var ruta_update = '{{ route('update_estado') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));

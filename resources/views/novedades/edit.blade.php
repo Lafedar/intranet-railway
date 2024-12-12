@@ -1,53 +1,68 @@
 @extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-@section('content')
-<div class="container">
-    <h1 style="text-align:center">Editar Novedad</h1>
-    
-    <form action="{{ route('novedades.update', $novedad->id) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 
-        <div class="form-group">
-            <label for="titulo_edit"><b>Título</b></label>
-            <input type="text" name="titulo" id="titulo_edit" class="form-control" value="{{ old('titulo', $novedad->titulo) }}" required maxlength="100">
-            <small id="tituloCountEdit" class="form-text text-muted">Restan <span id="tituloRemainingEdit">100</span> caracteres.</small>
-        </div>
+<div class="container" class="container-fluid">
+    <div id="novedades-edit-container">
+        <h1 style="text-align:center">Editar Novedad</h1>
 
-        <div class="form-group">
-            <label for="descripcion_edit"><b>Descripción</b></label>
-            <textarea name="descripcion" id="descripcion_edit" class="form-control" rows="5" required maxlength="65530">{{ old('descripcion', $novedad->descripcion) }}</textarea>
-            <small id="descripcionCountEdit" class="form-text text-muted">Restan <span id="descripcionRemainingEdit">65530</span> caracteres.</small>
-        </div>
+        <form action="{{ route('novedades.update', $novedad->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
 
-        <div class="form-group">
-            <label for="nueva_imagen"><b>Cambiar Imagen Principal (opcional)</b></label>
-            <input type="file" name="nueva_imagen" id="nueva_imagen" class="form-control" accept=".jpg,.jpeg,.png">
-            <p>Imagen principal actual:</p>
-            @if($novedad->portada)
-                <img src="{{ asset('storage/' . $novedad->portada) }}" alt="Imagen principal actual" style="max-width: 100px; max-height: 100px;">
-            @endif
-        </div>
+            <div class="form-group">
+                <label for="titulo_edit"><b>Título</b></label>
+                <input type="text" name="titulo" id="titulo_edit" class="form-control"
+                    value="{{ old('titulo', $novedad->titulo) }}" required maxlength="100">
+                <small id="tituloCountEdit" class="form-text text-muted">Restan <span
+                        id="tituloRemainingEdit">100</span> caracteres.</small>
+            </div>
 
-        <div class="form-group">
-            <label for="imagenes"><b>Imágenes Secundarias (opcional)</b></label>
-            <input type="file" name="imagenes[]" id="imagenes" class="form-control" multiple>
-            <p>Imágenes actuales:</p>
-            @if($novedad->imagenes_sec)
-                @foreach(explode(',', $novedad->imagenes_sec) as $imagen)
-                    @if($imagen !== $novedad->portada)
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen secundaria actual" style="max-width: 100px; max-height: 100px;" class="me-2">
-                            <input type="checkbox" name="delete_images[]" value="{{ $imagen }}"> Borrar
-                        </div>
-                    @endif
-                @endforeach
-            @endif
-        </div>
+            <div class="form-group">
+                <label for="descripcion_edit"><b>Descripción</b></label>
+                <textarea name="descripcion" id="descripcion_edit" class="form-control" rows="5" required
+                    maxlength="65530">{{ old('descripcion', $novedad->descripcion) }}</textarea>
+                <small id="descripcionCountEdit" class="form-text text-muted">Restan <span
+                        id="descripcionRemainingEdit">65530</span> caracteres.</small>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        <a href="{{ route('novedades.index') }}" class="btn btn-secondary">Cancelar</a>
-    </form>
+            <div class="form-group">
+                <label for="nueva_imagen"><b>Cambiar Imagen Principal (opcional)</b></label>
+                <input type="file" name="nueva_imagen" id="nueva_imagen" class="form-control" accept=".jpg,.jpeg,.png">
+                <p>Imagen principal actual:</p>
+                @if($novedad->portada)
+                    <img src="{{ asset('storage/' . $novedad->portada) }}" alt="Imagen principal actual"
+                        style="max-width: 100px; max-height: 100px;">
+                @endif
+            </div>
+
+            <div class="form-group">
+                <label for="imagenes"><b>Imágenes Secundarias (opcional)</b></label>
+                <input type="file" name="imagenes[]" id="imagenes" class="form-control" multiple>
+                <p>Imágenes secundarias actuales:</p>
+                @if($novedad->imagenes_sec)
+                    @foreach(explode(',', $novedad->imagenes_sec) as $imagen)
+                        @if($imagen !== $novedad->portada)
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="{{ asset('storage/' . $imagen) }}" alt="Imagen secundaria actual"
+                                    style="max-width: 100px; max-height: 100px;" class="me-2">
+                                <input type="checkbox" name="delete_images[]" value="{{ $imagen }}"> Borrar
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar Cambios</button>
+            <a href="{{ route('novedades.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
+        </form>
+    </div>
+
 </div>
 
 <script>
@@ -79,7 +94,7 @@
         const imagenesInput = document.getElementById('imagenes');
         const portadaInput = document.getElementById('nueva_imagen');
 
-        imagenesInput.addEventListener('change', function() {
+        imagenesInput.addEventListener('change', function () {
             const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
             let valid = true;
 
@@ -95,7 +110,7 @@
                 imagenesInput.value = ''; // Limpiar el input
             }
         });
-        portadaInput.addEventListener('change', function() {
+        portadaInput.addEventListener('change', function () {
             const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
             let valid = true;
 
@@ -113,4 +128,3 @@
         });
     });
 </script>
-@endsection

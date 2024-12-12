@@ -42,8 +42,8 @@
         <td width="80">{{$area->id_a}}</td>
         <td>{{$area->nombre_a}}</td>
         <td width="90"><button onclick='fnOpenModalUpdate("{{$area->id_a}}")' title="update"
-          data-nombre_a="{{$area->nombre_a}}" id="icono" title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}"
-          alt="Editar" id="img-icono"></button></td>
+          data-nombre_a="{{$area->nombre_a}}" id="icono" title="Editar"><img
+          src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button></td>
       </tr>
     @endforeach
       </tbody>
@@ -80,8 +80,8 @@
 <script>
   var ruta_create = '{{ route('store_area') }}';
   var ruta_update = '{{ route('update_area') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
