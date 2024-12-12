@@ -803,3 +803,18 @@ table thead th {
 #cursos-instancias-create-container label {
     font-weight: bold;
 }
+
+
+
+/*RESET PASSWORD*/
+#reset-password-container {
+    margin-top: 200px;
+}
+
+#reset-password-titulo {
+    text-align: center;
+}
+
+#reset-password-btn {
+    text-align: center;
+}
