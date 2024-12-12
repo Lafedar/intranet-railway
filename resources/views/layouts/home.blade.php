@@ -1,9 +1,8 @@
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{{ URL::to('/img/ico.png') }}">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -18,11 +17,32 @@
 
         <div class="menu">
         </div>
+        @auth
+            <div class="dropdown">
+                <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="border: none; background: none; padding: 0; cursor: pointer;">
+                    <img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <!-- Cerrar Sesión: Este enlace ahora envía el formulario de logout -->
+                    <li>
+                        <form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+                            @csrf
+                            <button type="submit" class="dropdown-item"
+                                style="border: none; background: none; width: 100%; text-align: left;">
+                                Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
+
+                </ul>
+            </div>
+        @endauth
     </header>
 </head>
 
 <body class="{{ Auth::check() ? 'authenticated' : '' }}">
-   
+
 
     <main>
         @yield('content')

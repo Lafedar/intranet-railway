@@ -126,18 +126,7 @@
                 @endrole
             </div>
         @endrole
-        <div class="btn-cerrar-sesion">
-        @if (Auth::check())
-            <form action="{{ url('/logout') }}" method="POST">
-                {{ csrf_field() }}
-                <button type="submit" class="btn-cs">
-                    Cerrar sesión
-                </button>
-            </form>
-        @else
-            <button class="btn-cs" disabled>Cerrar sesión</button>
-        @endif
-    </div>
+       
     </nav>
 </section>
 <!-- Carousel -->
