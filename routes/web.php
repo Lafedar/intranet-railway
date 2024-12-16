@@ -11,7 +11,7 @@ Auth::routes();
 
 
 //****************MENU INICIAL**********************
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home.inicio');
 
 Route::get('/', 'HomeController@index');
 

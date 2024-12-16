@@ -12,10 +12,9 @@
     font-family: Calibri, sans-serif;
     font-size: 22px;
     font-weight: bold;
-    color: #236192;
+    color: black;
     /* Custom color */
-    color: #236192;
-    /* Custom color */
+
     margin-top: 5px;
     margin-left: -4px;
     /* Moves text 4px to the left */
@@ -50,7 +49,7 @@ table thead {
 table thead th {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 750;
     line-height: 19.2px;
     letter-spacing: -0.03em;
     text-align: center !important;
@@ -141,7 +140,7 @@ table tbody td {
     text-decoration-skip-ink: none;
     color: rgba(15, 79, 141, 0.83);
     background: rgba(217, 217, 217, 0.6);
-
+    /*agregar font para internos*/
     text-align: center;
 }
 
@@ -150,10 +149,6 @@ table thead th {
     background: rgba(15, 79, 141, 0.83) !important;
     color: white;
 }
-
-
-
-
 
 /*INTERNOS*/
 #custom-container-internos {
@@ -174,8 +169,9 @@ table thead th {
     align-items: center;
     gap: 10px;
     height: 10vh;
-    margin-left: 450px;
-    margin-top: 80px;
+    margin-left: 2px;
+    margin-top: 50px;
+    width: 30%;
 }
 
 #filtro-internos input {
@@ -190,5 +186,646 @@ table thead th {
 
 /*tabla de internos*/
 #tabla-internos {
+    margin-top: 0px;
+
+}
+
+
+/*POWERBIS*/
+#powerbis-conteiner {
+    margin-top: 120px;
+}
+
+
+/*PERMISOS*/
+#permisos-nav {
+    margin-top: 130px;
+}
+
+#permisos-crear {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    margin-bottom: 20px;
+    margin-top: -20px;
+    font-size: 17px;
+}
+
+#permisos-buscar {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#permisos-table {
+    margin-top: -30px;
+}
+
+
+/*RECEPCION*/
+#recepcion-nav {
+    margin-top: 130px;
+}
+
+#recepcion-nav button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#recepcion-botones {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+#recepcion-botones a {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#recepcion-tabla {
+    margin-top: -30px;
+}
+
+
+
+/*EMPLEADOS*/
+#empleados-filtro {
+    margin-top: 10px;
+}
+
+#empleados-crear {
+    margin-top: 120px;
+    margin-left: 17px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    font-size: 17px;
+}
+
+#empleados-nav {
+    margin-top: -20px;
+}
+
+#empleados-buscar {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#empleados-btn {
+    padding: 1px;
+    height: 25px;
+}
+
+
+.circle_green {
+    width: 20px;
+    height: 20px;
+    background-color: rgb(31, 224, 31);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.circle_grey {
+    width: 20px;
+    height: 20px;
+    background-color: grey;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#img-icono {
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+
+}
+
+#icono {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#icono-area {
+    border: none;
+    background: none;
+    padding: 0;
+    margin-top: -15px;
+}
+
+
+#empleados-cursos-conteiner {
+    margin-top: 100px;
+}
+
+#titulo-cursos-empleado {
+    text-align: center;
+}
+
+
+
+/*MEDICO*/
+#medico-nav {
+    margin-top: 100px;
+}
+
+#medico-nav a {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#medico-nav button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#medico-table {
+    margin-top: -30px;
+}
+
+#medico-buttons {
+
+    margin-bottom: 20px;
+}
+
+.pagination {
+    margin-bottom: 20px;
+}
+
+
+/*GUARDIA*/
+#guardia-container {
+    margin-top: 120px;
+}
+
+#guardia-btn-visitantes {
+    margin-top: 80px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    width: 150px;
+    height: 50px;
+    padding: 10px;
+}
+
+#div-alert {
+    display: block !important;
+    /* Fuerza la visualización */
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.alert {
+    margin-top: -10px;
+}
+
+.alert {
+    display: block;
+    /* Asegura que las alertas sean visibles */
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+#listado-container {
+    margin-top: 120px;
+}
+
+#guardia-asignar-container {
+    margin-top: 130px;
+}
+
+#guardia-asignar-formulario {
+    display: flex;
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+    /* Centra verticalmente */
+
+}
+
+#asignar-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#guardia-consulta-container {
+    margin-top: 120px;
+}
+
+#guardia-consulta-table {
+    margin-top: -30px;
+}
+
+/*DOCUMENTOS*/
+#documentos-politicas-container {
+    margin-top: 100px;
+}
+
+#documentos-planos-container {
+    margin-top: 100px;
+}
+
+#planos-btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#planos-table {
+    margin-top: -20px;
+
+}
+
+#documentos-proyectos-container {
+    margin-top: 110px;
+}
+
+#proyectos-btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#proyectos-table {
+    margin-top: -30px;
+}
+
+#documentos-instructivos-container {
+    margin-top: 110px;
+}
+
+#instructivos-btn-agregar {
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*NOVEDADES*/
+#novedades-container {
+    margin-top: 100px;
+}
+
+/*NOVEDADES EDIT*/
+#novedades-edit-container {
+    margin-top: 110px;
+}
+
+#novedades-crear{
+    font-size: 17px;
+}
+
+/*EQUIPAMIENTO*/
+#equipamiento-container {
+    margin-top: 150px;
+}
+
+#img-icono-equip {
+    width: 17px;
+    height: 17px;
+
+}
+
+#equipamiento-btn {
+    margin-bottom: 15px;
+    margin-top: -20px;
+
+}
+
+#equipamiento-btn a {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*USUARIOS*/
+#usuarios-container {
+    margin-top: 130px;
+}
+
+#usuarios-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+#usuarios-btn button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*ROLES*/
+#roles-container {
+    margin-top: 130px;
+}
+
+
+/*PUESTOS*/
+#puestos-container {
+    margin-top: 130px;
+}
+
+#puestos-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#puestos-table {
+    margin-top: -20px;
+}
+
+
+/*INCIDENTES*/
+#incidentes-container {
+    margin-top: 100px;
+}
+
+#incidentes-table {
+    margin-top: -20px;
+}
+
+
+/*SOFTWARE*/
+#software-container {
+    margin-top: 100px;
+}
+
+#software-table {
+    margin-top: -30px;
+}
+
+
+/*BUSCA IP*/
+#buscaip-container {
+    margin-top: 100px;
+}
+
+#buscaip-table {
+    margin-top: -30px;
+}
+
+/*SOFTWARE INSTALADO*/
+#versof-container {
+    margin-top: 100px;
+}
+
+#versof-table {
+    margin-top: -30px;
+}
+
+/*PARAMETROS SISTEMAS*/
+#parametros-gen-container {
+    margin-top: 100px;
+}
+
+#parametros-gen-table {
+    margin-top: -30px;
+}
+
+#parametros-gen-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    margin-bottom: 20px;
+
+
+}
+
+
+/*SOFTWARE INSTALADO*/
+#equipos-container {
+    margin-top: 100px;
+}
+
+#equipos-table {
+    margin-top: -15px;
+}
+
+#equipos-btn {
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*PARAMETROS MANT*/
+#parametros-mant-container {
+    margin-top: 70px;
+}
+
+/*AREAS*/
+#areas-container {
+    margin-top: 100px;
+}
+
+#areas-btn {
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*LOCALZACIONES*/
+#localizaciones-container {
+    margin-top: 100px;
+
+}
+
+#localizaciones-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*ESTADOS*/
+#estados-container {
+    margin-top: 100px;
+}
+
+
+/*FALLAS*/
+#fallas-container {
+    margin-top: 100px;
+}
+
+/*TIPOS DE EQUIPOS*/
+#tipo-equip-container {
+    margin-top: 100px;
+}
+
+#tipo-equip-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*TIPOS SOLICITUDES*/
+#tipos-sol-container {
+    margin-top: 100px;
+}
+
+#tipos-sol-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+
+/*PARAMETROS GEN*/
+#parametros-gen-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+/*VENTAS*/
+#ventas-container {
+    margin-top: 100px;
+}
+
+#ventas-table {
+    margin-top: -30px;
+}
+
+#ventas-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*COSTOS*/
+#costos-container {
+    margin-top: 100px;
+}
+
+#costos-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#costos-table {
+    margin-top: -30px;
+}
+
+/*COMPRAS*/
+#compras-container {
+    margin-top: 130px;
+}
+
+#compras-table {
+    margin-top: -30px;
+}
+
+#compras-btn {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    margin-bottom: 20px;
+}
+
+/*PRODUCCIONES*/
+#producciones-container {
+    margin-top: 100px;
+}
+
+#producciones-table {
+    margin-top: -30px;
+}
+
+#producciones-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+/*CALIDAD*/
+#calidad-container {
+    margin-top: 100px;
+}
+
+#calidad-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#calidad-table {
+    margin-top: -30px;
+}
+
+/*RRHH*/
+#rrhh-container {
+    margin-top: 100px;
+}
+
+#rrhh-btn {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+
+#rrhh-table {
+    margin-top: -30px;
+}
+
+
+
+/*SOLICITUDES*/
+#solicitudes-container {
+    margin-top: 90px;
+}
+
+#solicitudes-btn {
+    margin-bottom: 20px;
+    margin-left: 20px;
+
+
+}
+
+#solicitudes-btn button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#solicitudes-paginacion {
+    margin-bottom: 40px;
+    /* Ajusta el valor a lo que necesites */
+}
+
+
+/*CURSOS-INSTANCIAS EDIT Y CREATE*/
+#cursos-instancias-edit-container {
     margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-instancias-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-edit-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-create-container label {
+    font-weight: bold;
+}
+
+#cursos-instancias-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+}
+
+#cursos-instancias-create-container label {
+    font-weight: bold;
+}
+
+
+
+/*RESET PASSWORD*/
+#mail-password-container {
+    margin-top: 200px;
+}
+
+#mail-password-titulo {
+    text-align: center;
+}
+
+#mail-password-btn {
+    text-align: center;
+}
+
+#reset-password-container {
+    margin-top: 130px;
 }

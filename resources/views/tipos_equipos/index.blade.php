@@ -1,96 +1,109 @@
-@extends('tipos_equipos.layouts.layout')
-@section('content')
+@extends('layouts.app')
 
-<!-- alertas -->
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="content">
-  <div class="row" style="justify-content: center">
-    <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
+<div class="container-fluid" id="tipo-equip-container">
+  <!-- alertas -->
+
+  <div class="content">
+    <div class="row" style="justify-content: center">
+      <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
+    </div>
   </div>
-</div>
 
-@if(Session::has('message'))
-  <div class="container" id="div.alert">
+  @if(Session::has('message'))
+    <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
       <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-        {{Session::get('message')}}
+      {{Session::get('message')}}
       </div>
     </div>
-  </div>
-@endif
+    </div>
+  @endif
 
-<!-- barra para buscar equipos -->
-
-<!-- tabla de datos -->
-<div class="col-md-12">             
-  <table class="table table-striped table-bordered ">
-    <thead>
-      <th class="text-center">ID</th>
-      <th class="text-center">Nombre</th>
-      <th class="text-center">Fallas</th>
-      <th class="text-center">Acciones</th>   
-    </thead>
-    <tbody>
-      @foreach($tipos_equipos as $tipo_equipo)
-        <tr class="text-center">
-          <td width="80">{{$tipo_equipo->id}}</td>
-          <td>{{$tipo_equipo->nombre}}</td>
-          <td>
-            @foreach ($fallas as $falla)
-              @if ($falla->id_tipo_equipo == $tipo_equipo->id)
-                -{{$falla->nom_falla}}
-              @endif
-            @endforeach
-          </td>
-          <td width="300">
-            <button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$tipo_equipo->id}}")' title="update" id="edit">Editar</button>
-            <button class="btn btn-info btn-sm" onclick='fnOpenModalAssing("{{$tipo_equipo->id}}")' title="assing" id="edit">Asignar</button>
-            <button class="btn btn-danger btn-sm" onclick='fnOpenModalDeleteFalla("{{$tipo_equipo->id}}")' title="delete" id="edit">Eliminar falla</button>
-          </td>
-        </tr>
-      @endforeach
-    </tbody>       
-  </table>
-  <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form id="myForm" method="POST" enctype="multipart/form-data">
-          {{csrf_field()}}
-          <div id="modalshow" class="modal-body">
-            <!-- Datos -->
-          </div>
-          <div id="modalfooter" class="modal-footer">
-            <!-- Footer -->
-          </div>
-        </form>
+  <!-- barra para buscar equipos -->
+  <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_tipo_equipo"
+    id="tipo-equip-btn">Agregar tipo de equipo</button>
+  <!-- tabla de datos -->
+  <div id="software-table">
+    <table>
+      <thead>
+        <th class="text-center">ID</th>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Fallas</th>
+        <th class="text-center">Acciones</th>
+      </thead>
+      <tbody>
+        @foreach($tipos_equipos as $tipo_equipo)
+      <tr class="text-center">
+        <td width="80">{{$tipo_equipo->id}}</td>
+        <td>{{$tipo_equipo->nombre}}</td>
+        <td>
+        @foreach ($fallas as $falla)
+      @if ($falla->id_tipo_equipo == $tipo_equipo->id)
+      -{{$falla->nom_falla}}
+    @endif
+    @endforeach
+        </td>
+        <td width="300">
+        <button class="btn btn-info btn-sm" onclick='fnOpenModalUpdate("{{$tipo_equipo->id}}")' title="update"
+          id="edit">Editar</button>
+        <button class="btn btn-info btn-sm" onclick='fnOpenModalAssing("{{$tipo_equipo->id}}")' title="assing"
+          id="edit">Asignar</button>
+        <button class="btn btn-danger btn-sm" onclick='fnOpenModalDeleteFalla("{{$tipo_equipo->id}}")'
+          title="delete" id="edit">Eliminar falla</button>
+        </td>
+      </tr>
+    @endforeach
+      </tbody>
+    </table>
+    <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <form id="myForm" method="POST" enctype="multipart/form-data">
+            {{csrf_field()}}
+            <div id="modalshow" class="modal-body">
+              <!-- Datos -->
+            </div>
+            <div id="modalfooter" class="modal-footer">
+              <!-- Footer -->
+            </div>
+          </form>
+        </div>
       </div>
     </div>
+
+    {{ $tipos_equipos->links('pagination::bootstrap-4') }}
   </div>
-  
-  {{ $tipos_equipos->links('pagination::bootstrap-4') }}
 </div>
-<script> 
-  //Duracion de alerta (agregado, elimnado, editado)
-  $("tipo_equipo").ready(function(){
-    setTimeout(function(){
-      $("div.alert").fadeOut();
-    }, 5000 ); // 5 secs
-  });
-  </script> 
 
-<script> 
-  var ruta_create = '{{ route('store_tipo_equipo') }}'; 
+<script>
+  //Duracion de alerta (agregado, elimnado, editado)
+  $("tipo_equipo").ready(function () {
+    setTimeout(function () {
+      $("div.alert").fadeOut();
+    }, 5000); // 5 secs
+  });
+</script>
+
+<script>
+  var ruta_create = '{{ route('store_tipo_equipo') }}';
   var ruta_update = '{{ route('update_tipo_equipo') }}';
   var ruta_assing = '{{ route('assing_tipo_equipo') }}';
   var ruta_delete = '{{ route('delete_falla_te') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
   //modal store
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_tipo_equipo/";
-    $.get(url, function(data) {
+    $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
 
@@ -114,13 +127,18 @@
       var modalDialog = myModal._element.querySelector('.modal-dialog');
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.remove('modal-lg');
+
+      //para cerrar modales
+      closeButton.on('click', function () {
+        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      });
     });
   }
   //modal update
   function fnOpenModalUpdate(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_update_tipo_equipo') }}/" + id;
-    $.get(url, function(data) {
+    $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
       // Establecer el contenido del modal
@@ -143,16 +161,20 @@
       var modalDialog = myModal._element.querySelector('.modal-dialog');
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.remove('modal-lg');
+
+      //para cerrar modales
+      closeButton.on('click', function () {
+        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      });
     });
   }
   //modal assing
   var aux;
-  function fnOpenModalAssing(id)
-  {
-    aux=id;
+  function fnOpenModalAssing(id) {
+    aux = id;
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_assing_tipo_equipo') }}/" + id;
-    $.get(url, function(data) {
+    $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
       // Establecer el contenido del modal
@@ -177,29 +199,33 @@
       modalDialog.classList.add('modal-sm');
     });
     $('#show2').on('show.bs.modal', function (event) {
-      $.get('select_fallas/',function(data){
+      $.get('select_fallas/', function (data) {
         var html_select = '<option value="">Seleccione </option>'
-        for(var j = 0; j < data[0].length; j++) {
+        for (var j = 0; j < data[0].length; j++) {
           let found = false; // variable para indicar si se encontró la pareja (id_falla, id_tipo_equipo)
-          for(var i = 0; i < data[1].length; i++) {
-            if(data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
+          for (var i = 0; i < data[1].length; i++) {
+            if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
               found = true; // se encontró la pareja, no se agrega
               break;
             }
           }
           if (!found) {
-            html_select += '<option value ="'+data[0][j].id+'">'+data[0][j].nombre+'</option>'; // no se encontró la pareja, se agrega
+            html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>'; // no se encontró la pareja, se agrega
           }
         }
         $('#fallasSinAsingar').html(html_select);
       });
+      //para cerrar modales
+      closeButton.on('click', function () {
+        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      });
     });
   }
-  function fnOpenModalDeleteFalla(id){
-    aux=id;
+  function fnOpenModalDeleteFalla(id) {
+    aux = id;
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_delete_falla_te') }}/" + id;
-    $.get(url, function(data) {
+    $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();
       // Establecer el contenido del modal
@@ -224,18 +250,21 @@
       modalDialog.classList.add('modal-sm');
     });
     $('#show2').on('show.bs.modal', function (event) {
-    $.get('select_fallas/',function(data){
-      var html_select = '<option value="">Seleccione </option>'
-      for(var j = 0; j < data[0].length; j++) {
-        for(var i = 0; i < data[1].length; i++) {
-          if(data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
-            html_select += '<option value ="'+data[0][j].id+'">'+data[0][j].nombre+'</option>';
+      $.get('select_fallas/', function (data) {
+        var html_select = '<option value="">Seleccione </option>'
+        for (var j = 0; j < data[0].length; j++) {
+          for (var i = 0; i < data[1].length; i++) {
+            if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
+              html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>';
+            }
           }
         }
-      }
-      $('#fallasAsignadas').html(html_select);
+        $('#fallasAsignadas').html(html_select);
+      });
+      //para cerrar modales
+      closeButton.on('click', function () {
+        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      });
     });
-  });
   }
-</script> 
-@stop
+</script>

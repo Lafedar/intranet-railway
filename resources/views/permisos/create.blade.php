@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="agregar_permiso" role="dialog" align="center">
   <div class="modal-dialog">
    <div class="modal-content">           
@@ -69,8 +70,8 @@
             </div>
           </div>
           <p></p>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Agregar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+          <button type="submit" class="btn btn-info"  onclick="fnSaveSolicitud()" id="asignar-btn">Agregar</button>
         </div>
       </div>
     </div>

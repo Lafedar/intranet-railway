@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.home')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="{{ asset('css/principal-nueva.css') }}">
 </head>
 <body class="{{ Auth::check() ? 'authenticated' : '' }}">
-<header>
+<header class="page-header">
     <div class="logo">
-        <img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
+        <img src="{{ asset('storage/Imagenes-principal-nueva/Logo-sinfondo.png') }}" alt="Logo de la empresa">
     </div>
     
-  </header>
-  
+</header>
+
+
     <div id="results-dropdown" class="results-dropdown">
         <ul id="results-list"></ul>
     </div>
@@ -125,18 +126,7 @@
                 @endrole
             </div>
         @endrole
-        <div class="btn-cerrar-sesion">
-        @if (Auth::check())
-            <form action="{{ url('/logout') }}" method="POST">
-                {{ csrf_field() }}
-                <button type="submit" class="btn-cs">
-                    Cerrar sesión
-                </button>
-            </form>
-        @else
-            <button class="btn-cs" disabled>Cerrar sesión</button>
-        @endif
-    </div>
+       
     </nav>
 </section>
 <!-- Carousel -->
@@ -157,7 +147,7 @@
     </div>
 </section>
         <div class="novedades">
-        <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">____________________NOVEDADES____________________</a></h1>
+        <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">NOVEDADES____________________________________________________</a></h1>
     <div class="cards-contenedor">
     @foreach($novedades as $novedad)
             <div class="col-md-4 mb-4">
@@ -223,9 +213,7 @@
 </div>
 </section>
   
-    <footer>
-        <p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A </p>
-    </footer> 
+   
 </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

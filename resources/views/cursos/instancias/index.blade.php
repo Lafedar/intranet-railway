@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
 <head>
     <meta charset="UTF-8">
@@ -10,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    
 
 
 </head>
@@ -31,14 +32,12 @@
                 {{ session('error') }}
             </div>
         @endif
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-        </a>
+
 
 
 
         <div id="encabezados">
-            <h1 id="titulo">Curso: {{ $curso->titulo }} <br> {{ $curso->created_at->format('d/m/Y') }}</h1>
+            <h1 id="titulo">Curso: {{ $curso->titulo }} </h1>
         </div>
 
 
@@ -51,7 +50,7 @@
         </a>
         @endrole
 
-        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver">Volver</a>
+        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver-instancias">Volver</a>
 
 
 
@@ -76,6 +75,7 @@
             <tbody>
                 @foreach($instancesEnrollment as $instance)
                                 <tr>
+
 
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_fin)->format('d/m/Y') }}</td>

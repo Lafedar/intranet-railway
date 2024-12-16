@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,9 +7,15 @@
     <title>Cursos</title>
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
+   
 </head>
 <body>
+
+
+
+<div class="container">
 @if(session('success'))
     <div class="alert alert-success" id="success">
         {{ session('success') }}
@@ -21,11 +28,6 @@
     </div>
 @endif
 
-<a href="{{ url('/home') }}" class="img-logo">
-    <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
-</a>
-
-<div class="container">
     @role(['administrador', 'Gestor-cursos'])
     <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
     <div class="filter-container">
@@ -60,7 +62,7 @@
 
 
         <div class="filter-item">
-            <button type="submit">Filtrar</button>
+            <button type="submit" id="btn-filtrar">Filtrar</button>
         </div>
     </div>
 </form>
@@ -189,9 +191,7 @@
     </div>
 </div>
 
-<footer>
-    <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
-</footer> 
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

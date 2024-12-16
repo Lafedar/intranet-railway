@@ -1,4 +1,11 @@
-@extends('cursos.layouts.layout')
+@extends('layouts.app')
+
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 
 @section('content')
 
@@ -16,72 +23,75 @@
 @endif
 
 <div class="container mt-5">
-    <h1 class="mb-4 text-center">Crear Curso</h1>
-    <form id="cursoForm" action="{{ route('cursos.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+    <div id="cursos-create-container">
+        <h1 class="mb-4 text-center">Crear Curso</h1>
+        <form id="cursoForm" action="{{ route('cursos.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
 
-        <div class="form-group">
-            <label for="titulo">Título</label>
-            <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252">
-            <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
-        </div>
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252">
+                <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
+            </div>
 
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <textarea class="form-control" id="descripcion" name="descripcion" required maxlength="252"></textarea>
-            <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
-        </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" required maxlength="252"></textarea>
+                <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
+            </div>
 
-        <div class="form-group">
-            <label>Obligatorio</label>
-            <select name="obligatorio" class="form-control" required>
-                <option value="">Selecciona una opción</option>
-                <option value="1">Sí</option>
-                <option value="0">No</option>
-            </select>
-        </div>
-
-
-        <div class="form-group">
-            <label for="area">Áreas</label><br>
-            @foreach($areas as $area)
-                @if($area->id_a == 'tod')
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]"
-                            value="{{ $area->id_a }}">
-                        <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
-                    </div>
-                @endif
-            @endforeach
+            <div class="form-group">
+                <label>Obligatorio</label>
+                <select name="obligatorio" class="form-control" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
 
 
-            @foreach($areas as $area)
-                @if($area->id_a != 'tod')
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input area-checkbox" id="area_{{ $area->id_a }}" name="area[]"
-                            value="{{ $area->id_a }}">
-                        <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
-                    </div>
-                @endif
-            @endforeach
-        </div>
+            <div class="form-group">
+                <label for="area">Áreas</label><br>
+                @foreach($areas as $area)
+                    @if($area->id_a == 'tod')
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]"
+                                value="{{ $area->id_a }}">
+                            <p class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</p>
+                        </div>
+                    @endif
+                @endforeach
 
-        <div class="form-group">
-            <label for="codigo">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo">
-        </div>
 
-        <div class="form-group">
-            <label>Tipo</label>
-            <select name="tipo" class="form-control" required>
-                <option value="">Selecciona una opción</option>
-                <option value="Interna">Interna</option>
-                <option value="Externa">Externa</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Crear Curso</button>
-        <a href="{{ route('cursos.index') }}" class="btn btn-secondary">Volver</a>
-    </form>
+                @foreach($areas as $area)
+                    @if($area->id_a != 'tod')
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input area-checkbox" id="area_{{ $area->id_a }}"
+                                name="area[]" value="{{ $area->id_a }}">
+                            <p class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</p>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+
+            <div class="form-group">
+                <label for="codigo">Código</label>
+                <input type="text" class="form-control" id="codigo" name="codigo">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <select name="tipo" class="form-control" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="Interna">Interna</option>
+                    <option value="Externa">Externa</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Curso</button>
+            <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Volver</a>
+        </form>
+    </div>
+
 </div>
 
 <script>

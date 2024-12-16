@@ -1,4 +1,4 @@
-<!-- Modal Editar-->
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="editar" role="dialog" aling="center">
   <div class="modal-dialog">
     <div class="modal-content">     
@@ -25,8 +25,8 @@
                 <label for="title"><strong>Power Bi:</strong></label>
                 <input type="file"  name="pbix" accept=".pbix" id="pbix">
               </div> 
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="submit" class="btn btn-info">Guardar</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+              <button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>
             </div>
           </div>
         </div>

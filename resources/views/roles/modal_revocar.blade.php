@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
  <div class="modal fade" id="revocar_permiso" role="dialog" align="center">
     <div class="modal-dialog">
      <div class="modal-content">           
@@ -12,8 +13,8 @@
             <select class="form-control" name="permiso"  id="select_revocar_permiso"required>
             </select>
             <p></p>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-info">Revocar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+            <button type="submit" class="btn btn-info" id="asignar-btn">Revocar</button>
           </div>
         </div>
       </div>

@@ -1,10 +1,15 @@
 @extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-@section('content')
-<div class="container">
-    <h1>Listado de Cursos y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}</h1>
+<div class="container-fluid" id="empleados-cursos-conteiner">
+    <h1 id="titulo-cursos-empleado">Listado de Cursos y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}
+    </h1>
 
-    <table class="table table-bordered table-striped text-center">
+    <table>
         <thead>
             <tr>
                 <th>Curso</th>
@@ -23,10 +28,19 @@
                 <tr>
                     <td>{{ $curso->titulo}}</td>
                     <td>{{ $curso->pivot->id_instancia }}</td>
-                    <td>@foreach ($curso->areas as $area)
-                            <span>{{ $area->nombre_a }}</span><br>
+                    <td> @if($curso->areas->isEmpty())
+                        <span>N/A</span>
+                    @else
+
+                        @foreach($curso->areas->take(5) as $area)
+                            <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
                         @endforeach
-                    </td> 
+                        @if($curso->areas->count() > 5)
+                            <span>...</span>
+                        @endif
+                    @endif
+
+                    </td>
                     <td>{{ \Carbon\Carbon::parse($curso->fecha_inicio)->format('d/m/Y') ?? 'N/A' }}</td>
 
                     <td>{{ $curso->capacitador ?? 'N/A' }}</td>
@@ -39,5 +53,3 @@
         </tbody>
     </table>
 </div>
-@endsection
-

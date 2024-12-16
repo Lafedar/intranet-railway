@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
 <head>
     <meta charset="UTF-8">
@@ -10,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+  
 
 
 
@@ -30,12 +31,10 @@
             </div>
         @endif
 
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" alt="Logo Cursos">
-        </a>
+
         <div id="encabezados">
             <h1 id="titulo">Inscriptos del Curso: {{ $curso->titulo }}</h1>
-            
+
         </div>
 
         <br>
@@ -47,7 +46,7 @@
             <!-- Formulario para crear planilla -->
             @role(['administrador', 'Gestor-cursos'])
             <div id="contenedor-botones">
-                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="BI">Volver</a>
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="volver-instancias">Volver</a>
                 <form
                     action="{{ route('exportarInscriptos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
                     method="GET">

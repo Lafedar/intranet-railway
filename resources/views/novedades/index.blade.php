@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +8,8 @@
     <!-- Vinculamos el archivo CSS externo -->
     <link href="{{ asset('css/novedades.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
@@ -26,9 +27,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <a href="{{ url('/home') }}" class="img-logo">
-            <img src="{{ asset('storage/cursos/logo-cursos.png') }}" loading="lazy" alt="Logo Cursos">
-        </a>
+
         <!-- Modal Crear Novedad -->
         <div class="modal fade" id="crearNovedadModal" tabindex="-1" role="dialog"
             aria-labelledby="crearNovedadModalLabel" aria-hidden="true">
@@ -164,9 +163,7 @@
         </div>
 
     </div>
-    <footer id="novedades-footer">
-        <p>​LABORATORIOS LAFEDAR S.A | LABORATORIOS FEDERALES ARGENTINOS S.A</p>
-    </footer>
+
 
     <!-- JavaScript para Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

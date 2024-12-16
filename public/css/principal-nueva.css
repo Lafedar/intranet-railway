@@ -4,6 +4,73 @@
     box-sizing: border-box;
 }
 
+#img-icono-user {
+    width: 40px;
+    height: 40px;
+    margin: 2px;
+
+}
+
+/* Estilos del encabezado */
+.header-icon {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+
+}
+
+.menu {
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    width: 100%;
+
+}
+
+
+.menu a {
+    margin: 0;
+    color: white;
+    text-decoration: none;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+
+
+}
+
+.header-icon img {
+    width: 60px;
+    height: 60px;
+}
+
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, white 14%, #1C547C 85%, #1E78C8 100%);
+    padding: 20px;
+    text-align: center;
+    z-index: 10;
+    height: 80px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: #343a40;
+}
+
+.page-header .subtitulo {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+.page-header .btn {
+    margin-top: 10px;
+}
+
+/*-----------------------------------------*/
+
 .btn-cs {
     height: 45px;
     width: 120px;
@@ -24,6 +91,9 @@
 .titulo-novedades {
     text-decoration: none;
     color: inherit;
+    margin-left: -115px;
+    background-size: 10px 1px;
+    /* Longitud de cada guion */
 }
 
 body {
@@ -98,8 +168,8 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 20px 0;
-    gap: 2px;
+    margin-top: 150px;
+    gap: 20px;
 }
 
 .nav-buttons {
@@ -142,6 +212,7 @@ nav {
     text-align: left;
     margin-left: 54px;
     text-decoration: none;
+    margin-top: -2px;
 }
 
 .nav-btn:hover {
@@ -235,13 +306,23 @@ nav {
     margin-left: 131px;
 }
 
-.authenticated .nav {
-    margin-top: -20px;
-}
+.authenticated .nav {}
 
 /*LUEGO DE LOGUEARSE*/
 .authenticated .nav-btn {
+    margin-top: -25px;
+}
+
+.authenticated .nav-grid {
+    /*grid*/
+    margin-top: 20px;
+    gap: 2px;
+}
+
+.authenticated .nav-grid a {
+    /*botones del grid*/
     margin-top: -7px;
+    gap: 2px;
 }
 
 .authenticated .carousel-item img {
@@ -251,6 +332,10 @@ nav {
 
 .authenticated .novedades {
     margin-top: -37px;
+}
+
+.authenticated .novedades h1 {
+    margin-top: 55px;
 }
 
 .authenticated .card {
@@ -264,12 +349,14 @@ nav {
 
 .authenticated .carousel-container {
     height: 550px;
-    margin-top: -400px;
+    margin-top: -315px;
+
 }
 
 .authenticated .carousel-container img {
     max-height: 600px;
     height: 550px;
+
 }
 
 .authenticated .footer {
@@ -371,7 +458,7 @@ nav {
 /*CAROUSEL*/
 .carousel-container {
     position: absolute;
-    margin-top: -425px;
+    margin-top: -410px;
     margin-left: 382px;
     width: 77%;
     max-height: 340px;
@@ -471,9 +558,10 @@ nav {
 /* FOOTER */
 footer {
     background: linear-gradient(90deg, #1C547C 0%, #1E78C8 100%);
+    height: 50px;
     color: white;
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     position: fixed;
     width: 100%;
     bottom: 0;
@@ -512,382 +600,228 @@ footer p {
     background-color: #f0f0f0;
 }
 
-/*RESPONSIVE*/
-/*Pantallas 1366x768 */
+
 @media (max-width: 1366px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        /* Alinea a la izquierda */
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        top: 100px;
-        display: flex;
-        /*Flex para apilar botones */
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .authenticated .nav-grid {
-        margin-top: 220px;
-    }
-
-    .nav-btn {
-
-        /* Oculta el contenido del */
-    }
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
-    }
-
-    .login {
-        position: absolute;
-        left: 20px;
-        top: 400px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-left: 90px;
-    }
-
-    .authenticated .novedades h1 {
-        margin-top: 300px;
+    body {
+        overflow-x: hidden;
     }
 
     .cards-contenedor {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 50px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
-        margin-left: 0px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -90px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
     }
 
     .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
+    .authenticated .cards-contenedor{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -75px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
+    }
     .authenticated .card {
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
-    .authenticated .cards-contenedor {
-        gap: 50px;
-        margin-top: 15px;
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
     }
 
-    .carousel-container {
-        position: absolute;
-        margin-top: -120px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
-    }
-
-    .authenticated .carousel-container {
-        margin-top: -150px;
-    }
-
-    #carousel-item-chico img {
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .footer {
-        position: relative;
-    }
-}
-
-/*Pantallas 1360x768 */
-@media (max-width: 1360px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        top: 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .nav-btn {}
-
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
     }
 
     .login {
-        position: absolute;
-        left: 20px;
-        margin-top: 40px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-top: 20px;
-        margin-left: 90px;
-    }
-
-    .cards-contenedor {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 30px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
-        margin-left: -20px;
-
-    }
-
-    .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
-    }
-
-    .authenticated .card {
-        height: 300px;
-
-    }
-
-    .authenticated .cards-contenedor {
-        gap: 50px;
-
+        margin-top: -10px;
     }
 
     .carousel-container {
-        position: absolute;
-        margin-top: -90px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
+        width: 960px;
+        margin-left: 340px;
     }
 
-
-    .carousel-item img {
-        height: 270px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .footer {
-        position: relative;
-    }
-}
-
-/*Pantallas 1280x720 */
-@media (max-width: 1280px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        top: 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
-    }
-
-    .login {
-        position: absolute;
-        left: 20px;
-        margin-top: 40px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        margin-left: 300px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-left: 140px;
-    }
-
-    .authenticated .novedades h1 {
-        margin-top: 25px;
-    }
-
-    .cards-contenedor {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 30px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
+    .titulo-novedades {
         margin-left: 20px;
+        background-size: 8px 1px;
+    }
 
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
+    }
+
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
+    }
+}
+
+@media (max-width: 1360px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .cards-contenedor {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -90px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
     }
 
     .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
-    .authenticated .cards-contenedor {
-        gap: 50px;
+    .authenticated .cards-contenedor{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -75px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
+    }
+    .authenticated .card {
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
-    .authenticated .novedades {
-        margin-top: 225px;
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
+    }
+
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
+    }
+
+    .login {
+        margin-top: -10px;
     }
 
     .carousel-container {
-        position: absolute;
-        margin-top: -90px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
+        width: 960px;
+        margin-left: 340px;
     }
 
-
-    .carousel-item img {
-        height: 270px;
-        object-fit: cover;
-        border-radius: 10px;
+    .titulo-novedades {
+        margin-left: 20px;
+        background-size: 8px 1px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
     }
 
-    .footer {
-        position: relative;
-        font-family: Inter;
-        font-size: 16px;
-        font-weight: 500;
-        line-height: 19.36px;
-        text-align: left;
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
+    }
+}
 
+@media (max-width: 1280px) {
+    body {
+        overflow-x: hidden;
     }
 
+    .cards-contenedor {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        margin-left: -130px;
+        width: 80%;
+        margin-top: -8px;
+        gap: 10px;
+    }
 
+    .card {
+        width: 210px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
+    }
+
+    .authenticated .cards-contenedor {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        margin-left: -130px;
+        width: 80%;
+        margin-top: -8px;
+        gap: 10px;
+    }
+
+    .authenticated .card {
+        width: 210px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
+    }
+
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
+    }
+
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
+    }
+
+    .login {
+        margin-top: -30px;
+    }
+
+    .carousel-container {
+        width: 875px;
+        margin-left: 335px;
+    }
+
+    .titulo-novedades {
+        margin-left: 20px;
+        background-size: 4px 1px;
+        font-size: 30px;
+    }
+
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
+    }
+
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
+    }
 }
