@@ -147,7 +147,7 @@
     </div>
 </section>
         <div class="novedades">
-        <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">____________________NOVEDADES____________________</a></h1>
+        <h1><a href="{{ route('novedades.index') }}" class="titulo-novedades">NOVEDADES____________________________________________________</a></h1>
     <div class="cards-contenedor">
     @foreach($novedades as $novedad)
             <div class="col-md-4 mb-4">

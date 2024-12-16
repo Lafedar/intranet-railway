@@ -38,6 +38,7 @@
     font-weight: bold;
     color: #004a99;
     margin-top: 0px;
+    
 }
 
 /* Botones */
@@ -94,14 +95,14 @@
     border: none;
     color: white;
     padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 17px;
+  
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
 
 
-    width: 250px;
+    width: 200px;
     font-family: 'Inter', sans-serif;
     text-align: center;
 }

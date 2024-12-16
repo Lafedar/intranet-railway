@@ -54,8 +54,7 @@
 
 
   <div class="col-sm-12">
-    <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0"
-      cellpadding="2" border="10">
+    <table id="empleados-tabla">
       <thead>
         <th class="text-center">Apellido y nombre</th>
         <th class="text-center">DNI</th>

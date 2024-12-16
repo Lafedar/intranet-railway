@@ -401,11 +401,12 @@ table thead th {
 }
 
 /*CURSOS*/
+/*btn crear curso*/
 #BCC {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 5px;
     font-size: 18px;
     font-weight: bold;
     border-radius: 5px;
@@ -414,8 +415,8 @@ table thead th {
     margin-top: -70px;
     margin-left: 3px;
     margin-bottom: 10px;
-    width: 200px;
-    height: 60px;
+    width: 150px;
+    height: 40px;
     font-family: 'Inter', sans-serif;
     text-align: center;
     display: inline-block;

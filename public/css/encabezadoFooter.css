@@ -101,6 +101,11 @@ footer p {
 
 }
 
+@media (max-width: 1366px) {
+    .authenticated .dropdown button{
+        margin-left: 100px;
+    }
+}
 #icono-user {
     border: none;
     background: none;

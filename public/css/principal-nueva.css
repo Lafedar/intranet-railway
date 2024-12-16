@@ -91,6 +91,9 @@
 .titulo-novedades {
     text-decoration: none;
     color: inherit;
+    margin-left: -115px;
+    background-size: 10px 1px;
+    /* Longitud de cada guion */
 }
 
 body {
@@ -347,11 +350,13 @@ nav {
 .authenticated .carousel-container {
     height: 550px;
     margin-top: -315px;
+
 }
 
 .authenticated .carousel-container img {
     max-height: 600px;
     height: 550px;
+
 }
 
 .authenticated .footer {
@@ -595,412 +600,228 @@ footer p {
     background-color: #f0f0f0;
 }
 
-/*RESPONSIVE*/
-/*Pantallas 1366x768 */
+
 @media (max-width: 1366px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        /* Alinea a la izquierda */
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        margin-top: 70px;
-        display: flex;
-        /*Flex para apilar botones */
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .authenticated .nav-grid {
-        margin-top: 345px;
-    }
-
-    .nav-btn {
-
-        /* Oculta el contenido del */
-    }
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
-    }
-
-    .login {
-        position: absolute;
-        left: 20px;
-        top: 450px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-left: 90px;
-        margin-top: 180px;
-    }
-
-    .authenticated .novedades h1 {
-        margin-top: 480px;
+    body {
+        overflow-x: hidden;
     }
 
     .cards-contenedor {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 50px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
-        margin-left: -20px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -90px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
     }
 
     .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
+    .authenticated .cards-contenedor{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -75px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
+    }
     .authenticated .card {
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
-    .authenticated .cards-contenedor {
-        gap: 50px;
-        margin-top: 15px;
-        margin-left: -20px;
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
+    }
+
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
+    }
+
+    .login {
+        margin-top: -10px;
     }
 
     .carousel-container {
-        position: absolute;
-        margin-top: 55px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
+        width: 960px;
+        margin-left: 340px;
     }
 
-    .authenticated .carousel-container {
-        margin-top: 45px;
+    .titulo-novedades {
+        margin-left: 20px;
+        background-size: 8px 1px;
     }
 
-    #carousel-item-chico img {
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .footer {
-        /*position: relative;*/
-        width: auto;
-        height: 5px;
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
     }
 }
 
-/*Pantallas 1360x768 */
 @media (max-width: 1360px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        /* Alinea a la izquierda */
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        margin-top: 70px;
-        display: flex;
-        /*Flex para apilar botones */
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .authenticated .nav-grid {
-        margin-top: 345px;
-    }
-
-    .nav-btn {
-
-        /* Oculta el contenido del */
-    }
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
-    }
-
-    .login {
-        position: absolute;
-        left: 20px;
-        top: 450px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-left: 90px;
-        margin-top: 180px;
-    }
-
-    .authenticated .novedades h1 {
-        margin-top: 480px;
+    body {
+        overflow-x: hidden;
     }
 
     .cards-contenedor {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 50px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
-        margin-left: -20px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -90px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
     }
 
     .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
+    .authenticated .cards-contenedor{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0px;
+        margin-left: -75px;
+        width: 85%;
+        margin-top: -8px;
+        gap: 17px;
+    }
     .authenticated .card {
-        height: 300px;
+        width: 235px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
-    .authenticated .cards-contenedor {
-        gap: 50px;
-        margin-top: 15px;
-        margin-left: -20px;
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
+    }
+
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
+    }
+
+    .login {
+        margin-top: -10px;
     }
 
     .carousel-container {
-        position: absolute;
-        margin-top: 55px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
+        width: 960px;
+        margin-left: 340px;
     }
 
-    .authenticated .carousel-container {
-        margin-top: 45px;
+    .titulo-novedades {
+        margin-left: 20px;
+        background-size: 8px 1px;
     }
 
-    #carousel-item-chico img {
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .footer {
-        /*position: relative;*/
-        width: auto;
-        height: 5px;
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
     }
 }
 
-/*Pantallas 1280x720 */
 @media (max-width: 1280px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        /* Alinea a la izquierda */
-        margin: 40px 20px;
-    }
-
-    .search-bar {
-        width: 90%;
-        font-size: 18px;
-        margin: 10px 50px;
-    }
-
-    nav {
-        position: absolute;
-        left: -7px;
-        margin-top: 70px;
-        display: flex;
-        /*Flex para apilar botones */
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-
-    .authenticated .nav-grid {
-        margin-top: 345px;
-    }
-
-    .nav-btn {
-
-        /* Oculta el contenido del */
-    }
-
-    .nav-btn {
-        width: 250px;
-        margin-bottom: -1px;
-        text-decoration: none;
-    }
-
-    .authenticated .nav-btn {
-        margin-bottom: 10px;
-    }
-
-    .login {
-        position: absolute;
-        left: 20px;
-        top: 450px;
-    }
-
-    .novedades {
-        width: 100%;
-        text-align: center;
-        margin: 200px 350px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .novedades h1 {
-        font-size: 28px;
-        margin-left: 50px;
-        margin-top: 180px;
-    }
-
-    .authenticated .novedades h1 {
-        margin-top: 480px;
-
+    body {
+        overflow-x: hidden;
     }
 
     .cards-contenedor {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 50px;
-        max-width: 1000px;
-        margin: 0 auto;
-        margin-bottom: 40px;
-        margin-left: -40px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        margin-left: -130px;
+        width: 80%;
+        margin-top: -8px;
+        gap: 10px;
     }
 
     .card {
-        width: calc(45% - 20px);
-        max-width: 300px;
-        margin: 10px;
-        width: 280px;
-        height: 300px;
-    }
-
-    .authenticated .card {
-        height: 300px;
+        width: 210px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
     }
 
     .authenticated .cards-contenedor {
-        gap: 50px;
-        margin-top: 15px;
-        margin-left: -40px;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        margin-left: -130px;
+        width: 80%;
+        margin-top: -8px;
+        gap: 10px;
+    }
+
+    .authenticated .card {
+        width: 210px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        height: 330px;
+    }
+
+    .cards-contenedor .card:first-child {
+        margin-left: 0;
+    }
+
+    .cards-contenedor .card:last-child {
+        margin-right: 0;
+    }
+
+    .login {
+        margin-top: -30px;
     }
 
     .carousel-container {
-        position: absolute;
-        margin-top: 55px;
-        margin-left: 320px;
-        width: 70%;
-        max-height: 300px;
-        height: 800px;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: 10px;
+        width: 875px;
+        margin-left: 335px;
     }
 
-    .authenticated .carousel-container {
-        margin-top: 45px;
+    .titulo-novedades {
+        margin-left: 20px;
+        background-size: 4px 1px;
+        font-size: 30px;
     }
 
-    #carousel-item-chico img {
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
+    .authenticated .titulo-novedades {
+        margin-top: -80px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-        height: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .footer {
-        /*position: relative;*/
-        width: auto;
-        height: 5px;
+    .authenticated .botones-cards a {
+        height: 25px;
+        width: 70px;
+        padding: 1px;
     }
 }
