@@ -216,7 +216,7 @@ table thead {
 table thead th {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 750;
     line-height: 19.2px;
     letter-spacing: -0.03em;
     text-align: center !important;
@@ -515,11 +515,7 @@ table thead th {
 
 .filter-item select option {
     color: black;
-
-.filter-item select option {
-    color: black;
 }
-
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     color: rgba(255, 255, 255, 1);
