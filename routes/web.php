@@ -566,13 +566,27 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
-// Ruta para exportar los inscriptos en Excel
+// Ruta para exportar los inscriptos de una instancia en Excel
 Route::get('cursos/{cursoId}/instancias/{instanciaId}/exportar', function ($cursoId, $instanciaId) {
-  $curso = \App\Models\Curso::findOrFail($cursoId);
-  $instancia = \App\Models\CursoInstancia::findOrFail($instanciaId);
 
-  return Excel::download(new InscriptosExport($curso, $instancia), 'inscriptos_' . $curso->titulo . '.xlsx');
+  // Recuperar el curso desde la base de datos
+  $curso = \App\Models\Curso::findOrFail($cursoId);
+
+  // Resolver el servicio desde el contenedor
+  $cursoInstanciaService = app(\App\Services\CursoInstanciaService::class);
+
+  // Crear la instancia del export, pasando el servicio y demás parámetros
+  return Excel::download(new \App\Exports\InscriptosExport($curso, $instanciaId, $cursoInstanciaService), 'Inscriptos_' . $curso->titulo . '.xlsx');
 })->name('exportarInscriptos');
 
+
+// Ruta para exportar los cursos de una persona en Excel
+Route::get('{personaId}/exportarCursos', function ($personaId) {
+  // Obtener la persona desde la base de datos
+  $persona = \App\Models\Persona::findOrFail($personaId);
+
+  // Exportar los cursos de la persona a Excel
+  return Excel::download(new \App\Exports\CursosExport($persona), 'Cursos_' . $persona->nombre_p . '_' . $persona->apellido . '.xlsx');
+})->name('exportarCursos');
 
 

@@ -48,6 +48,7 @@
             <div id="contenedor-botones">
                 <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="volver-instancias">Volver</a>
                 <form
+                
                     action="{{ route('exportarInscriptos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
                     method="GET">
                     @csrf

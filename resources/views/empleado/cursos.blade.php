@@ -8,6 +8,10 @@
 <div class="container-fluid" id="empleados-cursos-conteiner">
     <h1 id="titulo-cursos-empleado">Listado de Cursos y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}
     </h1>
+    <form action="{{ route('exportarCursos', ['personaId' => $persona->id_p]) }}" method="GET">
+        @csrf
+        <button type="submit" id="custom-btn">Exportar a Excel</button>
+    </form>
 
     <table>
         <thead>
