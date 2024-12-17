@@ -11,7 +11,7 @@ use App\JefeXArea;
 use App\Empleado;
 use App\Persona;
 use App\User;
-Use Session;
+use Session;
 use Auth;
 use DB;
 use App\Services\EnrolamientoCursoService;
@@ -19,7 +19,8 @@ use App\Services\CursoInstanciaService;
 use App\Services\PersonaService;
 use App\Services\CursoService;
 
-class EmpleadoController extends Controller{
+class EmpleadoController extends Controller
+{
     private $enrolamientoCursoService;
     private $cursoInstanciaService;
     private $personaService;
@@ -32,34 +33,35 @@ class EmpleadoController extends Controller{
         $this->personaService = $personaService;
         $this->cursoService = $cursoService;
     }
-    public function index(Request $request){
-        
+    public function index(Request $request)
+    {
+
         $search = $request->input('search', '');
         $filtroJefe = $request->has('filtroJefe');
         $filtroActividad = $request->has('filtroActividad');
-    
+
         $query = Empleado::Relacion();
-    
-        if (!empty($search) && preg_match('/^[a-zA-Z0-9 ]*$/', $search)) { 
-            $query->where(function($q) use ($search) {
+
+        if (!empty($search) && preg_match('/^[a-zA-Z0-9 ]*$/', $search)) {
+            $query->where(function ($q) use ($search) {
                 $q->where('apellido', 'like', "%{$search}%")
-                  ->orWhere('nombre_p', 'like', "%{$search}%")
-                  ->orWhere('nombre_a', 'like', "%{$search}%")
-                  ->orWhere('dni', 'like', "%{$search}%");
+                    ->orWhere('nombre_p', 'like', "%{$search}%")
+                    ->orWhere('nombre_a', 'like', "%{$search}%")
+                    ->orWhere('dni', 'like', "%{$search}%");
             });
         }
-    
+
         if ($filtroJefe) {
             $query->where('jefe', 1);
         }
-    
+
         if ($filtroActividad) {
             $query->where('activo', 1);
         }
-    
+
         $perPage = $request->input('per_page', 20);
         $empleados = $query->paginate($perPage)->withQueryString();
-    
+
         return view('empleado.index', [
             'empleados' => $empleados,
             'search' => $search,
@@ -67,14 +69,15 @@ class EmpleadoController extends Controller{
             'filtroActividad' => $filtroActividad
         ]);
     }
-    
 
 
-    public function store(Request $request){
-        $aux= DB::table('personas')->where('personas.dni',$request['dni'])->first();
 
-        if($aux){
-            Session::flash('message','DNI ingresado ya se encuentra asignado');
+    public function store(Request $request)
+    {
+        $aux = DB::table('personas')->where('personas.dni', $request['dni'])->first();
+
+        if ($aux) {
+            Session::flash('message', 'DNI ingresado ya se encuentra asignado');
             Session::flash('alert-class', 'alert-warning');
             return redirect()->back()->withInput();
         }
@@ -96,36 +99,40 @@ class EmpleadoController extends Controller{
         $empleado->activo = 1;
         $empleado->save();
 
-        Session::flash('message','Empleado agregado con éxito');
+        Session::flash('message', 'Empleado agregado con éxito');
         Session::flash('alert-class', 'alert-success');
 
         return redirect('empleado');
     }
-    
-    public function show($id){}
 
-    public function edit($id){
+    public function show($id)
+    {
+    }
+
+    public function edit($id)
+    {
         $empleados = DB::table('personas')
-        ->leftjoin('area','personas.area','area.id_a')
-        ->where('personas.id_p',$id)
-        ->first();
+            ->leftjoin('area', 'personas.area', 'area.id_a')
+            ->where('personas.id_p', $id)
+            ->first();
 
         $area = DB::table('area')->get();
-        
-        return view ('empleado.edit', ['empleado' => $empleados], ['area' => $area]);
+
+        return view('empleado.edit', ['empleado' => $empleados], ['area' => $area]);
     }
-    
-    public function update(Request $request, $id){
+
+    public function update(Request $request, $id)
+    {
         $activo = ($request['actividad'] == 'on') ? 1 : 0;
         $jefe = ($request['esJefe'] == 'on') ? 1 : 0;
 
-        if(!$activo || !$jefe){
+        if (!$activo || !$jefe) {
             DB::table('jefe_area')
                 ->where('jefe', $request['id_p'])
                 ->delete();
         }
-        
-        if(!$activo) {
+
+        if (!$activo) {
             //elimino todas las filas en las que el usuario tenia permisos 
             DB::table('model_has_roles')
                 ->leftjoin('users', 'users.id', 'model_has_roles.model_id')
@@ -140,11 +147,11 @@ class EmpleadoController extends Controller{
             //pongo todos los puestos a lo que esta persona pertenecia en null
             DB::table('puestos')
                 ->where('persona', $request['id_p'])
-                ->update(['persona' => null]);    
+                ->update(['persona' => null]);
         }
-        
+
         $empleado = DB::table('personas')
-            ->where('personas.id_p',$request['id_p'])
+            ->where('personas.id_p', $request['id_p'])
             ->update([
                 'nombre_p' => $request['nombre'],
                 'apellido' => $request['apellido'],
@@ -157,46 +164,55 @@ class EmpleadoController extends Controller{
                 'turno' => $request['turnoEdit'],
                 'activo' => $activo,
                 'jefe' => $jefe,
-            ]);      
-        Session::flash('message','Empleado modificado con éxito');
+            ]);
+        Session::flash('message', 'Empleado modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('empleado');
     }
 
-    public function destroy_empleado(Request $request, $id){
+    public function destroy_empleado(Request $request, $id)
+    {
         $empleado = Empleado::find($id);
         $empleado->activo = 0;
         $empleado->save();
 
-         return response()->json([
-        'message' => 'Empleado eliminado con éxito'
-        ]);       
+        return response()->json([
+            'message' => 'Empleado eliminado con éxito'
+        ]);
     }
-    
-    public function selectAreaEmpleados(){
+
+    public function selectAreaEmpleados()
+    {
         return DB::table('area')->get();
-    }  
-
-    public function selectTurnosEmpleados(){
-        return DB::table('turnos')->get();
-    }  
-
-    public function selectAreasTurnos(){
-        return [Empleado::selectAreas(),
-            Empleado::selectTurnos(),
-            Empleado::selectJefeXArea()];
     }
 
-    public function showUpdateAreaXJefe($id){
+    public function selectTurnosEmpleados()
+    {
+        return DB::table('turnos')->get();
+    }
+
+    public function selectAreasTurnos()
+    {
+        return [
+            Empleado::selectAreas(),
+            Empleado::selectTurnos(),
+            Empleado::selectJefeXArea()
+        ];
+    }
+
+    public function showUpdateAreaXJefe($id)
+    {
         $idsJAs = Empleado::showAreaXJefeUpdate($id);
         return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
     }
 
-    public function deleteAreaXJefe($idJA){
+    public function deleteAreaXJefe($idJA)
+    {
         $deletedRows = DB::table('jefe_area')->where('id_ja', $idJA)->delete();
     }
 
-    public function storeRelacionJefeXArea($idJefe, $areaId, $turnoId){
+    public function storeRelacionJefeXArea($idJefe, $areaId, $turnoId)
+    {
         $jefeXArea = new JefeXArea;
         $jefeXArea->jefe = $idJefe;
         $jefeXArea->area = $areaId;
@@ -204,12 +220,13 @@ class EmpleadoController extends Controller{
         $jefeXArea->save();
     }
 
-    public function obtenerNuevoListadoAreaXJefe($id){
+    public function obtenerNuevoListadoAreaXJefe($id)
+    {
         $idsJAs = Empleado::showAreaXJefeUpdate($id);
         return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
     }
 
-    
+
     public function getCursos(int $userId)
     {
         $cursos = $this->enrolamientoCursoService->getAllEnrolledCourses($userId);
@@ -218,21 +235,22 @@ class EmpleadoController extends Controller{
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
-            
+
             $areas = $this->cursoService->getAreasByCourseId($curso->id);
             $curso->areas = $areas;
-            
+
             $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
-        
+
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
                 $curso->capacitador = $instancia->capacitador;
                 $curso->modalidad = $instancia->modalidad;
+                $curso->instancia = $instancia->id_instancia;
             }
 
             $cursosConDetalles[] = $curso;
         }
 
-        return view('empleado.cursos', compact('cursosConDetalles','persona'));
+        return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }
 }

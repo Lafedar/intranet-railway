@@ -13,34 +13,20 @@
         <thead>
             <tr>
                 <th>Curso</th>
-                <th>Instancia</th>
-                <th>Area/s</th>
                 <th>Fecha</th>
                 <th>Capacitador</th>
                 <th>Modalidad</th>
                 <th>Tipo</th>
                 <th>Evaluación</th>
                 <th>Obligatorio</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             @foreach($cursosConDetalles as $curso)
                 <tr>
                     <td>{{ $curso->titulo}}</td>
-                    <td>{{ $curso->pivot->id_instancia }}</td>
-                    <td> @if($curso->areas->isEmpty())
-                        <span>N/A</span>
-                    @else
 
-                        @foreach($curso->areas->take(5) as $area)
-                            <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
-                        @endforeach
-                        @if($curso->areas->count() > 5)
-                            <span>...</span>
-                        @endif
-                    @endif
-
-                    </td>
                     <td>{{ \Carbon\Carbon::parse($curso->fecha_inicio)->format('d/m/Y') ?? 'N/A' }}</td>
 
                     <td>{{ $curso->capacitador ?? 'N/A' }}</td>
@@ -48,6 +34,18 @@
                     <td>{{$curso->tipo}}</td>
                     <td>{{ $curso->pivot->evaluacion ?? 'N/A' }}</td>
                     <td>{{ $curso->obligatorio == 1 ? 'Sí' : 'No' }}</td>
+                    <td>
+                        @if($curso->pivot->evaluacion == "Aprobado")
+                            <form
+                                action="{{ route('generarCertificado', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
+                                method="POST" id="form">
+                                @csrf
+                                <button type="submit" title="Ver Certificado" id="icono"><img
+                                        src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Documentos"
+                                        id="img-icono"></button>
+                            </form>
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>
