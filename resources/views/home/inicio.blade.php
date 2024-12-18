@@ -137,7 +137,7 @@
                 <img src="{{ asset('storage/Imagenes-principal-nueva/carousel1.jpg') }}" class="d-block w-100" alt="Imagen 1">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('storage/Imagenes-principal-nueva/butamolcomprimido.jpg') }}" class="d-block w-100" alt="Imagen 2">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/5.jpg') }}" class="d-block w-100" alt="Imagen 2">
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('storage/Imagenes-principal-nueva/AlbertoFernandezLafedar2.png') }}" class="d-block w-100" alt="Imagen 3">
