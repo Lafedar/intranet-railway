@@ -26,7 +26,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_falla"
-    id="asignar-btn"> Agregar falla</button>
+  id="btn-agregar"> Agregar falla</button>
   <!-- tabla de datos -->
   <div>
     <table>

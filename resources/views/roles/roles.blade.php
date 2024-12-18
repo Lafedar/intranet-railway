@@ -25,11 +25,11 @@
   </div>
 
   <div id="usuarios-btn">
-    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_usuario">Nuevo Usuario</button>
+    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_usuario" id="btn-agregar">Nuevo Usuario</button>
 
-    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_rol">Nuevo rol</button>
+    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_rol" id="btn-agregar">Nuevo rol</button>
 
-    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso">Nuevo permiso</button>
+    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" id="btn-agregar">Nuevo permiso</button>
   </div>
   <div >
     <div class="form-group">

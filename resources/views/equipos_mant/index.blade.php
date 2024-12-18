@@ -32,7 +32,7 @@
     </div>
   @endif
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_equipo_mant"
-    id="equipos-btn">Agregar Equipo</button>
+  id="btn-agregar">Agregar Equipo</button>
   <!-- barra para buscar equipos -->
   <div>
     <div class="form-group">

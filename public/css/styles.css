@@ -7,6 +7,66 @@
     /* Moves image 8px to the right */
 }
 
+/*GLOBALES*/
+/*Botones de buscar*/
+#asignar-btn {
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 40px;
+}
+
+#asignar-btn:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#asignar-btn:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/*Botones de Agregar/Crear*/
+#btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#btn-agregar:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-agregar:active {
+    background: rgba(100, 161, 206, 1);
+}
+
 /* Custom text styles */
 .custom-text {
     font-family: Calibri, sans-serif;
@@ -23,38 +83,6 @@
 }
 
 
-#custom-btn {
-    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
-    width: Hug (126px)px;
-    height: Hug (33px)px;
-    top: 20px;
-    left: 20px;
-    padding: 8px 12px 8px 12px;
-    gap: 10px;
-    border-radius: 8px;
-    opacity: 0px;
-    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
-    border: none;
-    font-family: Calibri, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 16.8px;
-    letter-spacing: -0.03em;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: rgba(245, 245, 245, 1);
-}
-
-#custom-btn:hover {
-    background: var(--HOVER, rgba(33, 102, 153, 1));
-
-}
-
-#custom-btn:active {
-    background: rgba(100, 161, 206, 1);
-
-}
 
 .table-container {
     padding-bottom: 50px;
@@ -234,12 +262,6 @@ table thead th {
     margin-top: 130px;
 }
 
-#permisos-crear {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    margin-bottom: 20px;
-    margin-top: -20px;
-    font-size: 17px;
-}
 
 #permisos-buscar {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
@@ -255,18 +277,10 @@ table thead th {
     margin-top: 130px;
 }
 
-#recepcion-nav button {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 #recepcion-botones {
     margin-bottom: 20px;
     margin-top: -20px;
 
-}
-
-#recepcion-botones a {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 #recepcion-tabla {
@@ -283,25 +297,41 @@ table thead th {
 #empleados-crear {
     margin-top: 120px;
     margin-left: 17px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    font-size: 17px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#empleados-crear:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#empleados-crear:active {
+    background: rgba(100, 161, 206, 1);
 }
 
 #empleados-nav {
     margin-top: -20px;
 }
 
-#empleados-buscar {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 #empleados-btn {
     padding: 1px;
     height: 25px;
 }
-
-
-
 
 .circle_green {
     width: 20px;
@@ -356,14 +386,6 @@ table thead th {
     margin-top: 100px;
 }
 
-#medico-nav a {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
-#medico-nav button {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 #medico-table {
     margin-top: -30px;
 }
@@ -381,14 +403,6 @@ table thead th {
 /*GUARDIA*/
 #guardia-container {
     margin-top: 120px;
-}
-
-#guardia-btn-visitantes {
-    margin-top: 80px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    width: 150px;
-    height: 50px;
-    padding: 10px;
 }
 
 #div-alert {
@@ -437,10 +451,6 @@ table thead th {
 
 }
 
-#asignar-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 #guardia-consulta-container {
     margin-top: 120px;
 }
@@ -458,10 +468,6 @@ table thead th {
     margin-top: 100px;
 }
 
-#planos-btn-agregar {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 #planos-table {
     margin-top: -20px;
@@ -472,11 +478,6 @@ table thead th {
     margin-top: 110px;
 }
 
-#proyectos-btn-agregar {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 #proyectos-table {
     margin-top: -30px;
 }
@@ -485,10 +486,6 @@ table thead th {
     margin-top: 110px;
 }
 
-#instructivos-btn-agregar {
-    margin-bottom: 15px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 
 /*NOVEDADES*/
@@ -522,10 +519,6 @@ table thead th {
 
 }
 
-#equipamiento-btn a {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 
 /*USUARIOS*/
 #usuarios-container {
@@ -538,9 +531,6 @@ table thead th {
 
 }
 
-#usuarios-btn button {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 /*ROLES*/
 #roles-container {
@@ -553,11 +543,6 @@ table thead th {
     margin-top: 130px;
 }
 
-#puestos-btn {
-    margin-bottom: 20px;
-    margin-top: -20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 #puestos-table {
     margin-top: -20px;
@@ -611,13 +596,6 @@ table thead th {
     margin-top: -30px;
 }
 
-#parametros-gen-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    margin-bottom: 20px;
-
-
-}
-
 
 /*SOFTWARE INSTALADO*/
 #equipos-container {
@@ -628,10 +606,6 @@ table thead th {
     margin-top: -15px;
 }
 
-#equipos-btn {
-    margin-bottom: 15px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 
 /*PARAMETROS MANT*/
@@ -644,19 +618,11 @@ table thead th {
     margin-top: 100px;
 }
 
-#areas-btn {
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 /*LOCALZACIONES*/
 #localizaciones-container {
     margin-top: 100px;
 
-}
-
-#localizaciones-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 
@@ -676,25 +642,10 @@ table thead th {
     margin-top: 100px;
 }
 
-#tipo-equip-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 /*TIPOS SOLICITUDES*/
 #tipos-sol-container {
     margin-top: 100px;
-}
-
-#tipos-sol-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
-
-
-/*PARAMETROS GEN*/
-#parametros-gen-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 
@@ -707,19 +658,10 @@ table thead th {
     margin-top: -30px;
 }
 
-#ventas-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 /*COSTOS*/
 #costos-container {
     margin-top: 100px;
-}
-
-#costos-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
 }
 
 #costos-table {
@@ -735,10 +677,6 @@ table thead th {
     margin-top: -30px;
 }
 
-#compras-btn {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    margin-bottom: 20px;
-}
 
 /*PRODUCCIONES*/
 #producciones-container {
@@ -749,20 +687,13 @@ table thead th {
     margin-top: -30px;
 }
 
-#producciones-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 /*CALIDAD*/
 #calidad-container {
     margin-top: 100px;
 }
 
-#calidad-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
+
 
 #calidad-table {
     margin-top: -30px;
@@ -773,16 +704,10 @@ table thead th {
     margin-top: 100px;
 }
 
-#rrhh-btn {
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
-
 
 #rrhh-table {
     margin-top: -30px;
 }
-
 
 
 /*SOLICITUDES*/
@@ -794,12 +719,8 @@ table thead th {
     margin-bottom: 20px;
     margin-left: 20px;
 
-
 }
 
-#solicitudes-btn button {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-}
 
 #solicitudes-paginacion {
     margin-bottom: 40px;

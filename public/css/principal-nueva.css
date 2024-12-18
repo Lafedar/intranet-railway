@@ -195,31 +195,36 @@ nav {
 }
 
 .nav-btn {
-    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
-    color: white;
-    border-radius: 10px;
-    border: none;
-    padding: 8px 16px;
     margin: 10px 0;
     cursor: pointer;
     width: 250px;
     height: 45px;
-    box-shadow: 0 20px 20px rgba(1, 1, 1, 0.6);
-    font-family: Inter;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 22px;
-    text-align: left;
     margin-left: 54px;
-    text-decoration: none;
     margin-top: -2px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 13px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Inter;
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration: none;
+    color: rgba(245, 245, 245, 1);
 }
 
 .nav-btn:hover {
-    background-color: white;
-    color: #004a99;
+    background: var(--HOVER, rgba(33, 102, 153, 1));
 }
-
+.nav-btn:active{
+    background: rgba(100, 161, 206, 1);
+}
 #novedades-principal {
     margin-left: 107px;
 }
@@ -241,7 +246,7 @@ nav {
 }
 
 #mantenimiento-principal {
-    margin-left: 75px;
+    margin-left: 70px;
 }
 
 #empleado-principal {
@@ -291,7 +296,7 @@ nav {
 }
 
 #mantenimiento-principal2 {
-    margin-left: 75px;
+    margin-left: 70px;
 }
 
 #empleado-principal2 {
@@ -419,32 +424,35 @@ nav {
 }
 
 .login button {
-    width: 100%;
-    padding: 10px;
-    background: rgba(30, 120, 200, 1);
-    color: white;
-    border: none;
-    cursor: pointer;
     margin-top: 5px;
     width: 110px;
     height: 35px;
     top: 642px;
     left: 98px;
-    gap: 0px;
-    border-radius: 10px 10px 10px 10px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
     opacity: 0px;
-    font-family: Inter;
-    font-size: 16px;
-    font-weight: 800;
-    line-height: 19.36px;
-    letter-spacing: 0.01em;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
     text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
 }
 
 .login button:hover {
-    background-color: #003a7a;
+    background: var(--HOVER, rgba(33, 102, 153, 1));
 }
-
+.login button:active{
+    background: rgba(100, 161, 206, 1);
+}
 #img-usuario {
     width: 30px;
     height: auto;
@@ -558,11 +566,32 @@ nav {
 }
 
 .botones-cards a {
-    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
-    color: white;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
     padding: 10px;
-    text-decoration: none;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
     height: 40px;
+}
+.botones-cards a:hover{
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+    color: rgba(245, 245, 245, 1);
+
+}
+
+.botones-cards a:active{
+    background: rgba(100, 161, 206, 1);
 }
 
 /* FOOTER */

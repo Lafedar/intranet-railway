@@ -25,7 +25,7 @@
   @endif
 
   <!-- barra para buscar archivos -->
-  <button class="btn btn-info"  data-toggle="modal" data-target="#agregar" id="rrhh-btn"> Agregar</button>
+  <button class="btn btn-info"  data-toggle="modal" data-target="#agregar" id="btn-agregar"> Agregar</button>
   <div>
     <h1>
       <div class="form-inline pull-right">

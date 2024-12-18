@@ -27,8 +27,8 @@
   <!-- Barra de búsqueda -->
   <div>
     <div id="equipamiento-btn">
-      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_equipamiento">Nuevo equipamiento</a>
-      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_software">Nuevo Software</a>
+      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_equipamiento" id="btn-agregar">Nuevo equipamiento</a>
+      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_software" id="btn-agregar">Nuevo Software</a>
     </div>
 
     <div class="form-group">

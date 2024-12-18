@@ -38,11 +38,13 @@
     font-weight: bold;
     color: #004a99;
     margin-top: 0px;
-    
+
 }
-.no-role .novedades-titulo{
-    margin-top:150px;
+
+.no-role .novedades-titulo {
+    margin-top: 150px;
 }
+
 /* Botones */
 .novedades-botones-cards {
     display: flex;
@@ -50,11 +52,32 @@
 }
 
 .novedades-botones-cards a {
-    background: linear-gradient(90deg, #1C547C 0.66%, #3399E2 109.41%);
-    color: white;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
     padding: 10px;
-    text-decoration: none;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
     height: 40px;
+}
+
+.novedades-botones-cards a:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+    color: rgba(245, 245, 245, 1);
+}
+
+.novedades-botones-cards a:active {
+    background: rgba(100, 161, 206, 1);
 }
 
 /* Título de card */
@@ -93,26 +116,33 @@
 #crear-novedad {
     margin-top: 100px;
     margin-left: 1200px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    font-size: 17px;
-  
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-
-
     width: 200px;
-    font-family: 'Inter', sans-serif;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
     text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
 }
 
 
+
 #crear-novedad:hover {
-    text-decoration: none;
-    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#crear-novedad:active {
+    background: rgba(100, 161, 206, 1);
 }
 
 #novedades-footer {

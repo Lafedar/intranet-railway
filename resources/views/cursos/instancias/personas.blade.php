@@ -50,9 +50,9 @@
                 <table>
                     <thead>
                         <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
-                            id="BI">Inscribir seleccionados</button>
+                            id="btn-agregar">Inscribir seleccionados</button>
                         <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
-                            class="btn btn-secondary" id="volver">Volver</a>
+                            class="btn btn-secondary" id="asignar-btn" style="margin-top:-10px;">Volver</a>
 
                         <tr>
                             <th>Legajo</th>

@@ -21,7 +21,7 @@
 
   <div id="permisos-nav">
     <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" type="submit"
-      id="permisos-crear">Nuevo permiso</a>
+      id="btn-agregar">Nuevo permiso</a>
     <h1>
       <div>
         <form method="GET" class="form-inline" action="{{ route('permisos.index') }}">
@@ -39,7 +39,7 @@
         @endforeach
             </select>
           </div>
-          <button type="submit" class="btn btn-default" id="permisos-buscar">Buscar</button>
+          <button type="submit" class="btn btn-default" id="asignar-btn">Buscar</button>
 
 
         </form>

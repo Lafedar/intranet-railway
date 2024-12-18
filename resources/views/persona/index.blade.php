@@ -28,8 +28,8 @@
 <div class="container-fluid">
   <div id="recepcion-nav">
     <div id="recepcion-botones">
-      <a class="btn btn-secondary" href="/internos">Internos</a>&nbsp
-      <button class="btn btn-info" data-toggle="modal" data-target="#agregar"> Agregar</button>
+      <a class="btn btn-secondary" href="/internos" id="btn-agregar">Internos</a>&nbsp
+      <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="btn-agregar"> Agregar</button>
     </div>
 
     <h1>
@@ -46,7 +46,7 @@
               <input type="text" name="empresa" class="form-control" id="empresa" value="{{$empresa}}">
             </div>
             &nbsp
-            <button type="submit" class="btn btn-default"> Buscar</button>
+            <button type="submit" class="btn btn-default" id="asignar-btn"> Buscar</button>
         </form>
       </div>
     </h1>

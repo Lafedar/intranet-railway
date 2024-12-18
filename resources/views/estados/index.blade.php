@@ -26,7 +26,7 @@
   @endif
 
   <!-- barra para buscar equipos -->
-  <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_estado" id="asignar-btn"> Agregar estado</button>
+  <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_estado" id="btn-agregar"> Agregar estado</button>
   <!-- tabla de datos -->
   <div>
     <table>

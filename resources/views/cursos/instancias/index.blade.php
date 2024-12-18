@@ -45,12 +45,12 @@
 
         @role(['administrador', 'Gestor-cursos'])
         <a href="{{ route('cursos.instancias.create', ['instanciaId' => $cantInstancias, 'curso' => $curso->id]) }}"
-            class="btn btn-warning btn-sm mb-3" id="BCI">
+            class="btn btn-warning btn-sm mb-3" id="btn-agregar">
             Crear Nueva Instancia
         </a>
         @endrole
 
-        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="volver-instancias">Volver</a>
+        <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Volver</a>
 
 
 

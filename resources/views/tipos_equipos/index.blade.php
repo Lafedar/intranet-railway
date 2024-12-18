@@ -28,7 +28,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_tipo_equipo"
-    id="tipo-equip-btn">Agregar tipo de equipo</button>
+  id="btn-agregar">Agregar tipo de equipo</button>
   <!-- tabla de datos -->
   <div id="software-table">
     <table>

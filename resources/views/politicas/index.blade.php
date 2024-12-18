@@ -29,10 +29,10 @@
 
   <!-- tabla de datos -->
   @role('administrador')
-  <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="asignar-btn">Agregar</button>
+  <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="btn-agregar">Agregar</button>
   @endrole
   @role('politicas')
-  <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="asignar-btn">Agregar</button>
+  <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="btn-agregar">Agregar</button>
   @endrole
   <div>
     <table>

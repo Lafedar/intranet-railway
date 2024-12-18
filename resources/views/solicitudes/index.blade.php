@@ -33,10 +33,10 @@
   @endif
   <div id="solicitudes-btn">
     @can('reporte-solicitudes')
-    <button id="reporte" class="btn btn-info" onclick='Report()' title="report">Reporte</button>
+    <button  class="btn btn-info" onclick='Report()' title="report" id="btn-agregar">Reporte</button>
   @endcan
 
-    <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_solicitud">
+    <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_solicitud" id="btn-agregar">
       Agregar solicitud</button>
   </div>
 

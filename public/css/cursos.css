@@ -13,8 +13,70 @@
     z-index: 9999;
     opacity: 1;
     transition: opacity 1s ease-in-out;
-    
+
 }
+
+/*Botones Crear/Agregar*/
+#btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#btn-agregar:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-agregar:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/*Botones Buscar y Modales*/
+#asignar-btn {
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 1px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    margin-top: -15px;
+    height: 50px;
+}
+
+#asignar-btn:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#asignar-btn:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+
 
 
 #danger {
@@ -142,23 +204,27 @@
 
 #volver-instancias {
     margin-left: 12px;
-    height: 45px;
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    height: 50px;
     margin-top: 10px;
     margin-left: 4px;
-    padding: 10px 20px;
     width: 100px;
-    height: 47px;
-    font-family: 'Inter', sans-serif;
     margin-bottom: 10px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
     text-decoration: none;
+    color: rgba(245, 245, 245, 1);
 }
 
 #volver-instancias:hover {
@@ -171,27 +237,37 @@
 
 /*boton inscribir*/
 #BI {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+
     margin-top: 10px;
     margin-right: 0px;
     margin-bottom: 10px;
     width: 250px;
-    font-family: 'Inter', sans-serif;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
     text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
 }
 
 
 #BI:hover {
-    text-decoration: none;
-    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#BI:active {
+    background: rgba(100, 161, 206, 1);
 }
 
 
@@ -395,6 +471,7 @@ table thead th {
     margin-bottom: 0px;
     width: 300px;
     font-family: 'Inter', sans-serif;
+    height: 50px;
 
 }
 
@@ -406,7 +483,7 @@ table thead th {
     opacity: 0.5;
     border: none;
     background: none;
-    margin: 5px; 
+    margin: 5px;
     cursor: not-allowed;
 }
 
@@ -425,34 +502,43 @@ table thead th {
 /*CURSOS*/
 /*btn crear curso*/
 #BCC {
-    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
-    border: none;
-    color: white;
-    padding: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+
     margin-top: -70px;
     margin-left: 3px;
     margin-bottom: 10px;
     width: 150px;
     height: 40px;
-    font-family: 'Inter', sans-serif;
-    text-align: center;
     display: inline-block;
     text-align: center;
     vertical-align: middle;
     line-height: 1.5;
-    font-weight: 400;
-    text-transform: none;
-    border: 1px solid transparent;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
 }
 
 #BCC:hover {
-    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    background: var(--HOVER, rgba(33, 102, 153, 1));
     text-decoration: none;
+}
+
+#BCC:active {
+    background: rgba(100, 161, 206, 1);
+
 }
 
 .filter-container {
@@ -516,6 +602,7 @@ table thead th {
 .filter-item select option {
     color: black;
 }
+
 .filter-item button {
     background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
     color: rgba(255, 255, 255, 1);

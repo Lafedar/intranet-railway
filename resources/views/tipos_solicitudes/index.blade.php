@@ -27,7 +27,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_tipo_solicitud"
-    id="tipos-sol-btn">Agregar tipo de solicitud</button>
+  id="btn-agregar">Agregar tipo de solicitud</button>
   <!-- tabla de datos -->
   <div>
     <table>

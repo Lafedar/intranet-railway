@@ -19,7 +19,7 @@
             </div>
         </div>
     @endif
-    <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" id="puestos-btn"> Nuevo
+    <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" id="btn-agregar"> Nuevo
         puesto</button>
     <div>
         <h1>

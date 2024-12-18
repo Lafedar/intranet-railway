@@ -49,7 +49,7 @@
         </div>
       </div>
       <a href="/listado" class="btn btn-info" data-position="top" data-delay="50" title="Listado de personas"
-        id="guardia-btn-visitantes"><b>Visitantes</b></a>
+        id="btn-agregar" style="margin-top: 50px;"><b>Visitantes</b></a>
     </div>
     <div id="footer-lafedar"></div>
 

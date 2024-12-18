@@ -27,7 +27,7 @@
     </div>
   @endif
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar"
-    id="instructivos-btn-agregar"> Agregar</button>
+    id="btn-agregar"> Agregar</button>
 
   <!-- barra para buscar instructivos -->
   <div>

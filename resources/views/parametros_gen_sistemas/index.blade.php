@@ -39,7 +39,7 @@
     @endif
 
 
-    <button type="button" id="parametros-gen-btn" class="btn btn-primary" data-toggle="modal"
+    <button type="button" id="btn-agregar" class="btn btn-primary" data-toggle="modal"
         data-target="#agregarModal">
         Agregar Parámetro
     </button>

@@ -41,7 +41,7 @@
                   en
                   actividad</label>
               </div>
-              <button type="submit" class="btn btn-primary" id="empleados-buscar">Buscar</button>
+              <button type="submit" class="btn btn-primary" id="asignar-btn">Buscar</button>
             </div>
           </div>
         </div>

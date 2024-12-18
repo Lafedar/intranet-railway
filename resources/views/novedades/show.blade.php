@@ -117,17 +117,30 @@
     }
 
     .btn-primary {
-        background-color: #3498db;
-        border-color: #3498db;
-        padding: 10px 20px;
-        font-size: 1rem;
+        background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
     }
 
     .btn-primary:hover {
-        background-color: #2980b9;
-        border-color: #2980b9;
+        background: var(--HOVER, rgba(33, 102, 153, 1));
     }
-
+.btn-primary:active{
+    background: rgba(100, 161, 206, 1);
+}
     .img-fluid {
         border-radius: 10px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);

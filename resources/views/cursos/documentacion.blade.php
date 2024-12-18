@@ -23,7 +23,7 @@
 
         <main>
             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
-                id="volver">Volver</a>
+                id="asignar-btn">Volver</a>
             <table class="table table-bordered table-striped text-center">
                 <thead class="thead-dark">
                     <tr>

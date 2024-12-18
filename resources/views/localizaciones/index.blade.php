@@ -31,7 +31,7 @@
   @endif
 
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
-    id="localizaciones-btn">Agregar Localización</button>
+  id="btn-agregar">Agregar Localización</button>
 
   <!-- tabla de datos -->
   <div id="localizaciones-table">

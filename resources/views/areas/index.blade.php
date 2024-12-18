@@ -27,7 +27,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_area"
-    id="areas-btn"> Agregar area</button>
+  id="btn-agregar"> Agregar area</button>
   <!-- tabla de datos -->
   <div>
     <table>

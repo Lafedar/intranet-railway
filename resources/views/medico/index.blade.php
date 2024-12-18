@@ -21,10 +21,10 @@
 
   <div id="medico-nav">
     <div id="medico-buttons">
-      <a href="{{route('medico.create')}}" class="btn btn-info btn-xl" data-position="top" data-delay="50">Nueva
+      <a href="{{route('medico.create')}}" class="btn btn-info btn-xl" data-position="top" data-delay="50" id="btn-agregar">Nueva
         Consulta</a>
       &nbsp
-      <a href="/historia_clinica" class="btn btn-info btn-xl" data-position="top" data-delay="50">Historia Clinica</a>
+      <a href="/historia_clinica" class="btn btn-info btn-xl" data-position="top" data-delay="50" id="btn-agregar" >Historia Clinica</a>
     </div>
 
     <h1>
@@ -41,7 +41,7 @@
               <input type="date" name="fecha" class="form-control" step="1" min="2019-01-01" value="{{$fecha}}">
             </div>
             &nbsp
-            <button type="submit" class="btn btn-default">Buscar consulta</button>
+            <button type="submit" class="btn btn-default" id="asignar-btn">Buscar consulta</button>
         </form>
       </div>
     </h1>
