@@ -222,9 +222,11 @@ nav {
 .nav-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
-.nav-btn:active{
+
+.nav-btn:active {
     background: rgba(100, 161, 206, 1);
 }
+
 #novedades-principal {
     margin-left: 107px;
 }
@@ -335,6 +337,7 @@ nav {
 .authenticated .carousel-item img {
     height: 180px;
     object-fit: cover;
+
 }
 
 .authenticated .novedades {
@@ -450,9 +453,11 @@ nav {
 .login button:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
-.login button:active{
+
+.login button:active {
     background: rgba(100, 161, 206, 1);
 }
+
 #img-usuario {
     width: 30px;
     height: auto;
@@ -584,13 +589,14 @@ nav {
     color: rgba(245, 245, 245, 1);
     height: 40px;
 }
-.botones-cards a:hover{
+
+.botones-cards a:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
     color: rgba(245, 245, 245, 1);
 
 }
 
-.botones-cards a:active{
+.botones-cards a:active {
     background: rgba(100, 161, 206, 1);
 }
 
