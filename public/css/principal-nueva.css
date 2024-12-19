@@ -358,15 +358,13 @@ nav {
 }
 
 .authenticated .carousel-container {
-    height: 550px;
-    margin-top: -310px;
-
+    height: 800px; 
+    margin-top: -310px; 
 }
 
 .authenticated .carousel-container img {
-    max-height: 600px;
-    height: 550px;
-
+    max-height: 340px; 
+    height: auto; 
 }
 
 .authenticated .footer {
