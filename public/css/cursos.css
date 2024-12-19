@@ -77,7 +77,22 @@
 }
 
 
+/* Estilo para los botones y enlaces dentro de la celda en cursos.index*/
+.acciones-cursos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
+}
+
+#acciones-cursos a,
+#acciones-cursos button,
+#acciones-cursos form {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+}
 
 #danger {
     text-align: center;
@@ -483,8 +498,8 @@ table thead th {
     opacity: 0.5;
     border: none;
     background: none;
-    margin: 5px;
     cursor: not-allowed;
+    padding: 0;
 }
 
 #iconos-instancias {

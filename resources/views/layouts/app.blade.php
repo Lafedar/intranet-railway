@@ -7,7 +7,7 @@
 	<!-- Custom CSS -->
 	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
 
-	
+
 
 </head>
 
@@ -22,8 +22,7 @@
 
 		@auth
 			<div class="dropdown">
-				<button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
-					style="border: none; background: none; padding: 0; cursor: pointer;">
+				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
 					<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -52,14 +51,14 @@
 			</div>
 		</div>
 	</main>
-	@stack('modales') 
+	@stack('modales')
 	<!-- Footer -->
 	<footer>
 		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
 	</footer>
 
 	<!-- Bootstrap JS (ensure Popper.js and Bootstrap JS are loaded) -->
-	
+
 </body>
 
 </html>

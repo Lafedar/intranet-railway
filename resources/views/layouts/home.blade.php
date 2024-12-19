@@ -19,8 +19,7 @@
         </div>
         @auth
             <div class="dropdown">
-                <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
-                    style="border: none; background: none; padding: 0; cursor: pointer;">
+                <button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
                     <img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">

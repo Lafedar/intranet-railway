@@ -11,6 +11,18 @@
 
 }
 
+#dropdown {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#dropdown:hover {
+    transform: scale(1.3);
+    /* Aumenta el tamaño al 110% */
+}
+
 /* Estilos del encabezado */
 .header-icon {
     position: absolute;
@@ -358,13 +370,13 @@ nav {
 }
 
 .authenticated .carousel-container {
-    height: 800px; 
-    margin-top: -310px; 
+    height: 800px;
+    margin-top: -310px;
 }
 
 .authenticated .carousel-container img {
-    max-height: 340px; 
-    height: auto; 
+    max-height: 340px;
+    height: auto;
 }
 
 .authenticated .footer {
