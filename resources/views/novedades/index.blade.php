@@ -147,6 +147,7 @@
                                             <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn"
                                                 onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
                                         </div>
+                                        @endrole
                                         @role('rrhh')
                                         <div>
                                             <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
@@ -154,7 +155,7 @@
                                                 onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
                                         </div>
                                         @endrole
-                                        @endrole
+                                        
                                     </div>
                                 </div>
                             </div>
