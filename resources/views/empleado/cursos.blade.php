@@ -10,7 +10,7 @@
     </h1>
     <form action="{{ route('exportarCursos', ['personaId' => $persona->id_p]) }}" method="GET">
         @csrf
-        <button type="submit" id="custom-btn">Exportar a Excel</button>
+        <button type="submit" id="asignar-btn">Exportar a Excel</button>
     </form>
 
     <table>
