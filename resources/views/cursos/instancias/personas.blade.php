@@ -84,7 +84,7 @@
                                             value="1">
                                     @endif
                                 </td>
-
+                                </form>
                                 <td>
                                     @if($persona->estadoEnrolado)
 
@@ -107,7 +107,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </form>
+            
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
