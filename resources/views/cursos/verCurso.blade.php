@@ -1,9 +1,24 @@
-@extends('cursos.layouts.layout')
+@extends('layouts.app')
 
-@section('content')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Instancias del Curso</title>
+    <!-- Link de Bootstrap -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/cursos.css') }}" rel="stylesheet" />
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<link href="{{ asset('css/cursos.css') }}" rel="stylesheet" />
+
+
+</head>
+
+
+
 <div id="container-ver-cursos" class="container mt-5">
     <div class="text-center">
         <h1 id="h1-ver-cursos" class="mb-4">Datos del curso</h1>
@@ -59,8 +74,8 @@
         </div>
 
 
-        <div class="d-flex justify-content-between">
-            <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="button-secondary-ver-cursos">Volver</a>
+        <div>
+            <a href="{{ route('cursos.index') }}" id="asignar-btn">Volver</a>
         </div>
     </form>
 </div>
@@ -77,4 +92,3 @@
     });
 </script>
 
-@endsection

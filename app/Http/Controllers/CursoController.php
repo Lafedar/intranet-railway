@@ -48,6 +48,7 @@ class CursoController extends Controller
             $areaId = $request->input('area_id', null);
 
             $userDni = auth()->user()->dni;
+           dd(auth()->user());
             $personaDni = $this->personaService->getByDni($userDni);
 
 
@@ -107,7 +108,7 @@ class CursoController extends Controller
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
-           
+
 
             return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
 
@@ -201,13 +202,13 @@ class CursoController extends Controller
             $curso = $this->cursoService->create($validatedData);
             $curso->areas()->attach($validatedData['area']);
 
-           
+
             return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            
+
             return redirect()->back()->withErrors($e->validator->errors());
         } catch (Exception $e) {
-           
+
             return redirect()->back()->withErrors('Hubo un problema al crear el curso: ' . $e->getMessage());
         }
     }
@@ -264,16 +265,16 @@ class CursoController extends Controller
                 'area' => 'nullable|array',
             ]);
 
-            
+
             $curso->update($validatedData);
-             
+
             if (!empty($validatedData['area'])) {
                 $curso->areas()->sync($validatedData['area']);
             } else {
-                
+
                 $curso->areas()->detach();
             }
-           
+
 
             return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
 
@@ -373,13 +374,52 @@ class CursoController extends Controller
         return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha'));
     }
 
-    public function verCurso($cursoId){
+    public function verCurso($cursoId)
+    {
         $curso = $this->cursoService->getById($cursoId);
         $areas = $this->cursoService->getAreasByCourseId(($cursoId));
         return view('cursos.verCurso', compact('curso', 'areas'));
     }
 
+    public function generarPDFcertificado(int $cursoId, int $id_persona)
+    {
+        $is_pdf = true;
+        $curso = $this->cursoService->getById($cursoId);
+        $persona = $this->personaService->getById($id_persona);
+        $fecha = now()->format('d/m/Y');
 
+
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
+
+        if (file_exists($imagePath)) {
+
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+
+            $imageBase64 = null;
+        }
+
+
+        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
+
+
+        $pdf = SnappyPdf::loadHTML($html)
+            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
+            ->setOption('enable-local-file-access', true)
+            ->setOption('enable-javascript', true)
+            ->setOption('javascript-delay', 200)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 5)
+            ->setOption('margin-left', 10);
+
+
+        return $pdf->download('certificado.pdf');
+    }
 
 }
 

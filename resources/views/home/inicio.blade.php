@@ -111,12 +111,14 @@
             <div class="nav-group">
 
             <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
+            <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
 
 
             </div>
             <div class="nav-group">
                 @role('rrhh')
                 <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal2">></span></a>
+                
                 @endrole
                 @role(['medico', 'rrhh'])
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal2">></span></a>

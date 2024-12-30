@@ -285,7 +285,9 @@
     background: rgba(100, 161, 206, 1);
 }
 
-
+#h1-ver-cursos{
+    margin-top: 100px;
+}
 
 /*logo lafedar */
 .img-logo img {
