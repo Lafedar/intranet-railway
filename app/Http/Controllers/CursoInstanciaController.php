@@ -95,10 +95,13 @@ class CursoInstanciaController extends Controller
             $userDni = Auth::user()->dni;
 
 
-            $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni) {
+            $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni, $curso) {
 
                 $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id_instancia);
                 $instancia->isEnrolled = $isEnrolled;
+                $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
+                $instancia->cantInscriptos = $cantInscriptos;
+
                 return $instancia;
 
             });

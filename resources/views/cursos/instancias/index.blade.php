@@ -80,7 +80,14 @@
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instance->fecha_fin)->format('d/m/Y') }}</td>
                                     @role(['administrador', 'Gestor-cursos'])
-                                    <td>{{ $instance->cupo }}</td>
+                                    <td>
+                                        @if($instance->cupo === null || $instance->cupo === '')
+                                            <!-- Si cantInscriptos es null, mostramos 0 -->
+                                            {{ $instance->cantInscriptos ?? 0 }}
+                                        @else
+                                            {{ $instance->cupo }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($instance->restantes == null)
                                             <span class="badge bg-danger text-dark">
