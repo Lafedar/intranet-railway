@@ -48,7 +48,6 @@ class CursoController extends Controller
             $areaId = $request->input('area_id', null);
 
             $userDni = auth()->user()->dni;
-           dd(auth()->user());
             $personaDni = $this->personaService->getByDni($userDni);
 
 
