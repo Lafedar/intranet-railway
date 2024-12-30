@@ -434,6 +434,15 @@ table thead th {
     border-color: #c3e6cb;
 }
 
+#errorMessage {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    /* Asegura que el mensaje se muestre encima de otros elementos */
+}
+
 #listado-container {
     margin-top: 120px;
 }
