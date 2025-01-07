@@ -84,13 +84,12 @@
             </div>
             <div class="nav-group">
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
-
             </div>
             <div class="nav-group">
                 <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
                 <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal">></span></a>
-                <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
+                <a href="/capacitacion" class="nav-btn">Capacitacion <span id="capacitacion-principal">></span></a>
             </div>
         @else
             <div class="nav-group">
@@ -111,7 +110,7 @@
             <div class="nav-group">
 
             <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
-            <a href="/cursos" class="nav-btn">Cursos <span id="cursos-principal">></span></a>
+            <a href="/capacitacion" class="nav-btn">Capacitacion <span id="capacitacion-principal">></span></a>
 
 
             </div>

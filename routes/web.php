@@ -525,7 +525,7 @@ Route::get('/novedades/{id}', [NovedadesController::class, 'show'])->name('noved
 
 Route::group(['middleware' => ['auth']], function () {
 
-  Route::get('/cursos', [CursoController::class, 'listAll'])->name('cursos.index');
+  Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('cursos.index');
   Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store')->middleware('role:administrador|Gestor-cursos');
   Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');

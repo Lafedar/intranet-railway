@@ -46,9 +46,7 @@ class CursoController extends Controller
         try {
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
-
-            $userDni = auth()->user()->dni;
-           dd(auth()->user());
+            $userDni = auth()->user()->dni;           
             $personaDni = $this->personaService->getByDni($userDni);
 
 

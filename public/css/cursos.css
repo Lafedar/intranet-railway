@@ -519,11 +519,10 @@ table thead th {
 /*CURSOS*/
 /*btn crear curso*/
 #BCC {
-
     margin-top: -70px;
     margin-left: 3px;
     margin-bottom: 10px;
-    width: 150px;
+    width: 180px;
     height: 40px;
     display: inline-block;
     text-align: center;
@@ -545,7 +544,7 @@ table thead th {
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: rgba(245, 245, 245, 1);
-    height: 50px;
+    height: 50px;   
 }
 
 #BCC:hover {
