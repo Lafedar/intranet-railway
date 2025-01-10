@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col">
       <label for="title"><strong>ID:</strong></label>
-      <input type="text" name="id" class="form-control" id="id_e" autocomplete="off" value="{{old('id')}}" maxlength="5" required>
+      <input type="text" name="id" class="form-control" id="id_e" autocomplete="off" value="{{old('id')}}" maxlength="7" required>
     </div>
     <div class="col">
       <label for="title"><strong>Tipo:</strong></label>
