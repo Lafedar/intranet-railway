@@ -225,11 +225,14 @@ nav {
     font-weight: 600;
     line-height: 16.8px;
     letter-spacing: -0.03em;
-    text-align: center;
+    text-align: left;
     text-underline-position: from-font;
     text-decoration: none;
     color: rgba(245, 245, 245, 1);
 }
+
+
+
 
 .nav-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
@@ -280,7 +283,7 @@ nav {
 }
 
 #capacitacion-principal {
-    margin-left: 79px;
+    margin-left: 63px;
 }
 
 #internos-principal {

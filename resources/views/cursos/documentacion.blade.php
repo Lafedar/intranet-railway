@@ -18,7 +18,8 @@
     <div class="container mt-5">
 
         <header id="encabezados">
-            <h1 id="titulo">Documentos de la Instancia: {{$instancia->id_instancia}}</h1>
+            <h2 id="titulo">{{$curso->titulo}}</h2>   
+            <h3 id="titulo">Fecha: {{$instancia->fecha_inicio->format('d/m/Y')}}</h3>
         </header>
 
         <main>

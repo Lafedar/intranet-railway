@@ -89,7 +89,7 @@
                 <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
                 <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal">></span></a>
-                <a href="/capacitacion" class="nav-btn">Capacitacion <span id="capacitacion-principal">></span></a>
+                <a href="/capacitaciones" class="nav-btn">Capacitaciones <span id="capacitacion-principal">></span></a>
             </div>
         @else
             <div class="nav-group">

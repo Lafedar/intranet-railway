@@ -40,13 +40,13 @@ class CursosExport implements FromCollection, WithHeadings, ShouldAutoSize
 
         // Datos adicionales antes de la tabla
         $datosAdicionales = [
-            ['Cursos de: ' . $this->persona->nombre_p . ' ' . $this->persona->apellido], // Fila con el nombre de la persona
+            ['Capacitaciones de: ' . $this->persona->nombre_p . ' ' . $this->persona->apellido], // Fila con el nombre de la persona
             [], // Fila vacía para separación
         ];
         $filaVacia = collect([['']]);
         // Crear encabezados de la tabla
         $encabezadoTabla = [
-            ['Curso', 'Fecha de Inicio', 'Capacitador', 'Modalidad', 'Tipo', 'Evaluación', 'Obligatorio'],
+            ['Capacitación', 'Fecha de Inicio', 'Capacitador', 'Modalidad', 'Tipo', 'Evaluación', 'Obligatorio'],
         ];
 
         // Combinar los datos adicionales, la fila vacía y la tabla de cursos con encabezado

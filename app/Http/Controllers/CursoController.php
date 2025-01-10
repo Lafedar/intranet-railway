@@ -201,7 +201,7 @@ class CursoController extends Controller
             $curso->areas()->attach($validatedData['area']);
 
 
-            return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+            return redirect()->route('cursos.index')->with('success', 'Capacitación creada exitosamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             return redirect()->back()->withErrors($e->validator->errors());
@@ -274,7 +274,7 @@ class CursoController extends Controller
             }
 
 
-            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente.');
+            return redirect()->route('cursos.index')->with('success', 'Capacitación actualizada exitosamente.');
 
         } catch (Exception $e) {
             session()->flash('error', 'Error al actualizar el curso: ' . $e->getMessage());

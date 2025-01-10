@@ -21,7 +21,7 @@
 
 <div id="container-ver-cursos" class="container mt-5">
     <div class="text-center">
-        <h1 id="h1-ver-cursos" class="mb-4">Datos del curso</h1>
+        <h1 id="h1-ver-cursos" class="mb-4">Datos de la capacitación</h1>
     </div>
 
     <form action="{{ route('cursos.update', $curso->id) }}" method="POST" class="bg-light p-4 rounded shadow"

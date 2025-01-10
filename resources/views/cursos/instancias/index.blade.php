@@ -37,7 +37,7 @@
 
 
         <div id="encabezados">
-            <h1 id="titulo">Curso: {{ $curso->titulo }} </h1>
+            <h1 id="titulo">Capacitación: {{ $curso->titulo }} </h1>
         </div>
 
 

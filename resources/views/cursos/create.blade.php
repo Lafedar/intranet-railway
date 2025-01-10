@@ -24,7 +24,7 @@
 
 <div class="container mt-5">
     <div id="cursos-create-container">
-        <h1 class="mb-4 text-center">Crear Curso</h1>
+        <h1 class="mb-4 text-center">Crear Capacitación</h1>
         <form id="cursoForm" action="{{ route('cursos.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -87,7 +87,7 @@
                     <option value="Externa">Externa</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Curso</button>
+            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Capacitación</button>
             <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Volver</a>
         </form>
     </div>

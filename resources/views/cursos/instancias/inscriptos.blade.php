@@ -33,7 +33,7 @@
 
 
         <div id="encabezados">
-            <h1 id="titulo">Inscriptos del Curso: {{ $curso->titulo }}</h1>
+            <h1 id="titulo">Inscriptos a la Capacitación: {{ $curso->titulo }}</h1>
 
         </div>
 
@@ -41,7 +41,7 @@
         <br>
         <!-- Si no hay inscriptos -->
         @if($inscriptos->isEmpty())
-            <p><b>No hay inscriptos en este curso.</b></p>
+            <p><b>No hay inscriptos en esta capacitación.</b></p>
         @else
             <!-- Formulario para crear planilla -->
             @role(['administrador', 'Gestor-cursos'])

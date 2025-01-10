@@ -84,7 +84,7 @@
                         <th>Descripción</th>
                         <th>Obligatorio</th>
                         @role(['administrador', 'Gestor-cursos'])
-                        <th>Codigo</th>
+                        <th>Código</th>
                         <th>Area</th>
                         @endrole
                         <th>Fecha de Creación</th>
@@ -162,15 +162,15 @@
                         @role(['administrador', 'Gestor-cursos'])
                         <td id="acciones-cursos">
                         <div class="acciones-cursos">
-                        <a href="{{ route('cursos.edit', $curso->id) }}" title="Editar Curso">
+                        <a href="{{ route('cursos.edit', $curso->id) }}" title="Editar capacitación">
                                 <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar" id="icono">
                             </a>
 
                             @if($curso->cantInscriptos == 0)
-                                <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST"  onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso y sus instancias?');">
+                                <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST"  onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta capacitación y sus instancias?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"  title="Eliminar Curso" id="icono" >
+                                    <button type="submit"  title="Eliminar capacitación" id="icono" >
                                         <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" >
                                     </button>
                                 </form>
@@ -179,7 +179,7 @@
                                         <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" >
                                     </button>
                             @endif
-                            <a href="{{ route('cursos.verCurso', $curso->id) }}" title="Ver datos del curso" id="icono">
+                            <a href="{{ route('cursos.verCurso', $curso->id) }}" title="Ver datos de la capacitación" id="icono">
                                 <img src="{{ asset('storage/cursos/ver.png') }}" loading="lazy" alt="Ver" id="img-icono">
                             </a>
                         </div>

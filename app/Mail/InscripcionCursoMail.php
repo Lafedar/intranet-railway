@@ -28,7 +28,7 @@ class InscripcionCursoMail extends Mailable
     public function build()
     {
         return $this->view('mails.inscripcion_curso')
-            ->subject('Inscripción al Curso')
+            ->subject('Inscripción a la Capacitación')
             ->with([
                 'user' => $this->user,
                 'curso' => $this->curso,

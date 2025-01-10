@@ -22,7 +22,7 @@ class CertificadoMail extends Mailable
  
     public function build()
     {
-        return $this->subject('Certificado del Curso')
+        return $this->subject('Certificado de la Capacitación')
                     ->view('mails.certificado', ['nombre' => $this->nombre], ['apellido' => $this->apellido],  ['curso' => $this->curso], ['imageBase64Firma' => $this->imageBase64Firma]) 
                     ->attach($this->filePath, [
                         'as' => 'certificado.pdf',

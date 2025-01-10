@@ -5,8 +5,9 @@ use App\Http\Controllers\CursoInstanciaController;
 use App\Exports\InscriptosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\EmpleadoController;
-
 use App\Http\Controllers\NovedadesController;
+use Illuminate\Support\Str;
+
 Auth::routes();
 
 
@@ -525,7 +526,7 @@ Route::get('/novedades/{id}', [NovedadesController::class, 'show'])->name('noved
 
 Route::group(['middleware' => ['auth']], function () {
 
-  Route::get('/capacitacion', [CursoController::class, 'listAll'])->name('cursos.index');
+  Route::get('/capacitaciones', [CursoController::class, 'listAll'])->name('cursos.index');
   Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store')->middleware('role:administrador|Gestor-cursos');
   Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');
@@ -575,8 +576,11 @@ Route::get('cursos/{cursoId}/instancias/{instanciaId}/exportar', function ($curs
   // Resolver el servicio desde el contenedor
   $cursoInstanciaService = app(\App\Services\CursoInstanciaService::class);
 
+  // Limpiar el título del curso para usarlo como nombre de archivo
+  $safeTitulo = Str::slug($curso->titulo, '_'); // Reemplaza espacios y caracteres especiales con "_"
+
   // Crear la instancia del export, pasando el servicio y demás parámetros
-  return Excel::download(new \App\Exports\InscriptosExport($curso, $instanciaId, $cursoInstanciaService), 'Inscriptos_' . $curso->titulo . '.xlsx');
+  return Excel::download(new \App\Exports\InscriptosExport($curso, $instanciaId, $cursoInstanciaService), 'Inscriptos_' . $safeTitulo . '.xlsx');
 })->name('exportarInscriptos');
 
 
@@ -586,7 +590,7 @@ Route::get('{personaId}/exportarCursos', function ($personaId) {
   $persona = \App\Models\Persona::findOrFail($personaId);
 
   // Exportar los cursos de la persona a Excel
-  return Excel::download(new \App\Exports\CursosExport($persona), 'Cursos_' . $persona->nombre_p . '_' . $persona->apellido . '.xlsx');
+  return Excel::download(new \App\Exports\CursosExport($persona), 'Capacitaciones_' . $persona->nombre_p . '_' . $persona->apellido . '.xlsx');
 })->name('exportarCursos');
 
 

@@ -20,7 +20,7 @@
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
                     <h2 class="recipient-name">{{$nombre}} {{$apellido}}</h2>
-                    <p>por haber completado satisfactoriamente el curso</p>
+                    <p>por haber completado satisfactoriamente la capacitación</p>
                     <h3 class="course-title">{{$curso}}</h3>
                     
                 </div>

@@ -17,7 +17,7 @@
 <div class="container mt-5">
 
     <div id="cursos-edit-container">
-        <h1 class="mb-4 text-center">Editar Curso</h1>
+        <h1 class="mb-4 text-center">Editar Capacitación</h1>
         <form action="{{ route('cursos.update', $curso->id) }}" method="POST">
             @csrf
             @method('PUT')

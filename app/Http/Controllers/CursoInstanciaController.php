@@ -105,8 +105,7 @@ class CursoInstanciaController extends Controller
                 return $instancia;
 
             });
-
-
+            
             $instanciasConRestantes = $instancias->map(function ($instancia) use ($curso) {
 
                 $cupo = $this->cursoInstanciaService->checkInstanceQuota($curso->id, $instancia->id_instancia);

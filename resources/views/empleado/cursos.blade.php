@@ -6,7 +6,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <div class="container-fluid" id="empleados-cursos-conteiner">
-    <h1 id="titulo-cursos-empleado">Listado de Cursos y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}
+    <h1 id="titulo-cursos-empleado">Listado de Capacitaciones y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}
     </h1>
     <form action="{{ route('exportarCursos', ['personaId' => $persona->id_p]) }}" method="GET">
         @csrf
@@ -16,7 +16,7 @@
     <table>
         <thead>
             <tr>
-                <th>Curso</th>
+                <th>Capacitación</th>
                 <th>Fecha</th>
                 <th>Capacitador</th>
                 <th>Modalidad</th>
