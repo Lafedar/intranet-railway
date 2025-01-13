@@ -87,8 +87,9 @@
                     <option value="Externa">Externa</option>
                 </select>
             </div>
+            <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
             <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Capacitación</button>
-            <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Volver</a>
+            
         </form>
     </div>
 

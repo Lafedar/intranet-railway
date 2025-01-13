@@ -119,9 +119,10 @@
                 <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}"
                     min="0" max="999999999" oninput="limitInputLength(this)">
             </div>
-            <button type="submit" class="btn btn-primary" id="asignar-btn">Editar Instancia</button>
             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
-                id="asignar-btn">Volver</a>
+                id="asignar-btn">Cancelar</a>
+            <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
+            
 
         </form>
     </div>

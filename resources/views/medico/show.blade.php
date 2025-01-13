@@ -30,8 +30,8 @@
 					<div class="form-group"align="left">
 						<strong>Observación: </strong><output type="text"  name="obs" id="obs"></output>
 					</div>
-					<button type="button" class="btn btn-secondary d-print-none" data-dismiss="modal">Cerrar</button>
-					<input type="button" class="btn btn-primary d-print-none" value="Imprimir" onClick="window.print()">
+					<button type="button" class="btn btn-secondary d-print-none" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+					<input type="button" class="btn btn-primary d-print-none" value="Imprimir" onClick="window.print()" id="asignar-btn">
 					
 				</div>
 			</div>

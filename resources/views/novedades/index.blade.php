@@ -35,9 +35,7 @@
                 <div class="modal-content novedades-modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="crearNovedadModalLabel">Crear Novedad</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                       
                     </div>
                     <div class="modal-body novedades-modal-body">
                         <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST"
@@ -73,8 +71,8 @@
                                     cargue
                                     solo imágenes (.jpg, .jpeg, .png).</small>
                             </div>
-
-                            <button type="submit" class="btn btn-primary">Crear Novedad</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="asignar-btn" >Crear Novedad</button>
                         </form>
                     </div>
                 </div>

@@ -10,8 +10,8 @@
           <label for="title">Solución:</label>
           <textarea class="form-control" rows="5" name="solucion" id="solucion" value="{{{ isset($incidente->solucion) ? $incidente->solucion : ''}}}"required></textarea> 
           <p></p>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-info">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+          <button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>
         </div>
       </div>
     </div>

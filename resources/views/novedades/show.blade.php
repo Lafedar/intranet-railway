@@ -58,7 +58,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="{{ route('novedades.index') }}" class="btn btn-primary">Volver a Novedades</a>
+                <a href="{{ route('novedades.index') }}" class="btn btn-primary">Volver</a>
             </div>
         </div>
 

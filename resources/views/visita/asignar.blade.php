@@ -76,7 +76,7 @@
 
         <div class="row">
           <div class="col-md-12" align=" center">
-            <a class="btn btn-secondary " href="visitas" id="asignar-btn">Volver</a>
+            <a class="btn btn-secondary " href="visitas" id="asignar-btn">Cancelar</a>
 
             <button type="subitm" class="btn btn-info" id="asignar-btn">Guardar</button>
           </div>

@@ -25,7 +25,7 @@
             <label for="title" class="col-md-10"><strong>CTB:</strong></label>
             <input type="file"  name="ctb" accept=".ctb"  id="ctb">
           </div> 
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn" id="asignar-btn">Cerrar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn" id="asignar-btn">Cancelar</button>
           <button type="submit" class="btn btn-info" id="asignar-btn">Agregar</button>
         </div>
       </div>

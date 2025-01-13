@@ -442,8 +442,8 @@
   var ruta_edit = '{{ route('edit_solicitud') }}';
   var ruta_assing = '{{ route('assing_solicitud') }}';
   var ruta_reclaim = '{{ route('reclaim_solicitud') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button> ');
-  var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()" style="background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);">Guardar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button> ');
+  var saveButton = $('<button type="submit" class="btn btn-info"  onclick="fnSaveSolicitud()" id="asignar-btn">Guardar</button>');
   var saveButton2 = $('<button type="submit" class="btn btn-info" id="saveButton2" onclick="fnSaveSolicitud2()">Guardar</button>');
 
   function fnSaveSolicitud() {
@@ -759,7 +759,7 @@
   function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_solicitud/";
-    var closeButton2 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+    var closeButton2 = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
     $.get(url, function (data) {
       // Borrar contenido anterior
       $("#modalshow").empty();

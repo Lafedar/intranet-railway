@@ -112,10 +112,10 @@
 
             </div>
 
-
-            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Instancia</button>
             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
-                id="asignar-btn">Volver</a>
+            id="asignar-btn">Cancelar</a>
+            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Instancia</button>
+            
 
     </div>
 

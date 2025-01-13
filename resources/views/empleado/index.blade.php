@@ -183,8 +183,8 @@
 
 
 <script>
-  var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cerrar</button>');
-  var closeButton2 = $('<button type="button" class="btn btn-secondary" id="closeButton2" data-dismiss="modal">Cerrar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cancelar</button>');
+  var closeButton2 = $('<button type="button" class="btn btn-secondary" id="closeButton2" data-dismiss="modal">Cancelar</button>');
   var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
   var idJefe;
   function fnOpenModalJefeArea(id) {

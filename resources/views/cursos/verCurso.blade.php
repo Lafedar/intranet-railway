@@ -73,10 +73,11 @@
             <p id="p-ver-cursos">{{ $curso->tipo }}</p>
         </div>
 
+<br>
 
-        <div>
-            <a href="{{ route('cursos.index') }}" id="asignar-btn">Volver</a>
-        </div>
+       
+        <a href="{{ route('cursos.index') }}" id="asignar-btn">Volver</a>
+        
     </form>
 </div>
 

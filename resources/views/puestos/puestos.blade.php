@@ -144,7 +144,7 @@
 <script>
     var ruta_update = '{{ route('update_puesto') }}';
     var ruta_store = '{{ route('store_puesto') }}';
-    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>');
+    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
     var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
     function fnOpenModalStore() {

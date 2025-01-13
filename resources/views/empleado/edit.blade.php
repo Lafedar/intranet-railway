@@ -75,7 +75,7 @@
 
               <p></p>
               
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cerrar</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
               <button type="submit" class="btn btn-info" id="asignar-btn">Editar</button>
             </div>
           </div>
