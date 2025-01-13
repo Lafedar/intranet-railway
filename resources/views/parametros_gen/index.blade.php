@@ -111,9 +111,7 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar Parámetro</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -138,7 +136,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" id="asignar-btn">Aceptar</button>
+                        <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
                     </div>
                 </form>
 
@@ -161,9 +159,7 @@
                     @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title" id="editarModalLabel{{ $parametro->id_param }}">Editar Parámetro</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                       
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -189,7 +185,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar Cambios</button>
+                        <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
                     </div>
                 </form>
             </div>
