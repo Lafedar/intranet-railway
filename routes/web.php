@@ -66,8 +66,8 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('destroy_puesto/{id_puesto}', 'PuestoController@destroy_puesto')->middleware('role:administrador');
 
-  Route::get('show_store_puesto', ['uses' => 'PuestoController@show_store_puesto'])->name('show_store_puesto');
-  Route::post('store_puesto', 'PuestoController@store_puesto')->name('store_puesto');
+  Route::get('show_store_puesto', ['uses' => 'PuestoController@show_store_puesto'])->name('puestos.create');
+  Route::post('store_puesto', 'PuestoController@store_puesto')->name('puestos.store');
 
   Route::get('show_update_puesto/{puesto}', ['uses' => 'PuestoController@show_update_puesto'])->name('show_update_puesto');
   Route::post('update_puesto', 'PuestoController@update_puesto')->name('update_puesto');
@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('select_localizaciones_by_area/{areaId}', 'PuestoController@select_localizaciones_by_area')->name('select_localizaciones_by_area');
   Route::get('select_area_by_localizacion/{localizacionId}', 'PuestoController@select_area_by_localizacion')->name('select_area_by_localizacion');
   Route::get('getPuesto/{idPuesto}', ['uses' => 'PuestoController@getPuesto'])->name('getPuesto');
+
 });
 
 //****************EQUIPAMIENTO**********************

@@ -12,24 +12,37 @@ use App\Incidente;
 use App\User;
 use Auth;
 use DB;
-Use Redirect;
+use Redirect;
 use Illuminate\Support\Facades\Input;
-Use Session;
+use Session;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
+use App\Services\AreaService;
+use App\Services\PersonaService;
+use App\Localizacion;
 
 
-class PuestoController extends Controller{
-    public function puestos(Request $request){
-        $puestos = Puesto::Relaciones()            
+class PuestoController extends Controller
+{
+    private AreaService $areaService;
+    private PersonaService $personaService;
+
+    public function __construct(AreaService $areaService, PersonaService $personaService)
+    {
+        $this->areaService = $areaService;
+        $this->personaService = $personaService;
+    }
+    public function puestos(Request $request)
+    {
+        $puestos = Puesto::Relaciones()
             ->Puesto($request->get('puesto'))
             ->Usuario($request->get('usuario'))
             ->Area($request->get('area'))
             ->Localizacion($request->get('localizacion'))
             ->orderBy('desc_puesto', 'asc')
             ->paginate(20)
-            ->withQueryString();  
-    
+            ->withQueryString();
+
         return view('puestos.puestos', [
             'puestos' => $puestos,
             'puesto' => $request->get('puesto'),
@@ -40,29 +53,34 @@ class PuestoController extends Controller{
     }
 
 
-    public function select_localizaciones(){
+    public function select_localizaciones()
+    {
         return DB::table('localizaciones')->get();
     }
 
-    public function select_area(){
+    public function select_area()
+    {
         return DB::table('area')->get();
     }
 
-    public function select_persona(){
+    public function select_persona()
+    {
         return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
     }
 
-    public function select_localizaciones_by_area($areaId){
+    public function select_localizaciones_by_area($areaId)
+    {
         return DB::table('localizaciones')
             ->where('id_area', $areaId)
             ->get();
     }
 
-    public function select_area_by_localizacion($localizacionId){
+    public function select_area_by_localizacion($localizacionId)
+    {
         $localizacion = DB::table('localizaciones')
             ->where('id', $localizacionId)
             ->first();
-    
+
         if ($localizacion) {
             $area = DB::table('area')
                 ->where('id_a', $localizacion->id_area)
@@ -73,12 +91,17 @@ class PuestoController extends Controller{
         }
     }
 
-    public function show_store_puesto(){
-        return view('puestos.create');       
+    public function show_store_puesto()
+    {
+        $areas = $this->areaService->getAll();
+        $localizaciones = Localizacion::all();
+        $personas = $this->personaService->getAll();
+        return view('puestos.create', compact('areas', 'localizaciones', 'personas'));
     }
 
-    public function store_puesto(Request $request){
-        $puesto= new Puesto;
+    public function store_puesto(Request $request)
+    {
+        $puesto = new Puesto;
         $puesto->desc_puesto = $request['desc_puesto'];
         $puesto->id_localizacion = $request['localizacion'];
         $puesto->persona = $request['persona'];
@@ -86,24 +109,32 @@ class PuestoController extends Controller{
         $puesto->telefono_ip = $request['telefono_ip'];
         $puesto->save();
 
-        Session::flash('message','Puesto agregado con éxito');
+        Session::flash('message', 'Puesto agregado con éxito');
         Session::flash('alert-class', 'alert-success');
 
         return redirect('puestos');
     }
 
-    public static function getPuesto($id) {
+    public static function getPuesto($id)
+    {
         $puesto = Puesto::leftjoin('localizaciones', 'localizaciones.id', 'puestos.id_localizacion')
-        ->leftjoin('area','area.id_a', 'localizaciones.id_area')  
-        ->select('puestos.id_puesto as idPuesto', 'puestos.desc_puesto as nombrePuesto', 'puestos.id_localizacion as idLocalizacion',
-        'localizaciones.id_area as idArea', 'puestos.persona as idPersona', 'puestos.obs as observaciones')  
-        ->find($id);
+            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
+            ->select(
+                'puestos.id_puesto as idPuesto',
+                'puestos.desc_puesto as nombrePuesto',
+                'puestos.id_localizacion as idLocalizacion',
+                'localizaciones.id_area as idArea',
+                'puestos.persona as idPersona',
+                'puestos.obs as observaciones'
+            )
+            ->find($id);
         return $puesto;
-     }
+    }
 
-    public function show_update_puesto($id){
+    public function show_update_puesto($id)
+    {
         $puesto = Puesto::showPuestoUpdate($id);
-        return view('puestos.update', ['puesto' => $puesto]);       
+        return view('puestos.update', ['puesto' => $puesto]);
     }
 
     /*public function edit_puesto($id){   
@@ -117,42 +148,41 @@ class PuestoController extends Controller{
         $personas = DB::table('personas')->get();
         return view ('puestos.edit_puesto', array('puesto' => $puestos,'area' => $areas, 'personas' => $personas));
     }*/
-    
-    public function destroy_puesto($id){
+
+    public function destroy_puesto($id)
+    {
         $activos = 1;
         $relaciones = DB::table('relaciones')
-        ->where('relaciones.puesto',$id)
-        ->where('relaciones.estado',$activos)
-        ->first();
+            ->where('relaciones.puesto', $id)
+            ->where('relaciones.estado', $activos)
+            ->first();
 
-        if($relaciones)
-        {
-            Session::flash('message','No se puede eliminar este puesto ya que tiene equipos asignados');
+        if ($relaciones) {
+            Session::flash('message', 'No se puede eliminar este puesto ya que tiene equipos asignados');
             Session::flash('alert-class', 'alert-warning');
-        }
-        else
-        {
+        } else {
             $puesto = Puesto::find($id);
-            $puesto ->delete();
-            Session::flash('message','Puesto eliminado con éxito');
+            $puesto->delete();
+            Session::flash('message', 'Puesto eliminado con éxito');
             Session::flash('alert-class', 'alert-success');
         }
         return redirect('puestos');
     }
 
-    public function update_puesto(Request $request){   
+    public function update_puesto(Request $request)
+    {
         $puesto = DB::table('puestos')
-        ->where('puestos.id_puesto',$request['id_puesto'])
-        ->update([
-            'desc_puesto' => $request['desc_puesto1'],
-            'id_localizacion' => $request['localizacion1'],
-            'persona' => $request['persona1'],
-            'obs' => $request['obs1'],
-        ]);      
+            ->where('puestos.id_puesto', $request['id_puesto'])
+            ->update([
+                'desc_puesto' => $request['desc_puesto1'],
+                'id_localizacion' => $request['localizacion1'],
+                'persona' => $request['persona1'],
+                'obs' => $request['obs1'],
+            ]);
 
-        Session::flash('message','Puesto modificado con éxito');
+        Session::flash('message', 'Puesto modificado con éxito');
         Session::flash('alert-class', 'alert-success');
-    
+
         return redirect('puestos');
     }
 }
