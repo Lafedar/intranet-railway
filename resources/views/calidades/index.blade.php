@@ -107,7 +107,7 @@
     @endcan
       @can('eliminar-calidad')
       <a href="{{url('destroy_calidad', $calidad->id)}}" class="btn btn-danger btn-sm" title="Eliminar"
-      onclick="return confirm ('Está seguro que desea eliminar el calidad?')" data-position="top"
+      onclick="return confirm ('Está seguro que desea eliminar el archivo ?')" data-position="top"
       data-delay="50" data-tooltip="Borrar" id="icono"><img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></a>
     @endcan
       </div>
