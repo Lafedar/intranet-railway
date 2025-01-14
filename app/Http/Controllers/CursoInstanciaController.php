@@ -330,33 +330,34 @@ class CursoInstanciaController extends Controller
             $data['capacitador'] = $capacitador;
             $instancia->update($data);
 
-            if ($request->has('anexos') && is_array($request->input('anexos'))) {
-                // Eliminar las relaciones actuales con los anexos para esta instancia y curso
+            if (!$request->has('anexos') || empty($request->input('anexos'))) {
+                // Eliminar todas las relaciones con los anexos de esta instancia
+                DB::table('relacion_curso_instancia_anexo')
+                    ->where('id_instancia', $instanciaId)
+                    ->where('id_curso', $cursoId)
+                    ->delete();
+            } elseif (is_array($request->input('anexos'))) {
+                // Si se seleccionaron anexos, primero eliminamos las relaciones actuales
                 DB::table('relacion_curso_instancia_anexo')
                     ->where('id_instancia', $instanciaId)
                     ->where('id_curso', $cursoId)
                     ->delete();
 
-                // Obtener los anexos seleccionados desde el formulario
+                // Insertamos los nuevos anexos seleccionados
                 $anexos = $request->input('anexos');
-
                 foreach ($anexos as $formulario_id) {
-
                     $tipoAnexo = DB::table('anexos')
                         ->where('formulario_id', $formulario_id)
                         ->value('tipo');
 
-
                     if ($tipoAnexo) {
-                        // Insertar la nueva relación en la tabla 'relacion_curso_instancia_anexo' con el tipo
                         DB::table('relacion_curso_instancia_anexo')->insert([
                             'id_instancia' => $instanciaId,
                             'id_curso' => $cursoId,
                             'formulario_id' => $formulario_id,
-                            'tipo' => $tipoAnexo,  // Asociamos el tipo de anexo
+                            'tipo' => $tipoAnexo,
                         ]);
                     } else {
-
                         Log::warning("Tipo de anexo no encontrado para formulario_id: $formulario_id");
                     }
                 }
