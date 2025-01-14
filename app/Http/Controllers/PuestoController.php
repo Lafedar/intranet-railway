@@ -39,7 +39,7 @@ class PuestoController extends Controller
     public function puestos(Request $request)
     {
         $puestos = $this->puestoService->getPuestos($request->all());
-        
+
         return view('puestos.puestos', [
             'puestos' => $puestos,
             'puesto' => $request->get('puesto'),
@@ -54,7 +54,7 @@ class PuestoController extends Controller
     {
         $localizaciones = $this->puestoService->getLocalizaciones();
         return $localizaciones;
-         
+
     }
 
     public function select_area()
@@ -71,16 +71,16 @@ class PuestoController extends Controller
 
     public function select_localizaciones_by_area($areaId)
     {
-        
+
         $localizaciones = $this->puestoService->getLocalizacionesByArea($areaId);
         return $localizaciones;
-        
-        
+
+
     }
 
     public function select_area_by_localizacion($localizacionId)
     {
-       
+
         $area = $this->puestoService->getAreaByLocalizacion($localizacionId);
 
         if ($area) {
@@ -100,20 +100,16 @@ class PuestoController extends Controller
 
     public function store_puesto(Request $request)
     {
-        // Llama al método del servicio para guardar el puesto
         $this->puestoService->storePuesto($request->all());
 
-        // Mensaje de éxito
         Session::flash('message', 'Puesto agregado con éxito');
         Session::flash('alert-class', 'alert-success');
 
-        // Redirige a la lista de puestos
         return redirect('puestos');
     }
 
     public function getPuesto(int $id)
     {
-        // Llamamos al servicio para obtener el puesto
         $puesto = $this->puestoService->getPuesto($id);
 
         if ($puesto) {
@@ -132,18 +128,37 @@ class PuestoController extends Controller
 
     public function destroy_puesto(int $id)
     {
-        $isDeleted = $this->puestoService->destroyPuesto($id);
+        $result = $this->puestoService->destroyPuesto($id);
+
+        if ($result['success']) {
+            Session::flash('message', $result['message']);
+            Session::flash('alert-class', 'alert-success');
+        } else {
+
+            Session::flash('message', $result['message']);
+            Session::flash('alert-class', 'alert-warning');
+        }
+
+
         return redirect('puestos');
     }
 
-    
+
 
     public function update_puesto(Request $request)
     {
-        // Llamamos al servicio para actualizar el puesto
-        $isUpdated = $this->puestoService->updatePuesto($request->all());
+        $result = $this->puestoService->updatePuesto($request->all());
 
-        // Redirige al listado de puestos después de la operación
+
+        if ($result['success']) {
+            Session::flash('message', $result['message']);
+            Session::flash('alert-class', 'alert-success');
+        } else {
+
+            Session::flash('message', $result['message']);
+            Session::flash('alert-class', 'alert-warning');
+        }
+
         return redirect('puestos');
     }
 }

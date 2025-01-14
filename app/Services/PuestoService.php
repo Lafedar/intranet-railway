@@ -9,34 +9,40 @@ use DB;
 use Illuminate\Database\Eloquent\Collection;
 use App\Localizacion;
 use App\Area;
-use Illuminate\Support\Facades\Session;
+
 
 class PuestoService
 {
     public function getPuestos($filters)
     {
-        $puestos = Puesto::Relaciones();
+        try {
+            $puestos = Puesto::Relaciones();
 
-        // Aplicar los filtros que se pasen como parámetros
-        if (isset($filters['puesto'])) {
-            $puestos = $puestos->Puesto($filters['puesto']);
+            // Aplicar los filtros que se pasen como parámetros
+            if (isset($filters['puesto'])) {
+                $puestos = $puestos->Puesto($filters['puesto']);
+            }
+
+            if (isset($filters['usuario'])) {
+                $puestos = $puestos->Usuario($filters['usuario']);
+            }
+
+            if (isset($filters['area'])) {
+                $puestos = $puestos->Area($filters['area']);
+            }
+
+            if (isset($filters['localizacion'])) {
+                $puestos = $puestos->Localizacion($filters['localizacion']);
+            }
+
+            return $puestos->orderBy('desc_puesto', 'asc')
+                ->paginate(20)
+                ->withQueryString();
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los puestos' . $e->getMessage());
+            throw $e;
         }
 
-        if (isset($filters['usuario'])) {
-            $puestos = $puestos->Usuario($filters['usuario']);
-        }
-
-        if (isset($filters['area'])) {
-            $puestos = $puestos->Area($filters['area']);
-        }
-
-        if (isset($filters['localizacion'])) {
-            $puestos = $puestos->Localizacion($filters['localizacion']);
-        }
-
-        return $puestos->orderBy('desc_puesto', 'asc')
-            ->paginate(20)
-            ->withQueryString();
     }
     public function getLocalizaciones()
     {
@@ -72,7 +78,7 @@ class PuestoService
                 return $area;
             }
 
-            return null; // Devuelve null si no se encuentra la localización
+            return null;
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las areas por localizacion' . $e->getMessage());
             throw $e;
@@ -135,29 +141,21 @@ class PuestoService
 
             // Si existen relaciones activas, no permitir la eliminación
             if ($relaciones) {
-                Session::flash('message', 'No se puede eliminar este puesto ya que tiene equipos asignados');
-                Session::flash('alert-class', 'alert-warning');
-                return false;
+                return ['success' => false, 'message' => 'No se puede eliminar este puesto ya que tiene equipos asignados'];
             } else {
                 // Si no hay relaciones activas, proceder con la eliminación del puesto
                 $puesto = Puesto::find($id);
                 if ($puesto) {
                     $puesto->delete();
-                    Session::flash('message', 'Puesto eliminado con éxito');
-                    Session::flash('alert-class', 'alert-success');
-                    return true;
+                    return ['success' => true, 'message' => 'Puesto eliminado con éxito'];
                 }
 
-                Session::flash('message', 'Puesto no encontrado');
-                Session::flash('alert-class', 'alert-danger');
-                return false;
+                return ['success' => false, 'message' => 'Puesto no encontrado'];
             }
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al borrar el puesto' . $e->getMessage());
-            throw $e;
+            Log::error('Error en clase: ' . get_class($this) . ' . Error al eliminar el puesto: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Hubo un error al eliminar el puesto'];
         }
-
-
     }
 
 
@@ -173,18 +171,14 @@ class PuestoService
                 $puesto->obs = $data['obs1'];
                 $puesto->save();
 
-                Session::flash('message', 'Puesto modificado con éxito');
-                Session::flash('alert-class', 'alert-success');
-
-                return true;
+                return ['success' => true, 'message' => 'Puesto modificado con éxito'];
             }
 
-            return false;
+            return ['success' => false, 'message' => 'Puesto no encontrado'];
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el puesto' . $e->getMessage());
-            throw $e;
+            Log::error('Error en clase: ' . get_class($this) . ' . Error al actualizar el puesto: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Hubo un error al actualizar el puesto'];
         }
-
     }
 
 
