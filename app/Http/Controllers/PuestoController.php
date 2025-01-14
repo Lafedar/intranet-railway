@@ -21,6 +21,7 @@ use App\Services\AreaService;
 use App\Services\PersonaService;
 use App\Services\PuestoService;
 use App\Localizacion;
+use Exception;
 
 
 class PuestoController extends Controller
@@ -128,37 +129,48 @@ class PuestoController extends Controller
 
     public function destroy_puesto(int $id)
     {
-        $result = $this->puestoService->destroyPuesto($id);
+        try {
+            $result = $this->puestoService->destroyPuesto($id);
 
-        if ($result) {
-            
-            Session::flash('message', 'Puesto eliminado con éxito');
-            Session::flash('alert-class', 'alert-success');
-        } else {
-            
-            Session::flash('message', 'No se puede eliminar este puesto, ya que tiene equipos asignados o no fue encontrado');
-            Session::flash('alert-class', 'alert-warning');
+            if ($result) {
+
+                Session::flash('message', 'Puesto eliminado con éxito');
+                Session::flash('alert-class', 'alert-success');
+            } else {
+
+                Session::flash('message', 'No se puede eliminar este puesto, ya que tiene equipos asignados o no fue encontrado');
+                Session::flash('alert-class', 'alert-warning');
+            }
+
+            return redirect('puestos');
+        }catch(Exception $e){
+            Session::flash('message', 'Error al eliminar el puesto: ' . $e->getMessage());
+            Session::flash('alert-class', 'alert-danger');
         }
 
-        return redirect('puestos');
     }
 
 
 
     public function update_puesto(Request $request)
     {
-        $result = $this->puestoService->updatePuesto($request->all());
+        try {
+            $result = $this->puestoService->updatePuesto($request->all());
 
-        if ($result) {
+            if ($result) {
+                Session::flash('message', 'Puesto modificado con éxito');
+                Session::flash('alert-class', 'alert-success');
+            } else {
+                Session::flash('message', 'Puesto no encontrado');
+                Session::flash('alert-class', 'alert-warning');
+            }
+            return redirect('puestos');
             
-            Session::flash('message', 'Puesto modificado con éxito');
-            Session::flash('alert-class', 'alert-success');
-        } else {
-            
-            Session::flash('message', 'Hubo un problema al modificar el puesto');
-            Session::flash('alert-class', 'alert-warning');
+        } catch (Exception $e) {
+            Session::flash('message', 'Error al actualizar el puesto: ' . $e->getMessage());
+            Session::flash('alert-class', 'alert-danger');
         }
 
-        return redirect('puestos');
+        
     }
 }

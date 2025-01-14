@@ -73,7 +73,6 @@ class PuestoService
             $localizacion = Localizacion::find($localizacionId);
 
             if ($localizacion) {
-                // Buscar el área asociada con la localización
                 $area = Area::find($localizacion->id_area);
                 return $area;
             }
@@ -141,7 +140,7 @@ class PuestoService
 
             // Si existen relaciones activas, no permitir la eliminación
             if ($relaciones) {
-                return false;  // Retornamos solo el estado de fracaso
+                return false;  
             } else {
                 // Si no hay relaciones activas, proceder con la eliminación del puesto
                 $puesto = Puesto::find($id);
@@ -154,7 +153,7 @@ class PuestoService
             }
         } catch (Exception $e) {
             Log::error('Error al eliminar el puesto: ' . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -179,7 +178,7 @@ class PuestoService
 
         } catch (Exception $e) {
             Log::error('Error en clase: ' . get_class($this) . ' . Error al actualizar el puesto: ' . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
