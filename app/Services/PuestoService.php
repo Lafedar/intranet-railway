@@ -141,20 +141,20 @@ class PuestoService
 
             // Si existen relaciones activas, no permitir la eliminación
             if ($relaciones) {
-                return ['success' => false, 'message' => 'No se puede eliminar este puesto ya que tiene equipos asignados'];
+                return false;  // Retornamos solo el estado de fracaso
             } else {
                 // Si no hay relaciones activas, proceder con la eliminación del puesto
                 $puesto = Puesto::find($id);
                 if ($puesto) {
                     $puesto->delete();
-                    return ['success' => true, 'message' => 'Puesto eliminado con éxito'];
+                    return true;
                 }
 
-                return ['success' => false, 'message' => 'Puesto no encontrado'];
+                return false;
             }
         } catch (Exception $e) {
-            Log::error('Error en clase: ' . get_class($this) . ' . Error al eliminar el puesto: ' . $e->getMessage());
-            return ['success' => false, 'message' => 'Hubo un error al eliminar el puesto'];
+            Log::error('Error al eliminar el puesto: ' . $e->getMessage());
+            return false;
         }
     }
 
@@ -171,17 +171,17 @@ class PuestoService
                 $puesto->obs = $data['obs1'];
                 $puesto->save();
 
-                return ['success' => true, 'message' => 'Puesto modificado con éxito'];
+                return true;
+            } else {
+                return false;
             }
 
-            return ['success' => false, 'message' => 'Puesto no encontrado'];
+
         } catch (Exception $e) {
             Log::error('Error en clase: ' . get_class($this) . ' . Error al actualizar el puesto: ' . $e->getMessage());
-            return ['success' => false, 'message' => 'Hubo un error al actualizar el puesto'];
+            return false;
         }
     }
-
-
 
 
 

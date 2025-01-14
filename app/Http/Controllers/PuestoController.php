@@ -130,15 +130,15 @@ class PuestoController extends Controller
     {
         $result = $this->puestoService->destroyPuesto($id);
 
-        if ($result['success']) {
-            Session::flash('message', $result['message']);
+        if ($result) {
+            
+            Session::flash('message', 'Puesto eliminado con éxito');
             Session::flash('alert-class', 'alert-success');
         } else {
-
-            Session::flash('message', $result['message']);
+            
+            Session::flash('message', 'No se puede eliminar este puesto, ya que tiene equipos asignados o no fue encontrado');
             Session::flash('alert-class', 'alert-warning');
         }
-
 
         return redirect('puestos');
     }
@@ -149,13 +149,13 @@ class PuestoController extends Controller
     {
         $result = $this->puestoService->updatePuesto($request->all());
 
-
-        if ($result['success']) {
-            Session::flash('message', $result['message']);
+        if ($result) {
+            
+            Session::flash('message', 'Puesto modificado con éxito');
             Session::flash('alert-class', 'alert-success');
         } else {
-
-            Session::flash('message', $result['message']);
+            
+            Session::flash('message', 'Hubo un problema al modificar el puesto');
             Session::flash('alert-class', 'alert-warning');
         }
 
