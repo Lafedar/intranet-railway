@@ -66,10 +66,12 @@
     color: rgba(245, 245, 245, 1);
     margin-top: -15px;
     height: 50px;
+   
 }
 
 #asignar-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
+    
 }
 
 #asignar-btn:active {

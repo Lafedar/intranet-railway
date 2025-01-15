@@ -84,8 +84,8 @@
                     <option value="Externa" {{ $curso->tipo == 'Externa' ? 'selected' : '' }}>Externa</option>
                 </select>
             </div>
-            <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
-            <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
+            <a href="{{ route('cursos.index') }}" id="asignar-btn">Cancelar</a>
+            <button type="submit" id="asignar-btn">Guardar</button>
             
 
         </form>

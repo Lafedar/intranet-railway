@@ -57,9 +57,9 @@
                     @endforeach
                 @endif
             </div>
-
-            <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
-            <a href="{{ route('novedades.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
+            <a href="{{ route('novedades.index') }}" id="asignar-btn">Cancelar</a>
+            <button type="submit" id="asignar-btn">Guardar</button>
+           
         </form>
     </div>
 
