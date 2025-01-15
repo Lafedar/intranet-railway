@@ -76,8 +76,7 @@
       <thead>
         <tr style="border: 1px solid black;">
           <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Fecha</th>
-          <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Nombre y Apellido del
-            Entrenado</th>
+          <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Apellido y Nombre del Entrenado</th>
           <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Firma Entrenado</th>
           <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Firma Entrenador</th>
           <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Observaciones</th>

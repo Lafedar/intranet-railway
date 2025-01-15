@@ -56,7 +56,7 @@
 
                         <tr>
                             <th>Legajo</th>
-                            <th>Nombre y Apellido</th>
+                            <th>Apellido y Nombre</th>
                             <th>Área</th>
                             <th>Inscribir</th>
                             <th>Acciones</th>

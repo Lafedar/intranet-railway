@@ -94,8 +94,7 @@
       <thead>
         <tr style="border: 1px solid black;">
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Fecha</b></th>
-        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Nombre y
-          Apellido del Entrenado</b></th>
+        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Apellido y Nombre del Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
           Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
@@ -167,7 +166,7 @@
       <thead>
       <tr style="border: 1px solid black;">
       <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 20px;">Fecha</th>
-      <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Nombre y Apellido
+      <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Apellido y Nombre
         del Entrenado</th>
       <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;">Firma Entrenado
       </th>
@@ -187,7 +186,7 @@
     @endif
       </td>
       <td style="border: 1px solid black; text-align: center;">
-      {{ $enrolamiento['persona']['nombre_p'] ?? '' }} {{ $enrolamiento['persona']['apellido'] ?? '' }}
+      {{ $enrolamiento['persona']['apellido'] ?? '' }} {{ $enrolamiento['persona']['nombre_p'] ?? '' }} 
       </td>
       <td style="border: 1px solid black; text-align: center;"></td>
       <td style="border: 1px solid black; text-align: center;"></td>

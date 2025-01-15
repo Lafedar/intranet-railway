@@ -108,7 +108,7 @@
                 <thead>
                     <tr>
                         <th>Legajo</th>
-                        <th>Nombre y Apellido</th>
+                        <th>Apellido y Nombre</th>
                         <th>Fecha de Inscripción</th>
                         <th>Versión de Instancia</th>
                         <th>Evaluación</th>
@@ -121,7 +121,7 @@
                             <td>{{ $enrolamiento->persona->legajo }}</td>
                             <td>
                                 @if ($enrolamiento->persona)
-                                    {{ $enrolamiento->persona->nombre_p }} {{ $enrolamiento->persona->apellido }}
+                                    {{ $enrolamiento->persona->apellido }} {{ $enrolamiento->persona->nombre_p }} 
                                 @else
                                     Persona no encontrada
                                 @endif
