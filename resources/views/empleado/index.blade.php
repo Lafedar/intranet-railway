@@ -60,6 +60,7 @@
         <th class="text-center">DNI</th>
         <th class="text-center">Fecha de ingreso</th>
         <th class="text-center">Fecha de nacimiento</th>
+        <th class="text-center">Legajo</th>
         <th class="text-center">Area</th>
         <th class="text-center">Turno</th>
         <th class="text-center">Jefe</th>
@@ -82,6 +83,11 @@
     @endif
       @if ($empleado->fe_nac != '')
       <td align="center">{!! \Carbon\Carbon::parse($empleado->fe_nac)->format("d-m-Y") !!}</td>
+    @else
+      <td align="center"></td>
+    @endif
+    @if ($empleado->legajo != '')
+      <td align="center">{{$empleado->legajo}}</td>
     @else
       <td align="center"></td>
     @endif
@@ -111,7 +117,7 @@
       data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}"
       data-fe_nac="{{$empleado->fe_nac}}" data-fe_ing="{{$empleado->fe_ing}}"
       data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}"
-      data-activo="{{$empleado->activo}}" data-turno="{{$empleado->idTurno}}" data-jefe="{{$empleado->jefe}}"
+      data-activo="{{$empleado->activo}}" data-turno="{{$empleado->idTurno}}" data-jefe="{{$empleado->jefe}}" data-legajo="{{$empleado->legajo}}"
       data-target="#editar_empleado" title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}"
       alt="Editar" id="img-icono">
       </a>
@@ -317,6 +323,7 @@
     var fe_nac = button.data('fe_nac')
     var fe_ing = button.data('fe_ing')
     var correo = button.data('correo')
+    var legajo = button.data('legajo')
     var activo = button.data('activo')
     var jefe = button.data('jefe')
     var actividad = $('#actividad');
@@ -330,6 +337,7 @@
     modal.find('.modal-body #apellido').val(apellido);
     modal.find('.modal-body #dni').val(dni);
     modal.find('.modal-body #interno').val(interno);
+    modal.find('.modal-body #legajo').val(legajo);
     modal.find('.modal-body #fe_nac').val(fe_nac);
     modal.find('.modal-body #fe_ing').val(fe_ing);
     modal.find('.modal-body #correo').val(correo);

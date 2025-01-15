@@ -58,6 +58,10 @@
                   <label for="interno"><strong>Interno:</strong></label>
                   <input type="number" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" minlength="2" maxlength="5">
                 </div>
+                <div class="col-md-6">
+                  <label for="legajo"><strong>Legajo:</strong></label>
+                  <input type="number" name="legajo" class="form-control" id="legajo" autocomplete="off" minlength="2" maxlength="5">
+                </div>
               </div>
 
               <div class="row">

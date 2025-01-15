@@ -96,6 +96,7 @@ class EmpleadoController extends Controller
         $empleado->turno = $request['turno'];
         $empleado->activo = $activo;
         $empleado->jefe = $jefe;
+        $empleado->legajo = $request['legajo'];
         $empleado->activo = 1;
         $empleado->save();
 
@@ -158,6 +159,7 @@ class EmpleadoController extends Controller
                 'dni' => $request['dni'],
                 'interno' => $request['interno'],
                 'correo' => $request['correo'],
+                'legajo' => $request['legajo'],
                 'fe_nac' => $request['fe_nac'],
                 'fe_ing' => $request['fe_ing'],
                 'area' => $request['area'],
