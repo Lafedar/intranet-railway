@@ -105,7 +105,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($cursosData as $curso)
+                    @foreach($cursosPaginated as $curso)
                     <tr>
                         <td>{{ $curso->titulo }}</td>
                         <td>{{ $curso->descripcion }}</td>
@@ -188,12 +188,14 @@
                         @endrole
                     </tr>
                     @endforeach
+                    
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
+{{ $cursosPaginated->links('pagination::bootstrap-4') }}
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

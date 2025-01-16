@@ -17,6 +17,8 @@ use DB;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
 use Normalizer;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 class CursoController extends Controller
 {
     private CursoService $cursoService;
@@ -46,7 +48,7 @@ class CursoController extends Controller
         try {
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
-            $userDni = auth()->user()->dni;           
+            $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
 
 
@@ -108,7 +110,20 @@ class CursoController extends Controller
             $totalAreas = $areas->count();
 
 
-            return view('cursos.index', compact('cursosData', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
+            $cursosData = $cursosData->sortByDesc('curso.created_at');
+
+            // Paginar los resultados
+            $perPage = 10; // Número de cursos por página
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $cursosPaginated = new LengthAwarePaginator(
+                $cursosData->forPage($currentPage, $perPage),
+                $cursosData->count(),
+                $perPage,
+                $currentPage,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+
+            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
