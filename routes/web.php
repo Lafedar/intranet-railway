@@ -595,3 +595,5 @@ Route::get('{personaId}/exportarCursos', function ($personaId) {
 })->name('exportarCursos');
 
 
+Route::post('novedades/{id}/like', [NovedadesController::class, 'like'])->name('novedades.like');
+Route::post('/novedades/{id}/unlike', [NovedadesController::class, 'unlike'])->name('novedades.unlike');

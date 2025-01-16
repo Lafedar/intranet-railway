@@ -6,6 +6,7 @@ use App\Novedad;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use DB;
 class NovedadService
 {
     private function validateData(array $data): void
@@ -122,9 +123,22 @@ class NovedadService
 
     public function getUltimasNovedades()
     {
-        // Recupera las últimas 4 novedades
-        return Novedad::orderBy('id', 'desc')->take(4)->get();
+        // Recupera las últimas 4 novedades con la relación 'likes' cargada
+        $novedades = Novedad::with('likes') // Eager Loading de la relación 'likes'
+            ->orderBy('id', 'desc')
+            ->take(4)
+            ->get();
+
+        foreach ($novedades as $novedad) {
+            // Contamos los likes de cada novedad
+            $novedad->likes_count = DB::table('likes')
+                ->where('novedad_id', $novedad->id)
+                ->count();
+        }
+
+        return $novedades;
     }
+
 
 }
 

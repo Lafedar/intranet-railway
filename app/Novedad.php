@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Like;
 
 class Novedad extends Model
 {
@@ -13,9 +14,12 @@ class Novedad extends Model
         protected $fillable = [
                 'titulo',
                 'descripcion',
-                'portada',      
-                'imagenes_sec', 
-                   
-            ];
-            
+                'portada',
+                'imagenes_sec',
+
+        ];
+        public function likes()
+        {
+                return $this->hasMany(Like::class); 
+        }
 }

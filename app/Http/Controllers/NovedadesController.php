@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use Log;
+use App\Models\Like;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
+
+
 
 class NovedadesController extends Controller
 {
@@ -21,7 +26,8 @@ class NovedadesController extends Controller
     public function index()
     {
         try {
-            $novedades = $this->novedadService->getAll();
+            $novedades = Novedad::with('likes')->get();
+
             return view('novedades.index', compact('novedades'));
         } catch (Exception $e) {
             Log::error('Error en el controlador al obtener las novedades: ' . $e->getMessage());
@@ -29,7 +35,7 @@ class NovedadesController extends Controller
         }
     }
 
-    
+
     public function store(Request $request)
     {
         try {
@@ -45,11 +51,11 @@ class NovedadesController extends Controller
             return redirect()->route('novedades.index')->with('success', 'Novedad creada con éxito');
         } catch (Exception $e) {
             Log::error('Error al crear una novedad: ' . $e->getMessage());
-            return redirect()->back()->withErrors($e->getMessage()); 
+            return redirect()->back()->withErrors($e->getMessage());
         }
     }
 
-    
+
     public function show(int $id)
     {
         try {
@@ -81,34 +87,86 @@ class NovedadesController extends Controller
         }
     }
 
-    
+
     public function update(Request $request, int $id)
     {
-        try{
+        try {
             $novedad = $this->novedadService->getById($id);
-        
+
             $this->novedadService->update($request, $novedad);
-    
+
             return redirect()->route('novedades.index')->with('success', 'Novedad actualizada correctamente.');
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error('Error en el controlador al actualizar la novedad: ' . $e->getMessage());
             return redirect()->route('novedades.index')->with('error', 'Novedad no actualizada.');
         }
-       
+
     }
 
     public function edit(int $id)
     {
-        try{ 
+        try {
             $novedad = $this->novedadService->getById($id);
             return view('novedades.edit', compact('novedad'));
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error('Error en el controlador al abrir novedades.edit: ' . $e->getMessage());
             return redirect()->route('novedades.index')->with('error', 'novedades.edit no se pudo abrir.');
         }
-       
+
     }
+
+    public function like($id)
+    {
+        $novedad = Novedad::findOrFail($id);
+        $cookieName = 'like_novedad_' . $novedad->id;
+
+        // Obtener el user_id desde la cookie
+        $userId = Cookie::get($cookieName);
+
+        if ($userId) {
+            return redirect()->back()->with('message', 'Ya diste like a esta novedad desde esta computadora.');
+        }
+
+        // Generar un nuevo identificador único y guardar el like
+        $userId = uniqid('guest_', true);
+        Like::create([
+            'novedad_id' => $novedad->id,
+            'user_id' => $userId,
+        ]);
+
+        // Guardar la cookie
+        Cookie::queue($cookieName, $userId, 60 * 24 * 30);
+
+        return redirect()->back()->with('message', 'Like registrado.');
+    }
+
+    public function unlike($id)
+    {
+        $novedad = Novedad::findOrFail($id);
+        $cookieName = 'like_novedad_' . $novedad->id;
+
+
+        $userId = Cookie::get($cookieName);
+
+        if (!$userId) {
+            return redirect()->back()->with('message', 'No has dado like a esta novedad.');
+        }
+
+        // Buscar el like y eliminarlo
+        $like = Like::where('novedad_id', $novedad->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($like) {
+            $like->delete();
+            Cookie::queue(Cookie::forget($cookieName));
+            return redirect()->back()->with('message', 'Like eliminado.');
+        }
+
+        return redirect()->back()->with('message', 'No has dado like a esta novedad.');
+    }
+
+
+
+
 }

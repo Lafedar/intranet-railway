@@ -17,6 +17,7 @@
         <thead>
             <tr>
                 <th>Capacitación</th>
+                <th>Código</th>
                 <th>Fecha</th>
                 <th>Capacitador</th>
                 <th>Modalidad</th>
@@ -30,6 +31,7 @@
             @foreach($cursosConDetalles as $curso)
                 <tr>
                     <td>{{ $curso->titulo}}</td>
+                    <td>{{ $curso->codigo}}</td>
 
                     <td>{{ \Carbon\Carbon::parse($curso->fecha_inicio)->format('d/m/Y') ?? 'N/A' }}</td>
 
