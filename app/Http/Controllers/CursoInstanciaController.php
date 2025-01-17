@@ -854,160 +854,164 @@ class CursoInstanciaController extends Controller
 
 
     public function inscribirDesdeExcel(Request $request, int $instancia_id, int $cursoId)
-    {
-        try {
-            //VALIDACION DEL ARCHIVO
-            if (!$request->hasFile('excel_file')) {
-                return redirect()->back()->with('error', 'No se cargó ningún archivo Excel.');
-            }
-
-            $file = $request->file('excel_file');
-
-            // Cargar el archivo Excel usando PhpSpreadsheet
-            $spreadsheet = IOFactory::load($file);
-            $sheet = $spreadsheet->getActiveSheet();
-
-            // Obtener la cabecera
-            $cabecera = $sheet->rangeToArray('A1:Z1')[0];
-
-            // Validar si la columna F tiene el valor "DNI"
-            if (strtoupper(trim($cabecera[5])) !== 'DNI') {
-                return redirect()->back()->with('error', 'El archivo no tiene la estructura correcta.');
-            }
-
-
-            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia_id, $cursoId);
-            $inscriptosDni = collect($inscriptos)->pluck('dni')->toArray();  // Extraemos los DNIs de los inscriptos
-
-            $personasParaInscribir = [];
-            $personasNoCorrespondientes = [];
-            $personasNoEncontradas = [];
-
-            // Recorrer las filas del archivo Excel
-            foreach ($sheet->getRowIterator(2) as $row) {
-                // Obtener el DNI, Nombre1, Apellido1 y Respuesta de las celdas
-                $dni = $sheet->getCell('F' . $row->getRowIndex())->getValue(); // Columna F (6) es el DNI
-                $nombre1 = $sheet->getCell('G' . $row->getRowIndex())->getValue(); // Columna G (7) es Nombre1
-                $apellido1 = $sheet->getCell('H' . $row->getRowIndex())->getValue(); // Columna H (8) es Apellido1
-
-
-                // Verificar si ya está inscrito en la base de datos
-                if (in_array($dni, $inscriptosDni)) {
-                    continue;  // Si ya está inscrito, lo omitimos
-                }
-
-                // Validar si el DNI existe en la base de datos
-                $persona = $this->personaService->getByDni($dni);
-
-                if (!$persona) {
-                    // Si la persona no existe en la base de datos, agregarla a la lista de DNI incorrectos
-                    $personasNoEncontradas[] = "$dni - $nombre1 $apellido1";
-                    continue;
-                }
-
-
-                $areaPersona = $this->personaService->getAreaByDni($dni);
-                $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
-                $areaValida = false;  // Variable para validar si la persona corresponde al área
-
-                // Recorrer las áreas del curso para verificar si la persona corresponde a alguna
-                foreach ($areasCurso as $area) {
-                    if ($areaPersona == $area->id_a) {
-                        $personasParaInscribir[] = [
-                            'dni' => $dni,
-                            'nombre1' => $nombre1,
-                            'apellido1' => $apellido1
-                        ];
-                        $areaValida = true;
-                        break;
-                    }
-                }
-
-                // Si la persona no corresponde al área, se agrega a la lista de no correspondientes
-                if (!$areaValida) {
-                    $personasNoCorrespondientes[] = "$dni - $nombre1 $apellido1";
-                }
-            }
-
-            //GENERO EL ARCHIVO .TXT
-            if (!empty($personasNoCorrespondientes) || !empty($personasNoEncontradas)) {
-                // Definir el archivo de salida
-                $filepath = storage_path('app/public/archivo_personas.txt');
-
-                // Generar las líneas del archivo
-                $contenido = "Personas que no corresponden al Area:\n";
-
-                // Añadir las personas que no corresponden al área
-                if (!empty($personasNoCorrespondientes)) {
-                    $contenido .= implode("\n", $personasNoCorrespondientes) . "\n";
-                } else {
-                    $contenido .= "No hay personas que no correspondan al área.\n";
-                }
-
-                // Añadir una nueva sección para las personas con DNI incorrecto
-                $contenido .= "\nPersonas con DNI incorrecto:\n";
-
-                // Añadir las personas con DNI incorrecto
-                if (!empty($personasNoEncontradas)) {
-                    $contenido .= implode("\n", $personasNoEncontradas) . "\n";
-                } else {
-                    $contenido .= "No hay personas con DNI incorrecto.\n";
-                }
-
-                // Escribir el contenido en el archivo
-                file_put_contents($filepath, $contenido);
-
-                // Pasar la ruta del archivo a la sesión para poder descargarlo desde la vista
-                session(['archivo_descargable' => 'archivo_personas.txt']);
-            }
-
-            $cupo = $this->cursoInstanciaService->checkInstanceQuota($cursoId, $instancia_id);
-            $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia_id, $cursoId);
-            $restantes = $cupo - $cantInscriptos;
-
-            // Verificar si la cantidad de personas a inscribir excede el cupo
-            if (count($personasParaInscribir) > $restantes) {
-                return redirect()->back()->with('error', 'No se pueden inscribir esas personas, ya que la cantidad excede el cupo disponible.');
-            }
-
-            // Inscribir a las personas válidas
-            foreach ($personasParaInscribir as $persona) {
-                // Verificar si la persona ya está inscripta
-                $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id);
-                if ($inscrito) {
-                    continue; // Si ya está inscrito, no inscribir nuevamente
-                }
-
-                $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
-
-                $user = $this->personaService->getByDni($persona['dni']);
-                $curso = $this->cursoService->getById($cursoId)->titulo;
-                $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
-
-                $imageBase64Firma = null;
-                $imagePath2 = storage_path('app/public/cursos/firma.jpg');
-                if (file_exists($imagePath2)) {
-                    $imageData = base64_encode(file_get_contents($imagePath2));
-                    $mimeType = mime_content_type($imagePath2);
-                    $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
-                }
-
-                if (!empty($user->correo)) {
-                    Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
-                }
-            }
-
-            // Establecer una variable en sesión que indique que la inscripción fue desde Excel
-            session(['inscripcion_desde_excel' => true]);
-
-            return redirect()->back()->with('success', 'Las personas fueron inscriptas exitosamente y se generó el archivo.');
-
-        } catch (Exception $e) {
-            Log::error('Error al inscribir personas desde Excel: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al procesar el archivo Excel.');
+{
+    try {
+        //VALIDACION DEL ARCHIVO
+        if (!$request->hasFile('excel_file')) {
+            return redirect()->back()->with('error', 'No se cargó ningún archivo Excel.');
         }
-    }
 
+        $file = $request->file('excel_file');
+
+        // Cargar el archivo Excel usando PhpSpreadsheet
+        $spreadsheet = IOFactory::load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Obtener la cabecera
+        $cabecera = $sheet->rangeToArray('A1:Z1')[0];
+
+        // Validar si la columna F tiene el valor "DNI"
+        if (strtoupper(trim($cabecera[5])) !== 'DNI') {
+            return redirect()->back()->with('error', 'El archivo no tiene la estructura correcta.');
+        }
+
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia_id, $cursoId);
+        $inscriptosDni = collect($inscriptos)->pluck('dni')->toArray();  // Extraemos los DNIs de los inscriptos
+
+        $personasParaInscribir = [];
+        $personasNoCorrespondientes = [];
+        $personasNoEncontradas = [];
+
+        // Recorrer las filas del archivo Excel
+        foreach ($sheet->getRowIterator(2) as $row) {
+            // Obtener el DNI, Nombre1, Apellido1 y Respuesta de las celdas
+            $dni = $sheet->getCell('F' . $row->getRowIndex())->getValue(); // Columna F (6) es el DNI
+            $nombre1 = $sheet->getCell('G' . $row->getRowIndex())->getValue(); // Columna G (7) es Nombre1
+            $apellido1 = $sheet->getCell('H' . $row->getRowIndex())->getValue(); // Columna H (8) es Apellido1
+
+            // Verificar si ya está inscrito en la base de datos
+            if (in_array($dni, $inscriptosDni)) {
+                continue;  // Si ya está inscrito, lo omitimos
+            }
+
+            // Validar si el DNI existe en la base de datos
+            $persona = $this->personaService->getByDni($dni);
+
+            if (!$persona) {
+                // Si la persona no existe en la base de datos, agregarla a la lista de DNI incorrectos
+                $personasNoEncontradas[] = "$dni - $nombre1 $apellido1";
+                continue;
+            }
+
+            $areaPersona = $this->personaService->getAreaByDni($dni);
+            $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
+            $areaValida = false;  // Variable para validar si la persona corresponde al área
+
+            // Recorrer las áreas del curso para verificar si la persona corresponde a alguna
+            foreach ($areasCurso as $area) {
+                if ($areaPersona == $area->id_a) {
+                    $personasParaInscribir[] = [
+                        'dni' => $dni,
+                        'nombre1' => $nombre1,
+                        'apellido1' => $apellido1
+                    ];
+                    $areaValida = true;
+                    break;
+                }
+            }
+
+            // Si la persona no corresponde al área, se agrega a la lista de no correspondientes
+            if (!$areaValida) {
+                $personasNoCorrespondientes[] = "$dni - $nombre1 $apellido1";
+            }
+        }
+
+        // Verificar si se generó el archivo
+        $archivoGenerado = false;
+
+        if (!empty($personasNoCorrespondientes) || !empty($personasNoEncontradas)) {
+            // Definir la ruta del archivo de salida
+            $filepath = storage_path('app/public/archivo_personas.txt');
+
+            // Verificar si el archivo existe antes de eliminarlo
+            if (file_exists($filepath)) {
+                unlink($filepath);  // Borramos el archivo antiguo
+            }
+
+            // Generar las líneas del archivo
+            $contenido = "Personas que no corresponden al Area:\n";
+
+            // Añadir las personas que no corresponden al área
+            if (!empty($personasNoCorrespondientes)) {
+                $contenido .= implode("\n", $personasNoCorrespondientes) . "\n";
+            } else {
+                $contenido .= "No hay personas que no correspondan al área.\n";
+            }
+
+            // Añadir una nueva sección para las personas con DNI incorrecto
+            $contenido .= "\nPersonas con DNI incorrecto:\n";
+
+            // Añadir las personas con DNI incorrecto
+            if (!empty($personasNoEncontradas)) {
+                $contenido .= implode("\n", $personasNoEncontradas) . "\n";
+            } else {
+                $contenido .= "No hay personas con DNI incorrecto.\n";
+            }
+
+            // Escribir el contenido en el archivo
+            file_put_contents($filepath, $contenido);
+
+            // Establecer que el archivo fue generado
+            $archivoGenerado = true;
+        }
+
+        // Verificar si la cantidad de personas a inscribir excede el cupo
+        $cupo = $this->cursoInstanciaService->checkInstanceQuota($cursoId, $instancia_id);
+        $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia_id, $cursoId);
+        $restantes = $cupo - $cantInscriptos;
+
+        if (count($personasParaInscribir) > $restantes) {
+            return redirect()->back()->with('error', 'No se pueden inscribir esas personas, ya que la cantidad excede el cupo disponible.');
+        }
+
+        // Inscribir a las personas válidas
+        foreach ($personasParaInscribir as $persona) {
+            // Verificar si la persona ya está inscrita
+            $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id);
+            if ($inscrito) {
+                continue; // Si ya está inscrito, no inscribir nuevamente
+            }
+
+            $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
+
+            $user = $this->personaService->getByDni($persona['dni']);
+            $curso = $this->cursoService->getById($cursoId)->titulo;
+            $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
+
+            $imageBase64Firma = null;
+            $imagePath2 = storage_path('app/public/cursos/firma.jpg');
+            if (file_exists($imagePath2)) {
+                $imageData = base64_encode(file_get_contents($imagePath2));
+                $mimeType = mime_content_type($imagePath2);
+                $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+            }
+
+            if (!empty($user->correo)) {
+                Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+            }
+        }
+
+        // Establecer una variable en sesión que indique si el archivo fue generado
+        session(['archivo_generado' => $archivoGenerado]);
+
+        // Redirigir con mensaje de éxito
+        return redirect()->back()->with('success', 'Las personas fueron inscriptas exitosamente y se generó el archivo.');
+
+    } catch (Exception $e) {
+        Log::error('Error al inscribir personas desde Excel: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Hubo un problema al procesar el archivo Excel.');
+    }
+}
 
 
 

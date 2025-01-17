@@ -21,18 +21,16 @@
                 {{ session('success') }}
             </div>
         @endif
-        @if(session()->has('inscripcion_desde_excel') && session()->has('archivo_descargable'))
-                <div class="alert alert-success" id="archivo-descargable">
-                    El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
-                    <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-primary" download>
-                        Descargar archivo
-                    </a>
-                </div>
-                @php
-                    // Eliminar la variable de sesión después de mostrar el mensaje
-                    session()->forget('inscripcion_desde_excel');
-                @endphp
+        @if(session()->has('archivo_generado') && session('archivo_generado') === true)
+            <div class="alert alert-success" id="archivo-descargable">
+                El archivo con datos incorrectos ha sido generado. Puedes descargarlo:
+                <a href="{{ asset('storage/archivo_personas.txt') }}" class="btn btn-primary" download>
+                    Descargar archivo
+                </a>
+            </div>
+
         @endif
+
 
         @if(session('error'))
             <div class="alert alert-danger" id="danger">
@@ -60,6 +58,10 @@
             <input type="file" name="excel_file" accept=".xlsx,.xls">
             <button type="submit" id="BI">Cargar Excel</button>
         </form>
+        <a href="{{ asset('plantillas/plantilla.xlsx') }}" download>
+            Descargar Plantilla Excel
+        </a>
+
 
         <form
             action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
