@@ -145,6 +145,18 @@ class PersonaService
 
     }
 
+    public function getAreaByDni(int $dni){
+        $persona = Persona::where('dni', $dni)->first();
+
+        // Verificar si se encontró la persona
+        if ($persona) {
+            // Retornar el valor de la columna 'area'
+            return $persona->area;
+        } else {
+            // Si no se encontró la persona, retornar null o manejarlo según necesites
+            return null;
+        }
+    }
 
 
 

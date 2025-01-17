@@ -15,7 +15,21 @@
     transition: opacity 1s ease-in-out;
 
 }
-
+#archivo-descargable {
+    text-align: center;
+    position: fixed;
+    top: 25%; /* Ajusta este valor para que el segundo mensaje esté debajo del primero */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #2ac04d;
+    color: rgb(255, 255, 255);
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9998; /* Un índice menor para que aparezca debajo del primero */
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
 /*Botones Crear/Agregar*/
 #btn-agregar {
     margin-bottom: 20px;

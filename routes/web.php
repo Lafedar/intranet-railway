@@ -597,3 +597,15 @@ Route::get('{personaId}/exportarCursos', function ($personaId) {
 
 Route::post('novedades/{id}/like', [NovedadesController::class, 'like'])->name('novedades.like');
 Route::post('/novedades/{id}/unlike', [NovedadesController::class, 'unlike'])->name('novedades.unlike');
+
+Route::post('inscribir/excel/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirDesdeExcel'])->name('inscribir.excel');
+
+Route::get('/descargar/{filename}', function ($filename) {
+  $filePath = storage_path('app/public/' . $filename);
+
+  if (file_exists($filePath)) {
+      return response()->download($filePath)->deleteFileAfterSend(true);
+  }
+
+  return redirect()->back()->with('error', 'El archivo no existe.');
+})->name('descargarArchivo');

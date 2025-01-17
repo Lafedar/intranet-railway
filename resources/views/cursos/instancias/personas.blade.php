@@ -8,8 +8,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap&italic=true" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
- 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </head>
 
@@ -17,10 +17,22 @@
 <body>
     <div class="container mt-4">
         @if(session('success'))
-            <div class="alert alert-success" id="success">
+            <div class="alert alert-success" id="success" >
                 {{ session('success') }}
             </div>
         @endif
+        @if(session()->has('inscripcion_desde_excel') && session()->has('archivo_descargable'))
+    <div class="alert alert-success" id="archivo-descargable">
+        El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
+        <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-primary" download>
+            Descargar archivo
+        </a>
+    </div>
+    @php
+        // Eliminar la variable de sesión después de mostrar el mensaje
+        session()->forget('inscripcion_desde_excel');
+    @endphp
+@endif
 
         @if(session('error'))
             <div class="alert alert-danger" id="danger">
@@ -30,7 +42,7 @@
 
 
         <div id="encabezados">
-            <h1 id="titulo-personas">Inscripción para la  capacitación: {{ $curso->titulo }}</h1>
+            <h1 id="titulo-personas">Inscripción para la capacitación: {{ $curso->titulo }}</h1>
 
         </div>
         <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
@@ -41,73 +53,77 @@
                 placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
 
+        <form
+            action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="excel_file" accept=".xlsx,.xls">
+            <button type="submit">Cargar y procesar Excel</button>
+        </form>
+      
+        <form
+            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            method="POST">
+            @csrf
+            <table>
+                <thead>
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
+                        id="btn-agregar">Inscribir seleccionados</button>
+                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
+                        class="btn btn-secondary" id="asignar-btn" style="margin-top:-10px;">Volver</a>
 
+                    <tr>
+                        <th>Legajo</th>
+                        <th>Apellido y Nombre</th>
+                        <th>Área</th>
+                        <th>Inscribir</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($personasConEstado as $persona)
+                                    <tr>
+                                        <td>{{ $persona->legajo }}</td>
+                                        <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
+                                        <td>
+                                            @if($persona->area)
+                                                {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
 
-            <form
-                action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                method="POST">
-                @csrf
-                <table>
-                    <thead>
-                        <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
-                            id="btn-agregar">Inscribir seleccionados</button>
-                        <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
-                            class="btn btn-secondary" id="asignar-btn" style="margin-top:-10px;">Volver</a>
+                                        <td>
+                                            @if($persona->estadoEnrolado)
+                                                <p>Ya inscripto</p>
+                                            @else
 
-                        <tr>
-                            <th>Legajo</th>
-                            <th>Apellido y Nombre</th>
-                            <th>Área</th>
-                            <th>Inscribir</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($personasConEstado as $persona)
-                            <tr>
-                                <td>{{ $persona->legajo }}</td>
-                                <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
-                                <td>
-                                    @if($persona->area)
-                                        {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
+                                                <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
+                                                    value="1">
+                                            @endif
+                                        </td>
+                        </form>
+                        <td>
+                            @if($persona->estadoEnrolado)
 
-                                <td>
-                                    @if($persona->estadoEnrolado)
-                                        <p>Ya inscripto</p>
-                                    @else
+                                <form
+                                    action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                                    method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" id="icono" title="Desuscribir"><img
+                                            src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></button>
 
-                                        <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]"
-                                            value="1">
-                                    @endif
-                                </td>
                                 </form>
-                                <td>
-                                    @if($persona->estadoEnrolado)
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        </tr>
+                    @endforeach
+        </tbody>
+        </table>
 
-                                        <form
-                                            action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                                            method="POST"
-                                            onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
-                                            @csrf
-                                            @method('POST')
-                                            <button type="submit" id="icono" title="Desuscribir"><img
-                                                    src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar"
-                                                    id="img-icono"></button>
-
-                                        </form>
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -121,6 +137,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function () {
         // Función para actualizar el cupo disponible
@@ -176,6 +193,6 @@
         // Ocultar los mensajes de éxito y error después de 3 segundos
         setTimeout(function () {
             $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
-        }, 3000); // 3000 milisegundos = 3 segundos
+        }, 5000); // 3000 milisegundos = 3 segundos
     });
 </script>
