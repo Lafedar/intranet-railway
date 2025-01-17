@@ -17,22 +17,22 @@
 <body>
     <div class="container mt-4">
         @if(session('success'))
-            <div class="alert alert-success" id="success" >
+            <div class="alert alert-success" id="success">
                 {{ session('success') }}
             </div>
         @endif
         @if(session()->has('inscripcion_desde_excel') && session()->has('archivo_descargable'))
-    <div class="alert alert-success" id="archivo-descargable">
-        El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
-        <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-primary" download>
-            Descargar archivo
-        </a>
-    </div>
-    @php
-        // Eliminar la variable de sesión después de mostrar el mensaje
-        session()->forget('inscripcion_desde_excel');
-    @endphp
-@endif
+                <div class="alert alert-success" id="archivo-descargable">
+                    El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
+                    <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-primary" download>
+                        Descargar archivo
+                    </a>
+                </div>
+                @php
+                    // Eliminar la variable de sesión después de mostrar el mensaje
+                    session()->forget('inscripcion_desde_excel');
+                @endphp
+        @endif
 
         @if(session('error'))
             <div class="alert alert-danger" id="danger">
@@ -58,9 +58,9 @@
             method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="excel_file" accept=".xlsx,.xls">
-            <button type="submit">Cargar y procesar Excel</button>
+            <button type="submit" id="BI">Cargar Excel</button>
         </form>
-      
+
         <form
             action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
             method="POST">
