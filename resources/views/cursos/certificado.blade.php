@@ -21,17 +21,21 @@
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
                     <h2 class="recipient-name">{{$persona->nombre_p}} {{$persona->apellido}}</h2>
-                    <p>por haber completado satisfactoriamente la capacitación</p>
+                    <p>por haber aprobado la capacitación</p>
                     <h3 class="course-title">{{$curso->titulo}}</h3>
                     
                 </div>
                 
                 <div class="certificate-footer">
-                    <p>Fecha de Emisión: {{$fecha}}</p>
+                <p>Capacitador: {{$instancia->capacitador}}</p>
+                <br>
+                <br>
+                <p>Fecha de Capacitación: {{$instancia->fecha_inicio->format('d-m-Y')}}</p>
+
                     <br><br><br><br><br>
                     <div class="signature">
                         <p>______________________________</p>
-                        <p>Firma del Instructor</p>
+                        <p>Firma de RRHH</p>
                     </div>
                 </div>
             </div>
@@ -39,7 +43,7 @@
     </div>
 
     @if(empty($is_pdf))
-        <form action="{{ route('cursos.generarPDFcertificado', ['cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="GET" class="hide-when-pdf">
+        <form action="{{ route('cursos.generarPDFcertificado', ['instanciaId' => $instancia->id_instancia,'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}" method="GET" class="hide-when-pdf">
             @csrf
             <button type="submit" class="btn btn-primary">Generar PDF</button>
         </form>
