@@ -57,6 +57,14 @@
 
 
         <div class="button-link-container">
+            <button id="icono"
+                title="El archivo excel a cargar puede ser el archivo generado desde Microsoft Forms o la plantilla para descargar a continuación.">
+                <img src="{{ asset('storage/Imagenes-principal-nueva/info.png') }}" alt="Info" id="img-icono"
+                    style="margin-left: 1370px;">
+            </button>
+
+
+
             <a href="{{ asset('plantillas/plantilla.xlsx') }}" download class="download-link">
                 Descargar Plantilla Excel
             </a>

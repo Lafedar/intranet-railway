@@ -63,7 +63,8 @@
 #excelForm {
     display: flex;
     align-items: center;
-    
+    margin-top: 10px;
+
 }
 
 /* Estilo para el enlace de descarga */
@@ -73,8 +74,8 @@
     display: inline-block;
     white-space: nowrap;
     vertical-align: middle;
-    margin-left: 1430px;
-    margin-top: -20px;
+    margin-left: 10px;
+    margin-top: 0px;
 }
 
 #archivo-descargable {
@@ -193,7 +194,21 @@
     border: none;
     background: none;
     padding: 0;
+    outline: none;
 }
+
+#icono-info {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+}
+
+#icono-info:hover .tooltip {
+    display: block;
+    /* Muestra el tooltip al hacer hover */
+}
+
 
 #contenedor-botones {
     display: flex;
@@ -507,26 +522,10 @@ table thead th {
 
 #filtro {
 
-
-    color: white !important;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
     width: 150%;
     height: 45px;
     margin-top: 20px;
-    background-color: grey;
-}
 
-#filtro::placeholder {
-    color: rgba(255, 255, 255, 1);
-}
-
-
-#filtro:focus {
-    color: white !important;
-    background: grey;
-    border: 2px solid #fff;
 }
 
 .input-wrapper,
