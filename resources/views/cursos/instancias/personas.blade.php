@@ -21,15 +21,19 @@
                 {{ session('success') }}
             </div>
         @endif
-        @if(session()->has('archivo_generado') && session('archivo_generado') === true)
-            <div class="alert alert-success" id="archivo-descargable">
-                El archivo con datos incorrectos ha sido generado. Puedes descargarlo:
-                <a href="{{ asset('storage/archivo_personas.txt') }}" class="btn btn-primary" download>
-                    Descargar archivo
-                </a>
-            </div>
-
+        @if(session()->has('inscripcion_desde_excel') && session()->has('archivo_descargable'))
+                <div class="alert alert-info" id="archivo-descargable">
+                    El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
+                    <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-secondary" download>
+                        Descargar archivo
+                    </a>
+                </div>
+                @php
+                    // Eliminar la variable de sesión después de mostrar el mensaje
+                    session()->forget('inscripcion_desde_excel');
+                @endphp
         @endif
+
 
 
         @if(session('error'))
@@ -51,17 +55,27 @@
                 placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
 
-        <form
-            action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-            method="POST" enctype="multipart/form-data">
-            @csrf
-            <input type="file" name="excel_file" accept=".xlsx,.xls">
-            <button type="submit" id="BI">Cargar Excel</button>
-        </form>
+        @if($restantes != 0)
+            <form
+                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file">
+                <button type="submit" id="BI">Cargar Excel</button>
+            </form>
+        @else
+            <form
+                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" disabled>
+                <button type="submit" id="btn-disabled" disabled>Cargar Excel</button>
+            </form>
+        @endif
+
         <a href="{{ asset('plantillas/plantilla.xlsx') }}" download>
             Descargar Plantilla Excel
         </a>
-
 
         <form
             action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"

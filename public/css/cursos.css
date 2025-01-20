@@ -15,21 +15,32 @@
     transition: opacity 1s ease-in-out;
 
 }
+
+.alert-info {
+    background-color: #1d66ee;
+    /* Color de fondo */
+    color: #ffffff;
+    /* Color del texto */
+}
+
 #archivo-descargable {
     text-align: center;
     position: fixed;
-    top: 25%; /* Ajusta este valor para que el segundo mensaje esté debajo del primero */
+    top: 25%;
+    /* Ajusta este valor para que el segundo mensaje esté debajo del primero */
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #2ac04d;
+    background-color: #186dee;
     color: rgb(255, 255, 255);
     padding: 15px 30px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 9998; /* Un índice menor para que aparezca debajo del primero */
+    z-index: 9998;
+    /* Un índice menor para que aparezca debajo del primero */
     opacity: 1;
     transition: opacity 1s ease-in-out;
 }
+
 /*Botones Crear/Agregar*/
 #btn-agregar {
     margin-bottom: 20px;
@@ -80,12 +91,12 @@
     color: rgba(245, 245, 245, 1);
     margin-top: -15px;
     height: 50px;
-   
+
 }
 
 #asignar-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
-    
+
 }
 
 #asignar-btn:active {
@@ -301,7 +312,7 @@
     background: rgba(100, 161, 206, 1);
 }
 
-#h1-ver-cursos{
+#h1-ver-cursos {
     margin-top: 100px;
 }
 
@@ -560,7 +571,7 @@ table thead th {
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: rgba(245, 245, 245, 1);
-    height: 50px;   
+    height: 50px;
 }
 
 #BCC:hover {
