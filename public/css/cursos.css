@@ -749,16 +749,8 @@ table thead th {
         background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
     }
 
-    .download-link {
-        padding: 10px;
-        text-decoration: none;
-        display: inline-block;
-        white-space: nowrap;
-        /* Evita que el texto se rompa */
-        vertical-align: middle;
-        /* Alinea el enlace con el botón */
-        margin-left: 1000px;
-        margin-top: -20px;
+    .button-link-container {
+        margin-left: -400px;
     }
 
     form button {
@@ -787,17 +779,7 @@ table thead th {
             box-sizing: border-box;
         }
 
-        .download-link {
-            padding: 10px;
-            text-decoration: none;
-            display: inline-block;
-            white-space: nowrap;
-            /* Evita que el texto se rompa */
-            vertical-align: middle;
-            /* Alinea el enlace con el botón */
-            margin-left: 1000px;
-            margin-top: -20px;
-        }
+
 
         .filter-item input,
         .filter-item select,
@@ -812,4 +794,11 @@ table thead th {
             margin-top: 10px;
         }
     }
+
+    @media screen and (max-width: 1280px) and (max-height: 720px) {
+        .button-link-container {
+            margin-left: -500px;
+        }
+    }
+
 }

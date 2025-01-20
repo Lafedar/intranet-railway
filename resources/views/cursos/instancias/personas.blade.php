@@ -57,11 +57,11 @@
 
 
         <div class="button-link-container">
-            <button id="icono"
-                title="El archivo excel a cargar puede ser el archivo generado desde Microsoft Forms o la plantilla para descargar a continuación.">
+            <a id="icono" title="Descargar instructivo sobre importación de inscriptos"
+                href="{{ asset('instructivos/instructivo_importacion_inscriptos.docx') }}" download>
                 <img src="{{ asset('storage/Imagenes-principal-nueva/info.png') }}" alt="Info" id="img-icono"
                     style="margin-left: 1370px;">
-            </button>
+            </a>
 
 
 
