@@ -2,7 +2,7 @@
 #success {
     text-align: center;
     position: fixed;
-    top: 15%;
+    top: 27%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #2ac04d;
@@ -16,18 +16,71 @@
 
 }
 
-.alert-info {
-    background-color: #1d66ee;
-    /* Color de fondo */
-    color: #ffffff;
-    /* Color del texto */
+#btn-excel-disabled {
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    width: 250px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#btn-excel-disabled:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-excel-disabled:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/* Contenedor que envuelve el botón y el enlace */
+.button-link-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Estilo para el formulario */
+#excelForm {
+    display: flex;
+    align-items: center;
+    
+}
+
+/* Estilo para el enlace de descarga */
+.download-link {
+    padding: 10px;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-left: 1430px;
+    margin-top: -20px;
 }
 
 #archivo-descargable {
     text-align: center;
     position: fixed;
-    top: 25%;
-    /* Ajusta este valor para que el segundo mensaje esté debajo del primero */
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #186dee;
@@ -36,7 +89,6 @@
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 9998;
-    /* Un índice menor para que aparezca debajo del primero */
     opacity: 1;
     transition: opacity 1s ease-in-out;
 }
@@ -686,10 +738,29 @@ table thead th {
         padding: 8px 16px;
     }
 
+    #btn-excel-disabled {
+
+        width: auto;
+        font-size: 16px;
+        padding: 8px 16px;
+
+    }
+
     #BI:hover {
         background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
     }
 
+    .download-link {
+        padding: 10px;
+        text-decoration: none;
+        display: inline-block;
+        white-space: nowrap;
+        /* Evita que el texto se rompa */
+        vertical-align: middle;
+        /* Alinea el enlace con el botón */
+        margin-left: 1000px;
+        margin-top: -20px;
+    }
 
     form button {
         margin-left: 0px;
@@ -715,6 +786,18 @@ table thead th {
         .filter-item {
             width: 12%;
             box-sizing: border-box;
+        }
+
+        .download-link {
+            padding: 10px;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+            /* Evita que el texto se rompa */
+            vertical-align: middle;
+            /* Alinea el enlace con el botón */
+            margin-left: 1000px;
+            margin-top: -20px;
         }
 
         .filter-item input,

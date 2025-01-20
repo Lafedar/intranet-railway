@@ -55,27 +55,34 @@
                 placeholder="Filtrar por Nombre, Apellido, Area o Legajo" autocomplete="off" style="width: 366px">
         </div>
 
-        @if($restantes != 0)
-            <form
-                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file">
-                <button type="submit" id="BI">Cargar Excel</button>
-            </form>
-        @else
-            <form
-                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" disabled>
-                <button type="submit" id="btn-disabled" disabled>Cargar Excel</button>
-            </form>
-        @endif
 
-        <a href="{{ asset('plantillas/plantilla.xlsx') }}" download>
-            Descargar Plantilla Excel
-        </a>
+        <div class="button-link-container">
+            <a href="{{ asset('plantillas/plantilla.xlsx') }}" download class="download-link">
+                Descargar Plantilla Excel
+            </a>
+            @if($restantes != 0)
+                <form id="excelForm"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
+                        onchange="submitForm()">
+                    <button type="button" id="BI" onclick="document.getElementById('excel_file').click()">Cargar
+                        Excel</button>
+                </form>
+            @else
+                <form id="excelForm"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
+                        onchange="submitForm()">
+                    <button type="button" id="btn-excel-disabled"
+                        onclick="document.getElementById('excel_file').click()">Cargar
+                        Excel</button>
+                </form>
+            @endif
+        </div>
 
         <form
             action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
@@ -83,10 +90,11 @@
             @csrf
             <table>
                 <thead>
-                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-right: 10px"
-                        id="btn-agregar">Inscribir seleccionados</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="margin-bottom: 10px; margin-right: 10px; margin-top: -70px" id="btn-agregar">Inscribir
+                        seleccionados</button>
                     <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
-                        class="btn btn-secondary" id="asignar-btn" style="margin-top:-10px;">Volver</a>
+                        class="btn btn-secondary" id="asignar-btn" style="margin-top:-80px;">Volver</a>
 
                     <tr>
                         <th>Legajo</th>
@@ -211,4 +219,10 @@
             $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
         }, 5000); // 3000 milisegundos = 3 segundos
     });
+</script>
+<script>
+    function submitForm() {
+        document.getElementById('excelForm').submit();  // Enviar el formulario cuando se selecciona el archivo
+    }
+
 </script>
