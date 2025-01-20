@@ -84,7 +84,6 @@
                         <th>Descripción</th>
                         <th>Obligatorio</th>
                         @role(['administrador', 'Gestor-cursos'])
-                        <th>Código</th>
                         <th>Area</th>
                         @endrole
                         <th>Fecha de Creación</th>
@@ -111,7 +110,7 @@
                         <td>{{ $curso->descripcion }}</td>
                         <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
                         @role(['administrador', 'Gestor-cursos'])
-                        <td>{{ $curso->codigo ?? 'N/A'}}</td>
+                        
                         <td>
                             @if($curso->areas->isEmpty()) 
                                 <span>N/A</span>

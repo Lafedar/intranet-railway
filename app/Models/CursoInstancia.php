@@ -20,6 +20,7 @@ class CursoInstancia extends Model
         'cupo',
         'modalidad',
         'capacitador',
+        'codigo',
         'lugar',
         'estado',
         'version',

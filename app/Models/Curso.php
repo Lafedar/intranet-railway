@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Curso extends Model
 {
     protected $table = 'cursos';
-    protected $fillable = ['codigo', 'titulo', 'descripcion', 'creado', 'obligatorio', 'tipo'];
+    protected $fillable = ['titulo', 'descripcion', 'creado', 'obligatorio', 'tipo'];
     public $timestamps = true;
 
     public function instancias()

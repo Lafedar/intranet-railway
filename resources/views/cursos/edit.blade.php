@@ -71,12 +71,6 @@
             </div>
 
             <div class="form-group">
-                <label for="codigo">Código</label>
-                <input type="text" class="form-control" id="codigo" name="codigo"
-                    value="{{ old('codigo', $curso->codigo) }}">
-            </div>
-
-            <div class="form-group">
                 <label>Tipo</label>
                 <select name="tipo" class="form-control" required>
                     <option value="">Selecciona una opción</option>

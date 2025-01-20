@@ -70,7 +70,6 @@ class CursoService
                 'titulo' => $data['titulo'],
                 'descripcion' => $data['descripcion'],
                 'obligatorio' => $data['obligatorio'],
-                'codigo' => $data['codigo'],
                 'tipo' => $data['tipo'],
             ]);
 

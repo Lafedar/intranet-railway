@@ -78,6 +78,10 @@
                 <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" maxlength="60">
             </div>
             <div class="form-group">
+                <label for="codigo">Codigo</label>
+                <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49">
+            </div>
+            <div class="form-group">
                 <label for="lugar">Lugar</label>
                 <input type="text" class="form-control" id="lugar" name="lugar" maxlength="100">
             </div>

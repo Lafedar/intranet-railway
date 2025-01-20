@@ -36,7 +36,7 @@
 
             <div class="form-group">
                 <label for="descripcion">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" required maxlength="252"></textarea>
+                <textarea class="form-control" id="descripcion" name="descripcion" maxlength="252"></textarea>
                 <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
             </div>
 
@@ -72,11 +72,6 @@
                         </div>
                     @endif
                 @endforeach
-            </div>
-
-            <div class="form-group">
-                <label for="codigo">Código</label>
-                <input type="text" class="form-control" id="codigo" name="codigo">
             </div>
 
             <div class="form-group">

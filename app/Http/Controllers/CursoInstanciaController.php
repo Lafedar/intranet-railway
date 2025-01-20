@@ -158,6 +158,7 @@ class CursoInstanciaController extends Controller
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
                 'otro_capacitador' => 'nullable|string|max:255',
+                'codigo' => 'nullable|string|max:49',
                 'lugar' => 'nullable|string|max:255',
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
@@ -165,7 +166,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             $capacitador = $request->input('capacitador');
-
+            
 
             if ($request->input('otro_capacitador')) {
                 $capacitador = $request->input('otro_capacitador');
@@ -190,6 +191,10 @@ class CursoInstanciaController extends Controller
             $data = $request->all();
             $data['id_curso'] = $cursoId;
             $data['capacitador'] = $capacitador;
+            $data['codigo'] = $request->input('codigo');
+            
+
+            
 
 
             $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
@@ -292,6 +297,7 @@ class CursoInstanciaController extends Controller
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
                 'otro_capacitador' => 'nullable|string|max:255',
+                'codigo' => 'nullable|string|max:49',
                 'lugar' => 'nullable|string|max:255',
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
@@ -299,6 +305,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             $capacitador = $request->input('capacitador');
+            
 
             if ($request->input('otro_capacitador')) {
                 $capacitador = $request->input('otro_capacitador');

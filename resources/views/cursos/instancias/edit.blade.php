@@ -84,7 +84,10 @@
                 <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador"
                     value="{{ old('otro_capacitador', $capacitador) }}" maxlength="60">
             </div>
-
+            <div class="form-group">
+                <label for="codigo">Codigo</label>
+                <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49" value="{{$instancia->codigo }}">
+            </div>
             <div class="form-group">
                 <label for="lugar">Lugar</label>
                 <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}"

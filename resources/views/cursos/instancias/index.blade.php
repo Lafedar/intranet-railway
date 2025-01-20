@@ -64,6 +64,7 @@
                     <th>Cupos Restantes</th>
                     <th>Modalidad</th>
                     <th>Capacitador</th>
+                    <th>Código</th>
                     <th>Lugar</th>
                     <th>Estado</th>
                     <th>Version</th>
@@ -109,6 +110,7 @@
                                     </td>
                                     <td>{{ $instance->modalidad }}</td>
                                     <td>{{ $instance->capacitador }}</td>
+                                    <td>{{ $instance->codigo }}</td>
                                     <td>{{ $instance->lugar }}</td>
                                     <td>{{ $instance->estado }}</td>
                                     <td>{{ $instance->version }}</td>

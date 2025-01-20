@@ -201,7 +201,6 @@ class CursoController extends Controller
                 'titulo' => 'required|string|max:253',
                 'descripcion' => 'nullable|string|max:253',
                 'obligatorio' => 'required|boolean',
-                'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
                 'area' => 'required|array|min:1',
             ]);
@@ -273,7 +272,6 @@ class CursoController extends Controller
                 'titulo' => 'required|string|max:100',
                 'descripcion' => 'nullable|string|max:65530',
                 'obligatorio' => 'required|boolean',
-                'codigo' => 'nullable|string',
                 'tipo' => 'required|string',
                 'area' => 'nullable|array',
             ]);
