@@ -359,12 +359,14 @@ class CursoController extends Controller
         }
 
     }
-    public function generarCertificado(int $instanciaId, int $cursoId, int $id_persona)
+    public function generarCertificado(int $cursoId, int $id_persona)
     {
 
         $curso = $this->cursoService->getById($cursoId);
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+       
         $persona = $this->personaService->getById($id_persona);
+        $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
+        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 

@@ -74,7 +74,11 @@
     <a href="{{ route('cursos.create') }}" id="BCC">
         Crear Capacitación
     </a>
-
+    @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+        <br>
+        <br>
+        <h1 style="text-align: center;">Capacitaciones de: {{ Auth::user()->name }}</h1>
+    @endif
     <div>
         <div> 
             <table>

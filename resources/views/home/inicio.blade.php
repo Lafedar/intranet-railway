@@ -110,7 +110,7 @@
             <div class="nav-group">
 
             <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
-            <a href="/capacitacion" class="nav-btn">Capacitacion <span id="capacitacion-principal">></span></a>
+            <a href="/capacitaciones" class="nav-btn">Capacitaciones <span id="capacitacion-principal">></span></a>
 
 
             </div>
