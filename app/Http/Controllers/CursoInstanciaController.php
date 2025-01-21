@@ -166,7 +166,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             $capacitador = $request->input('capacitador');
-            
+
 
             if ($request->input('otro_capacitador')) {
                 $capacitador = $request->input('otro_capacitador');
@@ -192,9 +192,9 @@ class CursoInstanciaController extends Controller
             $data['id_curso'] = $cursoId;
             $data['capacitador'] = $capacitador;
             $data['codigo'] = $request->input('codigo');
-            
 
-            
+
+
 
 
             $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
@@ -305,7 +305,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             $capacitador = $request->input('capacitador');
-            
+
 
             if ($request->input('otro_capacitador')) {
                 $capacitador = $request->input('otro_capacitador');
@@ -709,7 +709,7 @@ class CursoInstanciaController extends Controller
 
         $aprobados = $this->enrolamientoCursoService->getAprobados($cursoId, $instanciaId);
         $curso = $this->cursoService->getById($cursoId);
-
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
 
         if ($aprobados->isEmpty()) {
             return "No hay personas aprobadas para este curso e instancia.";
@@ -754,7 +754,8 @@ class CursoInstanciaController extends Controller
                 'nombre' => $persona->nombre_p,
                 'apellido' => $persona->apellido,
                 'curso' => $curso->titulo,
-                'fecha' => now()->format('d/m/Y'),
+                'capacitador' => $instancia->capacitador,
+                'fecha' => $instancia->fecha_inicio->format('d/m/Y'),
                 'imageBase64' => $imageBase64,
                 'imageBase64Firma' => $imageBase64Firma,
             ];
