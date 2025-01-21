@@ -725,15 +725,18 @@ class CursoInstanciaController extends Controller
             $imageBase64 = null;
         }
 
-        //firma lafedar
-        $imagePath2 = storage_path('app/public/cursos/firma.jpg');
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
 
-        if (file_exists($imagePath2)) {
-            $imageData = base64_encode(file_get_contents($imagePath2));
-            $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
-            $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
         } else {
-            $imageBase64Firma = null;
+
+            $imageBase64_firma = null;
         }
 
         $successCount = 0;
@@ -757,7 +760,7 @@ class CursoInstanciaController extends Controller
                 'capacitador' => $instancia->capacitador,
                 'fecha' => $instancia->fecha_inicio->format('d/m/Y'),
                 'imageBase64' => $imageBase64,
-                'imageBase64Firma' => $imageBase64Firma,
+                'imageBase64Firma' => $imageBase64_firma,
             ];
 
             if (!defined('CERTIFICADO_BASE_PATH')) {

@@ -363,7 +363,7 @@ class CursoController extends Controller
     {
 
         $curso = $this->cursoService->getById($cursoId);
-        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         $persona = $this->personaService->getById($id_persona);
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -382,7 +382,23 @@ class CursoController extends Controller
 
 
 
-        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia'));
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
+
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+        } else {
+
+            $imageBase64_firma = null;
+        }
+
+
+
+        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
     }
 
     public function verCurso($cursoId)
@@ -398,7 +414,7 @@ class CursoController extends Controller
         $curso = $this->cursoService->getById($cursoId);
         $persona = $this->personaService->getById($id_persona);
         $fecha = now()->format('d/m/Y');
-        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
 
 
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -416,7 +432,23 @@ class CursoController extends Controller
         }
 
 
-        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf', 'instancia'))->render();
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
+
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+        } else {
+
+            $imageBase64_firma = null;
+        }
+
+
+
+        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf', 'instancia', 'imageBase64_firma'))->render();
 
 
         $pdf = SnappyPdf::loadHTML($html)

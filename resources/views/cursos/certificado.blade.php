@@ -36,13 +36,11 @@
 
                     <br><br><br><br><br>
                     <div style="display: inline-block; width: 48%; text-align: center;">
+                    <img src="{{ $imageBase64_firma }}" alt="Logo" width="auto" height="150px;" style="margin-bottom: -30px; margin-top: -90px;"/>
                         <p>______________________________</p>
                         <p>Firma de RRHH</p>
                     </div>
-                    <div style="display: inline-block; width: 48%; text-align: center;">
-                        <p>______________________________</p>
-                        <p>Firma del capacitador/a</p>
-                    </div>
+                    
 
                 </div>
 
