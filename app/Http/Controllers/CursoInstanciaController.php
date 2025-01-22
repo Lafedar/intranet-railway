@@ -98,7 +98,7 @@ class CursoInstanciaController extends Controller
 
             $instancesEnrollment = $instancias->map(function ($instancia) use ($userDni, $curso) {
 
-                $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id_instancia);
+                $isEnrolled = $this->enrolamientoCursoService->isEnrolled($userDni, $instancia->id_instancia, $curso->id);
                 $instancia->isEnrolled = $isEnrolled;
                 $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia->id_instancia, $curso->id);
                 $instancia->cantInscriptos = $cantInscriptos;
@@ -925,7 +925,16 @@ class CursoInstanciaController extends Controller
 
                 // Recorrer las áreas del curso para verificar si la persona corresponde a alguna
                 foreach ($areasCurso as $area) {
-                    if ($areaPersona == $area->id_a) {
+                    if($area->id_a == 'tod'){
+                        $personasParaInscribir[] = [
+                            'dni' => $dni,
+                            'nombre1' => $nombre1,
+                            'apellido1' => $apellido1
+                        ];
+                        $areaValida = true;
+                        break;
+                    }
+                    elseif ($areaPersona == $area->id_a) {
                         $personasParaInscribir[] = [
                             'dni' => $dni,
                             'nombre1' => $nombre1,
@@ -989,7 +998,8 @@ class CursoInstanciaController extends Controller
             // Inscribir a las personas válidas
             foreach ($personasParaInscribir as $persona) {
                 // Verificar si la persona ya está inscripta
-                $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id);
+                $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id, $cursoId);
+                
                 if ($inscrito) {
                     continue; // Si ya está inscrito, no inscribir nuevamente
                 }

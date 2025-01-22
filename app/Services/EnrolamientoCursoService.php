@@ -48,11 +48,12 @@ class EnrolamientoCursoService
         return $enrolamiento->delete();
     }
 
-    public function isEnrolled($userDni, $instanciaId): ?bool
+    public function isEnrolled($userDni, $instanciaId, $cursoId): ?bool
     {
         try {
             $person = Persona::where('dni', $userDni)->first();
             return EnrolamientoCurso::where('id_persona', $person->id_p)
+                ->where('id_curso', $cursoId)
                 ->where('id_instancia', $instanciaId)
                 ->exists();
         } catch (Exception $e) {
