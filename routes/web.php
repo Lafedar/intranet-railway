@@ -598,7 +598,9 @@ Route::get('{personaId}/exportarCursos', function ($personaId) {
 Route::post('novedades/{id}/like', [NovedadesController::class, 'like'])->name('novedades.like');
 Route::post('/novedades/{id}/unlike', [NovedadesController::class, 'unlike'])->name('novedades.unlike');
 
-Route::post('inscribir/excel/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirDesdeExcel'])->name('inscribir.excel');
+//Inscribir personas en capacitaciones desde un archivo Excel
+use App\Http\Controllers\ExcelController;
+Route::post('inscribir/excel/{instancia_id}/{cursoId}', [ExcelController::class, 'inscribirDesdeExcel'])->name('inscribir.excel');
 
 Route::get('/descargar/{filename}', function ($filename) {
   $filePath = storage_path('app/public/' . $filename);

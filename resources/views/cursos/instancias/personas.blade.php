@@ -21,18 +21,19 @@
                 {{ session('success') }}
             </div>
         @endif
-        @if(session()->has('inscripcion_desde_excel') && session()->has('archivo_descargable'))
-                <div class="alert alert-info" id="archivo-descargable">
-                    El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
-                    <a href="{{ asset('storage/' . session('archivo_descargable')) }}" class="btn btn-secondary" download>
-                        Descargar archivo
-                    </a>
-                </div>
-                @php
-                    // Eliminar la variable de sesión después de mostrar el mensaje
-                    session()->forget('inscripcion_desde_excel');
-                @endphp
-        @endif
+        @if(session()->has('archivo_descargable'))
+    <div class="alert alert-info" id="archivo-descargable">
+        El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
+        <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
+            Descargar archivo
+        </a>
+    </div>
+
+    @php
+        // Eliminar la variable de sesión después de mostrar el mensaje
+        session()->forget('archivo_descargable');
+    @endphp
+@endif
 
 
 
