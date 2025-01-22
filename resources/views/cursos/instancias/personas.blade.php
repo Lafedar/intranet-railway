@@ -23,7 +23,7 @@
         @endif
         @if(session()->has('archivo_descargable'))
     <div class="alert alert-info" id="archivo-descargable">
-        El archivo de personas no correspondientes ha sido generado. Puedes descargarlo ahora:
+        El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
         <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
             Descargar archivo
         </a>
