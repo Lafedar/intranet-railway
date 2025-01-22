@@ -59,14 +59,14 @@
 
         <div class="button-link-container">
             <a id="icono" title="Descargar instructivo sobre importación de inscriptos"
-                href="{{ asset('instructivos/instructivo_importacion_inscriptos.docx') }}" download>
+                href="{{ asset('storage/instructivos/instructivo_importacion_inscriptos.docx') }}" download>
                 <img src="{{ asset('storage/Imagenes-principal-nueva/info.png') }}" alt="Info" id="img-icono"
                     style="margin-left: 1370px;">
             </a>
 
 
 
-            <a href="{{ asset('plantillas/plantilla.xlsx') }}" download class="download-link">
+            <a href="{{ asset('storage/plantillas/plantilla.xlsx') }}" download class="download-link">
                 Descargar Plantilla Excel
             </a>
             @if($restantes != 0)
