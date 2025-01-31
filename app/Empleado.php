@@ -18,6 +18,7 @@ class Empleado extends Model
             'personas.nombre_p as nombre_p',
             'personas.apellido as apellido',
             'personas.dni as dni',
+            'personas.legajo as legajo',
             'personas.fe_ing as fe_ing',
             'personas.fe_nac as fe_nac',
             'personas.activo as activo',

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="form-group col-md-12">
   <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0" cellpadding="2" border="10">
     <thead>
@@ -22,7 +23,7 @@
     <div style="display: flex; align-items: center;">
       <p style="margin-right: 10px;"><strong>Agregar:</strong></p>
       <select class="form-control col-md-8" name="nuevoPermiso" id="nuevoPermiso" style="margin-right: 10px;"></select>
-      <button type="button" class="btn btn-info" id="saveButton" onclick='fnAgregarJefeXArea()'>Guardar</button>
+      <button type="button" class="btn btn-info" onclick='fnAgregarJefeXArea()' id="asignar-btn">Guardar</button>
     </div>
 </div>
       

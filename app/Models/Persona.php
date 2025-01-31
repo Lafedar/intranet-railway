@@ -1,30 +1,55 @@
 <?php
 
-namespace App\Models;  //agrego \Models
-
-use Illuminate\Database\Eloquent\Model;
+namespace App\Models;
+use App\Area;
+use Empresa;
 use DB;
+//use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
 {
-    protected $table='mi_agenda';
+    //use HasFactory;
 
-public function scopeEmpresa($query, $empresa){
-    if($empresa){
-    return $query -> where('mi_agenda.empresa','LIKE',"%$empresa%");
+    protected $table = 'personas';
+    protected $primaryKey = 'id_p';
+
+    protected $fillable = [
+        'id_p',
+        'nombre_p',
+        'apellido',
+        'dni',
+        'interno',
+        'correo',
+        'fe_nac',
+        'fe_ing',
+        'area',
+        'turno',
+        'jefe',
+        'usuario',
+        'activo',
+        'legajo'
+    ];
+
+    public $timestamps = true;
+
+    public function enrolamientos()
+    {
+        return $this->hasMany(EnrolamientoCurso::class, 'id_persona');
     }
-}
-
-public function scopeNombre($query, $nombre){
-    if($nombre){
-        return $query -> where(DB::raw("CONCAT(nombre,' ',apellido)"), 'LIKE',"%$nombre%");
+    public function area()
+    {
+        
+        return $this->belongsTo(Area::class, 'area', 'id_a');
     }
-}
-
-public function traerPersonas() {
-    return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
-}
-
-
-
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'enrolamiento_cursos', 'id_persona', 'id_curso')
+        ->withPivot('id_instancia', 'evaluacion'); 
+    }
+        public function traerPersonas() {
+        return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
+    }
+   
+    
 }

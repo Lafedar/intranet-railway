@@ -57,7 +57,7 @@
 <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
 <script>
   var ruta_store = '{{ route('store_instructivo') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>');
+  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> id="asignar-btn"');
   var saveButton = $('<button type="submit" class="btn btn-info">Guardar</button>');
 
   //modal store

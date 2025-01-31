@@ -53,7 +53,7 @@ class InstructivoController extends Controller{
             }
             
             $name = str_pad($aux + 1, 5, '0', STR_PAD_LEFT) . $file->getClientOriginalName();
-            Storage::disk('public')->put('instructivo/' . $name, \File::get($file));
+            Storage::disk('public')->put('instructivos/' . $name, \File::get($file));
             $instructivo->archivo = 'instructivo\\' . $name;
         }    
         
@@ -108,7 +108,7 @@ class InstructivoController extends Controller{
                 }
                 
                 $name = str_pad($request['id'], 5, '0', STR_PAD_LEFT) . $file->getClientOriginalName();
-                Storage::disk('public')->put('instructivo/' . $name, \File::get($file));
+                Storage::disk('public')->put('instructivos/' . $name, \File::get($file));
                 
                 $instructivo = DB::table('instructivo')
                     ->where('instructivo.id', $request['id'])

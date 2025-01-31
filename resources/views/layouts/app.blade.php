@@ -1,49 +1,64 @@
-<!DOCTYPE html>
-<html lang="es">
-
-{{--<META HTTP-EQUIV="Refresh" CONTENT="600;URL=http://intranet.lafedar">--}}
-
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-
-<script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
-
 <head>
-
 	<meta charset="UTF-8">
-
 	<title>Intranet Lafedar</title>
-
-	<link  rel="icon"   href="img/ico.png" type="image/png" />
-
+	<link rel="icon" href="img/ico.png" type="image/png">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		
-		<a class="navbar-brand" href="/"> <img class="logo" src="{{ URL::to('/img/logo.png') }}" height="40"> </a>
-		
 
-		<div class="collapse navbar-collapse" id="navbar1">
-			<ul class="navbar-nav ml-auto"> &nbsp
-				<div id="notificacion_off" style="display: none">
-					<a> <img  src="{{ URL::to('/img/campana.png') }}"  height="40" ></a>
-				</div>
-				
-				<div  id="notificacion_on" style="display: none">
-					<a  href="#" data-toggle="modal" data-target="#novedades"> <img  src="{{ URL::to('/img/CampanaRoja.png') }}" height="40" ></a>
-				</div>
-			</ul>
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
 
-		</div>
-		
-	</nav>                 
+
+
 </head>
 
-<body>	
-	<div class ="row">
-	@yield('content')
-	</div>
+<body class="d-flex flex-column min-vh-100">
+	<!-- Header -->
+	<header class="page-header d-flex justify-content-between align-items-center">
+		<div class="logo">
+			<a href="{{ route('home.inicio') }}">
+				<img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
+			</a>
+		</div>
+
+		@auth
+			<div class="dropdown">
+				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
+					<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<!-- Cerrar Sesión: Este enlace ahora envía el formulario de logout -->
+					<li>
+						<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+							@csrf
+							<button type="submit" class="dropdown-item"
+								style="border: none; background: none; width: 100%; text-align: left;">
+								Cerrar Sesión
+							</button>
+						</form>
+					</li>
+
+				</ul>
+			</div>
+		@endauth
+
+	</header>
+
+	<!-- Main content -->
+	<main class="flex-grow-1">
+		<div class="container-fluid py-4">
+			<div class="row">
+				@yield('content')
+			</div>
+		</div>
+	</main>
+	@stack('modales')
+	<!-- Footer -->
+	<footer>
+		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
+	</footer>
+
+	<!-- Bootstrap JS (ensure Popper.js and Bootstrap JS are loaded) -->
+
 </body>
- @include('home.novedades')
+
 </html>

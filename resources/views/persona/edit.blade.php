@@ -1,4 +1,4 @@
-<!-- Modal Editar-->
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="editar" role="dialog" align="center">
   <div class="modal-dialog">
    <div class="modal-content">           
@@ -58,8 +58,8 @@
             </div>
           </div>
           <p></p>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
         </div>
       </div>
     </div>

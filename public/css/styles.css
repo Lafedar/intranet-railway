@@ -1,0 +1,825 @@
+/* Custom image styles */
+.custom-img {
+    height: 90px;
+    margin-left: 8px;
+    /* Moves image 8px to the right */
+    margin-left: 8px;
+    /* Moves image 8px to the right */
+}
+
+/*GLOBALES*/
+/*Botones de buscar*/
+#asignar-btn {
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 40px;
+}
+
+#asignar-btn:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#asignar-btn:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/*Botones de Agregar/Crear*/
+#btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#btn-agregar:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-agregar:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/* Custom text styles */
+.custom-text {
+    font-family: Calibri, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+    /* Custom color */
+
+    margin-top: 5px;
+    margin-left: -4px;
+    /* Moves text 4px to the left */
+    margin-left: -4px;
+    /* Moves text 4px to the left */
+}
+
+
+
+.table-container {
+    padding-bottom: 50px;
+    /* Ajusta el valor según lo que necesites */
+}
+
+/*ESTILOS PARA LAS TABLAS*/
+.img-logo img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 15px;
+    margin-top: 50px;
+    width: 400px;
+    height: auto;
+}
+
+/*encabezado de la tabla */
+table thead {
+    background: rgba(15, 79, 141, 0.83) !important;
+
+}
+
+table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 750;
+    line-height: 19.2px;
+    letter-spacing: -0.03em;
+    text-align: center !important;
+    /* Centrado horizontal */
+    vertical-align: middle !important;
+    /* Centrado vertical */
+    color: rgba(255, 255, 255, 1);
+}
+
+
+/*filas */
+table {
+    border: none !important;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Espacio entre filas (10px vertical) */
+    margin-top: 10px;
+
+}
+
+table td,
+table th {
+    border: none !important;
+    padding: 10px;
+}
+
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+}
+
+
+table tbody tr {
+    background: rgba(217, 217, 217, 0.6);
+}
+
+
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/* Para redondear las celdas de la primera y última columna */
+table thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+table thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/*Lo comento porque puede servir luego*/
+/*.container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 15px;
+    margin-top: 3rem;f
+}*/
+
+
+.row.justify-content-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.col-md-15 {
+    width: 100%;
+    padding-left: 25px;
+    padding-right: 0;
+}
+
+/* Espaciado entre las filas */
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/*contenido de la tabla*/
+table tbody td {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: -0.03em;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(15, 79, 141, 0.83);
+    background: rgba(217, 217, 217, 0.6);
+    /*agregar font para internos*/
+    text-align: center;
+}
+
+/* estilos para el encabezado de la tabla */
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+    color: white;
+}
+
+/*INTERNOS*/
+#custom-container-internos {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    /* Padding izquierdo por defecto */
+    padding-right: 15px;
+    /* Padding derecho por defecto */
+    margin-top: 3rem;
+}
+
+/*filtro internos*/
+#filtro-internos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 10vh;
+    margin-left: 2px;
+    margin-top: 50px;
+    width: 30%;
+}
+
+#filtro-internos input {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    color: white;
+    height: 6vh;
+}
+
+#filtro-internos input::placeholder {
+    color: white;
+}
+
+/*tabla de internos*/
+#tabla-internos {
+    margin-top: 0px;
+
+}
+
+
+/*POWERBIS*/
+#powerbis-conteiner {
+    margin-top: 120px;
+}
+
+
+/*PERMISOS*/
+#permisos-nav {
+    margin-top: 130px;
+}
+
+
+#permisos-buscar {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+}
+
+#permisos-table {
+    margin-top: -30px;
+}
+
+
+/*RECEPCION*/
+#recepcion-nav {
+    margin-top: 130px;
+}
+
+#recepcion-botones {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+#recepcion-tabla {
+    margin-top: -30px;
+}
+
+
+
+/*EMPLEADOS*/
+#empleados-filtro {
+    margin-top: 10px;
+}
+
+#empleados-crear {
+    margin-top: 120px;
+    margin-left: 17px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#empleados-crear:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#empleados-crear:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+#empleados-nav {
+    margin-top: -20px;
+}
+
+#empleados-btn {
+    padding: 1px;
+    height: 25px;
+}
+
+.circle_green {
+    width: 20px;
+    height: 20px;
+    background-color: rgb(31, 224, 31);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.circle_grey {
+    width: 20px;
+    height: 20px;
+    background-color: grey;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#img-icono {
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+
+}
+
+#icono {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#icono-area {
+    border: none;
+    background: none;
+    padding: 0;
+    margin-top: -15px;
+}
+
+
+#empleados-cursos-conteiner {
+    margin-top: 100px;
+}
+
+#titulo-cursos-empleado {
+    text-align: center;
+}
+
+
+
+/*MEDICO*/
+#medico-nav {
+    margin-top: 100px;
+}
+
+#medico-table {
+    margin-top: -30px;
+}
+
+#medico-buttons {
+
+    margin-bottom: 20px;
+}
+
+.pagination {
+    margin-bottom: 20px;
+}
+
+#medico-container {
+    margin-top: 150px;
+    overflow: hidden;
+}
+
+#historia-cli-container {
+    margin-top: 150px;
+    overflow: hidden;
+}
+
+#editar-medico-container {
+    margin-top: 150px;
+    overflow: hidden;
+}
+
+/*GUARDIA*/
+#guardia-container {
+    margin-top: 120px;
+}
+
+#div-alert {
+    display: block !important;
+    /* Fuerza la visualización */
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.alert {
+    margin-top: -10px;
+}
+
+.alert {
+    display: block;
+    /* Asegura que las alertas sean visibles */
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+#errorMessage {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    /* Asegura que el mensaje se muestre encima de otros elementos */
+}
+
+#listado-container {
+    margin-top: 120px;
+}
+
+#guardia-asignar-container {
+    margin-top: 130px;
+}
+
+#guardia-asignar-formulario {
+    display: flex;
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+    /* Centra verticalmente */
+
+}
+
+#guardia-consulta-container {
+    margin-top: 120px;
+}
+
+#guardia-consulta-table {
+    margin-top: -30px;
+}
+
+/*DOCUMENTOS*/
+#documentos-politicas-container {
+    margin-top: 100px;
+}
+
+#documentos-planos-container {
+    margin-top: 100px;
+}
+
+
+#planos-table {
+    margin-top: -20px;
+
+}
+
+#documentos-proyectos-container {
+    margin-top: 110px;
+}
+
+#proyectos-table {
+    margin-top: -30px;
+}
+
+#documentos-instructivos-container {
+    margin-top: 110px;
+}
+
+
+
+/*NOVEDADES*/
+#novedades-container {
+    margin-top: 100px;
+}
+
+/*NOVEDADES EDIT*/
+#novedades-edit-container {
+    margin-top: 110px;
+}
+
+#novedades-crear {
+    font-size: 17px;
+}
+
+/*EQUIPAMIENTO*/
+#equipamiento-container {
+    margin-top: 150px;
+}
+
+#img-icono-equip {
+    width: 17px;
+    height: 17px;
+
+}
+
+#equipamiento-btn {
+    margin-bottom: 15px;
+    margin-top: -20px;
+
+}
+
+
+/*USUARIOS*/
+#usuarios-container {
+    margin-top: 130px;
+}
+
+#usuarios-btn {
+    margin-bottom: 20px;
+    margin-top: -20px;
+
+}
+
+
+/*ROLES*/
+#roles-container {
+    margin-top: 130px;
+}
+
+
+/*PUESTOS*/
+#puestos-container {
+    margin-top: 130px;
+}
+
+#puestos-create {
+    margin-top: 0;
+    /* Elimina el margen superior */
+    width: 70%;
+    height: 100vh;
+    /* Asegura que el contenedor ocupe toda la altura de la pantalla */
+    display: flex;
+    /* Utiliza flexbox */
+    justify-content: center;
+    /* Centra el contenido horizontalmente */
+    align-items: center;
+    /* Centra el contenido verticalmente */
+    margin: 0 auto;
+    /* Asegura que el contenedor tiene un margen automático para centrarse en el eje horizontal */
+}
+
+#puestos-table {
+    margin-top: -20px;
+}
+
+
+/*INCIDENTES*/
+#incidentes-container {
+    margin-top: 100px;
+}
+
+#incidentes-table {
+    margin-top: -20px;
+}
+
+
+/*SOFTWARE*/
+#software-container {
+    margin-top: 100px;
+}
+
+#software-table {
+    margin-top: -30px;
+}
+
+
+/*BUSCA IP*/
+#buscaip-container {
+    margin-top: 100px;
+}
+
+#buscaip-table {
+    margin-top: -30px;
+}
+
+/*SOFTWARE INSTALADO*/
+#versof-container {
+    margin-top: 100px;
+}
+
+#versof-table {
+    margin-top: -30px;
+}
+
+/*PARAMETROS SISTEMAS*/
+#parametros-gen-container {
+    margin-top: 100px;
+}
+
+#parametros-gen-table {
+    margin-top: -30px;
+}
+
+
+/*SOFTWARE INSTALADO*/
+#equipos-container {
+    margin-top: 100px;
+}
+
+#equipos-table {
+    margin-top: -15px;
+}
+
+
+
+/*PARAMETROS MANT*/
+#parametros-mant-container {
+    margin-top: 70px;
+}
+
+/*AREAS*/
+#areas-container {
+    margin-top: 100px;
+}
+
+
+/*LOCALZACIONES*/
+#localizaciones-container {
+    margin-top: 100px;
+
+}
+
+
+/*ESTADOS*/
+#estados-container {
+    margin-top: 100px;
+}
+
+
+/*FALLAS*/
+#fallas-container {
+    margin-top: 100px;
+}
+
+/*TIPOS DE EQUIPOS*/
+#tipo-equip-container {
+    margin-top: 100px;
+}
+
+
+/*TIPOS SOLICITUDES*/
+#tipos-sol-container {
+    margin-top: 100px;
+}
+
+
+/*VENTAS*/
+#ventas-container {
+    margin-top: 100px;
+}
+
+#ventas-table {
+    margin-top: -30px;
+}
+
+
+/*COSTOS*/
+#costos-container {
+    margin-top: 100px;
+}
+
+#costos-table {
+    margin-top: -30px;
+}
+
+/*COMPRAS*/
+#compras-container {
+    margin-top: 130px;
+}
+
+#compras-table {
+    margin-top: -30px;
+}
+
+
+/*PRODUCCIONES*/
+#producciones-container {
+    margin-top: 100px;
+}
+
+#producciones-table {
+    margin-top: -30px;
+}
+
+
+/*CALIDAD*/
+#calidad-container {
+    margin-top: 100px;
+}
+
+
+
+#calidad-table {
+    margin-top: -30px;
+}
+
+/*RRHH*/
+#rrhh-container {
+    margin-top: 100px;
+}
+
+
+#rrhh-table {
+    margin-top: -30px;
+}
+
+
+/*SOLICITUDES*/
+#solicitudes-container {
+    margin-top: 90px;
+}
+
+#solicitudes-btn {
+    margin-bottom: 20px;
+    margin-left: 20px;
+
+}
+
+
+#solicitudes-paginacion {
+    margin-bottom: 40px;
+    /* Ajusta el valor a lo que necesites */
+}
+
+
+/*CURSOS-INSTANCIAS EDIT Y CREATE*/
+#cursos-instancias-edit-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-instancias-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-edit-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-edit-container label {
+    font-weight: bold;
+}
+
+#cursos-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#cursos-create-container label {
+    font-weight: bold;
+}
+
+#cursos-instancias-create-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+}
+
+#cursos-instancias-create-container label {
+    font-weight: bold;
+}
+
+
+
+/*RESET PASSWORD*/
+#mail-password-container {
+    margin-top: 200px;
+}
+
+#mail-password-titulo {
+    text-align: center;
+}
+
+#mail-password-btn {
+    text-align: center;
+}
+
+#reset-password-container {
+    margin-top: 130px;
+}
+

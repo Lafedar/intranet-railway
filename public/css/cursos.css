@@ -1,0 +1,804 @@
+/*GLOBALES*/
+#success {
+    text-align: center;
+    position: fixed;
+    top: 27%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #2ac04d;
+    color: rgb(255, 255, 255);
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+
+}
+
+#btn-excel-disabled {
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    width: 250px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#btn-excel-disabled:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-excel-disabled:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/* Contenedor que envuelve el botón y el enlace */
+.button-link-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Estilo para el formulario */
+#excelForm {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+}
+
+/* Estilo para el enlace de descarga */
+.download-link {
+    padding: 10px;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-top: 0px;
+}
+
+#archivo-descargable {
+    text-align: center;
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #186dee;
+    color: rgb(255, 255, 255);
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9998;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+/*Botones Crear/Agregar*/
+#btn-agregar {
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#btn-agregar:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#btn-agregar:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+/*Botones Buscar y Modales*/
+#asignar-btn {
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 1px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    margin-top: -15px;
+    height: 50px;
+
+}
+
+#asignar-btn:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+
+}
+
+#asignar-btn:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+
+/* Estilo para los botones y enlaces dentro de la celda en cursos.index*/
+.acciones-cursos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+#acciones-cursos a,
+#acciones-cursos button,
+#acciones-cursos form {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#danger {
+    text-align: center;
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d13a20;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+#icono {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+}
+
+#icono-info {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+}
+
+#icono-info:hover .tooltip {
+    display: block;
+    /* Muestra el tooltip al hacer hover */
+}
+
+
+#contenedor-botones {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#encabezados {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-left: 500px;
+    text-align: center;
+}
+
+#img-icono {
+    width: 27px;
+    height: 27px;
+    border: none;
+}
+
+#form {
+    display: inline-block;
+    margin-right: 10px;
+
+}
+
+#sacar-borde-negro {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+#encabezados {
+    width: 50%;
+
+    margin: 0 auto;
+
+}
+
+#titulo {
+    margin-top: 50px;
+    font-family: 'Poppins';
+    font-size: 39px;
+    font-weight: 600;
+    line-height: 46.8px;
+    letter-spacing: -0.03em;
+    color: rgba(0, 51, 102, 1);
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+
+}
+
+#titulo-personas {
+    margin-top: 90px;
+    font-family: 'Poppins';
+    font-size: 39px;
+    font-weight: 600;
+    line-height: 46.8px;
+    letter-spacing: -0.03em;
+    color: rgba(0, 51, 102, 1);
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+#titulo-sec {
+    font-family: 'Poppins';
+    font-size: 39px;
+    font-weight: 600;
+    line-height: 46.8px;
+    letter-spacing: -0.03em;
+    color: rgba(0, 51, 102, 1);
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    max-width: 450px;
+}
+
+/*boton volver*/
+#volver {
+    margin-left: 12px;
+    height: 45px;
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 12px;
+    margin-left: 4px;
+    padding: 10px 20px;
+    width: 100px;
+    height: 47px;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 10px;
+}
+
+#volver-instancias {
+    margin-left: 12px;
+    height: 50px;
+    margin-top: 10px;
+    margin-left: 4px;
+    width: 100px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration: none;
+    color: rgba(245, 245, 245, 1);
+}
+
+#volver-instancias:hover {
+    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+}
+
+#volver:hover {
+    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+}
+
+/*boton inscribir*/
+#BI {
+
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    width: 250px;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+
+#BI:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+}
+
+#BI:active {
+    background: rgba(100, 161, 206, 1);
+}
+
+#h1-ver-cursos {
+    margin-top: 100px;
+}
+
+/*logo lafedar */
+.img-logo img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 15px;
+    margin-top: 50px;
+    width: 400px;
+    height: auto;
+}
+
+/*encabezado de la tabla */
+table thead {
+    background: rgba(15, 79, 141, 0.83) !important;
+
+}
+
+table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 750;
+    line-height: 19.2px;
+    letter-spacing: -0.03em;
+    text-align: center !important;
+    /* Centrado horizontal */
+    vertical-align: middle !important;
+    /* Centrado vertical */
+    color: rgba(255, 255, 255, 1);
+}
+
+
+/*filas */
+table {
+    border: none !important;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Espacio entre filas (10px vertical) */
+    margin-top: 10px;
+
+}
+
+table td,
+table th {
+    border: none !important;
+    padding: 10px;
+}
+
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+}
+
+
+table tbody tr {
+    background: rgba(217, 217, 217, 0.6);
+}
+
+
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/* Para redondear las celdas de la primera y última columna */
+table thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+table thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 15px;
+    margin-top: 3rem;
+}
+
+
+.row.justify-content-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.col-md-15 {
+    width: 100%;
+    padding-left: 25px;
+    padding-right: 0;
+}
+
+/* Espaciado entre las filas */
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/*contenido de la tabla*/
+table tbody td {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: -0.03em;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(15, 79, 141, 0.83);
+    background: rgba(217, 217, 217, 0.6);
+
+    text-align: center;
+}
+
+/* estilos para el encabezado de la tabla */
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+    color: white;
+}
+
+
+/*PERSONAS*/
+#cupo {
+
+    margin-top: 0px;
+    margin-left: 5px;
+    font-family: 'Poppins';
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 46.8px;
+    letter-spacing: -0.03em;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(0, 51, 102, 1);
+}
+
+#filtro {
+
+    width: 150%;
+    height: 45px;
+    margin-top: 20px;
+
+}
+
+.input-wrapper,
+.select-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+}
+
+/*INSTANCIAS INDEX*/
+#BCI {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 15px;
+    margin-left: 5px;
+    margin-bottom: 0px;
+    width: 300px;
+    font-family: 'Inter', sans-serif;
+    height: 50px;
+
+}
+
+#BCI:hover {
+    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+}
+
+#btn-disabled {
+    opacity: 0.5;
+    border: none;
+    background: none;
+    cursor: not-allowed;
+    padding: 0;
+}
+
+#iconos-instancias {
+    margin: 5px;
+}
+
+#iconos-disabled {
+    opacity: 0.5;
+}
+
+#btn-eliminar {
+    display: inline;
+}
+
+/*CURSOS*/
+/*btn crear curso*/
+#BCC {
+    margin-top: -70px;
+    margin-left: 3px;
+    margin-bottom: 10px;
+    width: 180px;
+    height: 40px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.5;
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 50px;
+}
+
+#BCC:hover {
+    background: var(--HOVER, rgba(33, 102, 153, 1));
+    text-decoration: none;
+}
+
+#BCC:active {
+    background: rgba(100, 161, 206, 1);
+
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 10vh;
+}
+
+.filter-item {
+    width: 310px;
+    min-width: 100px;
+
+}
+
+#btn-filtrar {
+    height: 37px;
+    padding: 2px;
+}
+
+.filter-item input {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: 1px solid #357AAB;
+    color: rgba(255, 255, 255, 1) !important;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 150%;
+    height: 37px;
+    margin-top: 85px;
+}
+
+.filter-item input::placeholder {
+    color: rgba(255, 255, 255, 1);
+}
+
+.filter-item select {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: 1px solid #357AAB;
+    color: rgba(255, 255, 255, 1);
+    padding: 0px;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 150%;
+    height: 37px;
+    margin-left: 150px;
+    margin-top: 85px;
+}
+
+
+.filter-item select:focus {
+    color: white !important;
+    /* Forzar color blanco cuando está seleccionado */
+
+    color: white !important;
+    /* Forzar color blanco cuando está seleccionado */
+
+}
+
+.filter-item select option {
+    color: black;
+}
+
+.filter-item button {
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    color: rgba(255, 255, 255, 1);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    height: 45px;
+    width: 150%;
+    margin-left: 300px;
+    margin-top: 85px;
+}
+
+.filter-item button:hover {
+    background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+}
+
+
+
+
+@media (max-width: 1366px) and (min-width: 1280px),
+(max-width: 1360px) and (min-width: 1280px),
+(max-width: 1280px) {
+
+    .form-acciones {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        margin-top: 20px;
+    }
+
+
+    #BI {
+        width: auto;
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    #btn-excel-disabled {
+
+        width: auto;
+        font-size: 16px;
+        padding: 8px 16px;
+
+    }
+
+    #BI:hover {
+        background: linear-gradient(90deg, #5098CD 0%, #3D83B5 44.5%, #357AAB 54%, #206190 100%);
+    }
+
+    .button-link-container {
+        margin-left: -400px;
+    }
+
+    form button {
+        margin-left: 0px;
+    }
+
+
+    .row.justify-content-center {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+
+    @media (max-width: 1366px) and (min-width: 1280px),
+    (max-width: 1360px) and (min-width: 1280px),
+    (max-width: 1280px) {
+        .filter-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+
+        .filter-item {
+            width: 12%;
+            box-sizing: border-box;
+        }
+
+
+
+        .filter-item input,
+        .filter-item select,
+        .filter-item button {
+            font-size: 14px;
+            padding: 8px;
+            gap: 2px;
+        }
+
+
+        .img-logo {
+            margin-top: 10px;
+        }
+    }
+
+    @media screen and (max-width: 1280px) and (max-height: 720px) {
+        .button-link-container {
+            margin-left: -500px;
+        }
+    }
+
+}

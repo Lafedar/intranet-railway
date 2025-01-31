@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="agregar_equipamiento" role="dialog" align="center">
   <div class="modal-dialog">
    <div class="modal-content">           
@@ -97,8 +98,8 @@
             </div>
             
             <p></p>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-info">Agregar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+            <button type="submit" class="btn btn-info" id="asignar-btn">Agregar</button>
           </div>
         </div>
       </div>

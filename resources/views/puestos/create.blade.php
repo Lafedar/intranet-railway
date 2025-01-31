@@ -1,41 +1,82 @@
-<!-- Modal Create-->
-<div class="col-md-12">
-  <div class="row">
-    <div class="col">
-      <label for="title">Nombre de puesto:</label>
-      <input type="text" name="desc_puesto" class="form-control" id="desc_puesto" autocomplete="off" minlength="1" maxlength="100" required>
-    </div>
-  </div>
+@extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-  <div class="row">
-    <div class="col">
-      <label for="title">Area:</label>
-      <select class="form-control" name="area"  id="area" required></select>
-    </div>
-  </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-  <div class="row">
-    <div class="col">
-      <label for="title">Localizacion:</label>
-      <select class="form-control" name="localizacion"  id="localizacion" required></select>
-    </div>
-  </div>
+<div id="puestos-create">
+    <form action="{{ route('puestos.store') }}" method="POST">
+        @csrf <!-- Esto es para proteger el formulario contra CSRF -->
 
-  <div class="row">
-    <div class="col">
-      <label for="title">Persona:</label>
-      <select class="form-control" name="persona"  id="persona"></select>
-    </div>
-  </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col">
+                    <label for="desc_puesto">Nombre de puesto:</label>
+                    <input type="text" name="desc_puesto" class="form-control" id="desc_puesto" autocomplete="off"
+                        minlength="1" maxlength="100" required>
+                </div>
+            </div>
 
-  <div class="row">
-    <div class="col">
-      <label for="title">Observación:</label>
-      <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" maxlength="100">
-    </div>
-  </div>
-  <div class="col-md-6">
-    <input type="checkbox" value="1" checked id="telefono_ip" name="telefono_ip">
-    <label for="telefono_ip">Telefono</label>
-  </div>
+            <div class="row">
+                <div class="col">
+                    <label for="area">Área:</label>
+                    <select class="form-control" name="area" id="area" required>
+                        <option value="" disabled selected>Seleccione un área</option>
+                        @foreach($areas as $area)
+                            <option value="{{ $area->id_a }}">{{ $area->nombre_a }}</option>
+                            <!-- Asumimos que 'nombre' es el campo de la base de datos -->
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col">
+                    <label for="localizacion">Localización:</label>
+                    <select class="form-control" name="localizacion" id="localizacion" required>
+                        <option value="" disabled selected>Seleccione</option>
+                        @foreach($localizaciones as $loc)
+                            <option value="{{ $loc->id }}">{{ $loc->nombre }}</option>
+                            <!-- Asumimos que 'nombre' es el campo de la base de datos -->
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="persona">Persona:</label>
+                    <select class="form-control" name="persona" id="persona">
+                        <option value="" disabled selected>Seleccione una persona</option>
+                        @foreach($personas as $persona)
+                            <option value="{{ $persona->id_p }}">{{ $persona->apellido }} {{ $persona->nombre_p }}</option>
+                            <!-- Asumimos que 'nombre' es el campo de la base de datos -->
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="obs">Observación:</label>
+                    <input type="text" name="obs" class="form-control" id="obs" autocomplete="off" maxlength="100">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <input type="checkbox" value="1" checked id="telefono_ip" name="telefono_ip">
+                <label for="telefono_ip">Telefono</label>
+            </div>
+        </div>
+
+        <!-- Botón para crear el puesto -->
+        <button type="button" id="asignar-btn" onclick="window.history.back();">Cancelar</button>
+
+        <button type="submit" id="asignar-btn">Crear</button>
+    </form>
+
 </div>

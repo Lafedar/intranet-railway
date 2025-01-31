@@ -1,4 +1,5 @@
 <!-- Modal Agregar-->
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="col-md-12">
   <input type="hidden" name="id">
   <div class="form-group col-md-12">

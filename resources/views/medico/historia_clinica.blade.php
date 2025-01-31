@@ -1,7 +1,8 @@
-@extends('medico.layouts.layout')
-@section('content')
+@extends('layouts.app')
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<div class="container">
+<div id="historia-cli-container">
   <div class="row">
     <div class="col-12">
       <h4 class="headertekst" align="center">Historia clinica</h4>
@@ -90,10 +91,10 @@
       &nbsp
       &nbsp
       <div class="col-md-5"></div>
-      <a class="btn btn-secondary " href="{{ URL::previous() }}">Volver</a>
+      <a class="btn btn-secondary " href="{{ URL::previous() }}" id="asignar-btn">Cancelar</a>
 &nbsp
 &nbsp
-      <button type="subitm" class="btn btn-info">Guardar</button>
+      <button type="subitm" class="btn btn-info" id="asignar-btn">Guardar</button>
     </div>
   </div>
 </form>
@@ -115,4 +116,3 @@
 }
 </script>
 
-@stop

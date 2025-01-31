@@ -25,7 +25,7 @@ class IncidenteController extends Controller
 
   $incidentes = Incidente::busca($request->get('resuelto'))
   ->Equipamiento($request->get('equipamiento'))
-  ->paginate(20);
+  ->paginate(20)->withQueryString();
 
   return view ('incidentes.incidentes', array('incidentes'=>$incidentes, 'equipamiento' => $request->get('equipamiento')));
 
