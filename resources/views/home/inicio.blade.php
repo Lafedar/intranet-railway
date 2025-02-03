@@ -203,11 +203,11 @@
                 @csrf
                 @if ($userLike)
                     <button type="submit" style="border:none;">
-                        <img style="width: 30px; height: 20px;" src="{{ asset('storage/Imagenes-principal-nueva/like.png') }}" alt="Like">
+                        <img id="likes" src="{{ asset('storage/Imagenes-principal-nueva/like.png') }}" alt="Like">
                     </button>
                 @else
                     <button type="submit" style="border:none;">
-                        <img style="width: 30px; height: 20px;" src="{{ asset('storage/Imagenes-principal-nueva/unlike.png') }}" alt="UnLike">
+                        <img id="likes"  src="{{ asset('storage/Imagenes-principal-nueva/unlike.png') }}" alt="UnLike">
                     </button>
                 @endif
             </form>

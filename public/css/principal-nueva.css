@@ -38,7 +38,10 @@
     width: 100%;
 
 }
-
+#likes{
+    width: 30px; 
+    height: 20px;
+}
 
 .menu a {
     margin: 0;
