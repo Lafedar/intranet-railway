@@ -190,45 +190,56 @@
             @endif
 
             <div class="card-body">
-                <h5 class="card-title">{{ $novedad->titulo }}</h5>
-                <h8 class="card-fecha">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
-                <br>
-                <div class="botones-cards">
-                    <div>
-                        <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer más</a>
-                    </div>
+    <h5 class="card-title">{{ $novedad->titulo }}</h5>
 
-                    @role('administrador')
-                        <div>
-                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
-                            <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-                        </div>
-                    @else
-                        @role('rrhh')
-                            <div>
-                                <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
-                                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-                            </div>
-                        @endrole
-                    @endrole
-                </div>
-                <!-- Botón de Like -->
-                <div class="d-flex align-items-center">
-                    <form action="{{ $userLike ? route('novedades.unlike', $novedad->id) : route('novedades.like', $novedad->id) }}" method="POST">
-                        @csrf
-                        @if ($userLike)
-                            <button type="submit" style="border:none;"><img style="width: 30px; height: 20px;"
-                            src="{{ asset('storage/Imagenes-principal-nueva/like.png') }}" alt="Like"></button>
-                        @else
-                            <button type="submit" style="border:none;"><img style="width: 30px; height: 20px;"
-                            src="{{ asset('storage/Imagenes-principal-nueva/unlike.png') }}" alt="UnLike"></button>
-                        @endif
-                    </form>
+    
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <!-- Fecha -->
+        <h8 class="card-fecha mb-0">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
 
-                    <!-- Mostrar la cantidad de likes -->
-                    <span class="ms-2">{{ $novedad->likes_count }} Likes</span>
-                </div>
+        <!-- Botón de Like y la cantidad de Likes -->
+        <div class="d-flex align-items-center">
+            <form action="{{ $userLike ? route('novedades.unlike', $novedad->id) : route('novedades.like', $novedad->id) }}" method="POST">
+                @csrf
+                @if ($userLike)
+                    <button type="submit" style="border:none;">
+                        <img style="width: 30px; height: 20px;" src="{{ asset('storage/Imagenes-principal-nueva/like.png') }}" alt="Like">
+                    </button>
+                @else
+                    <button type="submit" style="border:none;">
+                        <img style="width: 30px; height: 20px;" src="{{ asset('storage/Imagenes-principal-nueva/unlike.png') }}" alt="UnLike">
+                    </button>
+                @endif
+            </form>
+
+            <!-- Mostrar la cantidad de likes -->
+            <span class="ms-2">{{ $novedad->likes_count }} Likes</span>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="botones-cards">
+        <div>
+            <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer</a>
+        </div>
+
+        @role('administrador')
+            <div>
+                <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
             </div>
+        @else
+            @role('rrhh')
+                <div>
+                    <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                    <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                </div>
+            @endrole
+        @endrole
+    </div>
+</div>
+
         </div>
     </div>
 @endforeach
