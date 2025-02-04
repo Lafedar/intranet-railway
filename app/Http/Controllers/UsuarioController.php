@@ -22,7 +22,7 @@ class UsuarioController extends Controller
     public function usuarios (Request $request)
     {
         $usuarios = DB::table('users')
-        ->select('users.id as id', 'users.name as nombre_usuario','users.email as email_usuario')
+        ->select('users.id as id', 'users.name as nombre_usuario','users.email as email_usuario', 'users.activo as activo')
         ->orderBy('users.name','asc')
         ->get();
 
@@ -52,7 +52,8 @@ class UsuarioController extends Controller
     public function destroy_usuario($id)
     {
         $usuario = User::find($id);
-        $usuario->delete();
+        $usuario->activo = 0;
+        $usuario->save();
 
         return response()->json(['message' => 'Usuario eliminado con éxito']); 
     }

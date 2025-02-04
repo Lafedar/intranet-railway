@@ -26,7 +26,8 @@ class NovedadesController extends Controller
     public function index()
     {
         try {
-            $novedades = Novedad::with('likes')->get();
+            $novedades = Novedad::with('likes')->orderBy('id', 'desc')->get();
+
 
             return view('novedades.index', compact('novedades'));
         } catch (Exception $e) {
