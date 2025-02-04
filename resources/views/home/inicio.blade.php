@@ -152,93 +152,93 @@
     <div class="cards-contenedor">
     @foreach($novedades as $novedad)
     <div class="col-md-4 mb-4">
-        <div class="card">
+        <div class="card" >
             @php
-                $imagenes = [];
-                if ($novedad->portada) {
-                    $imagenes[] = $novedad->portada;
-                }
-                if ($novedad->imagenes_sec) {
-                    $imagenes = array_merge($imagenes, explode(',', $novedad->imagenes_sec));
-                }
+            $imagenes = [];
+            if ($novedad->portada) {
+            $imagenes[] = $novedad->portada;
+            }
+            if ($novedad->imagenes_sec) {
+            $imagenes = array_merge($imagenes, explode(',', $novedad->imagenes_sec));
+            }
 
-                // Verificar si existe la cookie para esta novedad
-                $cookieName = 'like_novedad_' . $novedad->id;
-                $userLike = Cookie::get($cookieName) ? true : false; // Si la cookie existe, el usuario ha dado like
+            // Verificar si existe la cookie para esta novedad
+            $cookieName = 'like_novedad_' . $novedad->id;
+            $userLike = Cookie::get($cookieName) ? true : false; // Si la cookie existe, el usuario ha dado like
             @endphp
 
             @if(count($imagenes) > 0)
-                <div id="carousel{{ $novedad->id }}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @foreach($imagenes as $key => $imagen)
-                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                <img src="{{ asset('storage/' . $imagen) }}" class="d-block w-100" alt="Imagen de {{ $novedad->titulo }}">
-                            </div>
-                        @endforeach
-                    </div>
-                    @if(count($imagenes) > 1)
-                        <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
-                    @endif
+            <div id="carousel{{ $novedad->id }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" >
+            @foreach($imagenes as $key => $imagen)
+            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}" >
+                <img src="{{ asset('storage/' . $imagen) }}" class="d-block w-100 img-thumbnail" id="img-carousel" alt="Imagen de {{ $novedad->titulo }}">
                 </div>
+            @endforeach
+            </div>
+            @if(count($imagenes) > 1)
+            <a class="carousel-control-prev" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel{{ $novedad->id }}" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+            @endif
+            </div>
             @endif
 
-            <div class="card-body">
-    <h5 class="card-title">{{ $novedad->titulo }}</h5>
+            <div class="card-body" >
+            <h5 class="card-title">{{ $novedad->titulo }}</h5>
 
-    
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <!-- Fecha -->
-        <h8 class="card-fecha mb-0">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <!-- Fecha -->
+                <h8 class="card-fecha mb-0">{{ \Carbon\Carbon::parse($novedad->created_at)->format('d/m/Y') }}</h8>
 
-        <!-- Botón de Like y la cantidad de Likes -->
-        <div class="d-flex align-items-center">
-            <form action="{{ $userLike ? route('novedades.unlike', $novedad->id) : route('novedades.like', $novedad->id) }}" method="POST">
-                @csrf
-                @if ($userLike)
-                    <button type="submit" style="border:none;">
-                        <img id="likes" src="{{ asset('storage/Imagenes-principal-nueva/like.png') }}" alt="Like">
+                <!-- Botón de Like y la cantidad de Likes -->
+                <div class="d-flex align-items-center">
+                <form action="{{ $userLike ? route('novedades.unlike', $novedad->id) : route('novedades.like', $novedad->id) }}" method="POST">
+                    @csrf
+                    @if ($userLike)
+                    <button type="submit" style="border:none;" id="likes">
+                    <p>❤️</p>
                     </button>
-                @else
-                    <button type="submit" style="border:none;">
-                        <img id="likes"  src="{{ asset('storage/Imagenes-principal-nueva/unlike.png') }}" alt="UnLike">
+                    @else
+                    <button type="submit" style="border:none;" id="likes2">
+                    <p>🤍</p>
                     </button>
-                @endif
-            </form>
+                    @endif
+                </form>
 
-            <!-- Mostrar la cantidad de likes -->
-            <span class="ms-2">{{ $novedad->likes_count }} Likes</span>
-        </div>
-    </div>
-
-    <br>
-
-    <div class="botones-cards">
-        <div>
-            <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer</a>
-        </div>
-
-        @role('administrador')
-            <div>
-                <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
-                <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
-            </div>
-        @else
-            @role('rrhh')
-                <div>
-                    <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
-                    <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                <!-- Mostrar la cantidad de likes -->
+                <span class="ms-2" id="cont-likes">{{ $novedad->likes_count }} Likes</span>
                 </div>
-            @endrole
-        @endrole
-    </div>
-</div>
+            </div>
+
+            <br>
+
+            <div class="botones-cards">
+                <div>
+                <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">LEER</a>
+                </div>
+
+                @role('administrador')
+                <div>
+                    <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">EDITAR</a>
+                    <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">ELIMINAR</a>
+                </div>
+                @else
+                @role('rrhh')
+                    <div>
+                    <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">EDITAR</a>
+                    <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">ELIMINAR</a>
+                    </div>
+                @endrole
+                @endrole
+            </div>
+            </div>
 
         </div>
     </div>

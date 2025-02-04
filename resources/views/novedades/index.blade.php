@@ -35,7 +35,7 @@
                 <div class="modal-content novedades-modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="crearNovedadModalLabel">Crear Novedad</h5>
-                       
+
                     </div>
                     <div class="modal-body novedades-modal-body">
                         <form id="novedadForm" action="{{ route('novedades.store') }}" method="POST"
@@ -71,20 +71,24 @@
                                     cargue
                                     solo imágenes (.jpg, .jpeg, .png).</small>
                             </div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" id="asignar-btn" >Crear Novedad</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                id="asignar-btn">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="asignar-btn">Crear Novedad</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
         @if(auth()->user() && (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')))
-    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#crearNovedadModal" id="crear-novedad">
-        Crear Novedad
-    </button>
-@endif
+            <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#crearNovedadModal"
+                id="crear-novedad">
+                Crear Novedad
+            </button>
+        @endif
 
-<body class="{{ auth()->user() && (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) ? '' : 'no-role' }}"></body>
+        <body
+            class="{{ auth()->user() && (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) ? '' : 'no-role' }}">
+        </body>
 
         <!-- Título de la página -->
         <h1 class="novedades-titulo">Novedades</h1>
@@ -110,8 +114,8 @@
                                         <div class="carousel-inner">
                                             @foreach($imagenes as $key => $imagen)
                                                 <div class="carousel-item novedades-carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                                    <img src="{{ asset('storage/' . $imagen) }}" class="d-block"
-                                                        alt="Imagen de {{ $novedad->titulo }}">
+                                                    <img src="{{ asset('storage/' . $imagen) }}" class="d-block w-100 img-thumbnail"
+                                                        alt="Imagen de {{ $novedad->titulo }}" id="img-carousel">
                                                 </div>
                                             @endforeach
                                         </div>
@@ -136,24 +140,24 @@
                                     <br>
                                     <div class="novedades-botones-cards">
                                         <div>
-                                            <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">Leer más</a>
+                                            <a href="{{ route('novedades.show', $novedad->id) }}" class="btn">LEER</a>
                                         </div>
 
                                         @role('administrador')
                                         <div>
-                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">EDITAR</a>
                                             <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn"
-                                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">ELIMINAR</a>
                                         </div>
                                         @endrole
                                         @role('rrhh')
                                         <div>
-                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">Editar</a>
+                                            <a href="{{ route('novedades.edit', $novedad->id) }}" class="btn">EDITAR</a>
                                             <a href="{{ route('novedades.delete', $novedad->id) }}" class="btn"
-                                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">Eliminar</a>
+                                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta novedad?');">ELIMINAR</a>
                                         </div>
                                         @endrole
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -169,22 +173,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-    <!-- JavaScript para mostrar el modal -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const successMessage = document.getElementById('success-message');
-            if (successMessage) {
-                setTimeout(() => {
-                    successMessage.style.transition = 'opacity 0.5s ease';
-                    successMessage.style.opacity = '0';
+<!-- JavaScript para mostrar el modal -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.transition = 'opacity 0.5s ease';
+                successMessage.style.opacity = '0';
 
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 500);
-                }, 3000);
-            }
-        });
-    </script>
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 500);
+            }, 3000);
+        }
+    });
+</script>
 </body>
 
 </html>

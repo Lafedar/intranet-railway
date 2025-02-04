@@ -1,11 +1,35 @@
 /*NOVEDADES*/
 /* Card */
 .novedades-card {
-    width: 18rem;
-    height: 350px;
+    width: 300px;
+    height: 335px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
+
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+
+
+}
+
+.novedades-botones-cards .btn {
+    background: rgba(156, 180, 204, 0.6);
+    color: white;
+    font-weight: bold;
+
+}
+
+#img-carousel {
+    border: 7px solid transparent;
+    /* Necesario para que funcione el border-image */
+    border-image: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    border-image-slice: 1;
+    /* Asegura que el gradiente ocupe todo el borde */
+}
+
+.card-fecha {
+    color: white;
 }
 
 .novedades-carousel-item img {
@@ -18,7 +42,8 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+
     padding: 10px;
     box-sizing: border-box;
 }
@@ -44,6 +69,7 @@
 .no-role .novedades-titulo {
     margin-top: 150px;
 }
+
 #asignar-btn {
     background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
     padding: 8px 12px 8px 12px;
@@ -63,6 +89,7 @@
     color: rgba(245, 245, 245, 1);
     height: 40px;
 }
+
 #asignar-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
@@ -70,6 +97,7 @@
 #asignar-btn:active {
     background: rgba(100, 161, 206, 1);
 }
+
 /* Botones */
 .novedades-botones-cards {
     display: flex;
@@ -113,6 +141,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+    color: white;
 }
 
 /* Modal */
