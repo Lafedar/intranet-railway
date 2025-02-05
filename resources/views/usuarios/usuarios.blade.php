@@ -26,7 +26,7 @@
   </div>
 
   <div id="usuarios-btn">
-    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_usuario" id="btn-agregar">Nuevo Usuario</button>
+    
 
     <button class="btn btn-info" data-toggle="modal" data-target="#agregar_rol" id="btn-agregar">Nuevo rol</button>
 
@@ -42,10 +42,11 @@
     <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0"
       cellpadding="2" border="10">
       <thead>
-        <th class="text-center">ID</th>
+        
         <th class="text-center">Nombre</th>
         <th class="text-center">Correo</th>
         <th class="text-center">Rol</th>
+        <th class="text-center">Activo</th>
         <th class="text-center">Acciones</th>
       </thead>
 
@@ -53,7 +54,7 @@
         @if(count($usuarios))
       @foreach($usuarios as $usuario) 
       <tr>
-      <td align="center">{{$usuario->id}}</td>
+      
       <td align="center">{{$usuario->nombre_usuario}}</td>
       <td align="center">{{$usuario->email_usuario}}</td>
       <td align="center">
@@ -63,6 +64,14 @@
     @endif
     @endforeach
       </td>
+      <td>
+    @if($usuario->activo == 1)
+        Si
+    @else
+        No
+    @endif
+</td>
+
       <td align="center" width="240">
       <form action="{{route('destroy_usuario', $usuario->id)}}" method="put">
 

@@ -17,13 +17,16 @@
 
         <div class="menu">
         </div>
+        
         @auth
+        <p style="color: white; display: inline; white-space: nowrap; font-weight: bold; margin-top: 35px;">{{ Auth::user()->name }}</p>
             <div class="dropdown">
+
                 <button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
                     <img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <!-- Cerrar Sesión: Este enlace ahora envía el formulario de logout -->
+                    
                     <li>
                         <form action="{{ url('/logout') }}" method="POST" id="logoutForm">
                             @csrf
@@ -33,6 +36,7 @@
                             </button>
                         </form>
                     </li>
+
 
                 </ul>
             </div>

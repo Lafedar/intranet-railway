@@ -39,6 +39,35 @@
 
 }
 
+#likes {
+    width: 30px;
+    height: 20px;
+    background-color: transparent;
+    padding: 0%;
+
+}
+
+#likes p {
+    margin-top: -15px;
+    padding: 0;
+    font-size: 30px;
+
+}
+
+#likes2 {
+    width: 30px;
+    height: 20px;
+    background-color: transparent;
+    padding: 0%;
+
+}
+
+#likes2 p {
+    margin-top: -15px;
+    padding: 0;
+    font-size: 30px;
+
+}
 
 .menu a {
     margin: 0;
@@ -504,6 +533,10 @@ nav {
     border-radius: 10px;
 }
 
+svg {
+    background-color: transparent;
+}
+
 .carousel-control-prev,
 .carousel-control-next {
     height: 30px;
@@ -560,16 +593,44 @@ nav {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+
+
+}
+
+#img-carousel {
+    border: 7px solid transparent;
+    /* Necesario para que funcione el border-image */
+    border-image: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    border-image-slice: 1;
+    /* Asegura que el gradiente ocupe todo el borde */
 }
 
 .card-title {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    /* Número de líneas que se mostrarán */
+    /* Cortar después de dos líneas */
     overflow: hidden;
+    /* Evita que el texto sobrepase el contenedor */
     text-overflow: ellipsis;
+    /* Mostrar "..." al final si el texto es largo */
     max-width: 100%;
+    /* Asegura que el título no exceda el ancho del contenedor */
+    height: 3.2em;
+    /* Altura exacta para dos líneas (ajusta según el tamaño de fuente) */
+    line-height: 1.6em;
+    /* Define el alto de cada línea (ajusta según la fuente) */
+    color: white;
+}
+
+.card-fecha {
+    color: white;
+}
+
+#cont-likes {
+    color: white;
 }
 
 .card img {
@@ -583,26 +644,22 @@ nav {
 .botones-cards {
     display: flex;
     gap: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    justify-content: left;
+
+
 }
 
 .botones-cards a {
-    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
-    padding: 10px;
-    gap: 10px;
-    border-radius: 8px;
-    opacity: 0px;
-    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
-    border: none;
-    font-family: Calibri, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 16.8px;
-    letter-spacing: -0.03em;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: rgba(245, 245, 245, 1);
-    height: 40px;
+    background: rgba(156, 180, 204, 0.6);
+    color: white;
+    font-weight: bold;
+
+
 }
 
 .botones-cards a:hover {
@@ -696,6 +753,10 @@ footer p {
         gap: 17px;
     }
 
+    .botones-cards a {
+        font-size: 13px;
+    }
+
     .authenticated .card {
         width: 235px;
         margin: 0;
@@ -718,21 +779,26 @@ footer p {
 
     .botones-cards {
         display: flex;
-        flex-wrap: wrap;
-        /* Permite que los botones se ajusten cuando no hay suficiente espacio */
-        gap: 0px;
-        /* Espaciado entre los botones */
-        justify-content: center;
-        /* Alinea los elementos a la izquierda (puedes cambiarlo a 'center' si prefieres alineación centrada) */
+        gap: 10px;
+        /* Espacio entre los botones */
+        justify-content: flex-start;
+        /* Alinea los botones al principio */
+        flex-wrap: nowrap;
+        /* Evita que los botones se acomoden en varias filas */
+        width: 100%;
+        /* Asegura que el contenedor ocupe el 100% del espacio disponible */
+        box-sizing: border-box;
+        /* Asegura que los padding no afecten el ancho total */
     }
 
     .botones-cards>div {
         display: flex;
-        flex-wrap: wrap;
-        /* Asegura que los botones dentro de cada div también se ajusten si es necesario */
-        gap: 1px;
-        /* Espaciado entre los botones dentro de cada div */
+        gap: 10px;
+        /* Espacio entre los botones dentro del div */
+        flex-wrap: nowrap;
+        /* Asegura que los botones dentro de cada div no se acomoden en varias filas */
     }
+
 
     .login {
         margin-top: -10px;
@@ -742,10 +808,12 @@ footer p {
         width: 960px;
         margin-left: 340px;
     }
-    .authenticated .carousel-container img{
+
+    .authenticated .carousel-container img {
         height: 600px;
         width: 400px;
     }
+
     .titulo-novedades {
         margin-left: 20px;
         background-size: 8px 1px;
@@ -784,6 +852,10 @@ footer p {
         padding: 0;
         box-sizing: border-box;
         height: 330px;
+    }
+
+    .botones-cards a {
+        font-size: 13px;
     }
 
     .authenticated .cards-contenedor {
@@ -861,6 +933,11 @@ footer p {
         overflow-x: hidden;
     }
 
+    .botones-cards a {
+        font-size: 9px;
+        text-align: left;
+    }
+
     .cards-contenedor {
         display: flex;
         flex-wrap: nowrap;
@@ -899,21 +976,25 @@ footer p {
 
     .botones-cards {
         display: flex;
-        flex-wrap: wrap;
-        /* Permite que los botones se ajusten cuando no hay suficiente espacio */
-        gap: 0px;
-        /* Espaciado entre los botones */
-        justify-content: center;
-        /* Alinea los elementos a la izquierda (puedes cambiarlo a 'center' si prefieres alineación centrada) */
+        gap: 10px;
+        /* Espacio entre los botones */
+        justify-content: flex-start;
+        /* Alinea los botones al principio */
+        flex-wrap: nowrap;
+        /* Evita que los botones se acomoden en varias filas */
+        width: 100%;
+        /* Asegura que el contenedor ocupe el 100% del espacio disponible */
+        box-sizing: border-box;
     }
 
     .botones-cards>div {
         display: flex;
-        flex-wrap: wrap;
-        /* Asegura que los botones dentro de cada div también se ajusten si es necesario */
-        gap: 1px;
-        /* Espaciado entre los botones dentro de cada div */
+        gap: 10px;
+        /* Espacio entre los botones dentro del div */
+        flex-wrap: nowrap;
+        /* Asegura que los botones dentro de cada div no se acomoden en varias filas */
     }
+
 
     .cards-contenedor .card:first-child {
         margin-left: 0;

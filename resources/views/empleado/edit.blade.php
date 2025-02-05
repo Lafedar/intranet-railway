@@ -69,6 +69,16 @@
                   <label for="turnoEdit"><strong>Turno:</strong></label>
                   <select class="form-control" name="turnoEdit" id="turnoEdit" required></select>
                 </div>
+                <div class="col-6">
+                  <label for="password"><strong>Contraseña:</strong></label>
+                  <input type="text" name="password" id="password" class="form-control" value="{{ old('password') }}">
+                </div>
+                <div class="col-6">
+                  <label for="password2"><strong>Confirmar Contraseña:</strong></label>
+                  <input type="text" name="password2" id="password2" class="form-control"
+                    value="{{ old('password2') }}">
+                </div>
+
               </div>
 
               <p></p>

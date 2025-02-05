@@ -1,6 +1,6 @@
 <script>
-  $(document).ready(function() {
-    $('#fe_nac').on('change', function() {
+  $(document).ready(function () {
+    $('#fe_nac').on('change', function () {
       // Obtiene el valor de la fecha del campo
       let inputValue = $(this).val();
 
@@ -13,7 +13,7 @@
         $(this).val(components.join('-'));
       }
     });
-    $('#fe_ing').on('change', function() {
+    $('#fe_ing').on('change', function () {
       // Obtiene el valor de la fecha del campo
       let inputValue = $(this).val();
 
@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 <div class="modal fade" id="agregar_empleado" role="dialog">
   <div class="modal-dialog">
-    <div class="modal-content">           
+    <div class="modal-content">
       <form action="{{route('empleado.store')}}" method="post" autocomplete="off">
         {{csrf_field()}}
         <div class="modal-body">
@@ -41,26 +41,31 @@
               <div class="row">
                 <div class="col-md-6">
                   <label for="nombre"><strong>Nombre:</strong></label>
-                  <input type="text" name="nombre" class="form-control" id="nombre" autocomplete="off" value="{{old('nombre')}}" minlength="3" maxlength="30" required>
+                  <input type="text" name="nombre" class="form-control" id="nombre" autocomplete="off"
+                    value="{{old('nombre')}}" minlength="3" maxlength="30" required>
                 </div>
                 <div class="col-md-6">
                   <label for="apellido"><strong>Apellido:</strong></label>
-                  <input type="text" name="apellido" class="form-control" id="apellido" autocomplete="off" value="{{old('apellido')}}" minlength="3" maxlength="30" required>
+                  <input type="text" name="apellido" class="form-control" id="apellido" autocomplete="off"
+                    value="{{old('apellido')}}" minlength="3" maxlength="30" required>
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-md-6">
                   <label for="dni"><strong>DNI:</strong></label>
-                  <input type="number" name="dni" class="form-control" id="dni" autocomplete="off" value="{{old('dni')}}" minlength="8" maxlength="11" required>
+                  <input type="number" name="dni" class="form-control" id="dni" autocomplete="off"
+                    value="{{old('dni')}}" minlength="8" maxlength="11" required>
                 </div>
                 <div class="col-md-6">
                   <label for="interno"><strong>Interno:</strong></label>
-                  <input type="number" name="interno" class="form-control" id="interno" autocomplete="off" value="{{old('interno')}}" minlength="2" maxlength="5">
+                  <input type="number" name="interno" class="form-control" id="interno" autocomplete="off"
+                    value="{{old('interno')}}" minlength="2" maxlength="5">
                 </div>
                 <div class="col-md-6">
                   <label for="legajo"><strong>Legajo:</strong></label>
-                  <input type="number" name="legajo" class="form-control" id="legajo" autocomplete="off" minlength="2" maxlength="5">
+                  <input type="number" name="legajo" class="form-control" id="legajo" autocomplete="off" minlength="2"
+                    maxlength="5">
                 </div>
               </div>
 
@@ -71,14 +76,15 @@
                 </div>
                 <div class="col-md-6">
                   <label for="fe_ing"><strong>Fecha de ingreso:</strong></label>
-                  <input type="date" name="fe_ing" id="fe_ing" class="form-control" step="1" value="<?php echo date("Y-m-d");?>">
+                  <input type="date" name="fe_ing" id="fe_ing" class="form-control" step="1"
+                    value="<?php echo date("Y-m-d");?>">
                 </div>
               </div>
 
               <div class="row">
                 <div class="col">
                   <label for="correo"><strong>Correo electrónico:</strong></label>
-                  <input type="email" name="correo" class="form-control" id="correo" value="{{old('correo')}}" >
+                  <input type="email" name="correo" class="form-control" id="correo" value="{{old('correo')}}" required>
                 </div>
               </div>
 
@@ -91,7 +97,18 @@
                   <label for="turno"><strong>Turno:</strong></label>
                   <select class="form-control" name="turno" id="turno" required></select>
                 </div>
+                <div class="col-6">
+                  <label for="password"><strong>Contraseña:</strong></label>
+                  <input type="text" name="password" id="password" class="form-control" required>
+                </div>
+                <div class="col-6">
+                  <label for="password2"><strong>Confirmar Contraseña:</strong></label>
+                  <input type="text" name="password2" id="password2" class="form-control" required>
+                </div>
               </div>
+
+
+
 
               <p></p>
 
@@ -113,7 +130,7 @@
             </div>
           </div>
         </div>
-      </form>                
+      </form>
     </div>
   </div>
 </div>
