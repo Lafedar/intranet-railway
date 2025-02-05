@@ -77,17 +77,27 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-               
-                <div class="modal-body">
-                    <img id="modalImage" src="" alt="Imagen ampliada" class="img-fluid" />
-                </div>
+   <!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- Controles para las imágenes -->
+                <button id="prevImage" class="btn btn-secondary" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                
+                <img id="modalImage" src="" alt="Imagen ampliada" class="img-fluid" />
+                
+                <button id="nextImage" class="btn btn-secondary" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
     </div>
+</div>
+
 
 </body>
 
@@ -97,21 +107,58 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    // Cuando se hace clic en una imagen del carrusel
+    var currentIndex = 0;
+    var imageUrls = []; // Array para almacenar las URLs de las imágenes del carrusel
+
+    // Función que inicializa las imágenes en el carrusel
+    function initializeCarouselImages() {
+        $('#novedadesCarousel img').each(function(index) {
+            imageUrls.push($(this).attr('src')); // Guardamos las URLs de las imágenes
+        });
+    }
+
+    // Al hacer clic en una imagen del carrusel
     $('#novedadesCarousel img').on('click', function () {
-        var imageUrl = $(this).attr('src'); 
-        $('#modalImage').attr('src', imageUrl); 
-        $('#imageModal').modal('show');
+        currentIndex = imageUrls.indexOf($(this).attr('src')); // Establecer el índice de la imagen clickeada
+        showImageInModal(currentIndex); // Mostrar la imagen en la modal
     });
 
-    // Cuando la modal se cierra (es decir, al hacer clic en el fondo)
+    // Mostrar la imagen en la modal
+    function showImageInModal(index) {
+        $('#modalImage').attr('src', imageUrls[index]); // Actualizar la imagen de la modal
+        $('#imageModal').modal('show'); // Mostrar la modal
+    }
+
+    // Pasar a la imagen anterior
+    $('#prevImage').on('click', function () {
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = imageUrls.length - 1; // Ir a la última imagen si estamos en la primera
+        }
+        showImageInModal(currentIndex);
+    });
+
+    // Pasar a la siguiente imagen
+    $('#nextImage').on('click', function () {
+        if (currentIndex < imageUrls.length - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0; // Volver a la primera imagen si estamos en la última
+        }
+        showImageInModal(currentIndex);
+    });
+
+    // Cuando la modal se cierra, resetear la imagen
     $('#imageModal').on('hidden.bs.modal', function () {
         $('#modalImage').attr('src', ''); 
     });
+
+    // Inicializar el carrusel al cargar la página
+    $(document).ready(function () {
+        initializeCarouselImages();
+    });
 </script>
-
-
-
 
 <style>
     body {
