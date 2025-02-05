@@ -93,8 +93,7 @@
             </div>
         @else
             <div class="nav-group">
-            <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
-
+            
                 @role(['jefe', 'rrhh'])
                 <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal2">></span></a>
                 @endrole

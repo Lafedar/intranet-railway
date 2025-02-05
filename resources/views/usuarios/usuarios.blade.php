@@ -42,7 +42,7 @@
     <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0"
       cellpadding="2" border="10">
       <thead>
-        <th class="text-center">ID</th>
+        
         <th class="text-center">Nombre</th>
         <th class="text-center">Correo</th>
         <th class="text-center">Rol</th>
@@ -54,7 +54,7 @@
         @if(count($usuarios))
       @foreach($usuarios as $usuario) 
       <tr>
-      <td align="center">{{$usuario->id}}</td>
+      
       <td align="center">{{$usuario->nombre_usuario}}</td>
       <td align="center">{{$usuario->email_usuario}}</td>
       <td align="center">
