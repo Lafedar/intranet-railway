@@ -14,34 +14,38 @@
 <body class="d-flex flex-column min-vh-100">
 	<!-- Header -->
 	<header class="page-header d-flex justify-content-between align-items-center">
-		<div class="logo">
-			<a href="{{ route('home.inicio') }}">
-				<img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
-			</a>
+	<div class="logo">
+		<a href="{{ route('home.inicio') }}">
+			<img src="{{ asset('storage/Imagenes-principal-nueva/LOGO-LAFEDAR.png') }}" alt="Logo de la empresa">
+		</a>
+	</div>
+
+	@auth
+	<div class="d-flex align-items-center">
+		<!-- Nombre del usuario -->
+		<p class="mb-0 text-white me-2" style="font-weight: bold; margin-top: 20px;">{{ Auth::user()->name }}</p>
+		
+		<!-- Icono de usuario y dropdown para cerrar sesión -->
+		<div class="dropdown">
+			<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesión">
+				<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<li>
+					<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+						@csrf
+						<button type="submit" class="dropdown-item"
+							style="border: none; background: none; width: 100%; text-align: left;">
+							Cerrar Sesión
+						</button>
+					</form>
+				</li>
+			</ul>
 		</div>
+	</div>
+	@endauth
+</header>
 
-		@auth
-			<div class="dropdown">
-				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
-					<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<!-- Cerrar Sesión: Este enlace ahora envía el formulario de logout -->
-					<li>
-						<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
-							@csrf
-							<button type="submit" class="dropdown-item"
-								style="border: none; background: none; width: 100%; text-align: left;">
-								Cerrar Sesión
-							</button>
-						</form>
-					</li>
-
-				</ul>
-			</div>
-		@endauth
-
-	</header>
 
 	<!-- Main content -->
 	<main class="flex-grow-1">
