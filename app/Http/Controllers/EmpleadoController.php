@@ -79,48 +79,55 @@ class EmpleadoController extends Controller
         $aux = DB::table('personas')->where('personas.dni', $request['dni'])->first();
 
         if ($aux) {
-            Session::flash('message', 'DNI ingresado ya se encuentra asignado');
+            Session::flash('error', 'DNI ingresado ya se encuentra asignado');
             Session::flash('alert-class', 'alert-warning');
             return redirect()->back()->withInput();
         }
+        if ($request['password'] === $request['password2']) {
 
-        $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
-        $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
-        $empleado = new Empleado;
-        $empleado->nombre_p = $request['nombre'];
-        $empleado->apellido = $request['apellido'];
-        $empleado->dni = $request['dni'];
-        $empleado->interno = $request['interno'];
-        $empleado->correo = $request['correo'];
-        $empleado->fe_nac = $request['fe_nac'];
-        $empleado->fe_ing = $request['fe_ing'];
-        $empleado->area = $request['area'];
-        $empleado->turno = $request['turno'];
-        $empleado->activo = $activo;
-        $empleado->jefe = $jefe;
-        $empleado->legajo = $request['legajo'];
-        $empleado->activo = 1;
-        $empleado->save();
+            $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
+            $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
+            $empleado = new Empleado;
+            $empleado->nombre_p = $request['nombre'];
+            $empleado->apellido = $request['apellido'];
+            $empleado->dni = $request['dni'];
+            $empleado->interno = $request['interno'];
+            $empleado->correo = $request['correo'];
+            $empleado->fe_nac = $request['fe_nac'];
+            $empleado->fe_ing = $request['fe_ing'];
+            $empleado->area = $request['area'];
+            $empleado->turno = $request['turno'];
+            $empleado->activo = $activo;
+            $empleado->jefe = $jefe;
+            $empleado->legajo = $request['legajo'];
+            $empleado->activo = 1;
+            $empleado->save();
 
 
-        $nombre = $empleado->nombre_p;
-        $apellido = $empleado->apellido;
-        $correo = $empleado->correo;
-        $usuario = User::create([
-            'name' => $nombre . ' ' . $apellido,
-            'email' => $correo,
-            'password' => Hash::make($request['password'])
-        ]);
+            $nombre = $empleado->nombre_p;
+            $apellido = $empleado->apellido;
+            $correo = $empleado->correo;
 
-        $usuario->dni = $empleado->dni;
-        $usuario->save();
-        $id_user = DB::table('users')->where('users.email', $empleado->correo)->value('id');
-        $persona = DB::table('personas')
-            ->where('personas.dni', $empleado->dni)
-            ->update(['usuario' => $id_user]);
 
-        Session::flash('message', 'Empleado agregado con éxito');
-        Session::flash('alert-class', 'alert-success');
+            $usuario = User::create([
+                'name' => $nombre . ' ' . $apellido,
+                'email' => $correo,
+                'password' => Hash::make($request['password'])
+            ]);
+
+            $usuario->dni = $empleado->dni;
+            $usuario->save();
+            $id_user = DB::table('users')->where('users.email', $empleado->correo)->value('id');
+            $persona = DB::table('personas')
+                ->where('personas.dni', $empleado->dni)
+                ->update(['usuario' => $id_user]);
+
+            Session::flash('message', 'Empleado agregado con éxito');
+            Session::flash('alert-class', 'alert-success');
+        } else {
+            Session::flash('error', 'Las contraseñas no coinciden');
+            Session::flash('alert-class', 'alert-error');
+        }
 
         return redirect('empleado');
     }
@@ -206,11 +213,22 @@ class EmpleadoController extends Controller
             $usuario->email = $request['correo'];
             $usuario->dni = $request['dni'];
             $usuario->activo = $activo;
-            if (!empty($request['password'])) {
+
+
+            if (!empty($request['password']) && $request['password'] === $request['password2']) {
+                // Si la contraseña no está vacía y las contraseñas coinciden
 
                 $usuario->password = Hash::make($request['password']);
+            } else {
+                // Si las contraseñas no coinciden, lanzar un error o mensaje
+                return back()->with(['error' => 'Las contraseñas no coinciden.']);
             }
+
             $usuario->save();
+
+            // Mensaje de éxito
+            return back()->with('message', 'El usuario ha sido actualizado correctamente.')
+                ->with('alert-class', 'alert-success');
         }
 
 

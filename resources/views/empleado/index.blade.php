@@ -9,16 +9,40 @@
 <div>
   <div id="alert" class="alert alert-info" style="display: none"></div>
 
-  @if(Session::has('message'))
-    <div class="container" id="div.alert">
-    <div class="row">
+  <div>
+    <!-- Mensaje de sesión -->
+    @if(Session::has('message'))
+    <div class="container" style="margin-top: 100px;">
+      <div class="row">
       <div class="col-1"></div>
-      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-      {{Session::get('message')}}
+      <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert">
+        {{ Session::get('message') }}
+      </div>
       </div>
     </div>
+  @endif
+
+    @if(Session::has('error'))
+    <div class="container" style="margin-top: 100px;">
+      <div class="row">
+      <div class="col-1"></div>
+      <div class="alert alert-error col-10 text-center" role="alert">
+        {{ Session::get('error') }}
+      </div>
+      </div>
     </div>
   @endif
+
+
+    @if ($errors->has('password'))
+    <div class="alert alert-danger col-10 text-center" role="alert">
+      {{ $errors->first('password') }}
+    </div>
+  @endif
+  </div>
+
+
+
   <div id="empleados-nav" class="conteiner-fluid">
 
     <form method="GET" action="{{ route('empleado.index') }}">
@@ -86,7 +110,7 @@
     @else
       <td align="center"></td>
     @endif
-    @if ($empleado->legajo != '')
+      @if ($empleado->legajo != '')
       <td align="center">{{$empleado->legajo}}</td>
     @else
       <td align="center"></td>
@@ -117,9 +141,9 @@
       data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}"
       data-fe_nac="{{$empleado->fe_nac}}" data-fe_ing="{{$empleado->fe_ing}}"
       data-interno="{{$empleado->interno}}" data-correo="{{$empleado->correo}}"
-      data-activo="{{$empleado->activo}}" data-turno="{{$empleado->idTurno}}" data-jefe="{{$empleado->jefe}}" data-legajo="{{$empleado->legajo}}"
-      data-target="#editar_empleado" title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}"
-      alt="Editar" id="img-icono">
+      data-activo="{{$empleado->activo}}" data-turno="{{$empleado->idTurno}}" data-jefe="{{$empleado->jefe}}"
+      data-legajo="{{$empleado->legajo}}" data-target="#editar_empleado" title="Editar"><img
+      src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono">
       </a>
       <button onclick='fnOpenModalJefeArea({{$empleado->id_p}})'
       title="{{ $empleado->jefe == 1 ? 'Areas' : 'No disponible' }}" id="icono-area" {{ $empleado->jefe == 1 ? '' : 'disabled' }} style="{{ $empleado->jefe == 1 ? '' : 'opacity: 0.5; cursor: not-allowed;' }}">
@@ -486,21 +510,28 @@
   });
 </script>
 <script>
+  // Cargar áreas y turnos cuando la modal se muestra
   $('#agregar_empleado').on('show.bs.modal', function (event) {
     $.get('/selectAreaEmpleados', function (data) {
-      var html_select = '<option value="">Seleccione area </option>'
-      for (var i = 0; i < data.length; i++)
+      var html_select = '<option value="">Seleccione area </option>';
+      for (var i = 0; i < data.length; i++) {
         html_select += '<option value ="' + data[i].id_a + '">' + data[i].nombre_a + '</option>';
+      }
       $('#area').html(html_select);
     });
+
     $.get('/selectTurnosEmpleados', function (data) {
-      var html_select = '<option value="">Seleccione turno </option>'
-      for (var i = 0; i < data.length; i++)
+      var html_select = '<option value="">Seleccione turno </option>';
+      for (var i = 0; i < data.length; i++) {
         html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
+      }
       $('#turno').html(html_select);
     });
   });
+
+
 </script>
+
 <script>
   function wordCount(val) {
     var wom = val.match(/\S+/g);

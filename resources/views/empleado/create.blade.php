@@ -84,7 +84,7 @@
               <div class="row">
                 <div class="col">
                   <label for="correo"><strong>Correo electrónico:</strong></label>
-                  <input type="email" name="correo" class="form-control" id="correo" value="{{old('correo')}}">
+                  <input type="email" name="correo" class="form-control" id="correo" value="{{old('correo')}}" required>
                 </div>
               </div>
 
@@ -97,11 +97,16 @@
                   <label for="turno"><strong>Turno:</strong></label>
                   <select class="form-control" name="turno" id="turno" required></select>
                 </div>
+                <div class="col-6">
+                  <label for="password"><strong>Contraseña:</strong></label>
+                  <input type="text" name="password" id="password" class="form-control" required>
+                </div>
+                <div class="col-6">
+                  <label for="password2"><strong>Confirmar Contraseña:</strong></label>
+                  <input type="text" name="password2" id="password2" class="form-control" required>
+                </div>
               </div>
-              <div class="col-6">
-                <label for="password"><strong>Contraseña:</strong></label>
-                <input type="text" name="password" id="password" class="form-control" required>
-              </div>
+
 
 
 
