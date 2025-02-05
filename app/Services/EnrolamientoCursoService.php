@@ -236,6 +236,18 @@ class EnrolamientoCursoService
         return $cursos;
     }
 
+    public function getAllEnrolledCoursesByDni(int $dni): ?Collection
+    {
+        $persona = $this->personaService->getByDni($dni);
+
+        if (!$persona) {
+            return null;
+        }
+        $cursos = $persona->cursos;
+
+        return $cursos;
+    }
+
 
 
     public function getAllCourses(int $idPerson): ?Collection
