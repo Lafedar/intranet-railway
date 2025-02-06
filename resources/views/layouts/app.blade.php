@@ -23,7 +23,7 @@
 	@auth
 	<div class="d-flex align-items-center">
 		<!-- Nombre del usuario -->
-		<p class="mb-0 text-white me-2" style="font-weight: bold; margin-top: 20px;">{{ Auth::user()->name }}</p>
+		<p class="mb-0 text-white me-2" id="nombre-usuario">{{ Auth::user()->name }}</p>
 		
 		<!-- Icono de usuario y dropdown para cerrar sesión -->
 		<div class="dropdown">
