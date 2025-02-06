@@ -303,54 +303,16 @@ class EmpleadoController extends Controller
 
     public function getCursos(int $userId)
     {
-        $cursos = $this->enrolamientoCursoService->getAllEnrolledCourses($userId);
+        $cursosConDetalles = $this->enrolamientoCursoService->getCursos($userId);
         $persona = $this->personaService->getById($userId);
-        // Inicializar un array para almacenar los cursos con la información adicional de la instancia
-        $cursosConDetalles = [];
-
-        foreach ($cursos as $curso) {
-
-            $areas = $this->cursoService->getAreasByCourseId($curso->id);
-            $curso->areas = $areas;
-
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
-
-            if ($instancia) {
-                $curso->fecha_inicio = $instancia->fecha_inicio;
-                $curso->capacitador = $instancia->capacitador;
-                $curso->modalidad = $instancia->modalidad;
-                $curso->instancia = $instancia->id_instancia;
-            }
-
-            $cursosConDetalles[] = $curso;
-        }
-
+       
         return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }
 
     public function getCursosByDni(int $dni)
     {
-        $cursos = $this->enrolamientoCursoService->getAllEnrolledCoursesByDni($dni);
         $persona = $this->personaService->getByDni($dni);
-        // Inicializar un array para almacenar los cursos con la información adicional de la instancia
-        $cursosConDetalles = [];
-
-        foreach ($cursos as $curso) {
-
-            $areas = $this->cursoService->getAreasByCourseId($curso->id);
-            $curso->areas = $areas;
-
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
-
-            if ($instancia) {
-                $curso->fecha_inicio = $instancia->fecha_inicio;
-                $curso->capacitador = $instancia->capacitador;
-                $curso->modalidad = $instancia->modalidad;
-                $curso->instancia = $instancia->id_instancia;
-            }
-
-            $cursosConDetalles[] = $curso;
-        }
+        $cursosConDetalles = $this->enrolamientoCursoService->getCursosByDni($dni);
 
         return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }

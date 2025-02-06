@@ -19,11 +19,13 @@ class EnrolamientoCursoService
     private $cursoInstanciaService;
     private $personaService;
 
+    private $cursoService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService)
+    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService,  CursoService $cursoService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->personaService = $personaService;
+        $this->cursoService = $cursoService;
 
     }
 
@@ -449,6 +451,50 @@ class EnrolamientoCursoService
             throw $e;
         }
 
+    }
+    public function getCursos(int $id)    
+    {
+        $cursos = $this->getAllEnrolledCourses($id);
+        
+        $cursosConDetalles = [];
+
+        foreach ($cursos as $curso) {
+
+            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+
+            if ($instancia) {
+                $curso->fecha_inicio = $instancia->fecha_inicio;
+                $curso->capacitador = $instancia->capacitador;
+                $curso->modalidad = $instancia->modalidad;
+                $curso->instancia = $instancia->id_instancia;
+            }
+
+            $cursosConDetalles[] = $curso;
+        }
+        return  $cursosConDetalles;
+    }
+
+
+    public function getCursosByDni(int $dni)    
+    {
+        $cursos = $this->getAllEnrolledCoursesByDni($dni);
+        
+        $cursosConDetalles = [];
+
+        foreach ($cursos as $curso) {
+
+            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+
+            if ($instancia) {
+                $curso->fecha_inicio = $instancia->fecha_inicio;
+                $curso->capacitador = $instancia->capacitador;
+                $curso->modalidad = $instancia->modalidad;
+                $curso->instancia = $instancia->id_instancia;
+            }
+
+            $cursosConDetalles[] = $curso;
+        }
+        return  $cursosConDetalles;
     }
 
 }
