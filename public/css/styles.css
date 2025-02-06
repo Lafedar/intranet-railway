@@ -230,7 +230,7 @@ table thead th {
     gap: 10px;
     height: 10vh;
     margin-left: 2px;
-    margin-top: 50px;
+    margin-top: 70px;
     width: 30%;
 }
 
@@ -246,7 +246,8 @@ table thead th {
 
 /*tabla de internos*/
 #tabla-internos {
-    margin-top: 0px;
+    margin-top: -10px;
+    margin-bottom: 20px;
 
 }
 
