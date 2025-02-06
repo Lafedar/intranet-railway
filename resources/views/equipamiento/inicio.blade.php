@@ -1,16 +1,11 @@
 @extends('layouts.app')
-
-<!-- Vinculación de archivos CSS -->
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+@section('styles')
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+@endsection
 
-<!-- Vinculación de archivos JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+@section('content')
 <div class="container-fluid" id="equipamiento-container">
   <!-- Mensajes de sesión -->
   @if(Session::has('message'))
@@ -27,8 +22,10 @@
   <!-- Barra de búsqueda -->
   <div>
     <div id="equipamiento-btn">
-      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_equipamiento" id="btn-agregar">Nuevo equipamiento</a>
-      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_software" id="btn-agregar">Nuevo Software</a>
+      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_equipamiento" id="btn-agregar">Nuevo
+        equipamiento</a>
+      <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_software" id="btn-agregar">Nuevo
+        Software</a>
     </div>
 
     <div class="form-group">
@@ -253,6 +250,12 @@
 </div>
 
 
+
+<!-- Vinculación de archivos JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <script> //Mostrar contenido de ventanas modales observaciones
@@ -539,24 +542,4 @@
   });
 </script>
 
-<style>
-  /*estilos ventana modal Observaciones*/
-  .modal-title {
-    color: #333;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-
-  .modal-body {
-    color: #666;
-    font-size: 1.2rem;
-  }
-
-
-  .close {
-    color: #aaa;
-    font-size: 2rem;
-    opacity: 1;
-  }
-</style>
+@endsection
