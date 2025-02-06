@@ -160,34 +160,42 @@ class EmpleadoController extends Controller
         ]);
     }
 
-
     public function update(Request $request, $id)
     {
-        $activo = ($request['actividad'] == 'on') ? 1 : 0;
-        $jefe = ($request['esJefe'] == 'on') ? 1 : 0;
+        $activo = ($request->has('actividad')) ? 1 : 0;
+        $jefe = ($request->has('esJefe')) ? 1 : 0;
 
+        
         if (!$activo || !$jefe) {
-            DB::table('jefe_area')
-                ->where('jefe', $request['id_p'])
-                ->delete();
+            DB::table('jefe_area')->where('jefe', $request['id_p'])->delete();
         }
 
         if (!$activo) {
-            //elimino todas las filas en las que el usuario tenia permisos 
+            // Eliminar todos los roles del usuario
             DB::table('model_has_roles')
-                ->leftjoin('users', 'users.id', 'model_has_roles.model_id')
-                ->leftjoin('personas', 'personas.usuario', 'users.id')
+                ->join('users', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('personas', 'personas.usuario', '=', 'users.id')
                 ->where('personas.id_p', $request['id_p'])
                 ->delete();
 
-            //pongo todos los puestos a lo que esta persona pertenecia en null
-            DB::table('puestos')
-                ->where('persona', $request['id_p'])
-                ->update(['persona' => null]);
+            // Liberar los puestos asociados a esta persona
+            DB::table('puestos')->where('persona', $request['id_p'])->update(['persona' => null]);
         }
 
-        $empleado = DB::table('personas')
-            ->where('personas.id_p', $request['id_p'])
+        // Buscar el usuario asociado a la persona
+        $usuarioId = DB::table('personas')->where('id_p', $request['id_p'])->value('usuario');
+        $usuario = User::find($usuarioId);
+
+        // Validar si las contraseñas coinciden antes de actualizar cualquier dato
+        if (!empty($request['password']) && !empty($request['password2'])) {
+            if ($request['password'] !== $request['password2']) {
+                return back()->with(['error' => 'Las contraseñas no coinciden.']);
+            }
+        }
+
+        // Actualizar datos del empleado
+        DB::table('personas')
+            ->where('id_p', $request['id_p'])
             ->update([
                 'nombre_p' => $request['nombre'],
                 'apellido' => $request['apellido'],
@@ -203,40 +211,27 @@ class EmpleadoController extends Controller
                 'jefe' => $jefe,
             ]);
 
-
-        $usuarioId = DB::table('personas')->where('id_p', $request['id_p'])->value('usuario');
-        $usuario = User::find($usuarioId);
-
-
+        // Si existe el usuario, actualizarlo
         if ($usuario) {
-            $usuario->name = $request['nombre'] . ' ' . $request['apellido'];
+            $usuario->name = "{$request['nombre']} {$request['apellido']}";
             $usuario->email = $request['correo'];
             $usuario->dni = $request['dni'];
             $usuario->activo = $activo;
 
-
-            if (!empty($request['password']) && $request['password'] === $request['password2']) {
-                // Si la contraseña no está vacía y las contraseñas coinciden
-
+            // Si las contraseñas fueron validadas, actualizar la contraseña
+            if (!empty($request['password'])) {
                 $usuario->password = Hash::make($request['password']);
-            } else {
-                // Si las contraseñas no coinciden, lanzar un error o mensaje
-                return back()->with(['error' => 'Las contraseñas no coinciden.']);
             }
 
             $usuario->save();
-
-            // Mensaje de éxito
-            return back()->with('message', 'El usuario ha sido actualizado correctamente.')
-                ->with('alert-class', 'alert-success');
         }
 
-
-
+        
         Session::flash('message', 'Empleado modificado con éxito');
         Session::flash('alert-class', 'alert-success');
         return redirect('empleado');
     }
+
 
     public function destroy_empleado(Request $request, $id)
     {
@@ -305,7 +300,7 @@ class EmpleadoController extends Controller
     {
         $cursosConDetalles = $this->enrolamientoCursoService->getCursos($userId);
         $persona = $this->personaService->getById($userId);
-       
+
         return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }
 
