@@ -1,10 +1,15 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@push('styles')
+
+    <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+
 @section('content')
 
 <!-- alertas -->
@@ -41,7 +46,7 @@
   </div>
 
   <!-- barra para buscar solicitudes -->
-  <div class="col">
+  <div >
     <div class="form-group">
       <form method="GET">
         <div style="display: inline-block;">
@@ -141,7 +146,7 @@
   </div>
 
   <!-- tabla de datos -->
-  <div class="col-md-12">
+  <div>
     <table class="table table-striped table-bordered ">
       <thead>
         @can('reporte-solicitudes')
@@ -1412,24 +1417,3 @@ closeButton.on('click', function () {
 </script>
 
 @stop
-
-{{--
-<script>
-  function confirmarEnvio(id) {
-    var boton = document.querySelector('#recordatorioForm' + id + ' button');
-    if (boton.dataset.bloqueado === "true") {
-      mostrarMensaje('El recordatorio ya ha sido enviado recientemente. Por favor, espera.');
-      return;
-    }
-
-    if (confirm('¿Estás seguro de enviar un recordatorio al encargado de mantenimiento?')) {
-      document.getElementById('recordatorioForm' + id).submit();
-      boton.dataset.bloqueado = "true";
-      var horas = obtenerHorasDesbloqueo();
-      var tiempoDesbloqueo = new Date();
-      tiempoDesbloqueo.setHours(tiempoDesbloqueo.getHours() + horas);
-      boton.dataset.desbloqueo = tiempoDesbloqueo.getTime(); // Almacena el tiempo de desbloqueo en milisegundos
-      mostrarMensaje('Recordatorio enviado');
-    }
-  }
-</script>--}}

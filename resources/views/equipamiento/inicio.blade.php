@@ -6,7 +6,7 @@
 
 
 @section('content')
-<div class="container-fluid" id="equipamiento-container">
+<div id="equipamiento-container">
   <!-- Mensajes de sesión -->
   @if(Session::has('message'))
     <div class="container" id="div.alert">

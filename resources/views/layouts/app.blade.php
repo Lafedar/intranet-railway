@@ -8,11 +8,8 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- Custom CSS -->
 	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-	<!-- Bootstrap CSS -->
-
+	
 	<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 
 	@stack('styles')
@@ -61,19 +58,14 @@
 		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
 	</footer>
 
-	<!-- Bootstrap JS Bundle (incluye Popper.js) -->
 
-
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
 
 
 	@stack('scripts')
