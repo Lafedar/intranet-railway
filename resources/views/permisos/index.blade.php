@@ -1,13 +1,14 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+@push('styles')
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<div class="container-fluid">
+@endpush
+
+@section('content')
+
+
+<div id="permisos-container">
   @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
@@ -106,9 +107,14 @@
 @include('permisos.show') 
 @include('permisos.create')   
 
-
-<script>
-  function fnSaveSolicitud() {
+@endsection
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function fnSaveSolicitud() {
     var form = document.getElementById('myForm');
     if (form.checkValidity()) {
       $('#saveButton').prop('disabled', true);
@@ -116,9 +122,9 @@
     } else {
       console.log('El formulario no es válido. Completar los campos requeridos antes de enviar.');
     }
-  }
+    }
 
-  $('#ver').on('show.bs.modal', function (event) {
+    $('#ver').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var fecha_soli = button.data('fecha_soli')
     var fecha_desde = button.data('fecha_desde')
@@ -140,46 +146,46 @@
     modal.find('.modal-body #solicitante').val(solicitante);
     modal.find('.modal-body #autorizante').val(autorizante);
     modal.find('.modal-body #area').val(area);
-  })
+    })
 
-  $(document).ready(function () {
+    $(document).ready(function () {
     $('#alert').hide();
     $('.btn-borrar').click(function (e) {
       e.preventDefault();
       if (!confirm("¿Está seguro de eliminar?")) {
-        return false;
+      return false;
       }
       var row = $(this).parents('tr');
       var form = $(this).parents('form');
       var url = form.attr('action');
 
       $.get(url, form.serialize(), function (result) {
-        row.fadeOut();
-        $('#alert').show();
-        $('#alert').html(result.message)
-        setTimeout(function () { $('#alert').fadeOut(); }, 5000);
+      row.fadeOut();
+      $('#alert').show();
+      $('#alert').html(result.message)
+      setTimeout(function () { $('#alert').fadeOut(); }, 5000);
       }).fail(function () {
-        $('#alert').show();
-        $('#alert').html("Algo salió mal");
+      $('#alert').show();
+      $('#alert').html("Algo salió mal");
       });
     });
-  });
+    });
 
-  $("document").ready(function () {
+    $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 3000); // 5 secs
 
-  });
+    });
 
-</script>
-<script>
-  $('#agregar_permiso').on('show.bs.modal', function (event) {
+  </script>
+  <script>
+    $('#agregar_permiso').on('show.bs.modal', function (event) {
 
     $.get('select_autorizado/', function (data) {
       var html_select = '<option value="">Seleccione </option>'
       for (var i = 0; i < data.length; i++) {
-        html_select += '<option value ="' + data[i].id_p + '">' + data[i].apellido + ' ' + data[i].nombre_p + '</option>';
+      html_select += '<option value ="' + data[i].id_p + '">' + data[i].apellido + ' ' + data[i].nombre_p + '</option>';
       }
       $('#select').html(html_select);
     });
@@ -187,14 +193,15 @@
     $.get('select_tipo_permiso/', function (data) {
       var html_select = '<option value=""> Seleccione </option>'
       for (var i = 0; i < data.length; i++) {
-        html_select += '<option value ="' + data[i].id_tip + '">' + data[i].desc + '</option>';
+      html_select += '<option value ="' + data[i].id_tip + '">' + data[i].desc + '</option>';
       }
       $('#select_motivo').html(html_select);
     });
 
 
-  })
+    })
 
 
 
-</script>
+  </script>
+@endpush

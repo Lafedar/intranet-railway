@@ -3,6 +3,7 @@
 
     <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link href="{{ asset('select2/dist/css/select2.min.css') }}" rel="stylesheet" />
 @endpush
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -316,7 +317,8 @@
 
 
 <!-- Incluir archivos CSS de Select2 -->
-<link href="{{ asset('select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+@push('scripts')
+    
 <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>
@@ -1415,5 +1417,5 @@ closeButton.on('click', function () {
   }
 
 </script>
-
-@stop
+@endpush
+@endsection
