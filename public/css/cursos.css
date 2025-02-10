@@ -42,6 +42,11 @@
     cursor: not-allowed;
     pointer-events: none;
 }
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 
 #btn-excel-disabled:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));

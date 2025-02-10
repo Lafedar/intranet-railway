@@ -46,18 +46,20 @@
                 @csrf
                 <button type="submit" id="BI">Exportar a Excel</button>
             </form>
-            @if($anexos != null)
+                
+            @if(!is_null($anexos)) 
                 <form
                     action="{{ route('verPlanilla', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'tipo' => 'ane']) }}"
                     method="GET">
                     <button type="submit" id="BI">Ver Anexo</button>
                 </form>
             @else
+                    
                 <form action="#" method="GET">
                     <button type="submit" id="BI" disabled>Ver Anexo</button>
                 </form>
 
-            @endif
+                @endif
 
             @if($cantAprobados > 0)
                 <form action="{{ route('enviarMail', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
@@ -74,13 +76,13 @@
             @endif
 
 
-            <form
-                action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}"
-                method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary" id="BI" style="margin-left: 480px">Aprobar a
-                    todos</button>
-            </form>
+                <form
+                    action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 0]) }}"
+                    method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary" id="BI" style="margin-left: 480px">Aprobar a
+                        todos</button>
+                </form>
 
             <form
                 action="{{ route('evaluarInstanciaTodos', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'bandera' => 1]) }}"
