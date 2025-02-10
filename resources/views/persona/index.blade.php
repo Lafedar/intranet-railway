@@ -1,14 +1,11 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+@push('styles')
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
+@endpush
 
-
+@section('content')
 <div class="content">
   <div class="row" style="justify-content: center">
     <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
@@ -25,7 +22,7 @@
     </div>
   </div>
 @endif
-<div class="container-fluid">
+<div id="container-recepcion">
   <div id="recepcion-nav">
     <div id="recepcion-botones">
       <a class="btn btn-secondary" href="/internos" id="btn-agregar">Internos</a>&nbsp
@@ -52,8 +49,8 @@
     </h1>
   </div>
 
-  <div id="recepcion-tabla">
-    <table class="table table-striped table-bordered">
+  <div>
+    <table>
       <thead>
         <th class="text-center">Nombre</th>
         <th class="text-center">Apellido</th>
@@ -101,28 +98,32 @@
   </table>
 
   @include('persona.show')    
-
   @include('persona.edit')
   @include('persona.create')
 
-
-</div>
-{{ $personas->links('pagination::bootstrap-4') }} <!--paginacion-->
+  {{ $personas->links('pagination::bootstrap-4') }} <!--paginacion-->
 </div>
 
 
 
-<script>
-  $("document").ready(function () {
+@endsection
+
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 3000); // 5 secs
 
-  });
-</script>
+    });
+  </script>
 
-<script>
-  $('#ver').on('show.bs.modal', function (event) {
+  <script>
+    $('#ver').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget)
     var nombre = button.data('nombre')
@@ -139,12 +140,12 @@
     modal.find('.modal-body #telefono').val(telefono);
     modal.find('.modal-body #celular').val(celular);
     modal.find('.modal-body #correo').val(correo);
-  })
-</script>
+    })
+  </script>
 
 
-<script>
-  $('#editar').on('show.bs.modal', function (event) {
+  <script>
+    $('#editar').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget)
     var id = button.data('id')
@@ -167,30 +168,32 @@
     modal.find('.modal-body #interno').val(interno);
     modal.find('.modal-body #celular').val(celular);
     modal.find('.modal-body #correo').val(correo);
-  })
-</script>
+    })
+  </script>
 
-<script>
-  $(document).ready(function () {
+  <script>
+    $(document).ready(function () {
     $('#alert').hide();
     $('.btn-borrar').click(function (e) {
       e.preventDefault();
       if (!confirm("¿Está seguro de eliminar?")) {
-        return false;
+      return false;
       }
       var row = $(this).parents('tr');
       var form = $(this).parents('form');
       var url = form.attr('action');
 
       $.get(url, form.serialize(), function (result) {
-        row.fadeOut();
-        $('#alert').show();
-        $('#alert').html(result.message)
-        setTimeout(function () { $('#alert').fadeOut(); }, 3000);
+      row.fadeOut();
+      $('#alert').show();
+      $('#alert').html(result.message)
+      setTimeout(function () { $('#alert').fadeOut(); }, 3000);
       }).fail(function () {
-        $('#alert').show();
-        $('#alert').html("Algo salió mal");
+      $('#alert').show();
+      $('#alert').html("Algo salió mal");
       });
     });
-  });
-</script>
+    });
+  </script>
+
+@endpush

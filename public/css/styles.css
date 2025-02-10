@@ -231,15 +231,8 @@ table thead th {
 }
 
 /*INTERNOS*/
-#custom-container-internos {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 15px;
-    /* Padding izquierdo por defecto */
-    padding-right: 15px;
-    /* Padding derecho por defecto */
-    margin-top: 3rem;
+#internos-container {
+    margin-bottom: 40px;
 }
 
 /*filtro internos*/
@@ -298,6 +291,9 @@ table thead th {
 
 
 /*RECEPCION*/
+#container-recepcion {
+    margin-bottom: 40px;
+}
 #recepcion-nav {
     margin-top: 130px;
 }
