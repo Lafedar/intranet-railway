@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+@push('styles')
+  <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
-<div class="container-fluid" id="tipo-equip-container">
+@section('content')
+<div id="tipo-equip-container">
   <!-- alertas -->
 
   <div class="content">
@@ -28,7 +28,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_tipo_equipo"
-  id="btn-agregar">Agregar tipo de equipo</button>
+    id="btn-agregar">Agregar tipo de equipo</button>
   <!-- tabla de datos -->
   <div id="software-table">
     <table>
@@ -83,24 +83,29 @@
   </div>
 </div>
 
-<script>
-  //Duracion de alerta (agregado, elimnado, editado)
-  $("tipo_equipo").ready(function () {
+
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    //Duracion de alerta (agregado, elimnado, editado)
+    $("tipo_equipo").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 5000); // 5 secs
-  });
-</script>
+    });
+  </script>
 
-<script>
-  var ruta_create = '{{ route('store_tipo_equipo') }}';
-  var ruta_update = '{{ route('update_tipo_equipo') }}';
-  var ruta_assing = '{{ route('assing_tipo_equipo') }}';
-  var ruta_delete = '{{ route('delete_falla_te') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
-  //modal store
-  function fnOpenModalStore() {
+  <script>
+    var ruta_create = '{{ route('store_tipo_equipo') }}';
+    var ruta_update = '{{ route('update_tipo_equipo') }}';
+    var ruta_assing = '{{ route('assing_tipo_equipo') }}';
+    var ruta_delete = '{{ route('delete_falla_te') }}';
+    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
+    var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
+    //modal store
+    function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_tipo_equipo/";
     $.get(url, function (data) {
@@ -130,12 +135,12 @@
 
       //para cerrar modales
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
       });
     });
-  }
-  //modal update
-  function fnOpenModalUpdate(id) {
+    }
+    //modal update
+    function fnOpenModalUpdate(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_update_tipo_equipo') }}/" + id;
     $.get(url, function (data) {
@@ -164,13 +169,13 @@
 
       //para cerrar modales
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
       });
     });
-  }
-  //modal assing
-  var aux;
-  function fnOpenModalAssing(id) {
+    }
+    //modal assing
+    var aux;
+    function fnOpenModalAssing(id) {
     aux = id;
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_assing_tipo_equipo') }}/" + id;
@@ -200,28 +205,28 @@
     });
     $('#show2').on('show.bs.modal', function (event) {
       $.get('select_fallas/', function (data) {
-        var html_select = '<option value="">Seleccione </option>'
-        for (var j = 0; j < data[0].length; j++) {
-          let found = false; // variable para indicar si se encontró la pareja (id_falla, id_tipo_equipo)
-          for (var i = 0; i < data[1].length; i++) {
-            if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
-              found = true; // se encontró la pareja, no se agrega
-              break;
-            }
-          }
-          if (!found) {
-            html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>'; // no se encontró la pareja, se agrega
-          }
+      var html_select = '<option value="">Seleccione </option>'
+      for (var j = 0; j < data[0].length; j++) {
+        let found = false; // variable para indicar si se encontró la pareja (id_falla, id_tipo_equipo)
+        for (var i = 0; i < data[1].length; i++) {
+        if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
+          found = true; // se encontró la pareja, no se agrega
+          break;
         }
-        $('#fallasSinAsingar').html(html_select);
+        }
+        if (!found) {
+        html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>'; // no se encontró la pareja, se agrega
+        }
+      }
+      $('#fallasSinAsingar').html(html_select);
       });
       //para cerrar modales
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
       });
     });
-  }
-  function fnOpenModalDeleteFalla(id) {
+    }
+    function fnOpenModalDeleteFalla(id) {
     aux = id;
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = "{{ url('show_delete_falla_te') }}/" + id;
@@ -251,20 +256,23 @@
     });
     $('#show2').on('show.bs.modal', function (event) {
       $.get('select_fallas/', function (data) {
-        var html_select = '<option value="">Seleccione </option>'
-        for (var j = 0; j < data[0].length; j++) {
-          for (var i = 0; i < data[1].length; i++) {
-            if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
-              html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>';
-            }
-          }
+      var html_select = '<option value="">Seleccione </option>'
+      for (var j = 0; j < data[0].length; j++) {
+        for (var i = 0; i < data[1].length; i++) {
+        if (data[1][i].id_tipo_equipo == aux && data[1][i].id_falla == data[0][j].id) {
+          html_select += '<option value ="' + data[0][j].id + '">' + data[0][j].nombre + '</option>';
         }
-        $('#fallasAsignadas').html(html_select);
+        }
+      }
+      $('#fallasAsignadas').html(html_select);
       });
       //para cerrar modales
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
       });
     });
-  }
-</script>
+    }
+  </script>
+
+@endpush
+@endsection

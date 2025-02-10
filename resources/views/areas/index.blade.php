@@ -1,11 +1,12 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="container-fluid" id="areas-container">
+@push('styles')
+
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+
+@section('content')
+<div id="areas-container">
   <!-- alertas -->
 
   <div class="content">
@@ -27,7 +28,7 @@
 
   <!-- barra para buscar equipos -->
   <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_area"
-  id="btn-agregar"> Agregar area</button>
+    id="btn-agregar"> Agregar area</button>
   <!-- tabla de datos -->
   <div>
     <table>
@@ -68,22 +69,27 @@
   </div>
 </div>
 
-<script>
-  //Duracion de alerta (agregado, elimnado, editado)
-  $("area").ready(function () {
+
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    //Duracion de alerta (agregado, elimnado, editado)
+    $("area").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 5000); // 5 secs
-  });
-</script>
+    });
+  </script>
 
-<script>
-  var ruta_create = '{{ route('store_area') }}';
-  var ruta_update = '{{ route('update_area') }}';
-  var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
-  //modal store
-  function fnOpenModalStore() {
+  <script>
+    var ruta_create = '{{ route('store_area') }}';
+    var ruta_update = '{{ route('update_area') }}';
+    var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
+    var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
+    //modal store
+    function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_area/";
     $.get(url, function (data) {
@@ -111,44 +117,47 @@
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.remove('modal-lg');
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
       });
     });
-  }
-  //modal update
-  function fnOpenModalUpdate(id_a) {
+    }
+    //modal update
+    function fnOpenModalUpdate(id_a) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/show_update_area/" + id_a,
       type: 'GET',
       success: function (data) {
-        // Borrar contenido anterior
-        $("#modalshow").empty();
-        // Establecer el contenido del modal
-        $("#modalshow").html(data);
+      // Borrar contenido anterior
+      $("#modalshow").empty();
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
 
-        // Borrar contenido anterior
-        $("#modalfooter").empty();
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
 
-        // Agregar el botón "Cerrar" al footer
-        $("#modalfooter").append(closeButton);
-        $("#modalfooter").append(saveButton);
+      // Agregar el botón "Cerrar" al footer
+      $("#modalfooter").append(closeButton);
+      $("#modalfooter").append(saveButton);
 
-        //Cambiar la acción del formulario
-        $('#myForm').attr('action', ruta_update);
+      //Cambiar la acción del formulario
+      $('#myForm').attr('action', ruta_update);
 
-        // Mostrar el modal
-        myModal.show();
+      // Mostrar el modal
+      myModal.show();
 
-        // Cambiar el tamaño del modal a "modal-lg"
-        var modalDialog = myModal._element.querySelector('.modal-dialog');
-        modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.remove('modal-lg');
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.remove('modal-lg');
 
-        closeButton.on('click', function () {
-          myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
-        });
+      closeButton.on('click', function () {
+        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      });
       },
     });
-  }
-</script>
+    }
+  </script>
+
+@endpush
+@endsection
