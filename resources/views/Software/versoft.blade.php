@@ -1,13 +1,12 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 
+@push('styles')
+  <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
-<div class="container-fluid" id="versof-container">
+@section('content')
+<div id="versof-container">
   @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
@@ -53,9 +52,8 @@
       </div>
     </h1>
   </div>
-  <div id="versof-table">
-    <table id="test"role="grid" cellspacing="0"
-      cellpadding="2" border="10">
+  <div>
+    <table id="test" role="grid" cellspacing="0" cellpadding="2" border="10">
       <thead>
         <th class="text-center">Id_Eq</th>
         <th class="text-center">Software</th>
@@ -78,7 +76,10 @@
       <form action="{{route('destroy_srelacions', $tabla_soft->id)}}" method="put">
       <div class="botones">
       <!-- Boton para eliminar asignacion de equipo -->
-      <button class="fa-solid fa-xmark eliminar" title="Eliminar"  onclick="return confirm ('Está seguro que desea eliminar el archivo?')" data-tooltip="Borrar" id="icono"> <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></button>
+      <button class="fa-solid fa-xmark eliminar" title="Eliminar"
+      onclick="return confirm ('Está seguro que desea eliminar el archivo?')" data-tooltip="Borrar"
+      id="icono"> <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar"
+      id="img-icono"></button>
       </div>
       </form>
       </tr>
@@ -91,3 +92,11 @@
 
 
 </div>
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+@endpush
+@endsection

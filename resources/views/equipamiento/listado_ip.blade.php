@@ -1,13 +1,13 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+
+@push('styles')
+
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
 
-<div class="container-fluid" id="buscaip-container">
+@section('content')
+<div id="buscaip-container">
   <div class="col-md-12 ml-auto">
     <h1>
       <div class="form-inline pull-right">
@@ -26,9 +26,8 @@
   </div>
 
 
-  <div id="buscaip-table"> 
-    <table id="test" role="grid" cellspacing="0"
-      cellpadding="2" border="10">
+  <div>
+    <table id="test" role="grid" cellspacing="0" cellpadding="2" border="10">
       <thead>
         <th class="text-center">IP</th>
         <th class="text-center">Red</th>
@@ -62,21 +61,15 @@
   {{$equipamientos->links('pagination::bootstrap-4')}}
 
 
-  <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
+
 
 </div>
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 
-{{--
-<script>
-  $(document).ready(function () {
-    $("#search").keyup(function () {
-      _this = this;
-      $.each($("#test tbody tr"), function () {
-        if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-          $(this).hide();
-        else
-          $(this).show();
-      });
-    });
-  });
-</script>--}}
+@endpush
+@endsection

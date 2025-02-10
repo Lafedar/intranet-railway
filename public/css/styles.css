@@ -582,6 +582,7 @@ table thead th {
 /*USUARIOS*/
 #usuarios-container {
     margin-top: 130px;
+    margin-bottom: 40px;
 }
 
 #usuarios-btn {
@@ -594,12 +595,14 @@ table thead th {
 /*ROLES*/
 #roles-container {
     margin-top: 130px;
+    margin-bottom: 40px;
 }
 
 
 /*PUESTOS*/
 #puestos-container {
-    margin-top: 130px;
+    margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #puestos-create {
@@ -626,6 +629,7 @@ table thead th {
 /*INCIDENTES*/
 #incidentes-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #incidentes-table {
@@ -636,6 +640,7 @@ table thead th {
 /*SOFTWARE*/
 #software-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #software-table {
@@ -646,6 +651,7 @@ table thead th {
 /*BUSCA IP*/
 #buscaip-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #buscaip-table {
@@ -655,6 +661,7 @@ table thead th {
 /*SOFTWARE INSTALADO*/
 #versof-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #versof-table {
@@ -664,6 +671,7 @@ table thead th {
 /*PARAMETROS SISTEMAS*/
 #parametros-gen-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 #parametros-gen-table {

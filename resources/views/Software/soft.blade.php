@@ -1,13 +1,12 @@
 @extends('layouts.app')
+
+@push('styles')
 <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+@endpush
 
-
-<div class="container-fluid" id="software-container"> 
+@section('content')
+<div id="software-container"> 
   @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
@@ -39,7 +38,7 @@
       </div>
     </h1>
   </div>
-  <div id="software-table">
+  <div>
     <table>
       <thead>
         <th class="text-center">Id_Soft</th>
@@ -81,7 +80,11 @@
   @include ('software.edit')
 </div>
 
-
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
 <script>
   $('#edit_soft').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
@@ -101,17 +104,8 @@
     modal.find('.modal-body #fecha_inst').val(fecha_inst);
     modal.find('.modal-body #Obs').val(obs);
 
-    /*
-        $.get('select_tipo_equipamiento',function(data){
-          var html_select = '<option value="">Seleccione </option>'
-          for(var i = 0; i<data.length; i ++){
-            if(data[i].id == tipo){
-            html_select += '<option value ="'+data[i].id+'"selected>'+data[i].equipamiento+'</option>';
-            }else{
-            html_select += '<option value ="'+data[i].id+'">'+data[i].equipamiento+'</option>';
-            }
-            }
-        $('#tipo_equipamiento_editar').html(html_select);
-    });*/
+  
   });
 </script>
+@endpush
+@endsection
