@@ -457,13 +457,12 @@ table thead th:last-child {
 }
 
 
-.container {
+#container {
     width: 100% !important;
     max-width: none !important;
-    padding: 0 15px;
+    margin-bottom: 40px;
     margin-top: 3rem;
 }
-
 
 .row.justify-content-center {
     display: flex;
