@@ -522,6 +522,7 @@ table thead th {
 
 #documentos-planos-container {
     margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 
@@ -532,6 +533,7 @@ table thead th {
 
 #documentos-proyectos-container {
     margin-top: 110px;
+    margin-bottom: 40px;
 }
 
 #proyectos-table {

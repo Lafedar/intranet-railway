@@ -1,13 +1,14 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+@push('styles')
+    <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
-<div class="container-fluid" id="documentos-planos-container">
+
+@section('content')
+
+<div id="documentos-planos-container">
     <div class="content">
         <div class="row" style="justify-content: center">
             <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
@@ -142,57 +143,64 @@
 
 </div>
 
-<script>
-    $("document").ready(function () {
-        setTimeout(function () {
-            $("div.alert").fadeOut();
-        }, 5000);
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $("document").ready(function () {
+            setTimeout(function () {
+                $("div.alert").fadeOut();
+            }, 5000);
 
-    });
-</script>
+        });
+    </script>
 
-<script>
-    $('#editar').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget)
-        var id = button.data('id')
-        var titulo = button.data('titulo')
-        var fecha = button.data('fecha')
-        var obs = button.data('obs')
-        var pdf = button.data('pdf')
-        var pdf_firmado = button.data('pdf_firmado')
-        var dwg = button.data('dwg')
-        var ctb = button.data('ctb')
-        var modal = $(this)
+    <script>
+        $('#editar').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var id = button.data('id')
+            var titulo = button.data('titulo')
+            var fecha = button.data('fecha')
+            var obs = button.data('obs')
+            var pdf = button.data('pdf')
+            var pdf_firmado = button.data('pdf_firmado')
+            var dwg = button.data('dwg')
+            var ctb = button.data('ctb')
+            var modal = $(this)
 
-        modal.find('.modal-body #id').val(id);
-        modal.find('.modal-body #titulo').val(titulo);
-        modal.find('.modal-body #fecha').val(fecha);
-        modal.find('.modal-body #obs').val(obs);
+            modal.find('.modal-body #id').val(id);
+            modal.find('.modal-body #titulo').val(titulo);
+            modal.find('.modal-body #fecha').val(fecha);
+            modal.find('.modal-body #obs').val(obs);
 
-        console.log(pdf_firmado.length);
-        if (pdf.length == 0) {
-            $("div.elim_pdf").hide()
-        }
-        else {
-            $("div.elim_pdf").show()
-        }
-        if (pdf_firmado.length == 0) {
-            $("div.elim_pdf_firmado").hide()
-        }
-        else {
-            $("div.elim_pdf_firmado").show()
-        }
-        if (dwg.length == 0) {
-            $("div.elim_dwg").hide()
-        }
-        else {
-            $("div.elim_dwg").show()
-        }
-        if (ctb.length == 0) {
-            $("div.elim_ctb").hide()
-        }
-        else {
-            $("div.elim_ctb").show()
-        }
-    })
-</script>
+            console.log(pdf_firmado.length);
+            if (pdf.length == 0) {
+                $("div.elim_pdf").hide()
+            }
+            else {
+                $("div.elim_pdf").show()
+            }
+            if (pdf_firmado.length == 0) {
+                $("div.elim_pdf_firmado").hide()
+            }
+            else {
+                $("div.elim_pdf_firmado").show()
+            }
+            if (dwg.length == 0) {
+                $("div.elim_dwg").hide()
+            }
+            else {
+                $("div.elim_dwg").show()
+            }
+            if (ctb.length == 0) {
+                $("div.elim_ctb").hide()
+            }
+            else {
+                $("div.elim_ctb").show()
+            }
+        })
+    </script>
+@endpush
+@endsection
