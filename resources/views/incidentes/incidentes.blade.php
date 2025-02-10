@@ -70,7 +70,7 @@
     @endif
       </td>
       </tr>
-    @include('incidentes.resolver')          @endforeach
+    @include('incidentes.resolver')       @endforeach
     @endif
       </tbody>
     </table>
@@ -80,29 +80,28 @@
     {{ $incidentes->links('pagination::bootstrap-4') }} <!--paginacion-->
 
   </div>
-
+  @endsection
   @push('scripts')
-  
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
     $(document).ready(function (e) {
       $('#modalForm').on('show.bs.modal', function (e) {
-        var id = $(e.relatedTarget).data().id;
-        $(e.currentTarget).find('#incidente').val(id);
+      var id = $(e.relatedTarget).data().id;
+      $(e.currentTarget).find('#incidente').val(id);
       });
     });
-  </script>
+    </script>
 
-  <script>
+    <script>
     $("document").ready(function () {
       setTimeout(function () {
-        $("div.alert").fadeOut();
+      $("div.alert").fadeOut();
       }, 5000); // 5 secs
 
     });
-  </script>
+    </script>
   @endpush
-  @endsection

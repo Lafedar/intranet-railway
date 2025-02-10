@@ -315,7 +315,7 @@
   </div>
 </div>
 
-
+@endsection
 <!-- Incluir archivos CSS de Select2 -->
 @push('scripts')
     
@@ -1418,4 +1418,4 @@ closeButton.on('click', function () {
 
 </script>
 @endpush
-@endsection
+

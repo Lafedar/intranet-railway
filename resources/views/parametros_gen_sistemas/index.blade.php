@@ -2,7 +2,7 @@
 
 @push('styles')
     
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 @endpush
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -195,8 +195,8 @@
     </div>
 @endforeach
 </div>
-
-@push('layouts.app')
+@endsection
+@push('scripts')
 
 <script>
     function confirmarEliminacion(id) {
@@ -229,4 +229,3 @@
     }
 </style>
 @endpush
-@endsection

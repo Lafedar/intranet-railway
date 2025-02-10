@@ -1,12 +1,13 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="container-fluid" id="empleados-cursos-conteiner">
-    <h1 id="titulo-cursos-empleado">Listado de Capacitaciones y Evaluaciones de: {{$persona->nombre_p}} {{$persona->apellido}}
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+
+@section('content')
+<div id="empleados-cursos-conteiner">
+    <h1 id="titulo-cursos-empleado">Listado de Capacitaciones y Evaluaciones de: {{$persona->nombre_p}}
+        {{$persona->apellido}}
     </h1>
     <form action="{{ route('exportarCursos', ['personaId' => $persona->id_p]) }}" method="GET">
         @csrf
@@ -57,3 +58,9 @@
         </tbody>
     </table>
 </div>
+@endsection
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+@endpush
