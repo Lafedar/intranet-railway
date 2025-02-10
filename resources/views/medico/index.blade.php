@@ -1,13 +1,11 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+@push('styles')
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
-<div class="container-fluid">
+@section('content')
+<div>
   @if(Session::has('message'))
     <div class="content" id="div.alert">
     <div class="row">
@@ -21,10 +19,12 @@
 
   <div id="medico-nav">
     <div id="medico-buttons">
-      <a href="{{route('medico.create')}}" class="btn btn-info btn-xl" data-position="top" data-delay="50" id="btn-agregar">Nueva
+      <a href="{{route('medico.create')}}" class="btn btn-info btn-xl" data-position="top" data-delay="50"
+        id="btn-agregar">Nueva
         Consulta</a>
       &nbsp
-      <a href="/historia_clinica" class="btn btn-info btn-xl" data-position="top" data-delay="50" id="btn-agregar" >Historia Clinica</a>
+      <a href="/historia_clinica" class="btn btn-info btn-xl" data-position="top" data-delay="50"
+        id="btn-agregar">Historia Clinica</a>
     </div>
 
     <h1>
@@ -48,7 +48,7 @@
   </div>
 
   <div>
-    <table id="medico-table">
+    <table>
       <thead>
         <th class="text-center">Paciente</th>
         <th class="text-center ">Fecha de consulta</th>
@@ -92,14 +92,20 @@
     </table>
 
     @include('medico.show')
-    {{ $consultas->links('pagination::bootstrap-4') }} <!--paginacion-->
+
 
   </div>
-
+  {{ $consultas->links('pagination::bootstrap-4') }} <!--paginacion-->
 </div>
 
-<script>
-  $('#ver').on('show.bs.modal', function (event) {
+
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $('#ver').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget)
     var nombre = button.data('nombre')
@@ -122,14 +128,16 @@
     modal.find('.modal-body #tension').val(tension);
     modal.find('.modal-body #imc').val(imc);
     modal.find('.modal-body #obs').val(obs);
-  })
-</script>
+    })
+  </script>
 
-<script>
-  $("document").ready(function () {
+  <script>
+    $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 5000); // 5 secs
 
-  });
-</script>
+    });
+  </script>
+@endpush
+@endsection

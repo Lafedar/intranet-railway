@@ -407,6 +407,7 @@ table thead th {
 
 
 /*MEDICO*/
+
 #medico-nav {
     margin-top: 100px;
 }
@@ -507,6 +508,7 @@ table thead th {
 
 #guardia-consulta-container {
     margin-top: 120px;
+    margin-bottom: 40px;
 }
 
 #guardia-consulta-table {
