@@ -22,26 +22,19 @@
     <div id="results-dropdown" class="results-dropdown">
         <ul id="results-list"></ul>
     </div>
-    
-    @if( !Auth::check())
-        <nav>
+    <nav>
+        @if( !Auth::check())
             <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
             <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
             <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
             <a href="{{ route('novedades.index') }}" class="nav-btn">Novedades<span id="novedades-principal">></span></a>
-        
-        </nav>
-    @else
-        <nav>
+        @else
             <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
             <a href="/capacitaciones" class="nav-btn">Capacitaciones <span id="capacitacion-principal">></span></a>
             <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
-            @role(['guardia', 'rrhh', 'administrador'])
-                    <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
-            @endrole
-        </nav>
-    @endif
-
+            <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>     
+        @endif
+    </nav>
     <section class="container">
         <div id="toast">
             <span id="toast-message"></span>
@@ -84,7 +77,7 @@
     <nav class="nav-grid">
         @role('administrador')
             <div class="nav-group">
-                <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
+                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
                 <a href="{{ route('novedades.index') }}" class="nav-btn">Novedades<span id="novedades-principal">></span></a>
@@ -97,7 +90,9 @@
 
         @else
             <div class="nav-group">
-                <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
+                @role(['guardia', 'rrhh', 'administrador'])
+                        <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
+                @endrole
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
                 @role(['medico', 'rrhh'])
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal2">></span></a>
