@@ -28,14 +28,12 @@
             @csrf
             <div class="form-group">
                 <label for="fecha_inicio">Fecha inicio</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required
-                    min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
             </div>
 
             <div class="form-group">
                 <label for="fecha_fin">Fecha Fin</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required
-                    min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
             </div>
 
 

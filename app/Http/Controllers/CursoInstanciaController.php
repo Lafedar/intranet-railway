@@ -173,7 +173,7 @@ class CursoInstanciaController extends Controller
 
             }
 
-            if ($request->input('fecha_inicio') !== null) {
+            /*if ($request->input('fecha_inicio') !== null) {
                 $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
                 $fechaActual = Carbon::now();
 
@@ -181,7 +181,7 @@ class CursoInstanciaController extends Controller
                 if ($fechaInicio < $fechaActual->startOfDay()) {
                     return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
                 }
-            }
+            }*/
 
 
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
@@ -312,7 +312,7 @@ class CursoInstanciaController extends Controller
 
 
             }
-            if ($request->input('fecha_inicio') !== null) {
+            /*if ($request->input('fecha_inicio') !== null) {
                 $fechaInicio = Carbon::parse($request->input('fecha_inicio'));
                 $fechaActual = Carbon::now();
 
@@ -320,7 +320,7 @@ class CursoInstanciaController extends Controller
                 if ($fechaInicio < $fechaActual->startOfDay()) {
                     return redirect()->back()->withInput()->withErrors(['fecha_inicio' => 'La fecha de inicio no puede ser menor que la fecha actual.']);
                 }
-            }
+            }*/
 
 
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
