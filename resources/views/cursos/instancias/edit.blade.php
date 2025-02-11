@@ -94,7 +94,7 @@
                     maxlength="100">
             </div>
             <div class="form-group">
-                <label for="anexos">Anexos</label>
+                <label for="anexos">Registros de Capacitación</label>
                 <div id="anexos">
                     @foreach($anexos as $formulario)
                         <div class="form-check">

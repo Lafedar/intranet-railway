@@ -51,12 +51,12 @@
                 <form
                     action="{{ route('verPlanilla', ['cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia, 'tipo' => 'ane']) }}"
                     method="GET">
-                    <button type="submit" id="BI">Ver Anexo</button>
+                    <button type="submit" id="BI">Ver Registro</button>
                 </form>
             @else
                     
                 <form action="#" method="GET">
-                    <button type="submit" id="BI" disabled>Ver Anexo</button>
+                    <button type="submit" id="BI" disabled>Ver Registro</button>
                 </form>
 
                 @endif

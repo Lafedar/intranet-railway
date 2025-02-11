@@ -588,10 +588,16 @@ table thead th {
 
 #iconos-instancias {
     margin: 5px;
+    text-decoration: none;
+    border: none;
 }
 
 #iconos-disabled {
     opacity: 0.5;
+    pointer-events: none;
+    color: #ccc;
+    text-decoration: none;
+    border: none;
 }
 
 #btn-eliminar {
