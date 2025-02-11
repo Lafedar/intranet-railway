@@ -32,7 +32,11 @@
             <a href="{{ route('eventos.index') }}" class="nav-btn" >Calendario <span id="calendario-principal">></span></a>
             <a href="/capacitaciones" class="nav-btn">Capacitaciones <span id="capacitacion-principal">></span></a>
             <a href="/documentos" class="nav-btn">Documentos<span id="documentos-principal">></span></a>
-            <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>     
+            @role(['guardia', 'rrhh', 'administrador'])
+                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
+            @else 
+                <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
+            @endrole   
         @endif
     </nav>
     <section class="container">
@@ -77,12 +81,12 @@
     <nav class="nav-grid">
         @role('administrador')
             <div class="nav-group">
-                <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
+                <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal">></span></a>
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal">></span></a>
                 <a href="{{ route('novedades.index') }}" class="nav-btn">Novedades<span id="novedades-principal">></span></a>
-                <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
                 <a href="{{ route('permisos.index') }}" class="nav-btn">Permisos <span id="permisos-principal">></span></a>
+                <a href="/empleado" class="nav-btn">Personal <span id="empleado-principal">></span></a>
                 <a href="{{ route('powerbis.index') }}" class="nav-btn">Power BI<span id="powerbi-principal">></span></a>
                 <a href="/persona" class="nav-btn">Recepcion <span id="recepcion-principal">></span></a>
                 <a href="/sistemas" class="nav-btn">Sistemas <span id="sistemas-principal">></span></a>
@@ -91,7 +95,7 @@
         @else
             <div class="nav-group">
                 @role(['guardia', 'rrhh', 'administrador'])
-                        <a href="/visitas" class="nav-btn">Guardia <span id="guardia-principal2">></span></a>
+                    <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
                 @endrole
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
                 @role(['medico', 'rrhh'])
