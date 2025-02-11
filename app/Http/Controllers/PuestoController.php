@@ -93,7 +93,7 @@ class PuestoController extends Controller
 
     public function show_store_puesto()
     {
-        $areas = $this->areaService->getAll();
+        $areas = $this->areaService->getAreas();
         $localizaciones = Localizacion::all();
         $personas = $this->personaService->getAll();
         return view('puestos.create', compact('areas', 'localizaciones', 'personas'));
