@@ -9,10 +9,10 @@ class Empleado extends Model
 {
     //use HasFactory;
 
-    protected $table = 'persona';
+    protected $table = 'personas';
 
     //el campo id de la tabla cursos_instancia lo reconoce Laravel automaticamente como primary key de la tabla
-    protected $fillable = [
+    /*protected $fillable = [
         'legajo', 
         'id_persona', 
         'interno', 
@@ -23,7 +23,7 @@ class Empleado extends Model
         'jefe',
         'id_usuario',
         'activo'
-    ];
+    ];*/
 
     // Indicar a Laravel que los campos son de tipo fecha
     protected $dates = [

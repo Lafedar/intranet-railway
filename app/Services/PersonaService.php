@@ -158,6 +158,15 @@ class PersonaService
         }
     }
 
+    public function updateUserByDni(int $dni, int $id_user){
+        $persona = Persona::where('dni', $dni)->first();
+        if ($persona) {
+            
+           $persona->usuario = $id_user;
+           $persona->save();
+        }
+    }
+
 
 
 

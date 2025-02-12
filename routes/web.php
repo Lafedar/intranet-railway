@@ -57,8 +57,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('selectTurnosEmpleados', 'EmpleadoController@selectTurnosEmpleados');
 
   Route::get('/empleado/curso', [EmpleadoController::class, 'curso'])->name('empleado.curso');
-  Route::get('/empleado/{id}/cursos', [EmpleadoController::class, 'getCursos'])->name('empleado.cursos');
-  Route::get('/empleado/{dni}/cursosByDni', [EmpleadoController::class, 'getCursosByDni'])->name('empleado.cursos.dni');
+  Route::get('/empleado/{id}/cursos', [CursoController::class, 'getCursos'])->name('empleado.cursos');
+  Route::get('/empleado/{dni}/cursosByDni', [CursoController::class, 'getCursosByDni'])->name('empleado.cursos.dni');
 });
 //****************PUESTOS**********************
 Route::group(['middleware' => ['auth']], function () {
