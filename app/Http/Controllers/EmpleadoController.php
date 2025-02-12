@@ -85,7 +85,7 @@ class EmpleadoController extends Controller
 
     public function store(Request $request)
     {
-        $aux=$this->personaService->getByDni(($request['dni']));
+        $aux = $this->personaService->getByDni(($request['dni']));
 
         if ($aux) {
             Session::flash('error', 'DNI ingresado ya se encuentra asignado');
@@ -116,7 +116,7 @@ class EmpleadoController extends Controller
             $nombre = $empleado->nombre_p;
             $apellido = $empleado->apellido;
             $correo = $empleado->correo;
-            $password=Hash::make($request['password']);
+            $password = Hash::make($request['password']);
 
             $usuario = $this->userService->createUser(
                 $nombre,
@@ -128,8 +128,8 @@ class EmpleadoController extends Controller
             $usuario->save();
 
             $id_user = DB::table('users')->where('users.email', $empleado->correo)->value('id');
-            $persona=$this->personaService->updateUserByDni($empleado->dni, $id_user);
-           
+            $persona = $this->personaService->updateUserByDni($empleado->dni, $id_user);
+
 
             Session::flash('message', 'Empleado agregado con éxito');
             Session::flash('alert-class', 'alert-success');
@@ -148,28 +148,51 @@ class EmpleadoController extends Controller
     public function edit($id)
     {
         $datos = $this->empleadoService->obtenerDatosParaEditar($id);
-        
+
         return view('empleado.edit', [
             'empleado' => $datos['empleado'],
             'area' => $datos['areas'],
             'usuario' => $datos['usuarios'],
             'password' => $datos['usuario']->password,
-            ]);
-        
+        ]);
+
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $result = $this->empleadoService->updateEmpleado($request, $id);
+        try {
+            $activo = $request->has('actividad') ? 1 : 0;
+            $jefe = $request->has('esJefe') ? 1 : 0;
+            $id_p = $request['id_p'];
+            $password = $request['password'];
+            $password2 = $request['password2'];
+            $nombre = $request['nombre'];
+            $apellido = $request['apellido'];
+            $dni = $request['dni'];
+            $interno = $request['interno'];
+            $correo = $request['correo'];
+            $legajo = $request['legajo'];
+            $fe_nac = $request['fe_nac'];
+            $fe_ing = $request['fe_ing'];
+            $area = $request['area'];
+            $turnoEdit = $request['turnoEdit'];
 
-        if (isset($result['error'])) {
-            return back()->with(['error' => $result['error']]);
+
+            $result = $this->empleadoService->updateEmpleado($activo, $jefe, $id_p, $password, $password2, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit);
+
+            if (isset($result['error'])) {
+                return back()->with(['error' => $result['error']]);
+            }
+
+            Session::flash('message', $result['message']);
+            Session::flash('alert-class', $result['alert-class']);
+            return redirect('empleado');
+        } catch (Exception $e) {
+            return back()->with(['error' => $e->getMessage()]);
         }
-
-        Session::flash('message', $result['message']);
-        Session::flash('alert-class', $result['alert-class']);
-        return redirect('empleado');
     }
+
+
 
 
     /*public function destroy_empleado(Request $request, $id)
@@ -193,7 +216,7 @@ class EmpleadoController extends Controller
     public function destroy_empleado(Request $request, $id)
     {
         try {
-            
+
             $mensaje = $this->empleadoService->destroyEmpleado($id);
 
             return response()->json([
@@ -252,5 +275,5 @@ class EmpleadoController extends Controller
     }
 
 
-    
+
 }
