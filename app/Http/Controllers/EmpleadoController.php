@@ -81,14 +81,14 @@ class EmpleadoController extends Controller
                 'filtroJefe' => $filtroJefe,
                 'filtroActividad' => $filtroActividad
             ]);
-        }catch(Exception $e){
-            Log::error('Error al mostrar empleados: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error al mostrar empleados: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Lo siento, algo salió mal al mostrar los empleados.'
             ], 400);
-            
 
-            
+
+
         }
 
     }
@@ -103,7 +103,7 @@ class EmpleadoController extends Controller
                 Session::flash('alert-class', 'alert-warning');
                 return redirect()->back()->withInput();
             }
-            
+
             $aux = $this->personaService->getByDni(($request['dni']));
 
             if ($aux) {
@@ -159,7 +159,7 @@ class EmpleadoController extends Controller
 
             return redirect('empleado');
         } catch (Exception $e) {
-            Log::error('Error al crear el empleado: '.$e->getMessage());
+            Log::error('Error al crear el empleado: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Lo siento, algo salió mal al crear el empleado.'
             ], 400);
@@ -184,7 +184,7 @@ class EmpleadoController extends Controller
                 ]);
             }
         } catch (Exception $e) {
-            Log::error('Error al obtener los datos para editar el empleado '.$e->getMessage());
+            Log::error('Error al obtener los datos para editar el empleado ' . $e->getMessage());
             return response()->json([
                 'error' => 'Lo siento, algo salió mal al editar el empleado.'
             ], 400);
@@ -224,14 +224,14 @@ class EmpleadoController extends Controller
             $result = $this->empleadoService->updateEmpleado($activo, $jefe, $id_p, $password, $password2, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit);
 
             if (!$result) {
-                return back()->with(['error' => 'Las contraseñas no coinciden.']);
+                return back()->with(['error' => 'Error al actualizar empleado']);
             }
 
             Session::flash('message', 'Empleado actualizado correctamente');
             Session::flash('alert-class', 'alert-success');
             return redirect('empleado');
         } catch (Exception $e) {
-            Log::error('Error al editar el empleado: '.$e->getMessage());
+            Log::error('Error al editar el empleado: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Lo siento, algo salió mal al actualizar el empleado.'
             ], 400);
@@ -241,28 +241,22 @@ class EmpleadoController extends Controller
     public function destroy_empleado($id)
     {
         try {
-            dd($id);
-            if (!empty($id)) {
-                return response()->json([
-                    'error' => 'No se ha seleccionado ningún empleado'
-                ], 404);
-            } else {
-                $mensaje = $this->empleadoService->destroyEmpleado($id);
-                if($mensaje){
-                    return response()->json([
-                        'message' => 'Empleado eliminado con exito'
-                    ], 200);
-                }
-                else{
-                    return response()->json([
-                        'message' => 'Error al eliminar el empleado'
-                    ], 404);
-                }
-                
-            }
+            $empleado = Empleado::find($id);
+            $empleado->activo = 0;
+            $empleado->save();
+
+            $usuarioId = DB::table('personas')->where('id_p', $id)->value('usuario');
+            $usuario = User::find($usuarioId);
+            $usuario->activo = 0;
+            $usuario->save();
+
+
+            return response()->json([
+                'message' => 'Empleado eliminado con éxito'
+            ]);
 
         } catch (Exception $e) {
-            Log::error('Error al eliminar el empleado: '.$e->getMessage());
+            Log::error('Error al eliminar el empleado: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Lo siento, algo salió mal al borrar el empleado'
             ], 400);
@@ -281,106 +275,102 @@ class EmpleadoController extends Controller
 
     public function selectAreasTurnos()
     {
-        try{
+        try {
             return [
                 Empleado::selectAreas(),
                 Empleado::selectTurnos(),
                 Empleado::selectJefeXArea()
             ];
-        }catch(Exception $e){
-            Log::error('Error en el metodo: selectAreasTurnos: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en el metodo: selectAreasTurnos: ' . $e->getMessage());
             return response()->json([
                 'error' => $e->getMessage()
             ], 404);
         }
-       
+
     }
 
     public function showUpdateAreaXJefe($id)
     {
-        try{
-            if(!empty($id)){
+        try {
+            if (!empty($id)) {
                 $idsJAs = Empleado::showAreaXJefeUpdate($id);
                 return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
-            }else{
+            } else {
                 return response()->json([
                     'error' => 'No se ha seleccionado ningún empleado'
                 ], 404);
             }
-        }catch(Exception $e){
-            Log::error('Error en el metodo: showUpdateAreaXJefe: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en el metodo: showUpdateAreaXJefe: ' . $e->getMessage());
             return response()->json([
                 'error' => $e->getMessage()
             ], 404);
         }
-        
+
 
     }
 
     public function deleteAreaXJefe($idJA)
     {
-        try{
-            if(!empty($idJA)){
+        try {
+            if (!empty($idJA)) {
                 $deletedRows = DB::table('jefe_area')->where('id_ja', $idJA)->delete();
-                }
-                else{
-                    return response()->json([
-                        'error' => 'No se ha seleccionado ningún empleado'
-                    ], 404);
-                }
-        }
-        catch(Exception $e){
-            Log::error('Error en el metodo: deleteAreaXJefe: '.$e->getMessage());
+            } else {
+                return response()->json([
+                    'error' => 'No se ha seleccionado ningún empleado'
+                ], 404);
+            }
+        } catch (Exception $e) {
+            Log::error('Error en el metodo: deleteAreaXJefe: ' . $e->getMessage());
             return response()->json([
                 'error' => $e->getMessage()
             ], 404);
         }
-        
+
     }
 
     public function storeRelacionJefeXArea($idJefe, $areaId, $turnoId)
     {
-        try{
-            if(empty($idJefe) || empty($areaId) || empty($turnoId)){
+        try {
+            if (empty($idJefe) || empty($areaId) || empty($turnoId)) {
                 return response()->json([
                     'error' => 'No se ha seleccionado ningún empleado'
                 ], 404);
-            }else{
+            } else {
                 $jefeXArea = new JefeXArea;
                 $jefeXArea->jefe = $idJefe;
                 $jefeXArea->area = $areaId;
                 $jefeXArea->turno = $turnoId;
                 $jefeXArea->save();
             }
-        }
-        catch(Exception $e){
-            Log::error('Error en el metodo: storeRelacionJefeXArea: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en el metodo: storeRelacionJefeXArea: ' . $e->getMessage());
             return response()->json([
                 'error' => $e->getMessage()
             ], 404);
         }
-       
+
     }
 
     public function obtenerNuevoListadoAreaXJefe($id)
     {
-        try{
-            if(!empty($id)){
+        try {
+            if (!empty($id)) {
                 $idsJAs = Empleado::showAreaXJefeUpdate($id);
                 return view('empleado.update', ['idsJAs' => $idsJAs, 'idJefe' => $id]);
-            }else{
+            } else {
                 return response()->json([
                     'error' => 'No se ha seleccionado ningún empleado'
                 ], 404);
             }
-        }
-        catch(Exception $e){
-            Log::error('Error en el metodo: obtenerNuevoListadoAreaXJefe: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en el metodo: obtenerNuevoListadoAreaXJefe: ' . $e->getMessage());
             return response()->json([
                 'error' => $e->getMessage()
             ], 404);
         }
-       
+
     }
 
 
