@@ -8,7 +8,7 @@ use app\Models\Curso;
 
 class Area extends Model
 {
-    public $table = "area";
+    protected $table = "area";
     public $timestamps = false;
 
     protected $primaryKey = 'id_a';
