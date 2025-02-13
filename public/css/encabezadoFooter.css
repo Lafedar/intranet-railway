@@ -5,7 +5,10 @@
     right: 20px;
 
 }
-
+#nombre-usuario{
+    font-weight: bold; 
+    margin-top: 17px;
+}
 
 .logo {
     margin-top: 0px;

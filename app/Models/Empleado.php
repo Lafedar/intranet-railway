@@ -9,17 +9,17 @@ class Empleado extends Model
 {
     //use HasFactory;
 
-    protected $table = 'persona';
+    protected $table = 'personas';
 
     //el campo id de la tabla cursos_instancia lo reconoce Laravel automaticamente como primary key de la tabla
     protected $fillable = [
-        'legajo', 
-        'id_persona', 
-        'interno', 
-        'fecha_ingreso', 
-        'fecha_egreso', 
-        'id_area', 
-        'id_turno', 
+        'legajo',
+        'id_persona',
+        'interno',
+        'fecha_ingreso',
+        'fecha_egreso',
+        'id_area',
+        'id_turno',
         'jefe',
         'id_usuario',
         'activo'
@@ -38,5 +38,5 @@ class Empleado extends Model
         return $this->belongsTo(Persona::class, 'id_persona');
     }
 
-    
+
 }

@@ -467,6 +467,22 @@ class CursoController extends Controller
         return $pdf->download('certificado.pdf');
     }
 
+    public function getCursos(int $userId)
+    {
+        $cursosConDetalles = $this->enrolamientoCursoService->getCursos($userId);
+        $persona = $this->personaService->getById($userId);
+
+        return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
+    }
+
+    public function getCursosByDni(int $dni)
+    {
+        $persona = $this->personaService->getByDni($dni);
+        $cursosConDetalles = $this->enrolamientoCursoService->getCursosByDni($dni);
+
+        return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
+    }
+
 }
 
 

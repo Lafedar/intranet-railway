@@ -77,6 +77,7 @@
                   <label for="password2"><strong>Confirmar Contraseña:</strong></label>
                   <input type="text" name="password2" id="password2" class="form-control"
                     value="{{ old('password2') }}">
+                    
                 </div>
 
               </div>
@@ -105,3 +106,44 @@
     </div>
   </div>
 </div>
+<script>
+  $(document).ready(function () {
+    // Manejar el evento de envío del formulario
+    $('form').on('submit', function (e) {
+      // Obtener los valores de las contraseñas
+      let password = $('#password').val().trim();
+      let password2 = $('#password2').val().trim();
+
+      // Eliminar mensaje de error previo (si existe)
+      $('#password-error').remove();
+
+      // Verificar si las contraseñas no coinciden
+      if (password !== password2) {
+        e.preventDefault();  // Detener el envío del formulario
+
+        // Crear el mensaje de error
+        let errorMessage = $('<div>', {
+          id: 'password-error',
+          class: 'alert alert-danger mt-2',  // Puedes agregar clases de Bootstrap o personalizar
+          text: '⚠ Las contraseñas no coinciden'
+        });
+
+        // Insertar el mensaje justo debajo de los campos de contraseña
+        $('#password2').after(errorMessage);
+        return false;  // Evitar que el formulario se envíe
+      }
+    });
+  });
+</script>
+
+<style>
+  #password-error {
+  color: red;
+  background-color: #f8d7da;  
+  border-color: #f5c6cb;  
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+</style>
+
