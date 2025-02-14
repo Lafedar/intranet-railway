@@ -25,21 +25,25 @@
 		</div>
 
 		@auth
-			<div class="dropdown">
-				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesión">
-					<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdown">
-					<li>
-						<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
-							@csrf
-							<button type="submit" class="dropdown-item"
-								style="border: none; background: none; width: 100%; text-align: left;">
-								Cerrar Sesión
-							</button>
-						</form>
-					</li>
-				</ul>
+			<div class="d-flex align-items-center" style="margin-top: 35px;">
+				<p style="color: white; white-space: nowrap; font-weight: bold; margin-right: 2px;">{{ Auth::user()->name }}
+				</p>
+				<div style="margin-top: -33px;">
+				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
+                    <img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
+                </button>
+					<ul class="dropdown-menu" aria-labelledby="dropdown">
+						<li>
+							<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+								@csrf
+								<button type="submit" class="dropdown-item"
+									style="border: none; background: none; width: 100%; text-align: left;">
+									Cerrar Sesión
+								</button>
+							</form>
+						</li>
+					</ul>
+				</div>
 			</div>
 		@endauth
 	</header>
