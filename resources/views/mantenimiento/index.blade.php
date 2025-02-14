@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 @section('content')
 
 <div class="container text-center">
@@ -19,10 +19,10 @@
 
         @role('administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento|Empleado-Mantenimiento')
 
-            <div class="col-md-4">
-                <a href="/equipos_mant"> <img src="{{ URL::to('/img/equipos.png') }}" height="140"></a>
-                <h2 style="color: #3b557a">Equipos</h2>
-            </div>
+        <div class="col-md-4">
+            <a href="/equipos_mant"> <img src="{{ URL::to('/img/equipos.png') }}" height="140"></a>
+            <h2 style="color: #3b557a">Equipos</h2>
+        </div>
         @endrole
         @role('administrador|Jefe-Mantenimiento')
         <div class="col-md-4">
