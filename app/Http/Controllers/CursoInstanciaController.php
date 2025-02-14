@@ -480,10 +480,16 @@ class CursoInstanciaController extends Controller
                 $curso = $this->cursoService->getById($cursoId)->titulo; // Aquí deberías obtener el nombre real del curso
                 $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
 
-                // Enviar el correo
-                if (!empty($user->correo)) {
-                    Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+                if ($request->input('mail')) {
+                    // Enviar el correo
+                    if (!empty($user->correo)) {
+                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+                        return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
+                    }
+                }else{
+                    return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
                 }
+
             }
 
             return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
