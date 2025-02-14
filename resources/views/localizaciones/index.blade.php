@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @push('styles')
-  
+
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 @endpush
 
 @section('content')
-<div id="localizaciones-container">
-  <!-- alertas -->
+  <div id="localizaciones-container">
+    <!-- alertas -->
 
-  <div class="content">
+    <div class="content">
     <div class="row" style="justify-content: center">
       <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
     </div>
-  </div>
+    </div>
 
-  @if(Session::has('message'))
+    @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
@@ -26,31 +26,31 @@
     </div>
   @endif
 
-  <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
+    <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
     id="btn-agregar">Agregar Localización</button>
 
-  <!-- tabla de datos -->
-  <div>
+    <!-- tabla de datos -->
+    <div>
     <table>
       <thead>
-        <th class="text-center">ID</th>
-        <th class="text-center">Área</th>
-        <th class="text-center">Nombre</th>
-        <th class="text-center">Interno</th>
-        <th class="text-center">Acciones</th>
+      <th class="text-center">ID</th>
+      <th class="text-center">Área</th>
+      <th class="text-center">Nombre</th>
+      <th class="text-center">Interno</th>
+      <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-        @foreach($localizaciones as $localizacion)
+      @foreach($localizaciones as $localizacion)
       <tr class="text-center">
-        <td width="80">{{ $localizacion->id }}</td>
-        <td>{{ $localizacion->nombre_a }}</td>
-        <td>{{ $localizacion->nombre }}</td>
-        <td>{{ $localizacion->interno }}</td>
-        <td width="90">
-        <button onclick='fnOpenModalUpdate("{{ $localizacion->id }}")' title="Editar"
-          data-nombre="{{ $localizacion->nombre }}" data-interno="{{ $localizacion->interno }}" id="icono"
-          title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button>
-        </td>
+      <td width="80">{{ $localizacion->id }}</td>
+      <td>{{ $localizacion->nombre_a }}</td>
+      <td>{{ $localizacion->nombre }}</td>
+      <td>{{ $localizacion->interno }}</td>
+      <td width="90">
+      <button onclick='fnOpenModalUpdate("{{ $localizacion->id }}")' title="Editar"
+        data-nombre="{{ $localizacion->nombre }}" data-interno="{{ $localizacion->interno }}" id="icono"
+        title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button>
+      </td>
       </tr>
     @endforeach
       </tbody>
@@ -59,33 +59,30 @@
     <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form id="myForm" method="POST" enctype="multipart/form-data">
-            {{csrf_field()}}
-            <div id="modalshow" class="modal-body">
-              <!-- Aquí se cargará el contenido del modal -->
-            </div>
-            <div id="modalfooter" class="modal-footer">
-              <!-- Footer con botones -->
-            </div>
-          </form>
+      <div class="modal-content">
+        <form id="myForm" method="POST" enctype="multipart/form-data">
+        {{csrf_field()}}
+        <div id="modalshow" class="modal-body">
+          <!-- Aquí se cargará el contenido del modal -->
         </div>
+        <div id="modalfooter" class="modal-footer">
+          <!-- Footer con botones -->
+        </div>
+        </form>
+      </div>
       </div>
     </div>
 
     {{ $localizaciones->links('pagination::bootstrap-4') }} <!--paginacion-->
+    </div>
   </div>
-</div>
 @endsection
 @push('scripts')
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="{{ URL::asset('/js/bootstrap.min.js') }}"></script>
   <script language="JavaScript" src="{{ URL::asset('/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
-  <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+
   <script>
     // Duración de alerta (agregado, eliminado, editado)
     $("localizacion").ready(function () {
