@@ -30,7 +30,7 @@
     <select class="form-control" name="txtPedido_por" id="txtPedido_por">
         <option value="" disabled selected>Selecciona una persona</option>
         @foreach($personas as $persona)
-            <option value="{{$persona->id_p}}">{{$persona->nombre_p . ' '. $persona->apellido}}</option>
+            <option value="{{$persona->id_p}}">{{$persona->apellido . ' '. $persona->nombre_p}}</option>
         @endforeach
     </select>
 </div>
