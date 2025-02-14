@@ -158,7 +158,29 @@ class PersonaService
         }
     }
 
+  
 
+    public function updateUserByDni(int $dni, int $id_user)
+    {
+        try {
+            // Buscar la persona por DNI
+            $persona = Persona::where('dni', $dni)->first();
+    
+            if (!$persona) {
+                return false;
+            }
+    
+            $persona->usuario = $id_user;
+            $persona->save();
+    
+            return true;
+    
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el usuario por Dni' . $e->getMessage());
+            return false; 
+        }
+    }
+    
 
 
 }

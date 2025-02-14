@@ -62,10 +62,15 @@
 
 
     @endrole
+    
 
     <a href="{{ route('cursos.create') }}" id="BCC">
         Crear Capacitación
     </a>
+    <a href="{{ route('empleado.cursos.dni', Auth::user()->dni) }}" title="Capacitaciones de: {{ Auth::user()->name }}"><img
+      src="{{ asset('storage/cursos/ver.png') }}" alt="Ver Capacitaciones" id="img-icono" style="margin-top: -75px;"></a>
+
+
     @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
         <br>
         <br>
