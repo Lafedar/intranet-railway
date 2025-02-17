@@ -25,24 +25,24 @@
 		</div>
 
 		@auth
-			<div class="d-flex align-items-center" style="margin-top: 35px;">
-				<p style="color: white; white-space: nowrap; font-weight: bold; margin-right: 2px;">{{ Auth::user()->name }}
+			<div class="d-flex align-items-center"  id="user-container">
+				<p id="nombre-usuario">{{ Auth::user()->name }}
 				</p>
 				<div style="margin-top: -33px;">
-				<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
-                    <img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
-                </button>
-					<ul class="dropdown-menu" aria-labelledby="dropdown">
-						<li>
-							<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
-								@csrf
-								<button type="submit" class="dropdown-item"
-									style="border: none; background: none; width: 100%; text-align: left;">
-									Cerrar Sesión
-								</button>
-							</form>
-						</li>
-					</ul>
+					<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
+						<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
+					</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdown">
+							<li>
+								<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+									@csrf
+									<button type="submit" class="dropdown-item"
+										id="cerrar-sesion">
+										Cerrar Sesión
+									</button>
+								</form>
+							</li>
+						</ul>
 				</div>
 			</div>
 		@endauth
@@ -61,16 +61,6 @@
 	<footer class="text-center py-3">
 		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
 	</footer>
-
-
-	<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
-
 
 	@stack('scripts')
 </body>

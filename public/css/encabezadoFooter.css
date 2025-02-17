@@ -112,6 +112,25 @@ footer p {
     }
 }
 
+#nombre-usuario{
+    color: white; 
+    white-space: nowrap; 
+    font-weight: bold; 
+    margin-right: 2px;
+    margin-top: 1px;
+}
+#user-container{
+    margin-top: 30px;
+}
+
+
+
+#cerrar-sesion{
+    border: none; 
+    background: none; 
+    width: 100%; 
+    text-align: left;
+}
 
 #dropdown {
     border: none;
