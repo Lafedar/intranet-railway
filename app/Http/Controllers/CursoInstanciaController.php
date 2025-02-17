@@ -469,8 +469,9 @@ class CursoInstanciaController extends Controller
             } else {
                 $imageBase64Firma = null;
             }
-
-            foreach ($personasSeleccionadas as $id_persona => $inscribir) {
+            
+            foreach ($personasSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
+                                                                            // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
                 $user = $this->personaService->getById($id_persona);
 
                 // Inscribir a la persona
@@ -492,7 +493,7 @@ class CursoInstanciaController extends Controller
 
             }
 
-            return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
+           
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
