@@ -25,12 +25,10 @@
                             <option value="" disabled selected>Seleccione un área</option>
                             @foreach($areas as $area)
                                 <option value="{{ $area->id_a }}">{{ $area->nombre_a }}</option>
-                                <!-- Asumimos que 'nombre' es el campo de la base de datos -->
                             @endforeach
                         </select>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col">
@@ -38,8 +36,7 @@
                         <select class="form-control" name="localizacion" id="localizacion" required>
                             <option value="" disabled selected>Seleccione</option>
                             @foreach($localizaciones as $loc)
-                                <option value="{{ $loc->id }}">{{ $loc->nombre }}</option>
-                                <!-- Asumimos que 'nombre' es el campo de la base de datos -->
+                                <option value="{{ $loc->id }}" data-area="{{ $loc->id_area }}">{{ $loc->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -52,7 +49,6 @@
                             <option value="" disabled selected>Seleccione una persona</option>
                             @foreach($personas as $persona)
                                 <option value="{{ $persona->id_p }}">{{ $persona->apellido }} {{ $persona->nombre_p }}</option>
-                                <!-- Asumimos que 'nombre' es el campo de la base de datos -->
                             @endforeach
                         </select>
                     </div>
@@ -85,4 +81,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Escuchar el cambio en el select de áreas
+            $('#area').change(function () {
+                var selectedAreaId = $(this).val();
+
+                // Ocultar todas las opciones de localización
+                $('#localizacion option').hide();
+
+                // Mostrar solo las localizaciones que pertenecen al área seleccionada
+                $('#localizacion option[data-area="' + selectedAreaId + '"]').show();
+
+                // Resetear el valor seleccionado en el select de localización
+                $('#localizacion').val('');
+            });
+        });
+    </script>
 @endpush
