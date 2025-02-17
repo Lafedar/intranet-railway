@@ -1,20 +1,10 @@
 @extends('layouts.app')
 
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $novedad->titulo }}</title>
-</head>
-
-<body>
+@push('styles')
+    <link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+@section('content')
     <div id="novedades-container">
         <div class="container mt-5">
             <h1 class="mb-4">{{ $novedad->titulo }}</h1>
@@ -77,32 +67,35 @@
         </div>
     </div>
     <!-- Modal -->
-   <!-- Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <!-- Controles para las imágenes -->
-                <button id="prevImage" class="btn btn-secondary" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                
-                <img id="modalImage" src="" alt="Imagen ampliada" class="img-fluid" />
-                
-                <button id="nextImage" class="btn btn-secondary" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
+    <!-- Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Controles para las imágenes -->
+                    <button id="prevImage" class="btn btn-secondary"
+                        style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+
+                    <img id="modalImage" src="" alt="Imagen ampliada" class="img-fluid" />
+
+                    <button id="nextImage" class="btn btn-secondary"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-</body>
+@endsection
+@push('scripts')
 
 <!-- Scripts de Bootstrap -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -112,7 +105,7 @@
 
     // Función que inicializa las imágenes en el carrusel
     function initializeCarouselImages() {
-        $('#novedadesCarousel img').each(function(index) {
+        $('#novedadesCarousel img').each(function (index) {
             imageUrls.push($(this).attr('src')); // Guardamos las URLs de las imágenes
         });
     }
@@ -151,7 +144,7 @@
 
     // Cuando la modal se cierra, resetear la imagen
     $('#imageModal').on('hidden.bs.modal', function () {
-        $('#modalImage').attr('src', ''); 
+        $('#modalImage').attr('src', '');
     });
 
     // Inicializar el carrusel al cargar la página
@@ -159,7 +152,7 @@
         initializeCarouselImages();
     });
 </script>
-
+@endpush
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -251,15 +244,16 @@
         height: auto;
         object-fit: cover;
     }
+
     #novedadesCarousel {
-        height: 500px; 
-        overflow: hidden;  
+        height: 500px;
+        overflow: hidden;
     }
 
     .modal-dialog {
         max-width: 70%;
         margin: auto;
-        
+
     }
 
     /* Estilo para la imagen dentro de la modal */

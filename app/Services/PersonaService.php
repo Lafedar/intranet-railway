@@ -29,6 +29,7 @@ class PersonaService
         try {
             return Persona::with('area')
                 ->where('activo', 1)
+                ->where('nombre_p', '<>', 'Administrador')
                 ->orderBy('apellido', 'asc')
                 ->get();
         } catch (Exception $e) {
@@ -37,26 +38,13 @@ class PersonaService
         }
 
     }
-    /*public function getPersonsByArea(array $areas)
-    {
-        try {
-            return Persona::whereIn('area', $areas)
-                ->where('activo', 1)
-                ->orderBy('apellido')
-                ->with('area')
-                ->get();
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas de las areas' . $e->getMessage());
-            throw $e;
-        }
-
-    }*/
     public function getPersonsByArea(array $areas)
     {
         try {
 
             if (in_array('tod', $areas)) {
                 return Persona::where('activo', 1)
+                    ->where('nombre_p', '<>', 'Administrador')
                     ->orderBy('apellido')
                     ->with('area')
                     ->get();
@@ -65,6 +53,7 @@ class PersonaService
 
             return Persona::whereIn('area', $areas)
                 ->where('activo', 1)
+                ->where('nombre_p', '<>', 'Administrador')
                 ->orderBy('apellido')
                 ->with('area')
                 ->get();

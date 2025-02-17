@@ -10,147 +10,155 @@
 
 
 @section('content')
-<div id="container">
-    @if(session('success'))
-        <div class="alert alert-success" id="success">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if(session()->has('archivo_descargable'))
-        <div class="alert alert-info" id="archivo-descargable">
-            El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
-            <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
-                Descargar archivo
-            </a>
-        </div>
-
-        @php
-            // Eliminar la variable de sesión después de mostrar el mensaje
-            session()->forget('archivo_descargable');
-        @endphp
-    @endif
-
-
-
-    @if(session('error'))
-        <div class="alert alert-danger" id="danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-
-    <div id="encabezados">
-        <h1 id="titulo-personas">Inscripción para la capacitación: {{ $curso->titulo }}</h1>
-
-    </div>
-    <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
-
-    <div class="form-group">
-
-        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido, Area o Legajo"
-            autocomplete="off" style="width: 366px">
-    </div>
-
-
-    <div class="button-link-container">
-        <a id="icono" title="Descargar instructivo sobre importación de inscriptos"
-            href="{{ asset('storage/instructivos/instructivo_importacion_inscriptos.docx') }}" download>
-            <img src="{{ asset('storage/Imagenes-principal-nueva/info.png') }}" alt="Info" id="img-icono"
-                style="margin-left: 1370px;">
-        </a>
-
-
-
-        <a href="{{ asset('storage/plantillas/plantilla.xlsx') }}" download class="download-link">
-            Descargar Plantilla Excel
-        </a>
-        @if($restantes != 0)
-            <form id="excelForm"
-                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
-                    onchange="submitForm()">
-                <button type="button" id="BI" onclick="document.getElementById('excel_file').click()">Cargar
-                    Excel</button>
-            </form>
-        @else
-            <form id="excelForm"
-                action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
-                    onchange="submitForm()">
-                <button type="button" id="btn-excel-disabled" onclick="document.getElementById('excel_file').click()">Cargar
-                    Excel</button>
-            </form>
+    <div id="container">
+        @if(session('success'))
+            <div class="alert alert-success" id="success">
+                {{ session('success') }}
+            </div>
         @endif
-    </div>
+        @if(session()->has('archivo_descargable'))
+            <div class="alert alert-info" id="archivo-descargable">
+                El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
+                <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
+                    Descargar archivo
+                </a>
+            </div>
 
-    <form
-        action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-        method="POST">
-        @csrf
-        <table>
-            <thead>
-                <button type="submit" class="btn btn-primary"
-                    style="margin-bottom: 10px; margin-right: 10px; margin-top: -70px" id="btn-agregar">Inscribir
-                    seleccionados</button>
-                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
-                    id="asignar-btn" style="margin-top:-80px;">Volver</a>
+            @php
+                // Eliminar la variable de sesión después de mostrar el mensaje
+                session()->forget('archivo_descargable');
+            @endphp
+        @endif
 
-                <tr>
-                    <th>Legajo</th>
-                    <th>Apellido y Nombre</th>
-                    <th>Área</th>
-                    <th>Inscribir</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($personasConEstado as $persona)
-                                <tr>
-                                    <td>{{ $persona->legajo }}</td>
-                                    <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
-                                    <td>
-                                        @if($persona->area)
-                                            {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
 
-                                    <td>
-                                        @if($persona->estadoEnrolado)
-                                            <p>Ya inscripto</p>
-                                        @else
 
-                                            <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]" value="1">
-                                        @endif
-                                    </td>
-                    </form>
-                    <td>
-                        @if($persona->estadoEnrolado)
+        @if(session('error'))
+            <div class="alert alert-danger" id="danger">
+                {{ session('error') }}
+            </div>
+        @endif
 
-                            <form
-                                action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
-                                method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
-                                @csrf
-                                @method('POST')
-                                <button type="submit" id="icono" title="Desuscribir"><img src="{{ asset('storage/cursos/eliminar.png') }}"
-                                        alt="Eliminar" id="img-icono"></button>
 
-                            </form>
-                        @else
-                            N/A
-                        @endif
-                    </td>
+        <div id="encabezados">
+            <h1 id="titulo-personas">Inscripción para la capacitación: {{ $curso->titulo }}</h1>
+
+        </div>
+        <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
+
+        <div class="form-group">
+
+            <input type="text" id="filtro" class="form-control" placeholder="Filtrar por Nombre, Apellido, Area o Legajo"
+                autocomplete="off" style="width: 366px">
+        </div>
+
+
+        <div class="button-link-container">
+            <a id="icono" title="Descargar instructivo sobre importación de inscriptos"
+                href="{{ asset('storage/instructivos/instructivo_importacion_inscriptos.docx') }}" download>
+                <img src="{{ asset('storage/Imagenes-principal-nueva/info.png') }}" alt="Info" id="img-icono"
+                    style="margin-left: 1370px;">
+            </a>
+
+
+
+            <a href="{{ asset('storage/plantillas/plantilla.xlsx') }}" download class="download-link">
+                Descargar Plantilla Excel
+            </a>
+            @if($restantes != 0)
+                <form id="excelForm"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
+                        onchange="submitForm()">
+                    <button type="button" id="BI" onclick="document.getElementById('excel_file').click()">Cargar
+                        Excel</button>
+                </form>
+            @else
+                <form id="excelForm"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
+                        onchange="submitForm()">
+                    <button type="button" id="btn-excel-disabled" onclick="document.getElementById('excel_file').click()">Cargar
+                        Excel</button>
+                </form>
+            @endif
+        </div>
+
+        <form
+            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            method="POST">
+            @csrf
+            <table>
+                <thead>
+                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
+                        id="asignar-btn" style="margin-top:-80px;">Volver</a>
+                    <div style="margin-top: -75px; margin-left: 80px;">
+                        <button type="submit" class="btn btn-primary d-inline-block"
+                            style="margin-bottom: 10px; margin-left: 10px;" id="btn-agregar">Inscribir
+                            seleccionados</button>
+
+                        <div class="d-inline-block">
+                            <input type="checkbox" name="mail"> <label for="mail" id="mail"><b>Enviar Mail a los
+                                    inscriptos</b></label>
+                        </div>
+                    </div>
+
+
+                    <tr>
+                        <th>Legajo</th>
+                        <th>Apellido y Nombre</th>
+                        <th>Área</th>
+                        <th>Inscribir</th>
+                        <th>Acciones</th>
                     </tr>
-                @endforeach
-    </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    @foreach($personasConEstado as $persona)
+                                    <tr>
+                                        <td>{{ $persona->legajo }}</td>
+                                        <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
+                                        <td>
+                                            @if($persona->area)
+                                                {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
 
-</div>
+                                        <td>
+                                            @if($persona->estadoEnrolado)
+                                                <p>Ya inscripto</p>
+                                            @else
+
+                                                <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]" value="1">
+                                            @endif
+                                        </td>
+                        </form>
+                        <td>
+                            @if($persona->estadoEnrolado)
+
+                                <form
+                                    action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                                    method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" id="icono" title="Desuscribir"><img src="{{ asset('storage/cursos/eliminar.png') }}"
+                                            alt="Eliminar" id="img-icono"></button>
+
+                                </form>
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        </tr>
+                    @endforeach
+        </tbody>
+        </table>
+
+    </div>
 
 
 
@@ -160,7 +168,7 @@
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
- 
+
 
     <script>
         $(document).ready(function () {

@@ -1,128 +1,127 @@
 @extends('layouts.app')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- Select2 JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+@push('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 @section('content')
-@if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" id="errorMessage">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" id="errorMessage">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
 
-    </div>
-@endif
-<div class="container mt-5">
-    <div id="cursos-instancias-create-container">
-        <h1 class="mb-4 text-center">Crear Instancia</h1>
-        <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label for="fecha_inicio">Fecha inicio</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-            </div>
-
-            <div class="form-group">
-                <label for="fecha_fin">Fecha Fin</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
-            </div>
-
-
-
-            <div class="form-group">
-                <label for="cupo">Cupos</label>
-                <input type="number" class="form-control" id="cupo" name="cupo" required min="0" max="999999999"
-                    oninput="limitInputLength(this)">
-            </div>
-            <div class="form-group">
-                <label for="modalidad">Modalidad</label>
-                <select class="form-control" id="modalidad" name="modalidad">
-                    <option value="">Seleccione una modalidad</option>
-                    <option value="Presencial">Presencial</option>
-                    <option value="Hibrido">Hibrido</option>
-                    <option value="Remoto">Remoto</option>
-
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="capacitador">Capacitador</label>
-                <select class="form-control" id="capacitador" name="capacitador" required>
-                    <option value="">Seleccione un capacitador</option>
-                    @foreach($personas as $persona)
-                        <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}">
-                            {{ $persona->apellido }} {{ $persona->nombre_p }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-
-            <a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
-
-
-            <a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
-
-            <div id="otroCapacitadorInput" style="display: none;">
-                <label for="otro_capacitador">Escribe el nombre del capacitador</label>
-                <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" maxlength="60">
-            </div>
-            <div class="form-group">
-                <label for="codigo">Codigo</label>
-                <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49">
-            </div>
-            <div class="form-group">
-                <label for="lugar">Lugar</label>
-                <input type="text" class="form-control" id="lugar" name="lugar" maxlength="100">
-            </div>
-            <div class="form-group">
-                <label for="anexos">Registros de Capacitación</label>
-                <div id="anexos">
-                    @foreach($anexos as $formulario)
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="anexos[]"
-                                id="anexo_{{ $formulario->formulario_id }}" value="{{ $formulario->formulario_id }}">
-                            <p class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                                {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
-                            </p>
-                        </div>
-                    @endforeach
+        </div>
+    @endif
+    <div class="container mt-5">
+        <div id="cursos-instancias-create-container">
+            <h1 class="mb-4 text-center">Crear Instancia</h1>
+            <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST"
+                enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha inicio</label>
+                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="fecha_fin">Fecha Fin</label>
+                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                </div>
 
 
-            <div class="form-group">
-                <label for="estado">Estado</label>
-                <select name="estado" class="form-control" required>
-                    <option value="" disabled selected>Selecciona una opción</option>
-                    <option value="Activo">Activo</option>
-                    <option value="No Activo">No Activo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="version">Version</label>
-                <input type="number" name="version" class="form-control" min="0" max="999999999"
-                    oninput="limitInputLength(this)">
 
-            </div>
+                <div class="form-group">
+                    <label for="cupo">Cupos</label>
+                    <input type="number" class="form-control" id="cupo" name="cupo" required min="0" max="999999999"
+                        oninput="limitInputLength(this)">
+                </div>
+                <div class="form-group">
+                    <label for="modalidad">Modalidad</label>
+                    <select class="form-control" id="modalidad" name="modalidad">
+                        <option value="">Seleccione una modalidad</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Hibrido">Hibrido</option>
+                        <option value="Remoto">Remoto</option>
 
-            <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}"
-            id="asignar-btn">Cancelar</a>
-            <button type="submit" id="asignar-btn">Crear Instancia</button>
-            
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="capacitador">Capacitador</label>
+                    <select class="form-control" id="capacitador" name="capacitador" required>
+                        <option value="">Seleccione un capacitador</option>
+                        @foreach($personas as $persona)
+                            <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}">
+                                {{ $persona->apellido }} {{ $persona->nombre_p }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+
+                <a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
+
+
+                <a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
+
+                <div id="otroCapacitadorInput" style="display: none;">
+                    <label for="otro_capacitador">Escribe el nombre del capacitador</label>
+                    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" maxlength="60">
+                </div>
+                <div class="form-group">
+                    <label for="codigo">Codigo</label>
+                    <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49">
+                </div>
+                <div class="form-group">
+                    <label for="lugar">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="anexos">Registros de Capacitación</label>
+                    <div id="anexos">
+                        @foreach($anexos as $formulario)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="anexos[]"
+                                    id="anexo_{{ $formulario->formulario_id }}" value="{{ $formulario->formulario_id }}">
+                                <p class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
+                                    {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select name="estado" class="form-control" required>
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="Activo">Activo</option>
+                        <option value="No Activo">No Activo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="version">Version</label>
+                    <input type="number" name="version" class="form-control" min="0" max="999999999"
+                        oninput="limitInputLength(this)">
+
+                </div>
+
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="asignar-btn">Cancelar</a>
+                <button type="submit" id="asignar-btn">Crear Instancia</button>
+
+
+        </div>
 
     </div>
-
-</div>
 @endsection
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
         // Ocultar el mensaje de éxito después de 3 segundos
@@ -213,3 +212,4 @@
         }
     }
 </script>
+@endpush

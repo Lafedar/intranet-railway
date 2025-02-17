@@ -47,6 +47,6 @@ class Evento extends Model
 
     public static function getSalas()
     {
-        return DB::table('salas')->orderBy('id', 'asc')->get();
+        return DB::table('salas')->orderBy('nombre', 'asc')->get();
     }
 }

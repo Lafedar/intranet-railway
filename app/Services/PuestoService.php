@@ -92,11 +92,19 @@ class PuestoService
             $puesto = new Puesto;
             $puesto->desc_puesto = $data['desc_puesto'];
             $puesto->id_localizacion = $data['localizacion'];
-            $puesto->persona = $data['persona'];
             $puesto->obs = $data['obs'];
-            $puesto->telefono_ip = $data['telefono_ip'];
+            
             $puesto->save();
 
+            if (isset($data['persona']) && $data['persona'] !== null) {
+                $puesto->persona=$data['persona'];
+                $puesto->save();
+            }
+
+            if(isset($data['telefono_ip']) && $data['telefono_ip'] !== null){
+                $puesto->telefono_ip=$data['telefono_ip'];
+                $puesto->save();
+            }
             return $puesto;
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al crear el puesto' . $e->getMessage());

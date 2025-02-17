@@ -38,7 +38,7 @@ class LoginController extends Controller
     // Método para mostrar el formulario de inicio de sesión
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('/home');
     }
 
     // Método para manejar la autenticación
