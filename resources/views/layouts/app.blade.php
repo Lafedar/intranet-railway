@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
-	
+
 	<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 
 	@stack('styles')
@@ -24,25 +24,24 @@
 			</a>
 		</div>
 
+
 		@auth
-			<div class="d-flex align-items-center"  id="user-container">
-				<p id="nombre-usuario">{{ Auth::user()->name }}
-				</p>
+			<div class="d-flex align-items-center" id="user-container">
+				<p id="nombre-usuario">{{ Auth::user()->name }}</p>
 				<div style="margin-top: -33px;">
-					<button type="button" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Cerrar Sesion">
+					<button type="button" id="dropdown" title="Cerrar Sesion">
 						<img src="{{ asset('storage/cursos/user.png') }}" alt="User" id="img-icono-user">
 					</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdown">
-							<li>
-								<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
-									@csrf
-									<button type="submit" class="dropdown-item"
-										id="cerrar-sesion">
-										Cerrar Sesión
-									</button>
-								</form>
-							</li>
-						</ul>
+					<ul class="dropdown-menu dropdown-menu-right" id="dropdown-menu">
+						<li>
+							<form action="{{ url('/logout') }}" method="POST" id="logoutForm">
+								@csrf
+								<button type="submit" class="dropdown-item" id="cerrar-sesion">
+									Cerrar Sesión
+								</button>
+							</form>
+						</li>
+					</ul>
 				</div>
 			</div>
 		@endauth
@@ -61,6 +60,26 @@
 	<footer class="text-center py-3">
 		<p>Laboratorio Lafedar S.A. | Laboratorios Federales Argentinos S.A</p>
 	</footer>
+
+	<!--Script para desplegar el dropdown-->
+	<script>
+		// Obtener el botón y el menú del dropdown
+		const dropdownBtn = document.getElementById('dropdown');
+		const dropdownMenu = document.getElementById('dropdown-menu');
+
+		// Añadir el evento click al botón
+		dropdownBtn.addEventListener('click', function () {
+			// Toggle para mostrar u ocultar el menú
+			dropdownMenu.classList.toggle('show');
+		});
+
+		// Opcional: Cerrar el dropdown si se hace clic fuera de él
+		document.addEventListener('click', function (e) {
+			if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+				dropdownMenu.classList.remove('show');
+			}
+		});
+	</script>
 
 	@stack('scripts')
 </body>
