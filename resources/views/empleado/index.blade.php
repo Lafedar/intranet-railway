@@ -1,12 +1,13 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<div>
+@push('styles')
+
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+
+
+@section('content')
+<div id="empleados-container">
   <div id="alert" class="alert alert-info" style="display: none"></div>
 
   <div>
@@ -43,12 +44,12 @@
 
 
 
-  <div id="empleados-nav" class="conteiner-fluid">
+  <div id="empleados-nav">
 
     <form method="GET" action="{{ route('empleado.index') }}">
       <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_empleado" type="submit"
         id="empleados-crear">Nueva Persona</a>
-      <div class="col-md-12 ml-auto" id="empleados-filtro">
+      <div id="empleados-filtro">
         <div class="form-group">
           <div class="input-group">
             <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}"
@@ -77,7 +78,7 @@
 
 
 
-  <div class="col-sm-12">
+  <div >
     <table id="empleados-tabla">
       <thead>
         <th class="text-center">Apellido y nombre</th>
@@ -210,7 +211,13 @@
     </div>
   </div>
 </div>
+@endsection
 
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
   var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cancelar</button>');
@@ -549,3 +556,4 @@
     );
   }, false);
 </script>
+@endpush

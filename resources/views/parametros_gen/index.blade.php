@@ -1,13 +1,14 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+@push('styles')
+
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
 
+@section('content')
 <!-- alertas -->
-<div class="container-fluid" id="software-container">
+<div id="software-container">
     <div class="content">
         <div class="row" style="justify-content: center">
             <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
@@ -40,8 +41,7 @@
             {{ $errors->first('correo_no_existe') }}
         </div>
     @endif
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarModal"
-    id="btn-agregar">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarModal" id="btn-agregar">
         Agregar Parámetro
     </button>
 
@@ -111,7 +111,7 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar Parámetro</h5>
-                        
+
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -135,7 +135,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            id="asignar-btn">Cancelar</button>
                         <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
                     </div>
                 </form>
@@ -159,7 +160,7 @@
                     @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title" id="editarModalLabel{{ $parametro->id_param }}">Editar Parámetro</h5>
-                       
+
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -184,7 +185,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            id="asignar-btn">Cancelar</button>
                         <button type="submit" class="btn btn-primary" id="asignar-btn">Guardar</button>
                     </div>
                 </form>
@@ -194,27 +196,32 @@
 @endforeach
 </div>
 
+@endsection
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
-
-<script>
-    function confirmarEliminacion(id) {
-        if (confirm('¿Estás seguro de que deseas eliminar este parámetro?')) {
-            window.location.href = "{{ url('/eliminar_parametro') }}/";
+    <script>
+        function confirmarEliminacion(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este parámetro?')) {
+                window.location.href = "{{ url('/eliminar_parametro') }}/";
+            }
         }
-    }
-</script>
-<style>
-    form {
-        margin: 2px;
-    }
+    </script>
+    <style>
+        form {
+            margin: 2px;
+        }
 
-    /* Estilos para centrar texto en mensajes */
-    .alert-message {
-        text-align: center;
-    }
+        /* Estilos para centrar texto en mensajes */
+        .alert-message {
+            text-align: center;
+        }
 
-    .button-container {
-        display: inline-block;
-    }
-</style>
+        .button-container {
+            display: inline-block;
+        }
+    </style>
+
+@endpush

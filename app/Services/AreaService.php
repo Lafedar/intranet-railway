@@ -19,6 +19,15 @@ class AreaService
             throw $e;
         }
     }
+    public function getAreas(): Collection
+    {
+        try {
+            return Area::all();
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las areas' . $e->getMessage());
+            throw $e;
+        }
+    }
     public function getAreaById(string $areaId)
     {
         try {

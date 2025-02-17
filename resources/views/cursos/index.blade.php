@@ -1,32 +1,24 @@
 @extends('layouts.app')
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet Lafedar</title>
-    
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
-    <link rel="stylesheet" href="{{ asset('css/cursos.css') }}">
-   
-</head>
-<body>
 
+@push('styles')
+    <link href="{{ asset('css/cursos.css') }}" rel="stylesheet">
 
+@endpush
 
-<div class="container">
-@if(session('success'))
-    <div class="alert alert-success" id="success">
-        {{ session('success') }}
-    </div>
-@endif
+@section('content')
 
-@if(session('error'))
-    <div class="alert alert-danger" id="danger">
-        {{ session('error') }}
-    </div>
-@endif
+<div id="container">
+    @if(session('success'))
+        <div class="alert alert-success" id="success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" id="danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
     @role(['administrador', 'Gestor-cursos'])
     <form action="{{ route('cursos.index') }}" method="GET" class="mb-4">
@@ -84,7 +76,7 @@
         <br>
         <h1 style="text-align: center;">Capacitaciones de: {{ Auth::user()->name }}</h1>
     @endif
-    <div>
+    
         <div> 
             <table>
                 <thead>
@@ -201,20 +193,22 @@
                 </tbody>
             </table>
         </div>
-    </div>
+        {{ $cursosPaginated->links('pagination::bootstrap-4') }}
 </div>
-{{ $cursosPaginated->links('pagination::bootstrap-4') }}
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Ocultar los mensajes de éxito y error después de 3 segundos
-    setTimeout(function() {
-        $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
-    }, 3000); // 3000 milisegundos = 3 segundos
-});
-</script>
-</body>
-</html>
+
+@endsection
+@push('scripts')
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Ocultar los mensajes de éxito y error después de 3 segundos
+        setTimeout(function() {
+            $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
+        }, 3000); // 3000 milisegundos = 3 segundos
+    });
+    </script>
+@endpush

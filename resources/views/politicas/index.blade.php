@@ -1,15 +1,12 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+@push('styles')
+
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
+@section('content')
 <!-- alertas -->
-<div id="documentos-politicas-container" class="container-fluid">
+<div id="documentos-politicas-container" >
   <div class="content">
     <div class="row" style="justify-content: center">
       <div id="alert" class="alert alert-success col-md-10 text-center" style="display: none"></div>
@@ -88,6 +85,11 @@
   @endpush
 
 </div>
+@endsection
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
   $("politicas").ready(function () {
@@ -127,3 +129,4 @@
 
 
 </script>
+@endpush

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+
 <link href="{{asset('fullcalendar/lib/main.css')}}" rel='stylesheet' />
 <script src="{{asset ('fullcalendar/lib/locales-all.js') }}" type="text/javascript"></script>
 <script src="{{asset('fullcalendar/lib/main.js')}}"></script>
 
 <script type="text/javascript" src="{{ URL::asset('/js/modal-jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('/js/modal-bootstrap.min.js') }}"></script>
 	
 <script  type="text/javascript">
   var url_="{{url('/eventos')}}" ;

@@ -1,13 +1,12 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+@push('styles')
 
-<div class="container-fluid" id="roles-container">
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+@endpush
+
+@section('content')
+<div id="roles-container">
   @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
@@ -25,12 +24,13 @@
   </div>
 
   <div id="usuarios-btn">
-    
+
     <button class="btn btn-info" data-toggle="modal" data-target="#agregar_rol" id="btn-agregar">Nuevo rol</button>
 
-    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" id="btn-agregar">Nuevo permiso</button>
+    <button class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" id="btn-agregar">Nuevo
+      permiso</button>
   </div>
-  <div >
+  <div>
     <div class="form-group">
       <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Buscar">
     </div>
@@ -86,7 +86,11 @@
   @include('usuarios.create_usuario')
 </div>
 
-
+@endsection
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   $("document").ready(function () {
     setTimeout(function () {
@@ -176,3 +180,4 @@
 
   });
 </script>
+@endpush
