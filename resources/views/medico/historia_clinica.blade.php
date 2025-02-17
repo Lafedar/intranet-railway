@@ -1,5 +1,5 @@
 @extends('layouts.app')
-<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
 <div id="historia-cli-container">
