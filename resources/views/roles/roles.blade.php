@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <div>
+  <div id="table-container">
     <table id="test" class="table table-striped table-bordered table-condensed" role="grid" cellspacing="0"
       cellpadding="2" border="10">
       <thead>

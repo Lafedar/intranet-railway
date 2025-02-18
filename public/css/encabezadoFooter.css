@@ -9,6 +9,9 @@
 #nombre-usuario {
     font-weight: bold;
     margin-top: 17px;
+    color: white; 
+    display: inline; 
+    white-space: nowrap;
 }
 
 .logo {

@@ -2,22 +2,22 @@
 
 @push('styles')
 
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 @endpush
 
 
 @section('content')
-<div id="empleados-container">
-  <div id="alert" class="alert alert-info" style="display: none"></div>
+  <div id="empleados-container">
+    <div id="alert" class="alert alert-info" style="display: none"></div>
 
-  <div>
+    <div>
     <!-- Mensaje de sesión -->
     @if(Session::has('message'))
     <div class="container" style="margin-top: 100px;">
       <div class="row">
       <div class="col-1"></div>
       <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert">
-        {{ Session::get('message') }}
+      {{ Session::get('message') }}
       </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
       <div class="row">
       <div class="col-1"></div>
       <div class="alert alert-error col-10 text-center" role="alert">
-        {{ Session::get('error') }}
+      {{ Session::get('error') }}
       </div>
       </div>
     </div>
@@ -40,62 +40,62 @@
       {{ $errors->first('password') }}
     </div>
   @endif
-  </div>
+    </div>
 
 
 
-  <div id="empleados-nav">
+    <div id="empleados-nav">
 
     <form method="GET" action="{{ route('empleado.index') }}">
       <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_empleado" type="submit"
-        id="empleados-crear">Nueva Persona</a>
+      id="empleados-crear">Nueva Persona</a>
       <div id="empleados-filtro">
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}"
-              placeholder="Nombre, Apellido, Dni o Area">
-            <div class="input-group-append">
-              <div class="form-check form-check-inline" style="margin-left: 15px">
-                <input class="form-check-input" type="checkbox" id="filtroJefe" name="filtroJefe" {{ request('filtroJefe') ? 'checked' : '' }}>
-                <label class="form-check-label" for="filtroJefe"
-                  style="font-size: 1.25em; font-weight: bold;">Jefe</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="filtroActividad" name="filtroActividad" {{ request('filtroActividad') ? 'checked' : '' }}>
-                <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;">Solo
-                  en
-                  actividad</label>
-              </div>
-              <button type="submit" class="btn btn-primary" id="asignar-btn">Buscar</button>
-            </div>
+      <div class="form-group">
+        <div class="input-group">
+        <input type="text" class="form-control col-md-2" id="search" name="search" value="{{ request('search') }}"
+          placeholder="Nombre, Apellido, Dni o Area">
+        <div class="input-group-append">
+          <div class="form-check form-check-inline" style="margin-left: 15px">
+          <input class="form-check-input" type="checkbox" id="filtroJefe" name="filtroJefe" {{ request('filtroJefe') ? 'checked' : '' }}>
+          <label class="form-check-label" for="filtroJefe"
+            style="font-size: 1.25em; font-weight: bold;">Jefe</label>
           </div>
+          <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="filtroActividad" name="filtroActividad" {{ request('filtroActividad') ? 'checked' : '' }}>
+          <label class="form-check-label" for="filtroActividad" style="font-size: 1.25em; font-weight: bold;">Solo
+            en
+            actividad</label>
+          </div>
+          <button type="submit" class="btn btn-primary" id="asignar-btn">Buscar</button>
         </div>
+        </div>
+      </div>
       </div>
     </form>
 
-  </div>
+    </div>
 
 
 
 
-  <div >
+    <div id="table-container">
     <table id="empleados-tabla">
       <thead>
-        <th class="text-center">Apellido y nombre</th>
-        <th class="text-center">DNI</th>
-        <th class="text-center">Fecha de ingreso</th>
-        <th class="text-center">Fecha de nacimiento</th>
-        <th class="text-center">Legajo</th>
-        <th class="text-center">Area</th>
-        <th class="text-center">Turno</th>
-        <th class="text-center">Jefe</th>
-        <th class="text-center">En actividad</th>
-        <th class="text-center">Acciones</th>
+      <th class="text-center">Apellido y nombre</th>
+      <th class="text-center">DNI</th>
+      <th class="text-center">Fecha de ingreso</th>
+      <th class="text-center">Fecha de nacimiento</th>
+      <th class="text-center">Legajo</th>
+      <th class="text-center">Area</th>
+      <th class="text-center">Turno</th>
+      <th class="text-center">Jefe</th>
+      <th class="text-center">En actividad</th>
+      <th class="text-center">Acciones</th>
       </thead>
 
       <tbody>
 
-        @if($empleados->count())
+      @if($empleados->count())
       @foreach($empleados as $empleado) 
       <tr>
       @if ($empleado->dni != 9999999)
@@ -137,7 +137,7 @@
       </td>
     @endif
       <td align="center" width="175">
-      <div class="d-inline-flex">
+      <div class="d-inline-flex align-items-center">
       <a href="#" data-toggle="modal" data-id="{{$empleado->id_p}}" data-nombre="{{$empleado->nombre_p}}"
       data-apellido="{{$empleado->apellido}}" data-area="{{$empleado->area}}" data-dni="{{$empleado->dni}}"
       data-fe_nac="{{$empleado->fe_nac}}" data-fe_ing="{{$empleado->fe_ing}}"
@@ -162,7 +162,7 @@
       id="img-icono"></button>
       </form>
 
-      </form>
+      
       </div>
       </td>
     @endif
@@ -174,96 +174,96 @@
 
 
 
+    <div class="pagination-wrapper">
+      {{ $empleados->links('pagination::bootstrap-4') }}
+    </div>
+    </div>
 
-  </div>
-  <div class="pagination-wrapper">
-    {{ $empleados->links('pagination::bootstrap-4') }}
-  </div>
-  @if(!$empleados->isEmpty())
+    @if(!$empleados->isEmpty())
     @include('empleado.edit')
   @endif
 
-  <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="show2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog estilo" role="document">
       <div class="modal-content">
-        {{csrf_field()}}
-        <div id="modalshow" class="modal-body">
-          <!-- Datos -->
-        </div>
-        <div id="modalfooter" class="modal-footer">
-          <!-- Footer -->
-        </div>
+      {{csrf_field()}}
+      <div id="modalshow" class="modal-body">
+        <!-- Datos -->
+      </div>
+      <div id="modalfooter" class="modal-footer">
+        <!-- Footer -->
+      </div>
       </div>
     </div>
-  </div>
-  @include('empleado.create')
-  <div class="modal fade" id="show3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+    @include('empleado.create')
+    <div class="modal fade" id="show3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog estilo" role="document">
       <div class="modal-content">
-        {{csrf_field()}}
-        <div id="modalshow3" class="modal-body">
-          <!-- Datos -->
-        </div>
-        <div id="modalfooter3" class="modal-footer">
-          <!-- Footer -->
-        </div>
+      {{csrf_field()}}
+      <div id="modalshow3" class="modal-body">
+        <!-- Datos -->
+      </div>
+      <div id="modalfooter3" class="modal-footer">
+        <!-- Footer -->
+      </div>
       </div>
     </div>
+    </div>
   </div>
-</div>
 @endsection
 
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-  var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cancelar</button>');
-  var closeButton2 = $('<button type="button" class="btn btn-secondary" id="closeButton2" data-dismiss="modal">Cancelar</button>');
-  var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
-  var idJefe;
-  function fnOpenModalJefeArea(id) {
+  <script>
+    var closeButton = $('<button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Cancelar</button>');
+    var closeButton2 = $('<button type="button" class="btn btn-secondary" id="closeButton2" data-dismiss="modal">Cancelar</button>');
+    var saveButton = $('<button type="submit" class="btn btn-info" id="saveButton" onclick="fnSaveSolicitud()">Guardar</button>');
+    var idJefe;
+    function fnOpenModalJefeArea(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     idJefe = id;
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/showUpdateAreaXJefe/" + id,
       type: 'GET',
       success: function (data) {
-        // Borrar contenido anterior
-        $("#modalshow").empty();
-        // Establecer el contenido del modal
-        $("#modalshow").html(data);
+      // Borrar contenido anterior
+      $("#modalshow").empty();
+      // Establecer el contenido del modal
+      $("#modalshow").html(data);
 
-        // Borrar contenido anterior
-        $("#modalfooter").empty();
+      // Borrar contenido anterior
+      $("#modalfooter").empty();
 
-        // Agregar el botón "Cerrar" al footer
-        $("#modalfooter").append(closeButton);
+      // Agregar el botón "Cerrar" al footer
+      $("#modalfooter").append(closeButton);
 
-        // Mostrar el modal
-        myModal.show();
+      // Mostrar el modal
+      myModal.show();
 
-        // Cambiar el tamaño del modal a "modal-lg"
-        var modalDialog = myModal._element.querySelector('.modal-dialog');
-        modalDialog.classList.remove('modal-sm');
-        modalDialog.classList.add('modal-lg');
+      // Cambiar el tamaño del modal a "modal-lg"
+      var modalDialog = myModal._element.querySelector('.modal-dialog');
+      modalDialog.classList.remove('modal-sm');
+      modalDialog.classList.add('modal-lg');
       },
     });
-  }
+    }
 
-  $(document).ready(function () {
+    $(document).ready(function () {
     // Controlador para el checkbox de actividad
     $('#actividadCreate').on('change', function () {
       if ($(this).prop('checked')) {
-        // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
-        $('#esJefeCreate').prop('checked', false);
-        $('#esJefeCreate').prop('disabled', false);
+      // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
+      $('#esJefeCreate').prop('checked', false);
+      $('#esJefeCreate').prop('disabled', false);
       } else {
-        // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
-        $('#esJefeCreate').prop('disabled', true);
-        $('#esJefeCreate').prop('checked', false);
+      // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
+      $('#esJefeCreate').prop('disabled', true);
+      $('#esJefeCreate').prop('checked', false);
       }
     });
     // Controlador para el modal
@@ -271,41 +271,41 @@
       // Actualizar opciones de selección
       updateSelectOptions();
     });
-  });
+    });
 
-  function updateSelectOptions() {
+    function updateSelectOptions() {
     $.get('selectAreasTurnos/', function (data) {
       var html_select = '<option value="">Seleccione </option>'
       for (var i = 0; i < data[0].length; i++) {
-        for (var k = 0; k < data[1].length; k++) {
-          var bandera = false;
-          for (var j = 0; j < data[2].length; j++) {
-            if (data[0][i].id_a == data[2][j].area && data[1][k].id == data[2][j].turno && idJefe == data[2][j].jefe) {
-              bandera = true;
-            }
-          }
-          if (!bandera) {
-            var ids = idJefe + "-" + data[0][i].id_a + "-" + data[1][k].id;
-            html_select += '<option value="' + ids + '">' + data[0][i].nombre_a + ' - ' + data[1][k].nombre + '</option>';
-          }
+      for (var k = 0; k < data[1].length; k++) {
+        var bandera = false;
+        for (var j = 0; j < data[2].length; j++) {
+        if (data[0][i].id_a == data[2][j].area && data[1][k].id == data[2][j].turno && idJefe == data[2][j].jefe) {
+          bandera = true;
         }
+        }
+        if (!bandera) {
+        var ids = idJefe + "-" + data[0][i].id_a + "-" + data[1][k].id;
+        html_select += '<option value="' + ids + '">' + data[0][i].nombre_a + ' - ' + data[1][k].nombre + '</option>';
+        }
+      }
       }
       $('#nuevoPermiso').html(html_select);
     });
-  }
+    }
 
-  function fnEliminarJefeXArea(idJA, idJefe) {
+    function fnEliminarJefeXArea(idJA, idJefe) {
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/deleteAreaXJefe/" + idJA,
       type: 'GET',
       success: function (data) {
-        // Llamar a la función que actualiza el contenido del modal
-        actualizarContenidoModal(idJefe);
+      // Llamar a la función que actualiza el contenido del modal
+      actualizarContenidoModal(idJefe);
       },
     });
-  }
+    }
 
-  function fnAgregarJefeXArea() {
+    function fnAgregarJefeXArea() {
     var selectedValue = document.getElementById('nuevoPermiso').value;
     if (selectedValue === "") {
       return; // Salir de la función si no hay una opción seleccionada
@@ -322,26 +322,26 @@
       url: window.location.protocol + '//' + window.location.host + "/storeRelacionJefeXArea/" + jefeId + "/" + areaId + "/" + turnoId,
       type: 'GET',
       success: function (data) {
-        // Llamar a la función que actualiza el contenido del modal
-        actualizarContenidoModal(jefeId);
+      // Llamar a la función que actualiza el contenido del modal
+      actualizarContenidoModal(jefeId);
       },
     });
-  }
+    }
 
-  function actualizarContenidoModal(idJefe) {
+    function actualizarContenidoModal(idJefe) {
     // Realizar una nueva solicitud AJAX para obtener el contenido actualizado de la tabla
     $.ajax({
       url: window.location.protocol + '//' + window.location.host + "/obtenerNuevoListadoAreaXJefe/" + idJefe,
       type: 'GET',
       success: function (data) {
-        // Actualizar el contenido del modal con los nuevos datos
-        $("#modalshow").html(data);
-        updateSelectOptions();
+      // Actualizar el contenido del modal con los nuevos datos
+      $("#modalshow").html(data);
+      updateSelectOptions();
       },
     });
-  }
+    }
 
-  $('#editar_empleado').on('show.bs.modal', function (event) {
+    $('#editar_empleado').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget)
     var id = button.data('id')
@@ -402,22 +402,22 @@
     $.get('selectAreaEmpleados/', function (data) {
       var html_select = '<option value="">Seleccione </option>'
       for (var i = 0; i < data.length; i++) {
-        if (data[i].id_a == area) {
-          html_select += '<option value ="' + data[i].id_a + '"selected>' + data[i].nombre_a + '</option>';
-        } else {
-          html_select += '<option value ="' + data[i].id_a + '">' + data[i].nombre_a + '</option>';
-        }
+      if (data[i].id_a == area) {
+        html_select += '<option value ="' + data[i].id_a + '"selected>' + data[i].nombre_a + '</option>';
+      } else {
+        html_select += '<option value ="' + data[i].id_a + '">' + data[i].nombre_a + '</option>';
+      }
       }
       $('#select_area').html(html_select);
     });
     $.get('selectTurnosEmpleados/', function (data) {
       var html_select = '<option value="">Seleccione </option>'
       for (var i = 0; i < data.length; i++) {
-        if (data[i].id == idTurno) {
-          html_select += '<option value ="' + data[i].id + '"selected>' + data[i].nombre + '</option>';
-        } else {
-          html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
-        }
+      if (data[i].id == idTurno) {
+        html_select += '<option value ="' + data[i].id + '"selected>' + data[i].nombre + '</option>';
+      } else {
+        html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
+      }
       }
       $('#turnoEdit').html(html_select);
     });
@@ -430,57 +430,57 @@
       // Si event está definido, obten el checkbox de actividad
       var actividadCheckbox = event ? $(event.target) : $('#actividad');
       if (actividadCheckbox.prop('checked')) {
-        // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
-        $('#esJefe').prop('checked', false);
-        $('#esJefe').prop('disabled', false);
+      // Si se marca el checkbox de actividad, desactiva el checkbox de jefe
+      $('#esJefe').prop('checked', false);
+      $('#esJefe').prop('disabled', false);
       } else {
-        // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
-        $('#esJefe').prop('disabled', true);
-        $('#esJefe').prop('checked', false);
+      // Si se desmarca el checkbox de actividad, habilita el checkbox de jefe
+      $('#esJefe').prop('disabled', true);
+      $('#esJefe').prop('checked', false);
       }
     }
-  })
-</script>
+    })
+  </script>
 
-<script>
-  $("document").ready(function () {
+  <script>
+    $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 5000); // 5 secs
-  });
-</script>
+    });
+  </script>
 
 
 
 
-<script>
-  $(document).ready(function () {
+  <script>
+    $(document).ready(function () {
     $('#alert').hide();
     $('.btn-borrar').click(function (e) {
       e.preventDefault();
       if (!confirm("¿Está seguro de eliminar?")) {
-        return false;
+      return false;
       }
       var row = $(this).parents('tr');
       var form = $(this).parents('form');
       var url = form.attr('action');
 
       $.get(url, form.serialize(), function (result) {
-        row.fadeOut();
-        $('#alert').show();
-        $('#alert').html(result.message)
-        setTimeout(function () { $('#alert').fadeOut(); }, 5000);
+      row.fadeOut();
+      $('#alert').show();
+      $('#alert').html(result.message)
+      setTimeout(function () { $('#alert').fadeOut(); }, 5000);
       }).fail(function () {
-        $('#alert').show();
-        $('#alert').html("Algo salió mal");
+      $('#alert').show();
+      $('#alert').html("Algo salió mal");
       });
     });
-  });
-</script>
+    });
+  </script>
 
 
-<script>
-  $(document).ready(function () {
+  <script>
+    $(document).ready(function () {
     // Filtros y búsqueda
 
     function filterTable() {
@@ -489,40 +489,40 @@
       var filtroActividad = $("#filtroActividad").prop("checked");
 
       $("#test tbody tr").each(function () {
-        var nombre = $(this).find("td:eq(0)").text().toLowerCase();
-        var esJefe = $(this).find("td:eq(6) .circle_green").length > 0;
-        var enActividad = $(this).find("td:eq(7) .circle_green").length > 0;
+      var nombre = $(this).find("td:eq(0)").text().toLowerCase();
+      var esJefe = $(this).find("td:eq(6) .circle_green").length > 0;
+      var enActividad = $(this).find("td:eq(7) .circle_green").length > 0;
 
-        var mostrar = true;
+      var mostrar = true;
 
-        if (filtroJefe && !esJefe) {
-          mostrar = false;
-        }
+      if (filtroJefe && !esJefe) {
+        mostrar = false;
+      }
 
-        if (filtroActividad && !enActividad) {
-          mostrar = false;
-        }
+      if (filtroActividad && !enActividad) {
+        mostrar = false;
+      }
 
-        if (mostrar && nombre.indexOf(searchText) === -1) {
-          mostrar = false;
-        }
+      if (mostrar && nombre.indexOf(searchText) === -1) {
+        mostrar = false;
+      }
 
-        if (mostrar) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
+      if (mostrar) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
       });
     }
-  });
-</script>
-<script>
-  // Cargar áreas y turnos cuando la modal se muestra
-  $('#agregar_empleado').on('show.bs.modal', function (event) {
+    });
+  </script>
+  <script>
+    // Cargar áreas y turnos cuando la modal se muestra
+    $('#agregar_empleado').on('show.bs.modal', function (event) {
     $.get('/selectAreaEmpleados', function (data) {
       var html_select = '<option value="">Seleccione area </option>';
       for (var i = 0; i < data.length; i++) {
-        html_select += '<option value ="' + data[i].id_a + '">' + data[i].nombre_a + '</option>';
+      html_select += '<option value ="' + data[i].id_a + '">' + data[i].nombre_a + '</option>';
       }
       $('#area').html(html_select);
     });
@@ -530,30 +530,30 @@
     $.get('/selectTurnosEmpleados', function (data) {
       var html_select = '<option value="">Seleccione turno </option>';
       for (var i = 0; i < data.length; i++) {
-        html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
+      html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
       }
       $('#turno').html(html_select);
     });
-  });
+    });
 
 
-</script>
+  </script>
 
-<script>
-  function wordCount(val) {
+  <script>
+    function wordCount(val) {
     var wom = val.match(/\S+/g);
     return {
       characters: val.length,
     };
-  }
-  var textarea = document.getElementById("descripcion");
-  var result = document.getElementById("result");
+    }
+    var textarea = document.getElementById("descripcion");
+    var result = document.getElementById("result");
 
-  textarea.addEventListener("input", function () {
+    textarea.addEventListener("input", function () {
     var v = wordCount(this.value);
     result.innerHTML = (
       "Caracteres: " + v.characters + "/200"
     );
-  }, false);
-</script>
+    }, false);
+  </script>
 @endpush

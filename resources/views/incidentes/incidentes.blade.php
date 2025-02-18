@@ -42,7 +42,7 @@
     </h1>
   </div>
 
-  <div id="incidentes-table">
+  <div id="table-container">
     <table>
       <thead>
         <th class="text-center">Equipamiento</th>

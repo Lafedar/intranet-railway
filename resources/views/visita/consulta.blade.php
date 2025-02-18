@@ -52,7 +52,7 @@
     </h1>
 
 
-    <div>
+    <div id="table-container">
     <table>
       <thead>
       <th class="text-center">Tarjeta</th>

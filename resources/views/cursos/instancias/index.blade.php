@@ -43,8 +43,8 @@
     <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Volver</a>
 
 
-
-    <table>
+<div id="table-container">
+<table>
         <thead>
             <tr>
                 <th>Fecha Inicio</th>
@@ -202,6 +202,8 @@
             @endforeach
         </tbody>
     </table>
+</div>
+    
 </div>
 
 

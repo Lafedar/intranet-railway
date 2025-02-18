@@ -28,13 +28,32 @@
     color: rgba(245, 245, 245, 1);
     height: 40px;
 }
-
+.botones-mostrar-ocultar{
+    margin-bottom: 30px; 
+    margin-top: -20px;
+}
 #asignar-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
 
 #asignar-btn:active {
     background: rgba(100, 161, 206, 1);
+}
+
+#table-container {
+    position: relative;
+    max-height: 650px;
+    overflow-y: auto;
+    padding-bottom: 50px;
+    margin-bottom: 40px;
+}
+
+@media screen and (max-width: 1366px),
+screen and (max-width: 1360px),
+screen and (max-width: 768px) {
+    #table-container {
+        max-height: 400px;
+    }
 }
 
 /*Botones de Agregar/Crear*/
@@ -102,13 +121,6 @@
     /* Moves text 4px to the left */
 }
 
-
-
-.table-container {
-    padding-bottom: 50px;
-    /* Ajusta el valor según lo que necesites */
-}
-
 /*ESTILOS PARA LAS TABLAS*/
 .img-logo img {
     position: absolute;
@@ -123,6 +135,11 @@
 /*encabezado de la tabla */
 table thead {
     background: rgba(15, 79, 141, 0.83) !important;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+
 
 }
 
@@ -276,6 +293,7 @@ table thead th {
     margin-top: -40px;
     margin-bottom: 40px;
 }
+
 #permisos-nav {
     margin-top: 130px;
 }
@@ -294,6 +312,7 @@ table thead th {
 #container-recepcion {
     margin-bottom: 40px;
 }
+
 #recepcion-nav {
     margin-top: 130px;
 }
@@ -311,10 +330,11 @@ table thead th {
 
 
 /*EMPLEADOS*/
-#empleados-container{
+#empleados-container {
     margin-top: -40px;
-    margin-bottom:40px;
+    margin-bottom: 40px;
 }
+
 #empleados-filtro {
     margin-top: 10px;
 }
@@ -392,7 +412,7 @@ table thead th {
     border: none;
     background: none;
     padding: 0;
-    margin-top: -15px;
+
 }
 
 
@@ -683,12 +703,12 @@ table thead th {
 /*SOFTWARE INSTALADO*/
 #equipos-container {
     margin-top: 100px;
-    margin-bottom:40px;
+    margin-bottom: 40px;
 }
 
 #equipos-table {
     margin-top: -15px;
-    
+
 }
 
 
@@ -724,16 +744,18 @@ table thead th {
     margin-top: 100px;
     margin-bottom: 40px;
 }
+
 /*EQUIPOS-MANT*/
-#descripcion-equipos-mant{
+#descripcion-equipos-mant {
     white-space: pre-wrap;
     word-wrap: break-word;
     max-width: 900px;
 }
+
 /*TIPOS DE EQUIPOS*/
 #tipo-equip-container {
     margin-top: 100px;
-    margin-bottom: 40px;    
+    margin-bottom: 40px;
 }
 
 

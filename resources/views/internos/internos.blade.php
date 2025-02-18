@@ -10,7 +10,7 @@
   </div>
 
   <!-- Tabla de Internos -->
-  <div id="tabla-internos" class="table-responsive">
+  <div id="table-container">
     <table id="test">
       <thead>
         <tr>

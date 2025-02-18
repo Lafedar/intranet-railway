@@ -52,7 +52,7 @@
       </div>
     </h1>
   </div>
-  <div>
+  <div id="table-container">
     <table id="test" role="grid" cellspacing="0" cellpadding="2" border="10">
       <thead>
         <th class="text-center">Id_Eq</th>

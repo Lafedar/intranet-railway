@@ -77,7 +77,7 @@
         <h1 style="text-align: center;">Capacitaciones de: {{ Auth::user()->name }}</h1>
     @endif
     
-        <div> 
+        <div id="table-container"> 
             <table>
                 <thead>
                     <tr>
@@ -192,8 +192,9 @@
 
                 </tbody>
             </table>
+            {{ $cursosPaginated->links('pagination::bootstrap-4') }}
         </div>
-        {{ $cursosPaginated->links('pagination::bootstrap-4') }}
+        
 </div>
 
 

@@ -23,6 +23,7 @@
   </div>
 @endif
 <div id="container-recepcion">
+<div id="search-bar" style="display: block;">
   <div id="recepcion-nav">
     <div id="recepcion-botones">
       <a class="btn btn-secondary" href="/internos" id="btn-agregar">Internos</a>&nbsp
@@ -48,8 +49,9 @@
       </div>
     </h1>
   </div>
+</div>
 
-  <div>
+  <div id="table-container">
     <table>
       <thead>
         <th class="text-center">Nombre</th>
