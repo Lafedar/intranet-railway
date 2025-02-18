@@ -20,6 +20,7 @@ use App\Services\CursoInstanciaService;
 use App\Services\PersonaService;
 use App\Services\CursoService;
 use App\Services\EmpleadoService;
+use App\Services\AreaService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 use Exception;
@@ -37,7 +38,9 @@ class EmpleadoController extends Controller
 
     private $userService;
 
-    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService, EmpleadoService $empleadoService, UserService $userService)
+    private $areaService;
+
+    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService, EmpleadoService $empleadoService, UserService $userService, AreaService $areaService)
     {
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->cursoInstanciaService = $cursoInstanciaService;
@@ -45,6 +48,7 @@ class EmpleadoController extends Controller
         $this->cursoService = $cursoService;
         $this->empleadoService = $empleadoService;
         $this->userService = $userService;
+        $this->areaService = $areaService;
     }
     public function index(Request $request)
     {
@@ -265,7 +269,7 @@ class EmpleadoController extends Controller
 
     public function selectAreaEmpleados()
     {
-        return DB::table('area')->get();
+        return $this->areaService->getAll();
     }
 
     public function selectTurnosEmpleados()

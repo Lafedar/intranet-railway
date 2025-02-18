@@ -61,16 +61,14 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <input type="checkbox" value="1" checked id="telefono_ip" name="telefono_ip">
-                    <label for="telefono_ip">Telefono</label>
-                </div>
             </div>
 
-            <!-- Botón para crear el puesto -->
-            <button type="button" id="asignar-btn" onclick="window.history.back();">Cancelar</button>
+            <div id="btn-modal">
+                <button type="button" id="asignar-btn" onclick="window.history.back();">Cancelar</button>
 
-            <button type="submit" id="asignar-btn">Crear</button>
+                <button type="submit" id="asignar-btn">Crear</button>
+            </div>
+
         </form>
 
     </div>
