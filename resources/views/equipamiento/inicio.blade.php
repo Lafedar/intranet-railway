@@ -20,7 +20,8 @@
   @endif
 
   <!-- Barra de búsqueda -->
-  <div>
+  <button id="toggle-search" class="btn btn-secondary botones-mostrar-ocultar">Mostrar/Ocultar Filtros</button>
+  <div id="search-bar" style="display: block;">
     <div id="equipamiento-btn">
       <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_equipamiento" id="btn-agregar">Nuevo
         equipamiento</a>
@@ -95,7 +96,7 @@
   </div>
 
   <!-- Tabla de Equipamientos -->
-  <div>
+  <div id="table-container">
     <table>
       <thead>
         <th class="text-center">ID</th>
@@ -255,6 +256,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+    // Alterna la visibilidad de la barra de búsqueda cuando se hace clic en el botón
+    $('#toggle-search').click(function () {
+      $('#search-bar').toggle(); // Cambia entre mostrar/ocultar el contenedor
+    });
+    });
+  </script>
 <script> //Mostrar contenido de ventanas modales observaciones
   $('#ver_obs').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);

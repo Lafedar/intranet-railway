@@ -5,8 +5,8 @@
 @endpush
 
 @section('content')
-<div>
-  @if(Session::has('message'))
+  <div>
+    @if(Session::has('message'))
     <div class="content" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
@@ -17,50 +17,50 @@
     </div>
   @endif
 
-  <div id="medico-nav">
+    <div id="medico-nav">
     <div id="medico-buttons">
       <a href="{{route('medico.create')}}" class="btn btn-info btn-xl" data-position="top" data-delay="50"
-        id="btn-agregar">Nueva
-        Consulta</a>
+      id="btn-agregar">Nueva
+      Consulta</a>
       &nbsp
       <a href="/historia_clinica" class="btn btn-info btn-xl" data-position="top" data-delay="50"
-        id="btn-agregar">Historia Clinica</a>
+      id="btn-agregar">Historia Clinica</a>
     </div>
 
     <h1>
       <div class="form-inline pull-right">
-        <form route="{{ 'medico.index'}}" method="GET">
-          <div class="form-group">
-            <div class="form-group">
-              <h6><b>Paciente:</b></h6>
-              <input type="text" name="paciente" class="form-control" id="paciente" value="{{$paciente}}">
-            </div>
-            &nbsp
-            <div class="form-group">
-              <h6><b>Fecha:</b></h6>
-              <input type="date" name="fecha" class="form-control" step="1" min="2019-01-01" value="{{$fecha}}">
-            </div>
-            &nbsp
-            <button type="submit" class="btn btn-default" id="asignar-btn">Buscar consulta</button>
-        </form>
+      <form route="{{ 'medico.index'}}" method="GET">
+        <div class="form-group">
+        <div class="form-group">
+          <h6><b>Paciente:</b></h6>
+          <input type="text" name="paciente" class="form-control" id="paciente" value="{{$paciente}}">
+        </div>
+        &nbsp
+        <div class="form-group">
+          <h6><b>Fecha:</b></h6>
+          <input type="date" name="fecha" class="form-control" step="1" min="2019-01-01" value="{{$fecha}}">
+        </div>
+        &nbsp
+        <button type="submit" class="btn btn-default" id="asignar-btn">Buscar consulta</button>
+      </form>
       </div>
     </h1>
-  </div>
+    </div>
 
-  <div>
+    <div id="table-container">
     <table>
       <thead>
-        <th class="text-center">Paciente</th>
-        <th class="text-center ">Fecha de consulta</th>
-        <th class="text-center">Motivo</th>
-        <th class="text-center">Peso</th>
-        <th class="text-center">Talla</th>
-        <th class="text-center">Tension</th>
-        <th class="text-center">IMC</th>
-        <th class="text-center">Acciones</th>
+      <th class="text-center">Paciente</th>
+      <th class="text-center ">Fecha de consulta</th>
+      <th class="text-center">Motivo</th>
+      <th class="text-center">Peso</th>
+      <th class="text-center">Talla</th>
+      <th class="text-center">Tension</th>
+      <th class="text-center">IMC</th>
+      <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-        @if(count($consultas))
+      @if(count($consultas))
       @foreach($consultas as $consulta) 
       <tr>
       <td> {{$consulta->apellido_paciente . ' ' . $consulta->nombre_paciente}}</td>
@@ -73,16 +73,16 @@
       <td align="center" width="200">
 
       <a href="#" data-fecha="{!! \Carbon\Carbon::parse($consulta->fecha)->format('d-m-Y') !!}"
-        data-nombre="{{$consulta->nombre_paciente . ' ' . $consulta->apellido_paciente}}"
-        data-motivo="{{$consulta->motivo}}" data-peso="{{$consulta->peso}}" data-talla="{{$consulta->talla}}"
-        data-tension="{{$consulta->tension}}" data-imc="{{$consulta->imc}}" data-obs="{{$consulta->obs}}"
-        data-toggle="modal" data-target="#ver" title="Ver"> <img src="{{ asset('storage/cursos/ver.png') }}"
-        alt="Ver" id="img-icono"></a>
+      data-nombre="{{$consulta->nombre_paciente . ' ' . $consulta->apellido_paciente}}"
+      data-motivo="{{$consulta->motivo}}" data-peso="{{$consulta->peso}}" data-talla="{{$consulta->talla}}"
+      data-tension="{{$consulta->tension}}" data-imc="{{$consulta->imc}}" data-obs="{{$consulta->obs}}"
+      data-toggle="modal" data-target="#ver" title="Ver"> <img src="{{ asset('storage/cursos/ver.png') }}"
+      alt="Ver" id="img-icono"></a>
       <a href="{{route('medico.edit', $consulta->id)}}" data-position="top" data-delay="50" data-tooltip="Ver"
-        title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></a>
+      title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></a>
       <a href="{{url('reporte_medico', $consulta->ip_paciente)}}" data-position="top" data-delay="50"
-        data-tooltip="Reporte" title="Reporte"><img src="{{ asset('storage/cursos/documentos.png') }}"
-        alt="Reporte" id="img-icono"></a>
+      data-tooltip="Reporte" title="Reporte"><img src="{{ asset('storage/cursos/documentos.png') }}"
+      alt="Reporte" id="img-icono"></a>
       </td>
       </tr>
     @endforeach
@@ -92,19 +92,19 @@
     </table>
 
     @include('medico.show')
+    {{ $consultas->links('pagination::bootstrap-4') }} <!--paginacion-->
 
+    </div>
 
   </div>
-  {{ $consultas->links('pagination::bootstrap-4') }} <!--paginacion-->
-</div>
 
 
-@push('scripts')
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
-  <script>
+  @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
     $('#ver').on('show.bs.modal', function (event) {
 
     var button = $(event.relatedTarget)
@@ -129,15 +129,15 @@
     modal.find('.modal-body #imc').val(imc);
     modal.find('.modal-body #obs').val(obs);
     })
-  </script>
+    </script>
 
-  <script>
+    <script>
     $("document").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 5000); // 5 secs
 
     });
-  </script>
-@endpush
+    </script>
+  @endpush
 @endsection

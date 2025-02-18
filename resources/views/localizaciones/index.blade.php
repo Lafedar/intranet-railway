@@ -30,7 +30,7 @@
     id="btn-agregar">Agregar Localización</button>
 
     <!-- tabla de datos -->
-    <div>
+    <div id="table-container">
     <table>
       <thead>
       <th class="text-center">ID</th>

@@ -47,7 +47,7 @@
 
     </h1>
   </div>
-  <div>
+  <div id="table-container">
     <table id="permisos-table">
       <thead>
         <th class="text-center">Empleado</th>

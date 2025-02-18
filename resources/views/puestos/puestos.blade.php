@@ -51,7 +51,7 @@
         </h1>
     </div>
 
-    <div>
+    <div id="table-container">
         <table>
             <thead>
                 <th class="text-center">Nombre</th>

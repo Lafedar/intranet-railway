@@ -38,7 +38,7 @@
       </div>
     </h1>
   </div>
-  <div>
+  <div id="table-container">
     <table>
       <thead>
         <th class="text-center">Id_Soft</th>

@@ -42,6 +42,7 @@
     cursor: not-allowed;
     pointer-events: none;
 }
+
 button:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -399,9 +400,28 @@ button:disabled {
     height: auto;
 }
 
+#table-container {
+    position: relative;
+    max-height: 650px;
+    overflow-y: auto;
+    padding-bottom: 50px;
+    margin-bottom: 40px;
+}
+
+@media screen and (max-width: 1366px) {
+    #table-container {
+        max-height: 400px;
+
+    }
+}
+
 /*encabezado de la tabla */
 table thead {
     background: rgba(15, 79, 141, 0.83) !important;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
 
 }
 
@@ -523,7 +543,8 @@ table thead th {
     text-decoration-skip-ink: none;
     color: rgba(0, 51, 102, 1);
 }
-#mail{
+
+#mail {
     color: rgba(0, 51, 102, 1);
 }
 

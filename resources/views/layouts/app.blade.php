@@ -7,9 +7,8 @@
 	<link rel="icon" href="{{ asset('img/ico.png') }}" type="image/png">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{{ asset('css/encabezadoFooter.css') }}">
-
 	<link href="{{ URL::asset('/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
 
 	@stack('styles')

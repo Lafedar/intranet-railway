@@ -24,10 +24,13 @@
     </div>
     </div>
   @endif
+    <button id="toggle-search" class="btn btn-secondary" style="margin-bottom: 30px; margin-top: -20px;">Mostrar/Ocultar
+    búsqueda</button>
+    <div id="search-bar" style="display: block;">
     <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#agregar_equipo_mant"
-    id="btn-agregar">Agregar Equipo</button>
+      id="btn-agregar">Agregar Equipo</button>
     <!-- barra para buscar equipos -->
-    <div>
+
     <div class="form-group">
       <form method="GET">
       <div style="display: inline-block;">
@@ -91,7 +94,7 @@
     </div>
 
     <!-- tabla de datos -->
-    <div>
+    <div id="table-container">
     <table>
       <thead>
       <th class="text-center">ID</th>
@@ -163,7 +166,7 @@
 
 @endsection
 @push('scripts')
-  
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -171,7 +174,14 @@
   <script type="text/javascript" src="{{ URL::asset('/js/modal-popper.min.js') }}"></script>
   <script language="JavaScript" src="{{ URL::asset('/js/jquery.dataTables.min.js') }}" type="text/javascript"></script>
 
-
+  <script>
+    $(document).ready(function () {
+    // Alterna la visibilidad de la barra de búsqueda cuando se hace clic en el botón
+    $('#toggle-search').click(function () {
+      $('#search-bar').toggle(); // Cambia entre mostrar/ocultar el contenedor
+    });
+    });
+  </script>
   <script>
     //Duracion de alerta (agregado, elimnado, editado)
     $("equipo_mant").ready(function () {
