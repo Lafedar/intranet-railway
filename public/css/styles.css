@@ -85,7 +85,9 @@ screen and (max-width: 768px) {
 #btn-agregar:active {
     background: rgba(100, 161, 206, 1);
 }
-
+#btn-modal{
+    margin-top:20px;
+}
 /*estilos ventana modal Observaciones*/
 .modal-title {
     color: #333;
