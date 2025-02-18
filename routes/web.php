@@ -612,3 +612,7 @@ Route::get('/descargar/{filename}', function ($filename) {
 
   return redirect()->back()->with('error', 'El archivo no existe.');
 })->name('descargarArchivo');
+
+
+/*LOGOUT*/
+Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
