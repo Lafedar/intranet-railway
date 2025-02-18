@@ -38,7 +38,7 @@ class LoginController extends Controller
         return '/';
     }
 
-   
+
 
     // Método para mostrar el formulario de inicio de sesión
     public function showLoginForm()
@@ -82,4 +82,15 @@ class LoginController extends Controller
             'email' => 'Las credenciales son incorrectas.',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); // Cerrar sesión
+        $request->session()->invalidate(); // Invalidar la sesión
+        $request->session()->regenerateToken(); // Regenerar el token CSRF
+
+        // Redirigir al inicio de sesión o a la página de inicio
+        return redirect('/login');
+    }
+
 }
