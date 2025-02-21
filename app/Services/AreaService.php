@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Area;
+use App\Models\Area;;
 use Exception;
 use Log;
 use Illuminate\Database\Eloquent\Collection;

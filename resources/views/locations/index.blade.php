@@ -16,39 +16,55 @@
     </div>
 
     @if(Session::has('message'))
-    <div class="container" id="div.alert">
+  <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
-      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-      {{Session::get('message')}}
+      <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert" style="{{ Session::get('alert-class') == 'alert-danger' || Session::get('alert-class') == 'alert-warning' ? 'background-color: red; color: white;' : '' }}">
+        {{ Session::get('message') }}
       </div>
     </div>
-    </div>
-  @endif
+  </div>
+@endif
+
 
     <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
     id="btn-agregar">Agregar Localización</button>
+    <form method="GET" action="{{ route('list_locations') }}">
+    <div class="row">
+      <div class="col-md-4">
+      <input type="text" name="search" class="form-control" placeholder="Buscar por Área, Nombre o Interno"
+        value="{{ request('search') }}">
+      </div>
+
+      <div class="col-md-4">
+      <button type="submit" id="asignar-btn">Filtrar</button>
+      </div>
+    </div>
+    </form>
+
+
 
     <!-- tabla de datos -->
     <div id="table-container">
     <table>
       <thead>
-      <th class="text-center">ID</th>
       <th class="text-center">Área</th>
       <th class="text-center">Nombre</th>
       <th class="text-center">Interno</th>
       <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-      @foreach($localizaciones as $localizacion)
+      @foreach($locations as $location)
       <tr class="text-center">
-      <td width="80">{{ $localizacion->id }}</td>
-      <td>{{ $localizacion->nombre_a }}</td>
-      <td>{{ $localizacion->nombre }}</td>
-      <td>{{ $localizacion->interno }}</td>
+
+      <td>{{ $location->area->nombre_a ?? 'N/A' }}</td>
+
+
+      <td>{{ $location->nombre }}</td>
+      <td>{{ $location->interno }}</td>
       <td width="90">
-      <button onclick='fnOpenModalUpdate("{{ $localizacion->id }}")' title="Editar"
-        data-nombre="{{ $localizacion->nombre }}" data-interno="{{ $localizacion->interno }}" id="icono"
+      <button onclick='fnOpenModalUpdate("{{ $location->id }}")' title="Editar"
+        data-nombre="{{ $location->nombre }}" data-interno="{{ $location->interno }}" id="icono"
         title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button>
       </td>
       </tr>
@@ -73,7 +89,7 @@
       </div>
     </div>
 
-    {{ $localizaciones->links('pagination::bootstrap-4') }} <!--paginacion-->
+    {{ $locations->links('pagination::bootstrap-4') }} <!--paginacion-->
     </div>
   </div>
 @endsection
@@ -91,15 +107,15 @@
     }, 5000); // 5 segundos
     });
 
-    var ruta_create = '{{ route('store_localizacion') }}';
-    var ruta_update = '{{ route('update_localizacion') }}';
+    var ruta_create = '{{ route('store_location') }}';
+    var ruta_update = '{{ route('update_location') }}';
     var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
     var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
     // Modal para crear una nueva localización
     function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_localizacion/";
+    var url = window.location.origin + "/show_creation_form/";
 
     $.get(url, function (data) {
       // Borrar contenido anterior
@@ -126,19 +142,23 @@
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.add('modal-lg');
 
-      //para cerrar modales
+      // Para cerrar modales
       closeButton.on('click', function () {
       myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+
+      // Elimina la capa oscura (backdrop) si no desaparece automáticamente
+      $('.modal-backdrop').remove();
       });
     });
     }
+
 
     // Modal para actualizar una localización existente
     function fnOpenModalUpdate(id) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
 
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_localizacion/" + id,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_form/" + id,
       type: 'GET',
       success: function (data) {
       // Borrar contenido anterior
@@ -175,7 +195,7 @@
 
     // Al abrir el modal, cargamos las áreas dinámicamente
     $('#show2').on('show.bs.modal', function (event) {
-    $.get('select_area/', function (data) {
+    $.get('select_areas/', function (data) {
       var html_select = '<option value="">Seleccione </option>';
 
       // Llenar el select con las áreas

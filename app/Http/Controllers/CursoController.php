@@ -9,7 +9,7 @@ use App\Services\AreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
-use App\Area;
+use App\Models\Area;;
 use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;

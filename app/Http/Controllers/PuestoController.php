@@ -20,8 +20,9 @@ use Carbon\Carbon;
 use App\Services\AreaService;
 use App\Services\PersonaService;
 use App\Services\PuestoService;
-use App\Localizacion;
+use App\Models\Location;
 use Exception;
+use App\Services\LocationService;
 
 
 class PuestoController extends Controller
@@ -31,11 +32,14 @@ class PuestoController extends Controller
 
     private PuestoService $puestoService;
 
-    public function __construct(AreaService $areaService, PersonaService $personaService, PuestoService $puestoService)
+    private LocationService $locationService;
+
+    public function __construct(AreaService $areaService, PersonaService $personaService, PuestoService $puestoService, LocationService $locationService)
     {
         $this->areaService = $areaService;
         $this->personaService = $personaService;
         $this->puestoService = $puestoService;
+        $this->locationService = $locationService;
     }
     public function puestos(Request $request)
     {
@@ -51,10 +55,10 @@ class PuestoController extends Controller
     }
 
 
-    public function select_localizaciones()
+    public function select_locations()
     {
-        $localizaciones = $this->puestoService->getLocalizaciones();
-        return $localizaciones;
+        $locations = $this->puestoService->getLocations();
+        return $locations;
 
     }
 
@@ -70,19 +74,19 @@ class PuestoController extends Controller
         return $personas;
     }
 
-    public function select_localizaciones_by_area($areaId)
+    public function get_locations_by_area($areaId)
     {
 
-        $localizaciones = $this->puestoService->getLocalizacionesByArea($areaId);
+        $localizaciones = $this->puestoService->getLocationsByArea($areaId);
         return $localizaciones;
 
 
     }
 
-    public function select_area_by_localizacion($localizacionId)
+    public function select_area_by_location($locationId)
     {
 
-        $area = $this->puestoService->getAreaByLocalizacion($localizacionId);
+        $area = $this->puestoService->getAreaByLocation($locationId);
 
         if ($area) {
             return response()->json($area);
@@ -94,9 +98,9 @@ class PuestoController extends Controller
     public function show_store_puesto()
     {
         $areas = $this->areaService->getAreas();
-        $localizaciones = Localizacion::all();
+        $locations = $this->locationService->get_all_locations();
         $personas = $this->personaService->getAll();
-        return view('puestos.create', compact('areas', 'localizaciones', 'personas'));
+        return view('puestos.create', compact('areas', 'locations', 'personas'));
     }
 
     public function store_puesto(Request $request)

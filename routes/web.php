@@ -75,9 +75,9 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('select_area', 'PuestoController@select_area')->name('select_area');
   Route::get('select_persona', 'PuestoController@select_persona')->name('select_persona');
-  Route::get('select_localizaciones', 'PuestoController@select_localizaciones')->name('select_localizaciones');
-  Route::get('select_localizaciones_by_area/{areaId}', 'PuestoController@select_localizaciones_by_area')->name('select_localizaciones_by_area');
-  Route::get('select_area_by_localizacion/{localizacionId}', 'PuestoController@select_area_by_localizacion')->name('select_area_by_localizacion');
+  Route::get('select_localizaciones', 'PuestoController@select_locations')->name('select_localizaciones');
+  Route::get('select_localizaciones_by_area/{areaId}', 'PuestoController@get_locations_by_area')->name('select_localizaciones_by_area');
+  Route::get('select_area_by_localizacion/{localizacionId}', 'PuestoController@select_area_by_location')->name('select_area_by_localizacion');
   Route::get('getPuesto/{idPuesto}', ['uses' => 'PuestoController@getPuesto'])->name('getPuesto');
 
 });
@@ -443,13 +443,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************Localizaciones**********************
 Route::group(['middleware' => ['auth']], function () {
-  Route::resource('localizaciones', 'LocalizacionController')->middleware('role:administrador|Jefe-Mantenimiento');
-  Route::get('show_store_localizacion', ['uses' => 'LocalizacionController@show_store_localizacion'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_localizacion');
-  Route::post('store_localizacion', 'LocalizacionController@store_localizacion')->name('store_localizacion');
-  Route::get('show_update_localizacion/{localizacion}', ['uses' => 'LocalizacionController@show_update_localizacion'])->name('show_update_localizacion');
-  Route::post('update_localizacion', 'LocalizacionController@update_localizacion')->name('update_localizacion');
+  Route::get('locations', 'LocationController@listLocations')->middleware('role:administrador|Jefe-Mantenimiento')->name('list_locations');
+  Route::get('show_creation_form', ['uses' => 'LocationController@show_creation_form'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_creation_form');
+  Route::post('store', 'LocationController@store')->name('store_location');
+  Route::get('show_update_form/{location}', ['uses' => 'LocationController@show_update_form'])->name('show_update_form');
+  Route::post('update', 'LocationController@update')->name('update_location');
 
-  Route::get('select_area', 'LocalizacionController@select_area')->name('select_area');
+  Route::get('select_areas', 'LocationController@get_areas')->name('get_areas');
 });
 
 //****************Estados**********************
