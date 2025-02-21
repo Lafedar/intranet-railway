@@ -16,22 +16,23 @@
     </div>
 
     @if(Session::has('message'))
-    <div class="container" id="div.alert">
+  <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
-      <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-      {{Session::get('message')}}
+      <div class="alert {{ Session::get('alert-class') }} col-10 text-center" role="alert" style="{{ Session::get('alert-class') == 'alert-danger' || Session::get('alert-class') == 'alert-warning' ? 'background-color: red; color: white;' : '' }}">
+        {{ Session::get('message') }}
       </div>
     </div>
-    </div>
-  @endif
+  </div>
+@endif
+
 
     <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
     id="btn-agregar">Agregar Localización</button>
     <form method="GET" action="{{ route('list_locations') }}">
     <div class="row">
       <div class="col-md-4">
-      <input type="text" name="search" class="form-control" placeholder="Buscar por Área o Nombre"
+      <input type="text" name="search" class="form-control" placeholder="Buscar por Área, Nombre o Interno"
         value="{{ request('search') }}">
       </div>
 

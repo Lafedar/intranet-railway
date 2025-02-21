@@ -32,8 +32,8 @@ class LocationController extends Controller
 
             $areas = $this->areaService->getAreas();
     
-            $locations = $this->locationService->getFilteredLocations($search)
-                ->withQueryString();
+            $locations = $this->locationService->getFilteredLocations($search);
+                
     
             if($locations == null){
                 Session::flash('message', 'Error al obtener las localizaciones');
@@ -107,14 +107,14 @@ class LocationController extends Controller
                  Session::flash('alert-class', 'alert-success');
              }else{
                  Session::flash('message', 'Error al modificar la localización');
-                 Session::flash('alert-class', 'alert-danger');
+                 Session::flash('alert-class', 'alert-warning');
              }
             
              return redirect('locations');
         }
         catch(Exception $e){
             Session::flash('message', 'Error al modificar la localización');
-            Session::flash('alert-class', 'alert-danger');
+            Session::flash('alert-class', 'alert-warning');
         }
       
     }

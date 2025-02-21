@@ -32,10 +32,10 @@
 
                 <div class="row">
                     <div class="col">
-                        <label for="localizacion">Localización:</label>
-                        <select class="form-control" name="localizacion" id="localizacion" required>
+                        <label for="location">Localización:</label>
+                        <select class="form-control" name="location" id="location" required>
                             <option value="" disabled selected>Seleccione</option>
-                            @foreach($localizaciones as $loc)
+                            @foreach($locations as $loc)
                                 <option value="{{ $loc->id }}" data-area="{{ $loc->id_area }}">{{ $loc->nombre }}</option>
                             @endforeach
                         </select>
@@ -86,13 +86,13 @@
                 var selectedAreaId = $(this).val();
 
                 // Ocultar todas las opciones de localización
-                $('#localizacion option').hide();
+                $('#location option').hide();
 
                 // Mostrar solo las localizaciones que pertenecen al área seleccionada
-                $('#localizacion option[data-area="' + selectedAreaId + '"]').show();
+                $('#location option[data-area="' + selectedAreaId + '"]').show();
 
                 // Resetear el valor seleccionado en el select de localización
-                $('#localizacion').val('');
+                $('#location').val('');
             });
         });
     </script>

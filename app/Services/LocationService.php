@@ -21,6 +21,7 @@ class LocationService
                 $query->where(function ($query) use ($search) {
 
                     $query->where('nombre', 'like', '%' . $search . '%')
+                        ->orWhere('interno', 'like', '%' . $search . '%')
                         ->orWhereHas('area', function ($query) use ($search) {
                             $query->where('area.nombre_a', 'like', '%' . $search . '%');
                         });
@@ -84,14 +85,14 @@ class LocationService
     public function update(?int $id, ?string $name, ?int $internal)
     {
         try {
-            
+           
             $updated = DB::table('localizaciones')
                 ->where('localizaciones.id', $id)
                 ->update([
                     'nombre' => $name,
                     'interno' => $internal,
                 ]);
-    
+            
            
             if ($updated) {
                 return true;  

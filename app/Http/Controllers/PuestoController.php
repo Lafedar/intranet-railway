@@ -51,10 +51,10 @@ class PuestoController extends Controller
     }
 
 
-    public function select_localizaciones()
+    public function select_locations()
     {
-        $localizaciones = $this->puestoService->getLocalizaciones();
-        return $localizaciones;
+        $locations = $this->puestoService->getLocations();
+        return $locations;
 
     }
 
@@ -70,19 +70,19 @@ class PuestoController extends Controller
         return $personas;
     }
 
-    public function select_localizaciones_by_area($areaId)
+    public function get_locations_by_area($areaId)
     {
 
-        $localizaciones = $this->puestoService->getLocalizacionesByArea($areaId);
+        $localizaciones = $this->puestoService->getLocationsByArea($areaId);
         return $localizaciones;
 
 
     }
 
-    public function select_area_by_localizacion($localizacionId)
+    public function select_area_by_location($locationId)
     {
 
-        $area = $this->puestoService->getAreaByLocalizacion($localizacionId);
+        $area = $this->puestoService->getAreaByLocation($locationId);
 
         if ($area) {
             return response()->json($area);
@@ -94,9 +94,9 @@ class PuestoController extends Controller
     public function show_store_puesto()
     {
         $areas = $this->areaService->getAreas();
-        $localizaciones = Location::all();
+        $locations = Location::all();
         $personas = $this->personaService->getAll();
-        return view('puestos.create', compact('areas', 'localizaciones', 'personas'));
+        return view('puestos.create', compact('areas', 'locations', 'personas'));
     }
 
     public function store_puesto(Request $request)

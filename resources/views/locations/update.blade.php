@@ -1,11 +1,12 @@
 <!-- Modal Editar-->
 <div class="form-group col-md-12">
   <div class="row">
-    <div class="col-1">
-      <label for="title"><strong>ID: </strong></label>
-      <p>{{$location->id}}</p> 
-      <input type="hidden" name="id" id="id" value="{{ $location->id }}">
-    </div>
+  <div class="col-1" style="display: none;">
+  <label for="title"><strong>ID: </strong></label>
+  <p>{{ $location->id }}</p> 
+  <input type="hidden" name="id" id="id" value="{{ $location->id }}">
+</div>
+
     <div class="col-4">
       <label for="title"><strong>Area: </strong></label>
       <p>{{$location->nombre_a}}</p>     

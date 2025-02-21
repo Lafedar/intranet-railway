@@ -44,7 +44,7 @@ class PuestoService
         }
 
     }
-    public function getLocalizaciones()
+    public function getLocations()
     {
 
         try {
@@ -56,7 +56,7 @@ class PuestoService
     }
 
 
-    public function getLocalizacionesByArea($areaId)
+    public function getLocationsByArea($areaId)
     {
         try {
             return Location::where('id_area', $areaId)->get();
@@ -67,13 +67,13 @@ class PuestoService
 
     }
 
-    public function getAreaByLocalizacion($localizacionId)
+    public function getAreaByLocation($locationId)
     {
         try {
-            $localizacion = Location::find($localizacionId);
+            $location = Location::find($locationId);
 
-            if ($localizacion) {
-                $area = Area::find($localizacion->id_area);
+            if ($location) {
+                $area = Area::find($location->id_area);
                 return $area;
             }
 
@@ -91,7 +91,7 @@ class PuestoService
         try {
             $puesto = new Puesto;
             $puesto->desc_puesto = $data['desc_puesto'];
-            $puesto->id_localizacion = $data['localizacion'];
+            $puesto->id_localizacion = $data['location'];
             $puesto->obs = $data['obs'];
             
             $puesto->save();
