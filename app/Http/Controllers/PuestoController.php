@@ -22,6 +22,7 @@ use App\Services\PersonaService;
 use App\Services\PuestoService;
 use App\Models\Location;
 use Exception;
+use App\Services\LocationService;
 
 
 class PuestoController extends Controller
@@ -31,11 +32,14 @@ class PuestoController extends Controller
 
     private PuestoService $puestoService;
 
-    public function __construct(AreaService $areaService, PersonaService $personaService, PuestoService $puestoService)
+    private LocationService $locationService;
+
+    public function __construct(AreaService $areaService, PersonaService $personaService, PuestoService $puestoService, LocationService $locationService)
     {
         $this->areaService = $areaService;
         $this->personaService = $personaService;
         $this->puestoService = $puestoService;
+        $this->locationService = $locationService;
     }
     public function puestos(Request $request)
     {
@@ -94,7 +98,7 @@ class PuestoController extends Controller
     public function show_store_puesto()
     {
         $areas = $this->areaService->getAreas();
-        $locations = Location::all();
+        $locations = $this->locationService->get_all_locations();
         $personas = $this->personaService->getAll();
         return view('puestos.create', compact('areas', 'locations', 'personas'));
     }

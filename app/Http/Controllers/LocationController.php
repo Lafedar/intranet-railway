@@ -32,7 +32,7 @@ class LocationController extends Controller
 
             $areas = $this->areaService->getAreas();
     
-            $locations = $this->locationService->getFilteredLocations($search);
+            $locations = $this->locationService->getFilteredLocations($search)->withQueryString();
                 
     
             if($locations == null){
@@ -57,11 +57,15 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         try{
-            $id = $request['id'];
-            $area= $request['area'];
-            $name = $request['name'];
-            $internal = $request['internal'];
-            $result = $this->locationService->store( $id, $area, $name, $internal);
+            
+            $data = [
+                'id' => $request['id'],
+                'area' => $request['area'],
+                'name' => $request['name'],
+                'internal' => $request['internal']
+            ];
+
+            $result = $this->locationService->store($data);
     
             if ($result) {
                 Session::flash('message', 'Localización agregada con éxito');
@@ -96,11 +100,14 @@ class LocationController extends Controller
     public function update(Request $request)
     {
         try{
-            $id = $request['id'];
-            $name = $request['name'];
-            $internal = $request['internal'];
-         
-            $result = $this->locationService->update($id, $name, $internal);
+          
+            $data = [
+                'id' => $request['id'],
+                'name' => $request['name'],
+                'internal' => $request['internal']
+            ];
+
+            $result = $this->locationService->update($data);
      
              if($result){
                  Session::flash('message', 'Localizacion modificada con éxito');

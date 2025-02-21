@@ -8,11 +8,8 @@ class Location extends Model
 {
     public $table = "localizaciones";
     public $timestamps = false;
-    public function scopeIndex ($query)
-    {
-        return $query->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
-        ->select('localizaciones.id as id', 'localizaciones.nombre as nombre', 'area.nombre_a as nombre_a', 'localizaciones.interno as interno');
-    }
+
+    protected $fillable = ['id', 'nombre', 'id_area', 'interno'];
     public function area()
     {
         return $this->belongsTo(Area::class, 'id_area');

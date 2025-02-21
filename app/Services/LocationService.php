@@ -38,30 +38,28 @@ class LocationService
     }
 
 
-    public function store(?int $id, string $area, ?string $name, ?int $internal)
-    {
-        try{
-            
-            $aux = DB::table('localizaciones')->where('id', $id)->first();
+    public function store($data)
+{
+    try {
+        $aux = DB::table('localizaciones')->where('id', $data['id'])->first();
 
-            if ($aux) {
-                return false;
-            }
-    
-            $location = new Location();
-            $location->id_area = $area;
-            $location->nombre = $name;
-            $location->interno = $internal;
-    
-            $location->save();
-    
-            return true;
-        }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating location ' . $e->getMessage());
+        if ($aux) {
             return false;
         }
-       
+
+        Location::create([
+            'id_area' => $data['area'],
+            'nombre' => $data['name'],
+            'interno' => $data['internal']
+        ]);
+
+        return true;
+
+    } catch (Exception $e) {
+        Log::error('Error in class: ' . get_class($this) . ' .Error creating location ' . $e->getMessage());
+        return false;
     }
+}
 
     public function show_update(int $id_a)
     {
@@ -82,15 +80,15 @@ class LocationService
     }
 
 
-    public function update(?int $id, ?string $name, ?int $internal)
+    public function update($data)
     {
         try {
            
             $updated = DB::table('localizaciones')
-                ->where('localizaciones.id', $id)
+                ->where('localizaciones.id', $data['id'])
                 ->update([
-                    'nombre' => $name,
-                    'interno' => $internal,
+                    'nombre' => $data['name'],
+                    'interno' => $data['internal'],
                 ]);
             
            
@@ -102,6 +100,15 @@ class LocationService
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error updating location' . $e->getMessage());
             return false;
+        }
+    }
+
+    public function get_all_locations(){
+        try{
+            return Location::all();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting all locations ' . $e->getMessage());
+            return null;
         }
     }
     
