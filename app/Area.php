@@ -27,6 +27,10 @@ class Area extends Model
     {
         return $this->hasMany(Persona::class, 'area', 'id_a');
     }
+    public function localizaciones()
+    {
+        return $this->hasMany(Localizacion::class, 'id_area');
+    }
 
 
 }

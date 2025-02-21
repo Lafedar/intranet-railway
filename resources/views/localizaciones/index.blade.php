@@ -28,12 +28,25 @@
 
     <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
     id="btn-agregar">Agregar Localización</button>
+    <form method="GET" action="{{ route('localizaciones.index') }}">
+    <div class="row">
+      <div class="col-md-4">
+      <input type="text" name="search" class="form-control" placeholder="Buscar por Área o Nombre"
+        value="{{ request('search') }}">
+      </div>
+
+      <div class="col-md-4">
+      <button type="submit" id="asignar-btn">Filtrar</button>
+      </div>
+    </div>
+    </form>
+
+
 
     <!-- tabla de datos -->
     <div id="table-container">
     <table>
       <thead>
-      <th class="text-center">ID</th>
       <th class="text-center">Área</th>
       <th class="text-center">Nombre</th>
       <th class="text-center">Interno</th>
@@ -42,8 +55,9 @@
       <tbody>
       @foreach($localizaciones as $localizacion)
       <tr class="text-center">
-      <td width="80">{{ $localizacion->id }}</td>
-      <td>{{ $localizacion->nombre_a }}</td>
+
+      <td>{{ $localizacion->area->nombre_a }}</td>
+
       <td>{{ $localizacion->nombre }}</td>
       <td>{{ $localizacion->interno }}</td>
       <td width="90">
@@ -126,12 +140,16 @@
       modalDialog.classList.remove('modal-sm');
       modalDialog.classList.add('modal-lg');
 
-      //para cerrar modales
+      // Para cerrar modales
       closeButton.on('click', function () {
       myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+
+      // Elimina la capa oscura (backdrop) si no desaparece automáticamente
+      $('.modal-backdrop').remove();
       });
     });
     }
+
 
     // Modal para actualizar una localización existente
     function fnOpenModalUpdate(id) {

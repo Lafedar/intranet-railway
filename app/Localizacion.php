@@ -12,4 +12,8 @@ class Localizacion extends Model
         return $query->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
         ->select('localizaciones.id as id', 'localizaciones.nombre as nombre', 'area.nombre_a as nombre_a', 'localizaciones.interno as interno');
     }
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'id_area');
+    }
 }
