@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Localizacion;
+use App\Models\Localizacion;
 use Exception;
 use Log;
 use Illuminate\Database\Eloquent\Collection;

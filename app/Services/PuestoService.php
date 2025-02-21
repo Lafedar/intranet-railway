@@ -7,7 +7,7 @@ use Exception;
 use Log;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
-use App\Localizacion;
+use App\Models\Localizacion;
 use App\Area;
 
 

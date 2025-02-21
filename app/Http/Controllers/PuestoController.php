@@ -20,7 +20,7 @@ use Carbon\Carbon;
 use App\Services\AreaService;
 use App\Services\PersonaService;
 use App\Services\PuestoService;
-use App\Localizacion;
+use App\Models\Localizacion;
 use Exception;
 
 

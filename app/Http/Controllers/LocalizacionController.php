@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Localizacion;
+use App\Models\Localizacion;
 use App\User;
 use Session;
 use DB;
