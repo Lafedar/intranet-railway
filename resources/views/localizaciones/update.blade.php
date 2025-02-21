@@ -12,7 +12,7 @@
     </div>
     <div class="col-5">
       <label for="title"><strong>Nombre: </strong></label>
-      <input type="text" name="nombre" class="form-control" autocomplete="off" id="nombre" value="{{ $localizacion->nombre }}">
+      <input type="text" name="nombre" class="form-control" autocomplete="off" id="nombre" value="{{ $localizacion->nombre }}" required>
     </div>
     <div class="col-2">
       <label for="title"><strong>Interno: </strong></label>

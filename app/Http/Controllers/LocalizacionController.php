@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Localizacion;
@@ -26,14 +27,25 @@ class LocalizacionController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->search;
+        try{
+            $search = $request->search;
 
-        $areas = $this->areaService->getAreas();
-
-        $localizaciones = $this->localizacionService->getLocalizacionesFiltradas($search)
-            ->withQueryString(); 
+            $areas = $this->areaService->getAreas();
+    
+            $localizaciones = $this->localizacionService->getLocalizacionesFiltradas($search)
+                ->withQueryString();
+    
+            if($localizaciones == null){
+                Session::flash('message', 'Error al obtener las localizaciones');
+                Session::flash('alert-class', 'alert-danger');
+            }
+            return view('localizaciones.index', ['localizaciones' => $localizaciones, 'areas' => $areas]);
+        }catch(Exception $e){
+            Session::flash('message', 'Error al obtener las localizaciones');
+            Session::flash('alert-class', 'alert-danger');
             
-        return view('localizaciones.index', ['localizaciones' => $localizaciones, 'areas' => $areas]);
+        }
+        
     }
 
 
@@ -44,47 +56,73 @@ class LocalizacionController extends Controller
 
     public function store_localizacion(Request $request)
     {
-        //consulta en bd si existe el id
-        $aux = DB::table('localizaciones')->where('localizaciones.id', $request['id'])->first();
-
-        $localizacion = new Localizacion;
-        $localizacion->id_area = $request['area'];
-        $localizacion->nombre = $request['nombre'];
-        $localizacion->interno = $request['interno'];
-
-        $localizacion->save();
-
-        Session::flash('message', 'Localizacion agregada con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('localizaciones');
+        try{
+            $id = $request['id'];
+            $area= $request['area'];
+            $nombre= $request['nombre'];
+            $interno= $request['interno'];
+            $resultado = $this->localizacionService->storeLocalizacion( $id, $area, $nombre, $interno);
+    
+            if ($resultado) {
+                Session::flash('message', 'Localización agregada con éxito');
+                Session::flash('alert-class', 'alert-success');
+            } else {
+                Session::flash('message', 'El ID de localización ya existe');
+                Session::flash('alert-class', 'alert-danger');
+            }
+    
+            return redirect('localizaciones');
+        }
+        catch(Exception $e){
+            Session::flash('message', 'Error al agregar la localización');
+            Session::flash('alert-class', 'alert-danger');
+        }
+        
     }
 
     public function show_update_localizacion($id_a)
     {
-        $localizacion = DB::table('localizaciones')
-            ->leftjoin('area', 'area.id_a', 'localizaciones.id_area')
-            ->select('localizaciones.id as id', 'localizaciones.nombre as nombre', 'area.nombre_a', 'localizaciones.interno as interno')
-            ->where('localizaciones.id', $id_a)
-            ->first();
-
-        return view('localizaciones.update', ['localizacion' => $localizacion]);
+        try{
+            $localizacion = $this->localizacionService->show_update_loc($id_a);
+            return view('localizaciones.update', ['localizacion' => $localizacion]);
+        }
+        catch(Exception $e){
+            Session::flash('message', 'Error al obtener la localización');
+            Session::flash('alert-class', 'alert-danger');
+        }
+        
     }
 
     public function update_localizacion(Request $request)
     {
-        $localizacion = DB::table('localizaciones')
-            ->where('localizaciones.id', $request['id'])
-            ->update([
-                'nombre' => $request['nombre'],
-                'interno' => $request['interno']
-            ]);
-        Session::flash('message', 'Localizacion modificada con éxito');
-        Session::flash('alert-class', 'alert-success');
-        return redirect('localizaciones');
+        try{
+            $id = $request['id'];
+            $nombre = $request['nombre'];
+            $interno = $request['interno'];
+         
+            $resultado=$this->localizacionService->update($id, $nombre, $interno);
+     
+             if($resultado){
+                 Session::flash('message', 'Localizacion modificada con éxito');
+                 Session::flash('alert-class', 'alert-success');
+             }else{
+                 Session::flash('message', 'Error al modificar la localización');
+                 Session::flash('alert-class', 'alert-danger');
+             }
+            
+             return redirect('localizaciones');
+        }
+        catch(Exception $e){
+            Session::flash('message', 'Error al modificar la localización');
+            Session::flash('alert-class', 'alert-danger');
+        }
+      
     }
 
     public function select_area()
     {
-        return DB::table('area')->get();
+        return $this->areaService->getAreas();
     }
+       
+        
 }
