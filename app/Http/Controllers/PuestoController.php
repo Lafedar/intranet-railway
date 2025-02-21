@@ -20,7 +20,7 @@ use Carbon\Carbon;
 use App\Services\AreaService;
 use App\Services\PersonaService;
 use App\Services\PuestoService;
-use App\Models\Localizacion;
+use App\Models\Location;
 use Exception;
 
 
@@ -94,7 +94,7 @@ class PuestoController extends Controller
     public function show_store_puesto()
     {
         $areas = $this->areaService->getAreas();
-        $localizaciones = Localizacion::all();
+        $localizaciones = Location::all();
         $personas = $this->personaService->getAll();
         return view('puestos.create', compact('areas', 'localizaciones', 'personas'));
     }

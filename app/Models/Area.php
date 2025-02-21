@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use app\Models\Persona;
 use app\Models\Curso;
+use app\Models\Location;
 
 class Area extends Model
 {
@@ -26,6 +27,10 @@ class Area extends Model
     public function personas()
     {
         return $this->hasMany(Persona::class, 'area', 'id_a');
+    }
+    public function locations()
+    {
+        return $this->hasMany(Location::class, 'id_area');
     }
 
 

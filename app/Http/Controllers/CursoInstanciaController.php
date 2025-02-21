@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
 use DB;
-use App\Area;
+use App\Models\Area;;
 use Carbon\Carbon;
 use Exception;
 use App\Models\Anexo;

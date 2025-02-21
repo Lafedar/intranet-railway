@@ -2,8 +2,9 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use App\Models\Area;
 
-class Localizacion extends Model
+class Location extends Model
 {
     public $table = "localizaciones";
     public $timestamps = false;

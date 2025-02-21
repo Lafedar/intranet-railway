@@ -7,8 +7,8 @@ use Exception;
 use Log;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Localizacion;
-use App\Area;
+use App\Models\Location;
+use App\Models\Area;;
 
 
 class PuestoService
@@ -59,7 +59,7 @@ class PuestoService
     public function getLocalizacionesByArea($areaId)
     {
         try {
-            return Localizacion::where('id_area', $areaId)->get();
+            return Location::where('id_area', $areaId)->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las localizaciones por area' . $e->getMessage());
             throw $e;
@@ -70,7 +70,7 @@ class PuestoService
     public function getAreaByLocalizacion($localizacionId)
     {
         try {
-            $localizacion = Localizacion::find($localizacionId);
+            $localizacion = Location::find($localizacionId);
 
             if ($localizacion) {
                 $area = Area::find($localizacion->id_area);

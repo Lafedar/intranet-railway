@@ -28,7 +28,7 @@
 
     <button class="btn btn-info" onclick='fnOpenModalStore()' data-toggle="modal" data-target="#show2"
     id="btn-agregar">Agregar Localización</button>
-    <form method="GET" action="{{ route('localizaciones.index') }}">
+    <form method="GET" action="{{ route('list_locations') }}">
     <div class="row">
       <div class="col-md-4">
       <input type="text" name="search" class="form-control" placeholder="Buscar por Área o Nombre"
@@ -53,16 +53,17 @@
       <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-      @foreach($localizaciones as $localizacion)
+      @foreach($locations as $location)
       <tr class="text-center">
 
-      <td>{{ $localizacion->area->nombre_a }}</td>
+      <td>{{ $location->area->nombre_a ?? 'N/A' }}</td>
 
-      <td>{{ $localizacion->nombre }}</td>
-      <td>{{ $localizacion->interno }}</td>
+
+      <td>{{ $location->nombre }}</td>
+      <td>{{ $location->interno }}</td>
       <td width="90">
-      <button onclick='fnOpenModalUpdate("{{ $localizacion->id }}")' title="Editar"
-        data-nombre="{{ $localizacion->nombre }}" data-interno="{{ $localizacion->interno }}" id="icono"
+      <button onclick='fnOpenModalUpdate("{{ $location->id }}")' title="Editar"
+        data-nombre="{{ $location->nombre }}" data-interno="{{ $location->interno }}" id="icono"
         title="Editar"><img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button>
       </td>
       </tr>
@@ -87,7 +88,7 @@
       </div>
     </div>
 
-    {{ $localizaciones->links('pagination::bootstrap-4') }} <!--paginacion-->
+    {{ $locations->links('pagination::bootstrap-4') }} <!--paginacion-->
     </div>
   </div>
 @endsection
@@ -105,15 +106,15 @@
     }, 5000); // 5 segundos
     });
 
-    var ruta_create = '{{ route('store_localizacion') }}';
-    var ruta_update = '{{ route('update_localizacion') }}';
+    var ruta_create = '{{ route('store_location') }}';
+    var ruta_update = '{{ route('update_location') }}';
     var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
     var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
     // Modal para crear una nueva localización
     function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
-    var url = window.location.origin + "/show_store_localizacion/";
+    var url = window.location.origin + "/show_creation_form/";
 
     $.get(url, function (data) {
       // Borrar contenido anterior
@@ -156,7 +157,7 @@
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
 
     $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_localizacion/" + id,
+      url: window.location.protocol + '//' + window.location.host + "/show_update_form/" + id,
       type: 'GET',
       success: function (data) {
       // Borrar contenido anterior
@@ -193,7 +194,7 @@
 
     // Al abrir el modal, cargamos las áreas dinámicamente
     $('#show2').on('show.bs.modal', function (event) {
-    $.get('select_area/', function (data) {
+    $.get('select_areas/', function (data) {
       var html_select = '<option value="">Seleccione </option>';
 
       // Llenar el select con las áreas

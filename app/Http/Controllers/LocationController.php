@@ -5,41 +5,41 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Localizacion;
+use App\Models\Location;
 use App\User;
 use Session;
 use DB;
 use App\Services\AreaService;
-use App\Services\LocalizacionService;
+use App\Services\LocationService;
 
 
 
-class LocalizacionController extends Controller
+class LocationController extends Controller
 {
     private AreaService $areaService;
-    private LocalizacionService $localizacionService;
+    private LocationService $locationService;
 
-    public function __construct(AreaService $areaService, LocalizacionService $localizacionService)
+    public function __construct(AreaService $areaService, LocationService $locationService)
     {
         $this->areaService = $areaService;
-        $this->localizacionService = $localizacionService;
+        $this->locationService = $locationService;
     }
 
-    public function index(Request $request)
+    public function listLocations(Request $request)
     {
         try{
             $search = $request->search;
 
             $areas = $this->areaService->getAreas();
     
-            $localizaciones = $this->localizacionService->getLocalizacionesFiltradas($search)
+            $locations = $this->locationService->getFilteredLocations($search)
                 ->withQueryString();
     
-            if($localizaciones == null){
+            if($locations == null){
                 Session::flash('message', 'Error al obtener las localizaciones');
                 Session::flash('alert-class', 'alert-danger');
             }
-            return view('localizaciones.index', ['localizaciones' => $localizaciones, 'areas' => $areas]);
+            return view('locations.index', ['locations' => $locations, 'areas' => $areas]);
         }catch(Exception $e){
             Session::flash('message', 'Error al obtener las localizaciones');
             Session::flash('alert-class', 'alert-danger');
@@ -49,21 +49,21 @@ class LocalizacionController extends Controller
     }
 
 
-    public function show_store_localizacion()
+    public function show_creation_form()
     {
-        return view('localizaciones.create');
+        return view('locations.create');
     }
 
-    public function store_localizacion(Request $request)
+    public function store(Request $request)
     {
         try{
             $id = $request['id'];
             $area= $request['area'];
-            $nombre= $request['nombre'];
-            $interno= $request['interno'];
-            $resultado = $this->localizacionService->storeLocalizacion( $id, $area, $nombre, $interno);
+            $name = $request['name'];
+            $internal = $request['internal'];
+            $result = $this->locationService->store( $id, $area, $name, $internal);
     
-            if ($resultado) {
+            if ($result) {
                 Session::flash('message', 'Localización agregada con éxito');
                 Session::flash('alert-class', 'alert-success');
             } else {
@@ -71,7 +71,7 @@ class LocalizacionController extends Controller
                 Session::flash('alert-class', 'alert-danger');
             }
     
-            return redirect('localizaciones');
+            return redirect('locations');
         }
         catch(Exception $e){
             Session::flash('message', 'Error al agregar la localización');
@@ -80,11 +80,11 @@ class LocalizacionController extends Controller
         
     }
 
-    public function show_update_localizacion($id_a)
+    public function show_update_form($id_a)
     {
         try{
-            $localizacion = $this->localizacionService->show_update_loc($id_a);
-            return view('localizaciones.update', ['localizacion' => $localizacion]);
+            $location = $this->locationService->show_update($id_a);
+            return view('locations.update', ['location' => $location]);
         }
         catch(Exception $e){
             Session::flash('message', 'Error al obtener la localización');
@@ -93,16 +93,16 @@ class LocalizacionController extends Controller
         
     }
 
-    public function update_localizacion(Request $request)
+    public function update(Request $request)
     {
         try{
             $id = $request['id'];
-            $nombre = $request['nombre'];
-            $interno = $request['interno'];
+            $name = $request['name'];
+            $internal = $request['internal'];
          
-            $resultado=$this->localizacionService->update($id, $nombre, $interno);
+            $result = $this->locationService->update($id, $name, $internal);
      
-             if($resultado){
+             if($result){
                  Session::flash('message', 'Localizacion modificada con éxito');
                  Session::flash('alert-class', 'alert-success');
              }else{
@@ -110,7 +110,7 @@ class LocalizacionController extends Controller
                  Session::flash('alert-class', 'alert-danger');
              }
             
-             return redirect('localizaciones');
+             return redirect('locations');
         }
         catch(Exception $e){
             Session::flash('message', 'Error al modificar la localización');
@@ -119,7 +119,7 @@ class LocalizacionController extends Controller
       
     }
 
-    public function select_area()
+    public function get_areas()
     {
         return $this->areaService->getAreas();
     }

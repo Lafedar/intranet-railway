@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use App\Models\Localizacion;
+use App\Models\Location;
 use Exception;
 use Log;
 use Illuminate\Database\Eloquent\Collection;
 use DB;
 
-class LocalizacionService
+class LocationService
 {
 
     // En LocalizacionService.php
-    public function getLocalizacionesFiltradas(?string $search)
+    public function getFilteredLocations(?string $search)
     {
         try{
-            $query = Localizacion::query(); //prepara la consulta
+            $query = Location::query(); //prepara la consulta
 
             if ($search) {
                 $query->where(function ($query) use ($search) {
@@ -30,14 +30,14 @@ class LocalizacionService
             return $query->orderBy('nombre')
                 ->paginate(20);
         }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener las localizaciones filtradas ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting filtered locations ' . $e->getMessage());
             return null;
         }
       
     }
 
 
-    public function storeLocalizacion(?int $id, string $area, string $nombre, ?int $interno)
+    public function store(?int $id, string $area, ?string $name, ?int $internal)
     {
         try{
             
@@ -47,22 +47,22 @@ class LocalizacionService
                 return false;
             }
     
-            $localizacion = new Localizacion();
-            $localizacion->id_area = $area;
-            $localizacion->nombre = $nombre;
-            $localizacion->interno = $interno;
+            $location = new Location();
+            $location->id_area = $area;
+            $location->nombre = $name;
+            $location->interno = $internal;
     
-            $localizacion->save();
+            $location->save();
     
             return true;
         }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error al crear la localizacion ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating location ' . $e->getMessage());
             return false;
         }
        
     }
 
-    public function show_update_loc(int $id_a)
+    public function show_update(int $id_a)
     {
         try{
             return DB::table('localizaciones')
@@ -74,22 +74,22 @@ class LocalizacionService
         }
         catch(Exception $e)
         {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la localizacion por Id ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error when obtaining location by ID ' . $e->getMessage());
             return null;
         }
         
     }
 
 
-    public function update(?int $id, string $nombre, ?int $interno)
+    public function update(?int $id, ?string $name, ?int $internal)
     {
         try {
             
             $updated = DB::table('localizaciones')
                 ->where('localizaciones.id', $id)
                 ->update([
-                    'nombre' => $nombre,
-                    'interno' => $interno,
+                    'nombre' => $name,
+                    'interno' => $internal,
                 ]);
     
            
@@ -99,7 +99,7 @@ class LocalizacionService
                 return false; 
             }
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar la localizacion' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating location' . $e->getMessage());
             return false;
         }
     }
