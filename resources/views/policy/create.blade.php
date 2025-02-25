@@ -2,7 +2,7 @@
 <div class="modal fade" id="agregar" role="dialog" aling="center">
   <div class="modal-dialog">
     <div class="modal-content">           
-      <form action="{{ action('PoliticaController@store_politica') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ action('PolicyController@store_policy') }}" method="POST" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="modal-body">
           <div class="row">
@@ -10,9 +10,9 @@
               <input type="hidden" name="id">
               <div class="form-group col-md-12">
                 <label for="title"><strong>Titulo:</strong></label>
-                <textarea rows="3" type="text" class="form-control" name="titulo" id="titulo" required></textarea>
+                <textarea rows="3" type="text" class="form-control" name="title" id="title" required></textarea>
                 <label for="title"><strong>Fecha de Archivo:</strong></label>
-                <input type="date" name="fecha"  class="form-control col-md-5" step="1" min="2019-01-01" value="<?php echo date("Y-m-d");?>">
+                <input type="date" name="date"  class="form-control col-md-5" step="1" min="2019-01-01" value="<?php echo date("Y-m-d");?>">
                 <br>
                 <label for="title"><strong>Politica:</strong></label>
                 <input type="file"  name="pdf" accept=".pdf" id="pdf">

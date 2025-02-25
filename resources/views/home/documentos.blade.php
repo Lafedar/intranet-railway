@@ -11,7 +11,7 @@
     <div class="col-md-12"></div>
     <br><br>
     <div class="col-md-3">
-      <a href="/politicas"> <img src="{{ URL::to('/img/seguridad.png') }}" height="150"></a>
+      <a href="/policy"> <img src="{{ URL::to('/img/seguridad.png') }}" height="150"></a>
     </div>
     @auth
       @role('administrador')
