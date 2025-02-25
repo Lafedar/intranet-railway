@@ -119,7 +119,7 @@ class PolicyService
 
     public function get_paginated_policies(){
         try{
-            return Policy::paginate(20)->withQueryString();
+            return Policy::query();
         }catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error getting policies paginated' . $e->getMessage());
             return null;

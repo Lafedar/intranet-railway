@@ -20,7 +20,9 @@ class PolicyController extends Controller
     public function list_all_Policy(Request $request)
     {
 
-        $policies = $this->policyService->get_paginated_policies();
+        $policiesQuery = $this->policyService->get_paginated_policies();
+
+        $policies = $policiesQuery->paginate(10)->withQueryString();
 
         return view('policy.index', array(
             'policies' => $policies,
