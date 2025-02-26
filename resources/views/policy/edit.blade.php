@@ -2,7 +2,7 @@
 <div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="editarLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{{ route('update_politicas')}}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('update_policy')}}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         <div class="modal-body">
           <div class="row">
@@ -10,13 +10,13 @@
               <input type="hidden" name="id" id="id" value="">
 
               <div class="form-group">
-                <label for="titulo"><strong>Título:</strong></label>
-                <textarea rows="3" class="form-control" name="titulo" id="titulo" required></textarea>
+                <label for="title"><strong>Título:</strong></label>
+                <textarea rows="3" class="form-control" name="title" id="title" required></textarea>
               </div>
 
               <div class="form-group">
-                <label for="fecha"><strong>Fecha de archivo:</strong></label>
-                <input type="date" name="fecha" class="form-control col-md-5" id="fecha" required>
+                <label for="date"><strong>Fecha de archivo:</strong></label>
+                <input type="date" name="date" class="form-control col-md-5" id="date" required>
               </div>
 
               <div class="form-group">

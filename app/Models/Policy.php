@@ -1,12 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Politica extends Model
+
+class Policy extends Model
 {
     public $table = "politica";
+    protected $fillable = ['titulo','fecha','pdf'];
+
     public function scopeID($query, $id)
     {
         if($id)

@@ -5,6 +5,12 @@
 @endpush
 
 @section('content')
+@if(Session::has('message'))
+    <div class="alert {{ Session::get('alert-class') }}">
+        {{ Session::get('message') }}
+    </div>
+@endif
+
 <!-- alertas -->
 <div id="documentos-politicas-container" >
   <div class="content">
@@ -40,17 +46,17 @@
         <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-        @if(count($politicas))
-      @foreach($politicas as $politica)
+        @if(count($policies))
+      @foreach($policies as $policy)
       <tr>
-      <td width="60">{{sprintf('%05d', $politica->id)}}</td>
-      <td width="500">{{$politica->titulo}}</td>
-      <td class="text-center" width="107">{!! \Carbon\Carbon::parse($politica->fecha)->format("d-m-Y") !!}</td>
+      <td width="60">{{sprintf('%05d', $policy->id)}}</td>
+      <td width="500">{{$policy->titulo}}</td>
+      <td class="text-center" width="107">{!! \Carbon\Carbon::parse($policy->fecha)->format("d-m-Y") !!}</td>
       <td width="100">
       <div class="text-center">
         <!-- Boton de descargar archivo -->
-        @if($politica->pdf != null)
-      <a href="{{ Storage::url($politica->pdf) }}" title="Descargar Archivo" data-position="top" data-delay="50"
+        @if($policy->pdf != null)
+      <a href="{{ Storage::url($policy->pdf) }}" title="Descargar Archivo" data-position="top" data-delay="50"
       data-tooltip="Descargar Archivo" download><img src="{{ asset('storage/cursos/descargar.png') }}"
       alt="Descargar" id="img-icono"></a>
     @else
@@ -59,13 +65,13 @@
   @endif
         <!-- Boton de editar archivo -->
         @can('editar-politica')
-      <button data-id="{{$politica->id}}" data-titulo="{{$politica->titulo}}" data-fecha="{{$politica->fecha}}"
-      data-pdf="{{$politica->pdf}}" data-toggle="modal" data-target="#editar" title="Editar" id="icono"><img
+      <button data-id="{{$policy->id}}" data-titulo="{{$policy->titulo}}" data-fecha="{{$policy->fecha}}"
+      data-pdf="{{$policy->pdf}}" data-toggle="modal" data-target="#editar" title="Editar" id="icono"><img
       src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono"></button>
     @endcan
         <!-- Boton de eliminar archivo -->
         @can('eliminar-politica')
-      <a href="{{url('destroy_politica', $politica->id)}}" class="btn btn-danger btn-sm" title="Borrar"
+      <a href="{{url('destroy_policy', $policy->id)}}" class="btn btn-danger btn-sm" title="Borrar"
       onclick="return confirm ('Está seguro que desea eliminar el archivo?')" data-position="top"
       data-delay="50" data-tooltip="Borrar" title="Eliminar" id="icono"><img
       src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono"></a>
@@ -77,11 +83,11 @@
     @endif
       </tbody>
     </table>
-    @include('politicas.edit')
-    {{ $politicas->appends($_GET)->links() }}
+    @include('policy.edit')
+    {{ $policies->appends($_GET)->links() }}
   </div>
   @push('modales')
-    @include('politicas.create')
+    @include('policy.create')
   @endpush
 
 </div>
@@ -92,7 +98,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-  $("politicas").ready(function () {
+  $("policys").ready(function () {
     setTimeout(function () {
       $("div.alert").fadeOut();
     }, 3000); //  secs
@@ -110,8 +116,8 @@
     var pdf = button.data('pdf');
     var modal = $(this);
     modal.find('.modal-body #id').val(id);
-    modal.find('.modal-body #titulo').val(titulo);
-    modal.find('.modal-body #fecha').val(fecha);
+    modal.find('.modal-body #title').val(titulo);
+    modal.find('.modal-body #date').val(fecha);
 
     if (pdf && pdf.length > 0) {
       modal.find('.elim_pdf').show();
