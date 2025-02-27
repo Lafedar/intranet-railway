@@ -9,7 +9,8 @@ use App\Services\AreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
-use App\Models\Area;;
+use App\Models\Area;
+;
 use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
@@ -96,21 +97,40 @@ class CursoController extends Controller
             });
 
 
-            $cursosData = $cursosData->map(function ($curso) use ($personaDni) {
-                $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
-                $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion($curso->id, $personaDni->id_p);
-                $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
-                $curso->cantInstancias = $this->cursoInstanciaService->getCountInstances($curso->id);
+            // 1. Obtener todos los IDs de los cursos
+            $cursoIds = $cursosData->pluck('id')->toArray();
+
+            // 2. Inicializar los arrays de resultados
+            $cantInscriptos = [];
+            $evaluaciones = [];
+            $porcentajeAprobados = [];
+            $cantInstancias = [];
+
+            // 3. Llamar a los métodos una sola vez para obtener los datos y almacenarlos en arrays
+            foreach ($cursoIds as $cursoId) {
+                $cantInscriptos[$cursoId] = $this->enrolamientoCursoService->getCountPersonas($cursoId);
+                $evaluaciones[$cursoId] = $this->enrolamientoCursoService->getEvaluacion($cursoId, $personaDni->id_p);
+                $porcentajeAprobados[$cursoId] = $this->enrolamientoCursoService->getPorcentajeAprobacion($cursoId);
+                $cantInstancias[$cursoId] = $this->cursoInstanciaService->getCountInstances($cursoId);
+            }
+
+            // 4. Ahora, dentro del map, asignamos los valores previamente obtenidos
+            $cursosData = $cursosData->map(function ($curso) use ($cantInscriptos, $evaluaciones, $porcentajeAprobados, $cantInstancias) {
+                // Asignar los valores pre-cargados a las propiedades correspondientes de cada curso
+                $curso->cantInscriptos = $cantInscriptos[$curso->id] ?? 0;
+                $curso->evaluacion = $evaluaciones[$curso->id] ?? null;
+                $curso->porcentajeAprobados = $porcentajeAprobados[$curso->id] ?? 0;
+                $curso->cantInstancias = $cantInstancias[$curso->id] ?? 0;
 
                 return $curso;
             });
+
+            
 
             $cursosData = $cursosData->sortByDesc('curso.created_at');
             $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
 
-
-            $cursosData = $cursosData->sortByDesc('curso.created_at');
 
             // Paginar los resultados
             $perPage = 10; // Número de cursos por página
@@ -363,10 +383,10 @@ class CursoController extends Controller
     {
 
         $curso = $this->cursoService->getById($cursoId);
-       
+
         $persona = $this->personaService->getById($id_persona);
         $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
-        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
