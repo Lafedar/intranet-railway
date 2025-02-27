@@ -17,6 +17,7 @@ class CursoInstancia extends Model
         'id_curso',
         'fecha_inicio',
         'fecha_fin',
+        'hora',
         'cupo',
         'modalidad',
         'capacitador',

@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
 use DB;
-use App\Models\Area;;
+use App\Models\Area;
+;
 use Carbon\Carbon;
 use Exception;
 use App\Models\Anexo;
@@ -154,6 +155,7 @@ class CursoInstanciaController extends Controller
             $request->validate([
                 'fecha_inicio' => 'required|date',
                 'fecha_fin' => 'nullable|date',
+                'hora' => 'nullable|date_format:H:i',
                 'cupo' => 'required|integer',
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
@@ -166,6 +168,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             $capacitador = $request->input('capacitador');
+
 
 
             if ($request->input('otro_capacitador')) {
@@ -181,6 +184,7 @@ class CursoInstanciaController extends Controller
             $data['id_curso'] = $cursoId;
             $data['capacitador'] = $capacitador;
             $data['codigo'] = $request->input('codigo');
+            $data['hora'] = $request->input('hora');
 
 
 
@@ -279,9 +283,11 @@ class CursoInstanciaController extends Controller
     public function update(Request $request, $instanciaId, $cursoId)
     {
         try {
+
             $request->validate([
                 'fecha_inicio' => 'required|date',
                 'fecha_fin' => 'nullable|date',
+                'hora' => 'nullable|date_format:H:i',
                 'cupo' => 'required|integer',
                 'modalidad' => 'nullable|string|max:255',
                 'capacitador' => 'nullable|string|max:255',
@@ -293,7 +299,10 @@ class CursoInstanciaController extends Controller
                 'anexos' => 'nullable|array',
 
             ]);
+            // Obtener el valor actual de hora de la base de datos (o del modelo)
+            
             $capacitador = $request->input('capacitador');
+            $hora = $request->input('hora');
 
 
             if ($request->input('otro_capacitador')) {
@@ -301,7 +310,7 @@ class CursoInstanciaController extends Controller
 
 
             }
-         
+
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
@@ -312,9 +321,10 @@ class CursoInstanciaController extends Controller
             }
 
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-
+           
             $data = $request->all();
             $data['capacitador'] = $capacitador;
+            $data['hora'] = $hora;
             $instancia->update($data);
 
             if (!$request->has('anexos') || empty($request->input('anexos'))) {
@@ -469,9 +479,9 @@ class CursoInstanciaController extends Controller
             } else {
                 $imageBase64Firma = null;
             }
-            
+
             foreach ($personasSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
-                                                                            // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
+                // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
                 $user = $this->personaService->getById($id_persona);
 
                 // Inscribir a la persona
@@ -487,13 +497,13 @@ class CursoInstanciaController extends Controller
                         Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
                         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
                     }
-                }else{
+                } else {
                     return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
                 }
 
             }
 
-           
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
@@ -850,6 +860,6 @@ class CursoInstanciaController extends Controller
     }
 
 
-    
+
 
 }
