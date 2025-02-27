@@ -224,11 +224,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************POLITICAS**********************
 Route::group(['middleware' => ['auth']], function () {
-  Route::get('policy', 'PolicyController@list_all_policy');
+  
   Route::post('store_policy', 'PolicyController@store_policy')->name('agregar-policy')->middleware('role:administrador|politicas');
   Route::get('destroy_policy/{policy}', ['uses' => 'PolicyController@destroy_policy'])->middleware('role:administrador|politicas');
   Route::post('update_policy', 'PolicyController@update_policy')->middleware('role:administrador|politicas')->name('update_policy');
 });
+Route::get('policy', 'PolicyController@list_all_policy');
 
 
 //****************INSTRUCTIVOS**********************
