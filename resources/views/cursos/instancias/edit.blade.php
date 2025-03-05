@@ -107,6 +107,23 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Certificados</label><br>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
+                        value="Aprobacion" {{ old('certificado', $instancia->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
+                        <label for="certificado_aprobacion" style="font-weight: normal;">
+                            Certificado de Aprobación
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="certificado" id="certificado_participacion"
+                        value="Participacion" {{ old('certificado', $instancia->certificado) == 'Participacion' ? 'checked' : '' }} required>
+                        <label for="certificado_participacion" style="font-weight: normal;">
+                            Certificado de Participación
+                        </label>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label for="estado">Estado</label>
@@ -136,6 +153,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
     document.addEventListener('DOMContentLoaded', function () {
     const selectCapacitador = document.getElementById('capacitador');
     const otroLink = document.getElementById('otroCapacitadorLink');
@@ -201,8 +219,10 @@
     }
     });
     });
-
     </script>
+    
+
+ 
     <script>
                     // Función para limitar la longitud del input a 11 caracteres
             function limitInputLength(input) {

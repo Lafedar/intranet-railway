@@ -21,10 +21,12 @@ class CursoInstancia extends Model
         'modalidad',
         'capacitador',
         'codigo',
+        'certificado',
         'lugar',
         'estado',
         'version',
-        'id_instancia'
+        'id_instancia',
+
 
 
     ];
@@ -65,7 +67,7 @@ class CursoInstancia extends Model
     }
 
 
-   
+
 
 
 

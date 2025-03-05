@@ -59,6 +59,7 @@
                 <th>Estado</th>
                 <th>Version</th>
                 <th>% de Aprobación</th>
+                <th>Certificado</th>
                 @endrole
                 <th>Acciones</th>
             </tr>
@@ -105,6 +106,7 @@
                             <td>{{ $instance->estado }}</td>
                             <td>{{ $instance->version }}</td>
                             <td>{{ number_format($instance->porcentajeAPR, 2) }}%</td>
+                            <td>{{ $instance->certificado}}</td>
 
                             @endrole
                             <td>
@@ -178,12 +180,16 @@
                                     </a>
                                 @endif
 
-
-                                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo' => 'ane']) }}"
-                                    title="Ver Inscriptos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled @endif>
-                                    <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
-                                </a>
-
+                                @if($instance->cantInscriptos > 0)
+                                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo' => 'ane']) }}"
+                                        title="Ver Inscriptos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled @endif>
+                                        <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
+                                    </a>
+                                @else
+                                    <a>
+                                        <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono-disabled" title="No hay inscriptos">
+                                    </a>
+                                @endif
                                 @if($instance->estado == "Activo")
                                     <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'bandera' => 'No']) }}"
                                         title="Cerrar Instancia" @if(!$instance->restantes > 0) disabled @endif>

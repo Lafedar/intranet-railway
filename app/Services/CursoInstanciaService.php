@@ -294,4 +294,9 @@ class CursoInstanciaService
     }
 
 
+    public function getAllInstances(){
+        return CursoInstancia::all();
+    }
+
+
 }

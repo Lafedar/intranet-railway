@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Curso;
 use DB;
-use App\Models\Area;;
+use App\Models\Area;
+;
 use Carbon\Carbon;
 use Exception;
 use App\Models\Anexo;
@@ -163,6 +164,8 @@ class CursoInstanciaController extends Controller
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
                 'anexos' => 'nullable|array',
+                'certificado' => 'required|max:20',
+
 
             ]);
             $capacitador = $request->input('capacitador');
@@ -181,6 +184,7 @@ class CursoInstanciaController extends Controller
             $data['id_curso'] = $cursoId;
             $data['capacitador'] = $capacitador;
             $data['codigo'] = $request->input('codigo');
+            $data['certificado'] = $request->input('certificado');
 
 
 
@@ -291,6 +295,7 @@ class CursoInstanciaController extends Controller
                 'estado' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
                 'anexos' => 'nullable|array',
+                'certificado' => 'required|max:20',
 
             ]);
             $capacitador = $request->input('capacitador');
@@ -301,7 +306,7 @@ class CursoInstanciaController extends Controller
 
 
             }
-         
+
             if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
                 return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
@@ -315,6 +320,8 @@ class CursoInstanciaController extends Controller
 
             $data = $request->all();
             $data['capacitador'] = $capacitador;
+            $data['certificado'] = $request->input('certificado');
+
             $instancia->update($data);
 
             if (!$request->has('anexos') || empty($request->input('anexos'))) {
@@ -469,9 +476,9 @@ class CursoInstanciaController extends Controller
             } else {
                 $imageBase64Firma = null;
             }
-            
+
             foreach ($personasSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
-                                                                            // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
+                // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
                 $user = $this->personaService->getById($id_persona);
 
                 // Inscribir a la persona
@@ -487,13 +494,13 @@ class CursoInstanciaController extends Controller
                         Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
                         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
                     }
-                }else{
+                } else {
                     return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
                 }
 
             }
 
-           
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
@@ -765,12 +772,22 @@ class CursoInstanciaController extends Controller
                 mkdir($directory, 0775, true); // Crear la carpeta si no existe
             }
 
-            // Generar el PDF y guardarlo en la ruta
-            $pdf = SnappyPdf::loadView('cursos.certificadoMail', $data)
-                ->setPaper('a4')
-                ->setOrientation('landscape');
+            if ($instancia->certificado == "Aprobacion") {
+                // Generar el PDF y guardarlo en la ruta
+                $pdf = SnappyPdf::loadView('cursos.certificadoMail', $data)
+                    ->setPaper('a4')
+                    ->setOrientation('landscape');
 
-            $pdf->save($filePath);
+                $pdf->save($filePath);
+
+            } elseif ($instancia->certificado == "Participacion") {
+                $pdf = SnappyPdf::loadView('cursos.certificadoMailParticipacion', $data)
+                    ->setPaper('a4')
+                    ->setOrientation('landscape');
+
+                $pdf->save($filePath);
+            }
+
 
 
 
@@ -792,8 +809,10 @@ class CursoInstanciaController extends Controller
         }
 
 
-        if ($successCount > 0) {
+        if ($successCount > 0 && $instancia->certificado == "Aprobacion") {
             return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados de aprobación por correo, a las personas aprobadas.");
+        } elseif ($successCount > 0 && $instancia->certificado == "Participacion") {
+            return redirect()->back()->with('success', "Se enviaron correctamente $successCount certificados de participacion por correo.");
         } else {
             return redirect()->back()->with('error', 'Hubo un problema al enviar los certificados.');
         }
@@ -801,14 +820,60 @@ class CursoInstanciaController extends Controller
 
 
     }
+    public function generarCertificado(int $cursoId, int $id_persona)
+    {
+
+        $curso = $this->cursoService->getById($cursoId);
+
+        $persona = $this->personaService->getById($id_persona);
+        $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
+        $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
+        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
+
+        if (file_exists($imagePath)) {
+
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+
+            $imageBase64 = null;
+        }
+
+
+
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
+
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+        } else {
+
+            $imageBase64_firma = null;
+        }
+
+
+        if ($instancia->certificado == "Aprobacion") {
+            return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
+        } elseif ($instancia->certificado == "Participacion") {
+            return view('cursos.certificadoParticipacion', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
+        }
+    }
 
     public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona)
     {
         $is_pdf = true;
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
         $curso = $this->cursoService->getById($cursoId);
         $persona = $this->personaService->getById($id_persona);
         $fecha = now()->format('d/m/Y');
+        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
 
 
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -826,8 +891,27 @@ class CursoInstanciaController extends Controller
         }
 
 
-        $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64', 'fecha', 'is_pdf'))->render();
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
 
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+        } else {
+
+            $imageBase64_firma = null;
+        }
+
+
+
+        if ($instancia->certificado == 'Aprobacion') {
+            $html = view('cursos.certificado', compact('instancia', 'curso', 'persona', 'imageBase64_firma', 'imageBase64', 'fecha', 'is_pdf'))->render();
+        } else {
+            $html = view('cursos.certificadoParticipacion', compact('instancia', 'curso', 'persona', 'imageBase64_firma', 'imageBase64', 'fecha', 'is_pdf'))->render();
+        }
 
         $pdf = SnappyPdf::loadHTML($html)
             ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
@@ -842,7 +926,6 @@ class CursoInstanciaController extends Controller
 
         return $pdf->download('certificado.pdf');
     }
-
     public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
     {
         $this->cursoInstanciaService->cambiarEstadoInstancia($instanciaId, $cursoId, $bandera);
@@ -850,6 +933,6 @@ class CursoInstanciaController extends Controller
     }
 
 
-    
+
 
 }

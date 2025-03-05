@@ -224,7 +224,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************POLITICAS**********************
 Route::group(['middleware' => ['auth']], function () {
-  
+
   Route::post('store_policy', 'PolicyController@store_policy')->name('agregar-policy')->middleware('role:administrador|politicas');
   Route::get('destroy_policy/{policy}', ['uses' => 'PolicyController@destroy_policy'])->middleware('role:administrador|politicas');
   Route::post('update_policy', 'PolicyController@update_policy')->middleware('role:administrador|politicas')->name('update_policy');
@@ -562,8 +562,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF')->middleware('role:administrador|Gestor-cursos');
   Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos')->middleware('role:administrador|Gestor-cursos');
   Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/generar-certificado/{cursoId}/{personaId}', [CursoController::class, 'generarCertificado'])->name('generarCertificado');
-  Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CursoController::class, 'generarPDFcertificado'])->name('cursos.generarPDFcertificado');
+  Route::post('/generar-certificado/{cursoId}/{personaId}', [CursoInstanciaController::class, 'generarCertificado'])->name('generarCertificado');
+  Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CursoInstanciaController::class, 'generarPDFcertificado'])->name('cursos.generarPDFcertificado');
   Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'enviarCertificado'])->name('enviarMail');
   Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'cambiarEstadoInstancia'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
 });
@@ -608,7 +608,7 @@ Route::get('/descargar/{filename}', function ($filename) {
   $filePath = storage_path('app/public/' . $filename);
 
   if (file_exists($filePath)) {
-      return response()->download($filePath)->deleteFileAfterSend(true);
+    return response()->download($filePath)->deleteFileAfterSend(true);
   }
 
   return redirect()->back()->with('error', 'El archivo no existe.');

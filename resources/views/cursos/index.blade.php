@@ -96,6 +96,7 @@
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                         <th>Evaluación</th>
                         <th>Certificado</th>
+
                         @else
                         <th>Instancias</th>
                         @endrole
@@ -141,6 +142,7 @@
                         <td>
                             {{$curso->evaluacion}}
                         </td>
+                       
                         @endif
 
                         <td>            
@@ -151,12 +153,22 @@
                         @endrole
                         @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
                             @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                            
                             <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
                                 @csrf
                                 <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                             </form>
                             @endif
+                        @elseif(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Participacion")
+                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                                
+                                <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
+                                    @csrf
+                                    <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
+                                </form>
+                            @endif
                         @endif
+                      
                         </td>
 
                         @role(['administrador', 'Gestor-cursos'])

@@ -9,7 +9,8 @@ use App\Services\AreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
-use App\Models\Area;;
+use App\Models\Area;
+;
 use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
@@ -57,7 +58,6 @@ class CursoController extends Controller
                 $cursosData = $this->cursoService->getAll()->load('areas');
             } else {
                 $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p);
-
             }
 
             //filtros
@@ -359,49 +359,7 @@ class CursoController extends Controller
         }
 
     }
-    public function generarCertificado(int $cursoId, int $id_persona)
-    {
 
-        $curso = $this->cursoService->getById($cursoId);
-       
-        $persona = $this->personaService->getById($id_persona);
-        $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
-        $instancia=$this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
-        $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
-        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $imageBase64 = null;
-        }
-
-
-
-        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-        if (file_exists($firmaPath)) {
-
-            $imageData2 = base64_encode(file_get_contents($firmaPath));
-            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-        } else {
-
-            $imageBase64_firma = null;
-        }
-
-
-
-        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
-    }
 
     public function verCurso($cursoId)
     {
@@ -410,62 +368,7 @@ class CursoController extends Controller
         return view('cursos.verCurso', compact('curso', 'areas'));
     }
 
-    public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona)
-    {
-        $is_pdf = true;
-        $curso = $this->cursoService->getById($cursoId);
-        $persona = $this->personaService->getById($id_persona);
-        $fecha = now()->format('d/m/Y');
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
 
-
-        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-
-            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $imageBase64 = null;
-        }
-
-
-        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-        if (file_exists($firmaPath)) {
-
-            $imageData2 = base64_encode(file_get_contents($firmaPath));
-            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-        } else {
-
-            $imageBase64_firma = null;
-        }
-
-
-
-        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf', 'instancia', 'imageBase64_firma'))->render();
-
-
-        $pdf = SnappyPdf::loadHTML($html)
-            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
-            ->setOption('enable-local-file-access', true)
-            ->setOption('enable-javascript', true)
-            ->setOption('javascript-delay', 200)
-            ->setOption('margin-top', 10)
-            ->setOption('margin-right', 10)
-            ->setOption('margin-bottom', 5)
-            ->setOption('margin-left', 10);
-
-
-        return $pdf->download('certificado.pdf');
-    }
 
     public function getCursos(int $userId)
     {

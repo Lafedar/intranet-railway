@@ -49,6 +49,8 @@ button:disabled {
 }
 
 
+
+
 #btn-excel-disabled:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
@@ -235,6 +237,13 @@ button:disabled {
     width: 27px;
     height: 27px;
     border: none;
+}
+
+#img-icono-disabled {
+    width: 27px;
+    height: 27px;
+    border: none;
+    opacity: 0.6;
 }
 
 #form {

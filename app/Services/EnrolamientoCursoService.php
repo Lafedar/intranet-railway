@@ -21,7 +21,7 @@ class EnrolamientoCursoService
 
     private $cursoService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService,  CursoService $cursoService)
+    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService)
     {
         $this->cursoInstanciaService = $cursoInstanciaService;
         $this->personaService = $personaService;
@@ -76,15 +76,29 @@ class EnrolamientoCursoService
 
             $person = Persona::where('dni', $userDni)->first();
 
+            $instancia = $this->cursoInstanciaService->getInstanceById($instanceId, $cursoId);
+
             if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
-                $data = [
-                    'id_persona' => $person->id_p,
-                    'id_instancia' => $instanceId,
-                    'id_curso' => $cursoId,
-                    'fecha_enrolamiento' => Carbon::now(),
-                    'estado' => 'Alta',
-                    'evaluacion' => 'N/A',
-                ];
+                if ($instancia->certificado == "Participacion") {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'Participacion',
+                    ];
+                } else {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'N/A',
+                    ];
+                }
+
                 $courseEnrollment = EnrolamientoCurso::create($data);
             } else
                 Log::alert('Alert in class: ' . get_class($this) . '.No hay cupo para el id_curso: ' . $cursoId . ' y la instancia id: ' . $instanceId);
@@ -452,10 +466,10 @@ class EnrolamientoCursoService
         }
 
     }
-    public function getCursos(int $id)    
+    public function getCursos(int $id)
     {
         $cursos = $this->getAllEnrolledCourses($id);
-        
+
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
@@ -471,14 +485,14 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
 
-    public function getCursosByDni(int $dni)    
+    public function getCursosByDni(int $dni)
     {
         $cursos = $this->getAllEnrolledCoursesByDni($dni);
-        
+
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
@@ -494,7 +508,7 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
 }
