@@ -661,9 +661,6 @@ class CursoInstanciaController extends Controller
 
 
 
-
-
-
     public function verPlanillaPrevia(string $formulario_id, int $cursoId, int $instanciaId)
     {
         $curso = $this->cursoService->getById($cursoId);
@@ -703,8 +700,12 @@ class CursoInstanciaController extends Controller
         $aprobados = $this->enrolamientoCursoService->getAprobados($cursoId, $instanciaId);
         $curso = $this->cursoService->getById($cursoId);
         $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanciaId, $cursoId);
 
-        if ($aprobados->isEmpty()) {
+        if($instancia->certificado == "Participacion"){
+            $aprobados = $inscriptos;
+        }
+        elseif ($aprobados->isEmpty()) {
             return "No hay personas aprobadas para este curso e instancia.";
         }
         //logo lafedar
@@ -738,7 +739,7 @@ class CursoInstanciaController extends Controller
 
         foreach ($aprobados as $personaId) {
 
-            $persona = $this->personaService->getById($personaId);
+            $persona = $this->personaService->getById($personaId->id_persona);
 
 
             if (!$persona || empty($persona->correo)) {

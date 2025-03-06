@@ -42,7 +42,7 @@
                     <td>{{ $curso->pivot->evaluacion ?? 'N/A' }}</td>
                     <td>{{ $curso->obligatorio == 1 ? 'Sí' : 'No' }}</td>
                     <td>
-                        @if($curso->pivot->evaluacion == "Aprobado")
+                        @if($curso->pivot->evaluacion == "Aprobado" | $curso->pivot->evaluacion == "Participacion")
                             <form
                                 action="{{ route('generarCertificado', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
                                 method="POST" id="form">

@@ -112,10 +112,7 @@
                             <th>Apellido y Nombre</th>
                             <th>Fecha de Inscripción</th>
                             <th>Versión de Instancia</th>
-                            @if($instancia->certificado != "Participacion")
-                                <th>Evaluación</th>
-                            @endif
-
+                            <th>Evaluación</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -133,9 +130,9 @@
                                 <td>{{ $enrolamiento->fecha_enrolamiento ? $enrolamiento->fecha_enrolamiento->format('d/m/Y H:i') : 'No disponible' }}
                                 </td>
                                 <td>{{ $instancia->version ?? 'N/A' }}</td>
-                                @if($instancia->certificado != "Participacion")
-                                    <td>{{ $enrolamiento->evaluacion }}</td>
-                                @endif
+                               
+                                <td>{{ $enrolamiento->evaluacion }}</td>
+                           
                                 <td>
                                     @role(['administrador', 'Gestor-cursos'])
                                     @if($enrolamiento->evaluacion == "No Aprobado" | $instancia->certificado == "Participacion")
