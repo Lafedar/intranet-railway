@@ -10,11 +10,19 @@
 
 <body>
     <p>Hola, {{ $user->nombre_p }} {{ $user->apellido }}</p>
-    <p>Has sido inscripto en la capacitación: <b>{{ $curso }}</b>.</p>
+    <p>Fuiste inscripto por {{ $gestor->nombre_p }} {{ $gestor->apellido }} en la capacitación: <b>{{ $curso->titulo }}</b>.</p>
+    <p>Obligatorio: 
+    @if($curso->obligatorio == 1)
+        <b>Si</b>
+    @else
+        <b>No</b>
+    @endif
+        </p>
+    <p>Ubicacion: {{ $sala }}</p>
     <p>Fecha de inicio: {{ $fechaInicio ? $fechaInicio->format('d/m/Y') : 'Fecha no disponible' }}</p>
     <p>Saludos</p>
     <img src="{{ $imageBase64Firma }}" alt="Firma" style="width: 100%; height: auto;">
-    <!--dejo css inline porque desde el archivo css no funciona-->
+
 </body>
 
 </html>

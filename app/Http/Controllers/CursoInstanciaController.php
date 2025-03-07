@@ -452,10 +452,11 @@ class CursoInstanciaController extends Controller
 
 
 
-    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
+    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId, $gestor)
     {
         try {
             $personasSeleccionadas = $request->input('personas', []);
+            $gestor = $this->personaService->getByDni($gestor);
 
             if (empty($personasSeleccionadas)) {
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
@@ -473,18 +474,20 @@ class CursoInstanciaController extends Controller
             foreach ($personasSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
                                                                             // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
                 $user = $this->personaService->getById($id_persona);
+                $gestor = $this->personaService->getByDni($gestor->dni);
 
                 // Inscribir a la persona
                 $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
 
                 // Enviar el correo de inscripción
-                $curso = $this->cursoService->getById($cursoId)->titulo; // Aquí deberías obtener el nombre real del curso
+                $curso = $this->cursoService->getById($cursoId); // Aquí deberías obtener el nombre real del curso
                 $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
+                $sala = $this->cursoInstanciaService->get_room($cursoId, $instancia_id);
 
                 if ($request->input('mail')) {
                     // Enviar el correo
                     if (!empty($user->correo)) {
-                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma, $gestor, $sala));
                         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
                     }
                 }else{
