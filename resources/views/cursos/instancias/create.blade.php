@@ -30,7 +30,10 @@
                     <label for="fecha_fin">Fecha Fin</label>
                     <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
                 </div>
-
+                <div class="form-group">
+                    <label for="hora">Hora</label>
+                    <input type="time" class="form-control" id="hora" name="hora" required>
+                </div>
 
 
                 <div class="form-group">
