@@ -69,9 +69,9 @@
                         <tr>
 
 
-                            <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($instance->fecha_fin)->format('d/m/Y') }}</td>
-                            <td>{{ $instance->hora ? \Carbon\Carbon::parse($instance->hora)->format('H:i') : 'N/A' }}</td>
+                            <td>{{ $instance->fecha_inicio_formateada }}</td>
+                            <td>{{ $instance->fecha_fin_formateada }}</td>
+                            <td>{{ $instance->hora_formateada}}</td>
 
 
                             @role(['administrador', 'Gestor-cursos'])

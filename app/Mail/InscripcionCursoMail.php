@@ -16,7 +16,9 @@ class InscripcionCursoMail extends Mailable
     private $gestor;
     private $imageBase64Firma;
     private $sala;
-    public function __construct($user, $curso, $fechaInicio, $imageBase64Firma, $gestor, $sala)
+
+    private $hora;
+    public function __construct($user, $curso, $fechaInicio, $imageBase64Firma, $gestor, $sala, $hora)
     {
         $this->user = $user;
         $this->curso = $curso;
@@ -24,6 +26,7 @@ class InscripcionCursoMail extends Mailable
         $this->gestor = $gestor;
         $this->imageBase64Firma = $imageBase64Firma;
         $this->sala = $sala;
+        $this->hora = $hora;
     }
 
     public function build()
@@ -37,6 +40,7 @@ class InscripcionCursoMail extends Mailable
                 'imageBase64Firma' => $this->imageBase64Firma,
                 'gestor' => $this->gestor,
                 'sala' => $this->sala,
+                'hora' => $this->hora,
             ]);
     }
 }
