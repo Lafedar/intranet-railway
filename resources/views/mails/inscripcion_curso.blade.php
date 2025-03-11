@@ -21,7 +21,11 @@
     </p>
     <p>Ubicacion: <b>{{ $sala }}</b></p>
     <p>Fecha de inicio: <b>{{ $fechaInicio ? $fechaInicio->format('d/m/Y') : 'Fecha no disponible' }}</b></p>
-    <p>Hora: <b>{{ date('H:i', strtotime($hora)) }}hs</b></p>
+    @if(!empty($hora))
+        <p>Hora: <b>{{ date('H:i', strtotime($hora)) }}hs</b></p>
+    @else
+        <p>Hora: <b>N/A</b></p>
+    @endif
 
     <p>Saludos</p>
     <img src="{{ $imageBase64Firma }}" alt="Firma" style="width: 100%; height: auto;">
