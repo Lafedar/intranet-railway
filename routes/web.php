@@ -553,7 +553,7 @@ Route::group(['middleware' => ['auth']], function () {
     ->name('inscribir.persona')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
   Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}/{gestor}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
   Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
   Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
   Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos')->middleware('role:administrador|Gestor-cursos');

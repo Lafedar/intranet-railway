@@ -114,6 +114,9 @@ class CursoInstanciaController extends Controller
                 $instancia->porcentajeAPR = $porcentajeAPR;
                 $instancia->cantAnexos = $cantAnexos;
 
+                $instancia->fecha_inicio_formateada = Carbon::parse($instancia->fecha_inicio)->format('d/m/Y');
+                $instancia->fecha_fin_formateada = Carbon::parse($instancia->fecha_fin)->format('d/m/Y');
+                $instancia->hora_formateada = $instancia->hora ? Carbon::parse($instancia->hora)->format('H:i') : 'N/A';
 
                 return $instancia;
 
@@ -127,7 +130,7 @@ class CursoInstanciaController extends Controller
         } catch (Exception $e) {
             // Registrar el error y redirigir con un mensaje de error
             Log::error('Error en la clase: ' . get_class($this) . ' .Error al obtener las instancias del curso: ' . $e->getMessage());
-            return redirect()->route('home');
+            return redirect()->route('home.inicio');
 
         }
     }
@@ -300,7 +303,7 @@ class CursoInstanciaController extends Controller
 
             ]);
             // Obtener el valor actual de hora de la base de datos (o del modelo)
-            
+
             $capacitador = $request->input('capacitador');
             $hora = $request->input('hora');
 
@@ -321,7 +324,7 @@ class CursoInstanciaController extends Controller
             }
 
             $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
-           
+
             $data = $request->all();
             $data['capacitador'] = $capacitador;
             $data['hora'] = $hora;
@@ -462,10 +465,11 @@ class CursoInstanciaController extends Controller
 
 
 
-    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId)
+    public function inscribirVariasPersonas(Request $request, int $instancia_id, int $cursoId, $gestor)
     {
         try {
             $personasSeleccionadas = $request->input('personas', []);
+            $gestor = $this->personaService->getByDni($gestor);
 
             if (empty($personasSeleccionadas)) {
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
@@ -483,18 +487,21 @@ class CursoInstanciaController extends Controller
             foreach ($personasSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
                 // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
                 $user = $this->personaService->getById($id_persona);
+                $gestor = $this->personaService->getByDni($gestor->dni);
 
                 // Inscribir a la persona
                 $this->enrolamientoCursoService->enroll($user->dni, $instancia_id, $cursoId);
 
                 // Enviar el correo de inscripción
-                $curso = $this->cursoService->getById($cursoId)->titulo; // Aquí deberías obtener el nombre real del curso
+                $curso = $this->cursoService->getById($cursoId); // Aquí deberías obtener el nombre real del curso
                 $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
+                $sala = $this->cursoInstanciaService->get_room($cursoId, $instancia_id);
+                $hora = $this->cursoInstanciaService->get_hour($cursoId, $instancia_id);
 
                 if ($request->input('mail')) {
                     // Enviar el correo
                     if (!empty($user->correo)) {
-                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma, $gestor, $sala, $hora));
                         return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
                     }
                 } else {

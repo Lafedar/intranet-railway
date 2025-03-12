@@ -293,5 +293,33 @@ class CursoInstanciaService
             ->count() ?? 0;
     }
 
+    public function get_room($cursoId, $instanciaId)
+    {
+        $instance = CursoInstancia::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->first();
+
+        if ($instance) {
+
+            return $instance->lugar;
+        }
+
+        return null;
+    }
+
+    public function get_hour($cursoId, $instanciaId)
+    {
+        $instance = CursoInstancia::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->first();
+
+        if ($instance) {
+
+            return $instance->hora;
+        }
+
+        return null;
+    }
+
 
 }
