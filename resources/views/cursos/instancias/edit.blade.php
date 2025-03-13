@@ -114,26 +114,27 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
-                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instancia->examen }}">
-                </div>
-                <div class="form-group">
                     <label>Certificados</label><br>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
-                        value="Aprobacion" {{ old('certificado', $instancia->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
+                            value="Aprobacion" {{ old('certificado', $instancia->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
                         <label for="certificado_aprobacion" style="font-weight: normal;">
                             Certificado de Aprobación
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_participacion"
-                        value="Participacion" {{ old('certificado', $instancia->certificado) == 'Participacion' ? 'checked' : '' }} required>
+                            value="Participacion" {{ old('certificado', $instancia->certificado) == 'Participacion' ? 'checked' : '' }} required>
                         <label for="certificado_participacion" style="font-weight: normal;">
                             Certificado de Participación
                         </label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
+                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instancia->examen }}" id="examenInput">
+                </div>
+               
 
                 <div class="form-group">
                     <label for="estado">Estado</label>
@@ -164,12 +165,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const selectCapacitador = document.getElementById('capacitador');
-    const otroLink = document.getElementById('otroCapacitadorLink');
-    const cerrarLink = document.getElementById('cerrarCapacitadorLink');
-    const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
-    const otroCapacitadorInput = document.getElementById('otro_capacitador');
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    const selectCapacitador = document.getElementById('capacitador');
+                const otroLink = document.getElementById('otroCapacitadorLink');
+                const cerrarLink = document.getElementById('cerrarCapacitadorLink');
+                const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
+                const otroCapacitadorInput = document.getElementById('otro_capacitador');
 
                 // Verificar si el capacitador seleccionado es "Otro" o no
                 if (selectCapacitador.value === "") {
@@ -178,20 +180,20 @@
                 selectCapacitador.disabled = true;
                 cerrarLink.style.display = 'inline';
                 otroLink.style.display = 'none';
-            } else if (selectCapacitador.value === "otro") {
+                            } else if (selectCapacitador.value === "otro") {
                     // Si el capacitador seleccionado es "Otro", mostrar el input "Otro" con el valor prellenado
                     inputOtroCapacitador.style.display = 'block';
                 selectCapacitador.disabled = true;
                 cerrarLink.style.display = 'inline';
                 otroLink.style.display = 'none';
                 otroCapacitadorInput.value = selectCapacitador.value; // Completa el valor con el capacitador ingresado
-            } else {
+                            } else {
                     // Si hay un capacitador seleccionado, aseguramos que el input "Otro" esté oculto
                     inputOtroCapacitador.style.display = 'none';
                 selectCapacitador.disabled = false;
                 cerrarLink.style.display = 'none';
                 otroLink.style.display = 'inline';
-            }
+                            }
 
                 // Mostrar el input "Otro" cuando se hace clic en el enlace "Otro"
                 otroLink.addEventListener('click', function () {
@@ -203,7 +205,7 @@
 
                 // Limpiar el campo de texto
                 otroCapacitadorInput.value = '';
-            });
+                            });
 
                 // Cuando se hace clic en el botón "Cerrar"
                 cerrarLink.addEventListener('click', function () {
@@ -214,32 +216,57 @@
 
                 // Limpiar el valor del input de "Otro" (si es necesario)
                 otroCapacitadorInput.value = '';
-            });
+                            });
 
                 // Mostrar el input "Otro" cuando se selecciona un capacitador
                 selectCapacitador.addEventListener('change', function () {
-            if (selectCapacitador.value !== "") {
+                            if (selectCapacitador.value !== "") {
                     inputOtroCapacitador.style.display = 'none'; // Ocultar el input si se elige un capacitador
                 selectCapacitador.disabled = false; // Desbloquear el select
                 cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
                 otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
-            } else {
+                            } else {
                     inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
                 cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-            }
-            });
-            });
+                            }
+                            });
+                            });
 
     </script>
-    
 
- 
+
+
     <script>
                 // Función para limitar la longitud del input a 11 caracteres
                 function limitInputLength(input) {
-                                if (input.value.length > 9) {
+                                                if (input.value.length > 9) {
                     input.value = input.value.slice(0, 9);
-                                }
-                            }
+                                                }
+                                            }
     </script>
+
+    <script>
+    // Obtener los elementos de los radio buttons y el input de examen
+    const examenInput = document.getElementById("examenInput");
+    const certificadoAprobacion = document.getElementById("certificado_aprobacion");
+    const certificadoParticipacion = document.getElementById("certificado_participacion");
+
+    // Función que activa o desactiva el campo 'examen' según la opción seleccionada
+    function toggleExamenField() {
+        if (certificadoParticipacion.checked) {
+            examenInput.disabled = true;  // Desactivar input cuando 'Participacion' está seleccionado
+        } else {
+            examenInput.disabled = false;  // Habilitar input cuando 'Aprobacion' está seleccionado
+        }
+    }
+
+    // Ejecutar la función cada vez que cambie el estado de los radios
+    certificadoAprobacion.addEventListener("change", toggleExamenField);
+    certificadoParticipacion.addEventListener("change", toggleExamenField);
+
+    // Llamar la función al cargar la página para que el estado inicial sea correcto
+    window.onload = function() {
+        toggleExamenField();
+    }
+</script>
 @endpush

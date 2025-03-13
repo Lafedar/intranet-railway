@@ -96,11 +96,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
-                    <input type="text" name="examen" class="form-control" maxlength="200">
-                </div>
-
-                <div class="form-group">
                     <label>Certificados</label><br>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
@@ -116,6 +111,10 @@
                             Certificado de Participación
                         </label>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
+                    <input type="text" name="examen" class="form-control" maxlength="200" id="examenInput">
                 </div>
 
 
@@ -237,4 +236,29 @@
             }
         }
     </script>
+   <script>
+    // Obtener los elementos de los radio buttons y el input de examen
+    const examenInput = document.getElementById("examenInput");
+    const certificadoAprobacion = document.getElementById("certificado_aprobacion");
+    const certificadoParticipacion = document.getElementById("certificado_participacion");
+
+    // Función que activa o desactiva el campo 'examen' según la opción seleccionada
+    function toggleExamenField() {
+        if (certificadoParticipacion.checked) {
+            examenInput.disabled = true;  // Desactivar input cuando 'Participacion' está seleccionado
+        } else {
+            examenInput.disabled = false;  // Habilitar input cuando 'Aprobacion' está seleccionado
+        }
+    }
+
+    // Ejecutar la función cada vez que cambie el estado de los radios
+    certificadoAprobacion.addEventListener("change", toggleExamenField);
+    certificadoParticipacion.addEventListener("change", toggleExamenField);
+
+    // Llamar la función al cargar la página para que el estado inicial sea correcto
+    window.onload = function() {
+        toggleExamenField();
+    }
+</script>
+
 @endpush

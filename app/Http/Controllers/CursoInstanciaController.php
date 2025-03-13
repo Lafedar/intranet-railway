@@ -192,7 +192,7 @@ class CursoInstanciaController extends Controller
             $data['capacitador'] = $capacitador;
             $data['codigo'] = $request->input('codigo');
             $data['certificado'] = $request->input('certificado');
-            $data['examen'] = $request->input('examen');
+            
             $data['hora'] = $request->input('hora');
 
 
@@ -202,7 +202,16 @@ class CursoInstanciaController extends Controller
             $nextInstanciaId = $this->cursoInstanciaService->getMaxInstanceId($cursoId) + 1;
             $data['id_instancia'] = $nextInstanciaId;
 
+            if($request->input('certificado') == "Participacion")
+            {
+                $data['examen'] = null;
+            }else{
+                $data['examen'] = $request->input('examen');
+            }
+
             $this->cursoInstanciaService->create($data);
+
+            
 
 
             if ($request->has('anexos') && is_array($request->input('anexos'))) {
@@ -342,6 +351,23 @@ class CursoInstanciaController extends Controller
             $data['hora'] = $hora;
             $instancia->update($data);
 
+            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia->id_instancia, $cursoId);
+            if($instancia->certificado == "Participacion"){
+                $instancia->examen = "";
+                $instancia->save();
+                foreach($inscriptos as $inscripto){
+                    $inscripto->evaluacion = "Participacion";
+                    
+                    $inscripto->save();
+                }
+            }elseif($instancia->certificado == "Aprobacion"){
+            
+                foreach($inscriptos as $inscripto){
+                    $inscripto->evaluacion = "N/A";
+                    $inscripto->save();
+                }
+            }
+           
             if (!$request->has('anexos') || empty($request->input('anexos'))) {
                 // Eliminar todas las relaciones con los anexos de esta instancia
                 DB::table('relacion_curso_instancia_anexo')
