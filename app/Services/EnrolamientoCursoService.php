@@ -38,6 +38,7 @@ class EnrolamientoCursoService
     {
         return EnrolamientoCurso::find($id);
     }
+  
 
     public function update(EnrolamientoCurso $enrolamiento, array $data)
     {
@@ -123,20 +124,41 @@ class EnrolamientoCursoService
 
     }
 
-    public function getCursosByUserId(int $userId): Collection //envio los cursos con la relacion de area
+    public function getCursosByUserId(int $dni): Collection //envio los cursos con la relacion de area
     {
         try {
-            return EnrolamientoCurso::where('id_persona', $userId)
-                ->with('curso.areas')
-                ->get()
-                ->map(function ($enrolamiento) {
-                    return $enrolamiento->curso;
-                });
+            // Obtener la persona por su DNI
+            $persona = $this->personaService->getByDni($dni);
+
+            // Si la persona no existe, retornamos null
+            if (!$persona) {
+                return null;
+            }
+
+            // Obtener los enrolamientos asociados con la persona
+            $enrolamientos = $persona->enrolamientos; // Asegúrate de que esta relación esté definida en el modelo Persona
+
+            // Para cada enrolamiento, obtén el curso y el id_instancia
+            $cursosConInstancia = $enrolamientos->map(function ($enrolamiento) {
+                // Accedemos al curso relacionado
+                $curso = $enrolamiento->curso;
+
+                // Añadimos el id_instancia del enrolamiento
+                $curso->id_instancia = $enrolamiento->id_instancia;
+
+                return $curso;
+            });
+
+            return $cursosConInstancia;
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos del usuario en getCursosByUserId' . $e->getMessage());
             throw $e;
         }
     }
+
+
+
 
     public function getPersonsByCourseId(int $cursoId): Collection  //obtengo las personas enroladas en un curso
     {
@@ -511,4 +533,17 @@ class EnrolamientoCursoService
         return $cursosConDetalles;
     }
 
+    public function get_all_courses_and_instances_by_id(int $id)
+    {
+        return EnrolamientoCurso::where('id_persona', $id)
+            ->get();
+    }
+
+
+    public function get_enlistment(int $id_persona, int $id_curso, int $id_instancia){
+        return EnrolamientoCurso::where('id_persona', $id_persona)
+        ->where('id_curso', $id_curso)
+        ->where('id_instancia', $id_instancia)
+        ->get();
+    }
 }

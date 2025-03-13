@@ -56,8 +56,17 @@ class CursoController extends Controller
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $cursosData = $this->cursoService->getAll()->load('areas');
+                $enroll_data=null;
+                $cursoInstanciaService = null;
+                $enrolamientoCursoService = null;
+                $personaService = null;
             } else {
-                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p);
+                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->dni);
+                $enroll_data = $this->enrolamientoCursoService->get_all_courses_and_instances_by_id($personaDni->id_p);
+                $cursoInstanciaService = new CursoInstanciaService();
+                $enrolamientoCursoService = new EnrolamientoCursoService( $this->cursoInstanciaService, $this->personaService,$this->cursoService );
+                $personaService = new PersonaService();
+              
             }
 
             //filtros
@@ -123,7 +132,7 @@ class CursoController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
 
-            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
+            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni', 'enroll_data', 'cursoInstanciaService', 'enrolamientoCursoService', 'personaService'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());

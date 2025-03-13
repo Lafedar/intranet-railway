@@ -26,6 +26,7 @@ class CursoInstancia extends Model
         'estado',
         'version',
         'id_instancia',
+        'examen',
 
 
 

@@ -58,6 +58,7 @@
                 <th>Lugar</th>
                 <th>Estado</th>
                 <th>Version</th>
+                <th>Examen</th>
                 <th>% de Aprobación</th>
                 <th>Certificado</th>
                 @endrole
@@ -105,6 +106,16 @@
                             <td>{{ $instance->lugar }}</td>
                             <td>{{ $instance->estado }}</td>
                             <td>{{ $instance->version }}</td>
+                            <td>
+                                @if(!empty($instance->examen))
+                                <a href="{{ $instance->examen }}" target="_blank">
+                                    <img src="{{ asset('storage/cursos/examen.png') }}" alt="Examen" id="img-icono">
+                                </a>
+
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td>{{ number_format($instance->porcentajeAPR, 2) }}%</td>
                             <td>{{ $instance->certificado}}</td>
 

@@ -165,6 +165,7 @@ class CursoInstanciaController extends Controller
                 'version' => 'nullable|string|max:255',
                 'anexos' => 'nullable|array',
                 'certificado' => 'required|max:20',
+                'examen' => 'nullable|max:200',
 
 
             ]);
@@ -185,6 +186,7 @@ class CursoInstanciaController extends Controller
             $data['capacitador'] = $capacitador;
             $data['codigo'] = $request->input('codigo');
             $data['certificado'] = $request->input('certificado');
+            $data['examen'] = $request->input('examen');
 
 
 
@@ -296,6 +298,7 @@ class CursoInstanciaController extends Controller
                 'version' => 'nullable|string|max:255',
                 'anexos' => 'nullable|array',
                 'certificado' => 'required|max:20',
+                'examen' => 'nullable|string|max:200',
 
             ]);
             $capacitador = $request->input('capacitador');
@@ -321,6 +324,7 @@ class CursoInstanciaController extends Controller
             $data = $request->all();
             $data['capacitador'] = $capacitador;
             $data['certificado'] = $request->input('certificado');
+            $data['examen'] = $request->input('examen');
 
             $instancia->update($data);
 
@@ -821,14 +825,15 @@ class CursoInstanciaController extends Controller
 
 
     }
-    public function generarCertificado(int $cursoId, int $id_persona)
+    public function generarCertificado(int $cursoId, int $id_persona, int $id_instancia)
     {
 
         $curso = $this->cursoService->getById($cursoId);
 
         $persona = $this->personaService->getById($id_persona);
-        $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
+        //$instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
+        $instancia = $this->cursoInstanciaService->getInstanceById($id_instancia, $cursoId);
+        $enrolamiento = $this->enrolamientoCursoService->get_enlistment($persona->id_p, $curso->id, $instancia->id_instancia)->first();
         $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
@@ -860,10 +865,10 @@ class CursoInstanciaController extends Controller
             $imageBase64_firma = null;
         }
 
-
-        if ($instancia->certificado == "Aprobacion") {
+       
+        if ($enrolamiento->evaluacion == "Aprobado") {
             return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
-        } elseif ($instancia->certificado == "Participacion") {
+        } elseif ($enrolamiento->evaluacion  == "Participacion") {
             return view('cursos.certificadoParticipacion', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
         }
     }

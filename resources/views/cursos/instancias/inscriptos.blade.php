@@ -188,7 +188,7 @@
                                     @role(['administrador', 'Gestor-cursos'])
                                     @if($enrolamiento->evaluacion == "Aprobado")
                                         <form
-                                            action="{{ route('generarCertificado', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}"
+                                            action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona, 'id_instancia' => $instancia->id_instancia ]) }}"
                                             method="POST" id="form">
                                             @csrf
 
@@ -199,7 +199,7 @@
                                     @endif
                                     @if($instancia->certificado == "Participacion")
                                         <form
-                                            action="{{ route('generarCertificado', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona]) }}"
+                                            action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $enrolamiento->id_persona, 'id_instancia' => $instancia->id_instancia ]) }}"
                                             method="POST" id="form">
                                             @csrf
 

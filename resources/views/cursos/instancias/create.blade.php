@@ -92,6 +92,10 @@
                         @endforeach
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
+                    <input type="text" name="examen" class="form-control" maxlength="200">
+                </div>
 
                 <div class="form-group">
                     <label>Certificados</label><br>

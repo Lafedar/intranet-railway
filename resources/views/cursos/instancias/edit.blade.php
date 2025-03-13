@@ -108,6 +108,10 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
+                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instancia->examen }}">
+                </div>
+                <div class="form-group">
                     <label>Certificados</label><br>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"

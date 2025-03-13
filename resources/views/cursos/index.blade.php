@@ -94,6 +94,7 @@
                         <th>% Aprobados</th>
                         @endrole
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                        <th>Examen</th>
                         <th>Evaluación</th>
                         <th>Certificado</th>
 
@@ -137,11 +138,36 @@
                         <td>{{ $curso->cantInscriptos}}</td>
                         <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
                         @endrole
-
+                        
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                        <td>
-                            {{$curso->evaluacion}}
-                        </td>
+                            <td>
+                                
+                               
+                                            @php
+                                                $instance = $cursoInstanciaService->getInstanceById($curso->id_instancia, $curso->id);
+                                                $persona = $personaService->getByDni(Auth::user()->dni);
+                                                $enrolamiento = $enrolamientoCursoService->get_enlistment($persona->id_p, $curso->id,  $instance->id_instancia)->first();
+                                           
+                                            @endphp
+                                           
+  
+                                            @if(!empty($instance->examen))
+                                                <a href="{{ $instance->examen }}" target="_blank">
+                                                    <img src="{{ asset('storage/cursos/examen.png') }}" alt="Examen" id="img-icono">
+                                                </a>
+
+                                            @else
+                                                N/A
+                                            @endif
+                                           
+                                            
+                                  
+                                    
+                            </td>
+                            <td>
+                                {{ $enrolamiento->evaluacion }}
+                                
+                            </td>
                        
                         @endif
 
@@ -151,23 +177,27 @@
                                 <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
                             </a>
                         @endrole
-                        @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
-                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+                        @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
+
+                        @if(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Aprobado") 
                             
-                            <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
+                            
+                            <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia]) }}" method="POST" title="Ver Certificado">
                                 @csrf
                                 <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                             </form>
-                            @endif
-                        @elseif(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Participacion")
+                            
+                        @elseif(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Participacion")
                             @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                                 
-                                <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
+                                <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia ]) }}" method="POST" title="Ver Certificado">
                                     @csrf
                                     <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                                 </form>
                             @endif
                         @endif
+                        @endif
+                        
                       
                         </td>
 
