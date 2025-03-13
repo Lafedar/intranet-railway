@@ -88,7 +88,7 @@
         </div>
 
         <form
-            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id, 'gestor' => Auth::user()->dni]) }}"
             method="POST">
             @csrf
             <table>

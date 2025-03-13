@@ -49,6 +49,7 @@
             <tr>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
+                <th>Hora</th>
                 @role(['administrador', 'Gestor-cursos'])
                 <th>Cupo</th>
                 <th>Cupos Restantes</th>
@@ -70,8 +71,11 @@
                         <tr>
 
 
-                            <td>{{ \Carbon\Carbon::parse($instance->fecha_inicio)->format('d/m/Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($instance->fecha_fin)->format('d/m/Y') }}</td>
+                            <td>{{ $instance->fecha_inicio_formateada }}</td>
+                            <td>{{ $instance->fecha_fin_formateada }}</td>
+                            <td>{{ $instance->hora_formateada}}</td>
+
+
                             @role(['administrador', 'Gestor-cursos'])
                             <td>
                                 @if($instance->cupo === null || $instance->cupo === '')
