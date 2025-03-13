@@ -728,7 +728,7 @@ class CursoInstanciaController extends Controller
             $aprobados = $inscriptos;
         }
         elseif ($aprobados->isEmpty()) {
-            return "No hay personas aprobadas para este curso e instancia.";
+            return "No hay personas aprobadas para esta instancia.";
         }
         //logo lafedar
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -761,7 +761,12 @@ class CursoInstanciaController extends Controller
 
         foreach ($aprobados as $personaId) {
 
-            $persona = $this->personaService->getById($personaId->id_persona);
+            if($instancia->certificado == "Aprobacion"){
+                $persona = $this->personaService->getById($personaId);
+            }else if($instancia->certificado == "Participacion"){
+                $persona = $this->personaService->getById($personaId->id_persona);
+            }
+           
 
 
             if (!$persona || empty($persona->correo)) {
