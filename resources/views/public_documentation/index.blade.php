@@ -37,6 +37,9 @@
   @role('politicas')
   <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="btn-agregar">Agregar</button>
   @endrole
+  @role('Documentacion-Publica')
+  <button class="btn btn-info" data-toggle="modal" data-target="#agregar" id="btn-agregar">Agregar</button>
+  @endrole
   <div>
     <table>
       <thead>
