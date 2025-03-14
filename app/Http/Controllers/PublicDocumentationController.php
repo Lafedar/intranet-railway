@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Http\Request;
 use App\Services\PublicDocumentationService;
-
 use Session;
 
 
@@ -19,7 +17,7 @@ class PublicDocumentationController extends Controller
     }
     public function list_all_documentation(Request $request)
     {
-        $documentsQuery = $this->publicDocumentationService->get_public_documentation();
+        $documentsQuery = $this->publicDocumentationService->get_all();
 
         $documents = $documentsQuery->paginate(10)->withQueryString();
 
@@ -31,7 +29,7 @@ class PublicDocumentationController extends Controller
     public function store_public_documentation(Request $request)
     {
 
-        $message = $this->publicDocumentationService->store_public_documentation($request);
+        $message = $this->publicDocumentationService->store($request);
 
         if ($message) {
             $message = 'Documentacion creada correctamente';
@@ -49,7 +47,7 @@ class PublicDocumentationController extends Controller
 
     public function destroy_public_documentation($id)
     {
-        $message = $this->publicDocumentationService->destroy_documentation($id);
+        $message = $this->publicDocumentationService->destroy($id);
         if ($message) {
             $message = 'Documento eliminado correctamente';
             $alertClass = 'alert-success';
@@ -70,7 +68,7 @@ class PublicDocumentationController extends Controller
         $date = $request->input('date');
         $pdf = $request->file('pdf');
 
-        $message = $this->publicDocumentationService->update_documentation($id, $title, $date, $pdf);
+        $message = $this->publicDocumentationService->update($id, $title, $date, $pdf);
         if ($message) {
             $message = 'Documento actualizado correctamente';
             $alertClass = 'alert-success';

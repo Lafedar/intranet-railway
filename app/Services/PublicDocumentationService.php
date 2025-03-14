@@ -12,7 +12,7 @@ use App\Models\PublicDocumentation;
 
 class PublicDocumentationService
 {
-    public function store_public_documentation($request)
+    public function store($request)
     {
         try {
             $aux = PublicDocumentation::get()->max('id');
@@ -42,7 +42,7 @@ class PublicDocumentationService
 
     }
 
-    public function destroy_documentation(int $id)
+    public function destroy(int $id)
     {
         try {
             $document = PublicDocumentation::find($id);
@@ -73,7 +73,7 @@ class PublicDocumentationService
 
     }
 
-    public function update_documentation(int $id, string $title, $date, $pdf)
+    public function update(int $id, string $title, $date, $pdf)
     {
         try {
             $updateData = [];
@@ -136,7 +136,7 @@ class PublicDocumentationService
 
 
 
-    public function get_public_documentation()
+    public function get_all()
     {
         try {
             return PublicDocumentation::query();
