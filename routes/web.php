@@ -234,9 +234,9 @@ Route::get('policy', 'PolicyController@list_all_policy');
 //****************PUBLIC DOCUMENTATION**********************
 Route::group(['middleware' => ['auth']], function () {
   
-  Route::post('store_public_documentation', 'PublicDocumentationController@store_public_documentation')->middleware('role:administrador|rrhh')->name('agregar_public_documentation');
-  Route::get('destroy_public_documentation/{documentation}', 'PublicDocumentationController@destroy_public_documentation')->middleware('role:administrador|rrhh')->name('destroy_public_documentation');
-  Route::post('update_public_documentation', 'PublicDocumentationController@update_public_documentation')->middleware('role:administrador|rrhh')->name('update_public_documentation');
+  Route::post('store_public_documentation', 'PublicDocumentationController@store_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('agregar_public_documentation');
+  Route::get('destroy_public_documentation/{documentation}', 'PublicDocumentationController@destroy_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('destroy_public_documentation');
+  Route::post('update_public_documentation', 'PublicDocumentationController@update_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('update_public_documentation');
 });
 Route::get('public_documentation', 'PublicDocumentationController@list_all_documentation');
 

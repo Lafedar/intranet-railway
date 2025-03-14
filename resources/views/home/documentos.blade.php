@@ -59,12 +59,25 @@
     @endrole
 
   @endauth
-<div class="col-md-3 mt-5 text-center" id="custom-text-dp">
-  <a href="public_documentation">
-    <img src="{{ URL::to('/img/curso.png') }}" height="110" class="d-block mx-auto">
-    <p style="text-decoration: none; font-weight: bold;">Documentación Pública</p>
-  </a>
-</div>
+
+  @if(Auth::check())
+    <div class="col-md-3 mt-5 text-center" id="custom-text-dp">
+      <a href="public_documentation">
+        <img src="{{ URL::to('/img/curso.png') }}" height="110" class="d-block mx-auto">
+        <p style="text-decoration: none; font-weight: bold;">Documentación Pública</p>
+      </a>
+    </div>
+  @else
+    <div class="col-md-3 text-center" id="custom-text-dp">
+      <a href="public_documentation">
+        <img src="{{ URL::to('/img/curso.png') }}" height="110" class="d-block mx-auto">
+        <p style="text-decoration: none; font-weight: bold;">Documentación Pública</p>
+      </a>
+    </div>
+  @endif
+
+  
+
 
 </div>
 
