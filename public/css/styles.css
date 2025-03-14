@@ -28,10 +28,12 @@
     color: rgba(245, 245, 245, 1);
     height: 40px;
 }
-.botones-mostrar-ocultar{
-    margin-bottom: 30px; 
+
+.botones-mostrar-ocultar {
+    margin-bottom: 30px;
     margin-top: -20px;
 }
+
 #asignar-btn:hover {
     background: var(--HOVER, rgba(33, 102, 153, 1));
 }
@@ -85,9 +87,11 @@ screen and (max-width: 768px) {
 #btn-agregar:active {
     background: rgba(100, 161, 206, 1);
 }
-#btn-modal{
-    margin-top:20px;
+
+#btn-modal {
+    margin-top: 20px;
 }
+
 /*estilos ventana modal Observaciones*/
 .modal-title {
     color: #333;
@@ -902,4 +906,18 @@ table thead th {
 
 #reset-password-container {
     margin-top: 130px;
+}
+
+/*Documentacion Publica*/
+#custom-text-dp p {
+    color: var(--HOVER, rgba(33, 102, 153, 1));
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#custom-text-dp a {
+    text-decoration: none;
+    cursor: pointer;
+    
 }

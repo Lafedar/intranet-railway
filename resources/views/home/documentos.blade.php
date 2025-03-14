@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
 @section('content')
 
 <div class="container text-center">
@@ -55,11 +57,14 @@
     </div>
     </div>
     @endrole
-    
+
   @endauth
-  <div class="col-md-3">
-      <a href="/public-documentation"> <img src="{{ URL::to('/img/documentacion.png') }}" height="140"></a>
-    </div>
+<div class="col-md-3 mt-5 text-center" id="custom-text-dp">
+  <a href="public_documentation">
+    <img src="{{ URL::to('/img/curso.png') }}" height="110" class="d-block mx-auto">
+    <p style="text-decoration: none; font-weight: bold;">Documentación Pública</p>
+  </a>
+</div>
 
 </div>
 

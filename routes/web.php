@@ -238,7 +238,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('destroy_public_documentation/{documentation}', 'PublicDocumentationController@destroy_public_documentation')->middleware('role:administrador|rrhh')->name('destroy_public_documentation');
   Route::post('update_public_documentation', 'PublicDocumentationController@update_public_documentation')->middleware('role:administrador|rrhh')->name('update_public_documentation');
 });
-Route::get('public-documentation', 'PublicDocumentationController@list_all_documentation');
+Route::get('public_documentation', 'PublicDocumentationController@list_all_documentation');
 
 //****************INSTRUCTIVOS**********************
 Route::group(['middleware' => ['auth']], function () {
