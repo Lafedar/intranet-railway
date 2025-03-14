@@ -910,10 +910,11 @@ table thead th {
 
 /*Documentacion Publica*/
 #custom-text-dp p {
-    color: var(--HOVER, rgba(33, 102, 153, 1));
-    font-size: 20px;
+    color: var(--HOVER, rgb(28, 92, 141));
+    font-size: 18px;
     font-weight: bold;
     margin-top: 10px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
 #custom-text-dp a {
