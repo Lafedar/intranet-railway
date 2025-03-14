@@ -55,7 +55,11 @@
     </div>
     </div>
     @endrole
+    
   @endauth
+  <div class="col-md-3">
+      <a href="/public-documentation"> <img src="{{ URL::to('/img/documentacion.png') }}" height="140"></a>
+    </div>
 
 </div>
 
