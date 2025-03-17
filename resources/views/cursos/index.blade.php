@@ -172,7 +172,8 @@
                         @endif
 
                         <td>            
-                        @role(['administrador', 'Gestor-cursos'])                
+                        @role(['administrador', 'Gestor-cursos'])            
+                          
                             <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn" title="Ver Instancia">
                                 <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
                             </a>

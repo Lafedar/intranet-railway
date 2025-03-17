@@ -25,10 +25,10 @@
         </script>
     @endif
     <div class="container mt-5">
-        <div id="cursos-instancias-edit-container">
+        <div id="courses-instances-edit-container">
             <h1 class="mb-4 text-center">Editar Instancia</h1>
-            <form id="cursoForm"
-                action="{{ route('cursos.instancias.update', ['instancia' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            <form id="courseForm"
+                action="{{ route('cursos.instancias.update', ['instancia' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT') <!-- Asegúrate de usar el método PUT para la actualización -->
@@ -36,23 +36,23 @@
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha Inicio</label>
                     <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
-                        value="{{ $instancia->fecha_inicio->format('Y-m-d') }}" required>
+                        value="{{ $instance->fecha_inicio->format('Y-m-d') }}" required>
                 </div>
                 <div class="form-group">
                     <label for="fecha_fin">Fecha Fin</label>
                     <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
-                        value="{{ $instancia->fecha_fin ? $instancia->fecha_fin->format('Y-m-d') : '' }}">
+                        value="{{ $instance->fecha_fin ? $instance->fecha_fin->format('Y-m-d') : '' }}">
                 </div>
                 <div class="form-group">
                     <label for="hora">Hora</label>
                     <input type="time" class="form-control" id="hora" name="hora"
-                        value="{{ \Carbon\Carbon::parse($instancia->hora)->format('H:i') }}">
+                        value="{{ \Carbon\Carbon::parse($instance->hora)->format('H:i') }}">
                 </div>
 
 
                 <div class="form-group">
                     <label for="cupo">Cupos</label>
-                    <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instancia->cupo }}" required
+                    <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instance->cupo }}" required
                         min="0" max="999999999" oninput="limitInputLength(this)">
                 </div>
 
@@ -60,12 +60,12 @@
                     <label for="modalidad">Modalidad</label>
                     <select class="form-control" id="modalidad" name="modalidad">
                         <option value="">Seleccione una modalidad</option>
-                        <option value="Presencial" {{ old('modalidad', $modalidad) == 'Presencial' ? 'selected' : '' }}>
+                        <option value="Presencial" {{ old('modalidad', $modality) == 'Presencial' ? 'selected' : '' }}>
                             Presencial
                         </option>
-                        <option value="Hibrido" {{ old('modalidad', $modalidad) == 'Hibrido' ? 'selected' : '' }}>Hibrido
+                        <option value="Hibrido" {{ old('modalidad', $modality) == 'Hibrido' ? 'selected' : '' }}>Hibrido
                         </option>
-                        <option value="Remoto" {{ old('modalidad', $modalidad) == 'Remoto' ? 'selected' : '' }}>Remoto
+                        <option value="Remoto" {{ old('modalidad', $modality) == 'Remoto' ? 'selected' : '' }}>Remoto
                         </option>
                     </select>
                 </div>
@@ -74,9 +74,9 @@
                     <label for="capacitador">Capacitador</label>
                     <select class="form-control" id="capacitador" name="capacitador" required>
                         <option value="">Seleccione un capacitador</option>
-                        @foreach($personas as $persona)
-                            <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}" {{ old('capacitador', $capacitador) == $persona->nombre_p . ' ' . $persona->apellido ? 'selected' : '' }}>
-                                {{ $persona->apellido }} {{ $persona->nombre_p }}
+                        @foreach($persons as $person)
+                            <option value="{{ $person->nombre_p }} {{ $person->apellido }}" {{ old('capacitador', $trainer) == $person->nombre_p . ' ' . $person->apellido ? 'selected' : '' }}>
+                                {{ $person->apellido }} {{ $person->nombre_p }}
                             </option>
                         @endforeach
                     </select>
@@ -86,28 +86,28 @@
                 <div id="otroCapacitadorInput" style="display: none;">
                     <label for="otro_capacitador">Escribe el nombre del capacitador</label>
                     <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador"
-                        value="{{ old('otro_capacitador', $capacitador) }}" maxlength="60">
+                        value="{{ old('otro_capacitador', $trainer) }}" maxlength="60">
                 </div>
                 <div class="form-group">
                     <label for="codigo">Codigo</label>
                     <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49"
-                        value="{{$instancia->codigo }}">
+                        value="{{$instance->codigo }}">
                 </div>
                 <div class="form-group">
                     <label for="lugar">Lugar</label>
-                    <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instancia->lugar }}"
+                    <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instance->lugar }}"
                         maxlength="100">
                 </div>
                 <div class="form-group">
                     <label for="anexos">Registros de Capacitación</label>
                     <div id="anexos">
-                        @foreach($anexos as $formulario)
+                        @foreach($annexes as $form)
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="anexos[]"
-                                    id="anexo_{{ $formulario->formulario_id }}" value="{{ $formulario->formulario_id }}"
-                                    @if(in_array($formulario->formulario_id, $selectedAnexos->pluck('formulario_id')->toArray())) checked @endif>
-                                <p class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                                    {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
+                                    id="anexo_{{ $form->formulario_id }}" value="{{ $form->formulario_id }}"
+                                    @if(in_array($form->formulario_id, $selectedAnnexes->pluck('formulario_id')->toArray())) checked @endif>
+                                <p class="form-check-label" for="anexo_{{ $form->formulario_id }}">
+                                    {{ $form->valor_formulario }} - {{ $form->valor2 }}
                                 </p>
                             </div>
                         @endforeach
@@ -117,14 +117,14 @@
                     <label>Certificados</label><br>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
-                            value="Aprobacion" {{ old('certificado', $instancia->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
+                            value="Aprobacion" {{ old('certificado', $instance->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
                         <label for="certificado_aprobacion" style="font-weight: normal;">
                             Certificado de Aprobación
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="certificado" id="certificado_participacion"
-                            value="Participacion" {{ old('certificado', $instancia->certificado) == 'Participacion' ? 'checked' : '' }} required>
+                            value="Participacion" {{ old('certificado', $instance->certificado) == 'Participacion' ? 'checked' : '' }} required>
                         <label for="certificado_participacion" style="font-weight: normal;">
                             Certificado de Participación
                         </label>
@@ -132,7 +132,7 @@
                 </div>
                 <div class="form-group">
                     <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
-                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instancia->examen }}" id="examenInput">
+                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instance->examen }}" id="examenInput">
                 </div>
                
 
@@ -140,16 +140,16 @@
                     <label for="estado">Estado</label>
                     <select name="estado" class="form-control" required>
                         <option value="" disabled>Selecciona una opción</option>
-                        <option value="Activo" {{ $instancia->estado == 'Activo' ? 'selected' : '' }}>Activo</option>
-                        <option value="No Activo" {{ $instancia->estado == 'No Activo' ? 'selected' : '' }}>No Activo</option>
+                        <option value="Activo" {{ $instance->estado == 'Activo' ? 'selected' : '' }}>Activo</option>
+                        <option value="No Activo" {{ $instance->estado == 'No Activo' ? 'selected' : '' }}>No Activo</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="version">Version</label>
-                    <input type="number" class="form-control" id="version" name="version" value="{{ $instancia->version }}"
+                    <input type="number" class="form-control" id="version" name="version" value="{{ $instance->version }}"
                         min="0" max="999999999" oninput="limitInputLength(this)">
                 </div>
-                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="asignar-btn">Cancelar</a>
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $course->id]) }}" id="asignar-btn">Cancelar</a>
                 <button type="submit" id="asignar-btn">Guardar</button>
 
 

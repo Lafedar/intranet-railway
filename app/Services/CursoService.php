@@ -35,9 +35,10 @@ class CursoService
 
     }
 
-    public function getById($id): ?Curso
+    public function getById($id)
     {
         try {
+           
             return Curso::with('areas')  // Asegúrate de cargar 'anexos' aquí
                 ->find($id);
         } catch (Exception $e) {

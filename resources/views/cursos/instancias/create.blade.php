@@ -18,7 +18,7 @@
     <div class="container mt-5">
         <div id="cursos-instancias-create-container">
             <h1 class="mb-4 text-center">Crear Instancia</h1>
-            <form id="cursoForm" action="{{ route('cursos.instancias.store', $curso->id) }}" method="POST"
+            <form id="cursoForm" action="{{ route('cursos.instancias.store', $course->id) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
@@ -55,9 +55,9 @@
                     <label for="capacitador">Capacitador</label>
                     <select class="form-control" id="capacitador" name="capacitador" required>
                         <option value="">Seleccione un capacitador</option>
-                        @foreach($personas as $persona)
-                            <option value="{{ $persona->nombre_p }} {{ $persona->apellido }}">
-                                {{ $persona->apellido }} {{ $persona->nombre_p }}
+                        @foreach($persons as $person)
+                            <option value="{{ $person->nombre_p }} {{ $person->apellido }}">
+                                {{ $person->apellido }} {{ $person->nombre_p }}
                             </option>
                         @endforeach
                     </select>
@@ -84,12 +84,12 @@
                 <div class="form-group">
                     <label for="anexos">Registros de Capacitación</label>
                     <div id="anexos">
-                        @foreach($anexos as $formulario)
+                        @foreach($annexes as $form)
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="anexos[]"
-                                    id="anexo_{{ $formulario->formulario_id }}" value="{{ $formulario->formulario_id }}">
-                                <p class="form-check-label" for="anexo_{{ $formulario->formulario_id }}">
-                                    {{ $formulario->valor_formulario }} - {{ $formulario->valor2 }}
+                                    id="anexo_{{ $form->formulario_id }}" value="{{ $form->formulario_id }}">
+                                <p class="form-check-label" for="anexo_{{ $form->formulario_id }}">
+                                    {{ $form->valor_formulario }} - {{ $form->valor2 }}
                                 </p>
                             </div>
                         @endforeach
@@ -133,7 +133,7 @@
 
                 </div>
 
-                <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" id="asignar-btn">Cancelar</a>
+                <a href="{{ route('cursos.instancias.index', ['cursoId' => $course->id]) }}" id="asignar-btn">Cancelar</a>
                 <button type="submit" id="asignar-btn">Crear Instancia</button>
 
 
