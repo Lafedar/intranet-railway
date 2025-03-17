@@ -11,7 +11,7 @@ use App\Models\Anexo;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class CursoInstanciaService
+class CourseInstanceService
 {
     /**
      * Get all instances of a specific course by the course ID.
@@ -164,7 +164,7 @@ class CursoInstanciaService
         }
 
     }
-    public function getModalidad(int $instanciaId, int $cursoId)
+    public function getModality(int $instanciaId, int $cursoId)
     {
         return CursoInstancia::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
@@ -173,7 +173,7 @@ class CursoInstanciaService
 
 
 
-    public function getDocumentacion(int $instanciaId, int $cursoId)
+    public function getDocumentation(int $instanciaId, int $cursoId)
     {
         try {
             $anexos = DB::table('relacion_curso_instancia_anexo')

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\CursoService;
 use App\Services\AreaService;
 use App\Services\EnrolamientoCursoService;
@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Mail;
 
 
 
-class InstanceCourseController extends Controller
+class CourseInstanceController extends Controller
 {
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $cursoService;
     private $enrolamientoCursoService;
     private $personaService;
@@ -32,9 +32,9 @@ class InstanceCourseController extends Controller
     private $annexedService;
 
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService, AreaService $areaService, AnnexedService $annexedService)
+    public function __construct(CourseInstanceService $courseInstanceService, CursoService $cursoService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService, AreaService $areaService, AnnexedService $annexedService)
     {
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->cursoService = $cursoService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->personaService = $personaService;
@@ -70,11 +70,11 @@ class InstanceCourseController extends Controller
             $instancesIds = $this->enrolamientoCursoService->getInstancesByPersonId($courseId, $person->id_p);
             $instances = new Collection();
             if (auth()->user()->hasRole(['administrador', 'Gestor-courses'])) {
-                $instances = $this->cursoInstanciaService->getInstancesByCourse($courseId)->sortByDesc('created_at');
+                $instances = $this->courseInstanceService->getInstancesByCourse($courseId)->sortByDesc('created_at');
             } else {
                 foreach ($instancesIds as $idInstancia) {
                     // Llamas al método para obtener la instancia completa
-                    $instance = $this->cursoInstanciaService->getInstanceById($idInstancia, $courseId);
+                    $instance = $this->courseInstanceService->getInstanceById($idInstancia, $courseId);
 
                     // Verificas si la instancia existe y la agregas a la colección
                     if ($instance) {
@@ -83,7 +83,7 @@ class InstanceCourseController extends Controller
                 }
 
             }
-            $availability = $this->cursoInstanciaService->checkAvailability($instances);
+            $availability = $this->courseInstanceService->checkAvailability($instances);
 
             $userDni = Auth::user()->dni;
 
@@ -94,11 +94,11 @@ class InstanceCourseController extends Controller
                 $instance->isEnrolled = $isEnrolled;
                 $instance->amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
 
-                $quota = $this->cursoInstanciaService->checkInstanceQuota($course->id, $instance->id_instancia);
+                $quota = $this->courseInstanceService->checkInstanceQuota($course->id, $instance->id_instancia);
 
                 $amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
                 $percentageAPP = $this->enrolamientoCursoService->getPorcentajeAprobacionInstancia($instance->id_instancia, $course->id);
-                $amountAnnexes = $this->cursoInstanciaService->getCountAnexosInstancia($course->id, $instance->id_instancia);
+                $amountAnnexes = $this->courseInstanceService->getCountAnexosInstancia($course->id, $instance->id_instancia);
 
                 $remaining = $quota - $amountRegistered;
                 $instance->remaining = $remaining;
@@ -114,7 +114,7 @@ class InstanceCourseController extends Controller
 
             });
 
-            $amountInstances = $this->cursoInstanciaService->getMaxInstanceId($courseId) + 1;
+            $amountInstances = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
 
 
             return view('cursos.instancias.index', compact('instancesEnrollment', 'course', 'availability', 'amountInstances', 'person', 'assessment'));
@@ -148,64 +148,69 @@ class InstanceCourseController extends Controller
     {
         try {
             $request->validate([
-                'fecha_inicio' => 'required|date',
-                'fecha_fin' => 'nullable|date',
-                'hora' => 'nullable|date_format:H:i',
-                'cupo' => 'required|integer',
-                'modalidad' => 'nullable|string|max:255',
-                'capacitador' => 'nullable|string|max:255',
-                'otro_capacitador' => 'nullable|string|max:255',
-                'codigo' => 'nullable|string|max:49',
-                'lugar' => 'nullable|string|max:255',
-                'estado' => 'required|string|in:Activo,No Activo',
+                'start_date' => 'required|date',
+                'end_date' => 'nullable|date',
+                'hour' => 'nullable|date_format:H:i',
+                'quota' => 'required|integer',
+                'modality' => 'nullable|string|max:255',
+                'trainer' => 'nullable|string|max:255',
+                'another_trainer' => 'nullable|string|max:255',
+                'code' => 'nullable|string|max:49',
+                'place' => 'nullable|string|max:255',
+                'status' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
-                'anexos' => 'nullable|array',
-                'certificado' => 'required|max:20',
-                'examen' => 'nullable|max:200',
+                'annexes' => 'nullable|array',
+                'certificate' => 'required|max:20',
+                'exam' => 'nullable|max:200',
 
 
             ]);
-            $trainer = $request->input('capacitador');
+            $trainer = $request->input('trainer');
 
 
 
-            if ($request->input('otro_capacitador')) {
-                $trainer = $request->input('otro_capacitador');
+            if ($request->input('another_trainer')) {
+                $trainer = $request->input('another_trainer');
 
             }
 
-            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
-                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
+                return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
 
             $data = $request->all();
             $data['id_curso'] = $courseId;
             $data['capacitador'] = $trainer;
-            $data['codigo'] = $request->input('codigo');
-            $data['certificado'] = $request->input('certificado');
+            $data['codigo'] = $request->input('code');
+            $data['certificado'] = $request->input('certificate');
+            $data['lugar'] = $request->input('place');
+            $data['estado'] = $request->input('status');
+            $data['hora'] = $request->input('hour');
+            $data['cupo'] = $request->input('quota');
+            $data['modalidad'] = $request->input('modality');
+            $data['fecha_inicio'] = $request->input('start_date');
+            $data['fecha_fin'] = $request->input('end_date');
 
-            $data['hora'] = $request->input('hora');
 
 
 
 
-
-            $nextInstanceId = $this->cursoInstanciaService->getMaxInstanceId($courseId) + 1;
+            $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
-            if ($request->input('certificado') == "Participacion") {
+            if ($request->input('certificate') == "Participacion") {
                 $data['examen'] = null;
             } else {
-                $data['examen'] = $request->input('examen');
+                $data['examen'] = $request->input('exam');
             }
 
-            $this->cursoInstanciaService->create($data);
+            $this->courseInstanceService->create($data);
 
 
 
 
-            if ($request->has('anexos') && is_array($request->input('anexos'))) {
-                foreach ($request->input('anexos') as $annexedId) {
+            if ($request->has('annexes') && is_array($request->input('annexes'))) {
+                foreach ($request->input('annexes') as $annexedId) {
 
 
                     $annexedType = $this->annexedService->getById($annexedId);
@@ -234,7 +239,7 @@ class InstanceCourseController extends Controller
     {
         try {
 
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
 
             if (!$instance) {
                 return redirect()->route('curso.instancias.index', ['courseId' => $courseId])
@@ -243,7 +248,7 @@ class InstanceCourseController extends Controller
 
             $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
 
-            $this->cursoInstanciaService->delete($instance, $courseId);
+            $this->courseInstanceService->delete($instance, $courseId);
 
             return redirect()->route('curso.instancias.index', ['cursoId' => $courseId])
                 ->with('success', 'Instance successfully deleted.');
@@ -260,13 +265,13 @@ class InstanceCourseController extends Controller
     public function edit($instanceId, $courseId)
     {
         try {
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $course = $this->cursoService->getById($courseId);
-            $trainer = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId)->capacitador;
+            $trainer = $this->courseInstanceService->getInstanceById($instanceId, $courseId)->capacitador;
             $persons = $this->personaService->getAll();
-            $modality = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId)->modalidad;
-            $annexes = $this->cursoInstanciaService->getAnexos();
-            $selectedAnnexes = $this->cursoInstanciaService->getDocumentacion($instanceId, $courseId);
+            $modality = $this->courseInstanceService->getInstanceById($instanceId, $courseId)->modalidad;
+            $annexes = $this->courseInstanceService->getAnexos();
+            $selectedAnnexes = $this->courseInstanceService->getDocumentacion($instanceId, $courseId);
 
 
             return view('cursos.instancias.edit', compact('instance', 'course', 'trainer', 'persons', 'modality', 'annexes', 'selectedAnnexes'));
@@ -283,50 +288,50 @@ class InstanceCourseController extends Controller
         try {
 
             $request->validate([
-                'fecha_inicio' => 'required|date',
-                'fecha_fin' => 'nullable|date',
-                'hora' => 'nullable|date_format:H:i',
-                'cupo' => 'required|integer',
-                'modalidad' => 'nullable|string|max:255',
-                'capacitador' => 'nullable|string|max:255',
-                'otro_capacitador' => 'nullable|string|max:255',
-                'codigo' => 'nullable|string|max:49',
-                'lugar' => 'nullable|string|max:255',
-                'estado' => 'required|string|in:Activo,No Activo',
+                'start_date' => 'required|date',
+                'end_date' => 'nullable|date',
+                'hour' => 'nullable|date_format:H:i',
+                'quota' => 'required|integer',
+                'modality' => 'nullable|string|max:255',
+                'trainer' => 'nullable|string|max:255',
+                'another_trainer' => 'nullable|string|max:255',
+                'code' => 'nullable|string|max:49',
+                'place' => 'nullable|string|max:255',
+                'status' => 'required|string|in:Activo,No Activo',
                 'version' => 'nullable|string|max:255',
-                'anexos' => 'nullable|array',
-                'certificado' => 'required|max:20',
-                'examen' => 'nullable|string|max:200',
+                'annexes' => 'nullable|array',
+                'certificate' => 'required|max:20',
+                'exam' => 'nullable|string|max:200',
 
             ]);
             // Obtener el valor actual de hora de la base de datos (o del modelo)
 
-            $trainer = $request->input('capacitador');
-            $hour = $request->input('hora');
+            $trainer = $request->input('trainer');
+            $hour = $request->input('hour');
 
 
-            if ($request->input('otro_capacitador')) {
-                $trainer = $request->input('otro_capacitador');
+            if ($request->input('another_trainer')) {
+                $trainer = $request->input('another_trainer');
 
 
             }
 
 
-            if ($request->input('fecha_fin') !== null && $request->input('fecha_fin') < $request->input('fecha_inicio')) {
-                return redirect()->back()->withInput()->withErrors(['fecha_fin' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
+                return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
             }
             $amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instanceId, $courseId);
-            $quota = $request->input('cupo');
+            $quota = $request->input('quota');
             if ($quota < $amountRegistered) {
                 return redirect()->back()->withInput()->withErrors(['cupo' => 'El cupo no puede ser menor que la cantidad de personas ya inscriptas.']);
             }
 
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
 
             $data = $request->all();
             $data['capacitador'] = $trainer;
-            $data['certificado'] = $request->input('certificado');
-            $data['examen'] = $request->input('examen');
+            $data['certificado'] = $request->input('certificate');
+            $data['examen'] = $request->input('exam');
 
             $data['hora'] = $hour;
             $instance->update($data);
@@ -348,16 +353,16 @@ class InstanceCourseController extends Controller
                 }
             }
 
-            if (!$request->has('anexos') || empty($request->input('anexos'))) {
+            if (!$request->has('annexes') || empty($request->input('annexes'))) {
                 // Eliminar todas las relaciones con los anexos de esta instancia
                 $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
 
-            } elseif (is_array($request->input('anexos'))) {
+            } elseif (is_array($request->input('annexes'))) {
                 // Si se seleccionaron anexos, primero eliminamos las relaciones actuales
                 $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
 
                 // Insertamos los nuevos anexos seleccionados
-                $annexed = $request->input('anexos');
+                $annexed = $request->input('annexes');
                 foreach ($annexed as $form_id) {
                     $annexedType = $this->annexedService->getById($form_id);
 
@@ -388,9 +393,9 @@ class InstanceCourseController extends Controller
 
             $amountRegistered = $registered->count();
 
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $course = $this->cursoService->getById($courseId);
-            $annexed = $this->cursoInstanciaService->getAnexoByTipo($courseId, $instanceId, $tipo);
+            $annexed = $this->courseInstanceService->getAnexoByTipo($courseId, $instanceId, $tipo);
             $amountApproved = $this->enrolamientoCursoService->getCountAprobadosInstancia($course->id, $instance->id_instancia);
             $registered->each(function ($enrolled) use ($instanceId, $courseId) {
                 $enrolled->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanceId, $courseId, $enrolled->id_persona);
@@ -407,7 +412,7 @@ class InstanceCourseController extends Controller
     public function getCountAsistentes(int $instanceId, int $courseId)
     {
         try {
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
             $countRegistered = $registered->count();
             $instance->amountRegistered = $countRegistered;
@@ -426,7 +431,7 @@ class InstanceCourseController extends Controller
     {
         try {
 
-            $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $course = $this->cursoService->getById($courseId);
 
             $areasCourse = $this->cursoService->getAreasByCourseId($courseId);
@@ -451,7 +456,7 @@ class InstanceCourseController extends Controller
             $personsWithStatus = $personsWithStatus->sortByDesc('estadoEnrolado');
 
 
-            $quota = $this->cursoInstanciaService->checkInstanceQuota($course->id, $instance->id_instancia);
+            $quota = $this->courseInstanceService->checkInstanceQuota($course->id, $instance->id_instancia);
 
             $amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
             $remaining = $quota - $amountRegistered;
@@ -505,9 +510,9 @@ class InstanceCourseController extends Controller
 
                     // Enviar el correo de inscripción
                     $course = $this->cursoService->getById($courseId);
-                    $startDate = $this->cursoInstanciaService->getFechaInicio($courseId, $instance_id);
-                    $room = $this->cursoInstanciaService->get_room($courseId, $instance_id);
-                    $hour = $this->cursoInstanciaService->get_hour($courseId, $instance_id);
+                    $startDate = $this->courseInstanceService->getFechaInicio($courseId, $instance_id);
+                    $room = $this->courseInstanceService->get_room($courseId, $instance_id);
+                    $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
                     if ($request->input('mail') && !empty($user->correo)) {
                         Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
@@ -589,9 +594,9 @@ class InstanceCourseController extends Controller
     public function verPlanilla(int $instanceId, int $courseId, string $tipo)
     {
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
-        $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
-        $annexed = $this->cursoInstanciaService->getAnexoByTipo($courseId, $instanceId, $tipo);
+        $annexed = $this->courseInstanceService->getAnexoByTipo($courseId, $instanceId, $tipo);
 
 
 
@@ -618,7 +623,7 @@ class InstanceCourseController extends Controller
     public function generarPDF(string $formulario_id, int $courseId, int $instanceId, Request $request)
     {
         $is_pdf = true;
-        $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
@@ -650,7 +655,7 @@ class InstanceCourseController extends Controller
         $selectedDate = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
 
 
-        $annexed = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $courseId, $instanceId);
+        $annexed = $this->courseInstanceService->getDocumentacionById($formulario_id, $courseId, $instanceId);
         if (!$annexed) {
             return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
         }
@@ -687,7 +692,7 @@ class InstanceCourseController extends Controller
     public function verPlanillaPrevia(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->cursoService->getById($courseId);
-        $annexed = $this->cursoInstanciaService->getDocumentacionById($form_id, $courseId, $instanceId);
+        $annexed = $this->courseInstanceService->getDocumentacionById($form_id, $courseId, $instanceId);
         $imagePath = storage_path('app/public/courses/logo-lafedar.png');
 
         if (file_exists($imagePath)) {
@@ -709,8 +714,8 @@ class InstanceCourseController extends Controller
     public function getDocumentacion(int $instanceId, int $courseId)
     {
 
-        $documents = $this->cursoInstanciaService->getDocumentacion($instanceId, $courseId);
-        $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+        $documents = $this->courseInstanceService->getDocumentacion($instanceId, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
 
         return view('cursos.documentacion', compact('documents', 'instance', 'course'));
@@ -722,7 +727,7 @@ class InstanceCourseController extends Controller
 
         $approved = $this->enrolamientoCursoService->getAprobados($courseId, $instanceId);
         $course = $this->cursoService->getById($courseId);
-        $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
         if ($instance->certificado == "Participacion") {
@@ -850,7 +855,7 @@ class InstanceCourseController extends Controller
         $course = $this->cursoService->getById($courseId);
 
         $person = $this->personaService->getById($id_persona);
-        $instance = $this->cursoInstanciaService->getInstanceById($id_instancia, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($id_instancia, $courseId);
         $enlistment = $this->enrolamientoCursoService->get_enlistment($person->id_p, $course->id, $instance->id_instancia)->first();
         $date = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -897,7 +902,7 @@ class InstanceCourseController extends Controller
         $course = $this->cursoService->getById($courseId);
         $person = $this->personaService->getById($id_persona);
         $date = now()->format('d/m/Y');
-        $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
+        $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
 
 
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
@@ -952,7 +957,7 @@ class InstanceCourseController extends Controller
     }
     public function cambiarEstadoInstancia(int $instanceId, int $courseId, string $bandera)
     {
-        $this->cursoInstanciaService->cambiarEstadoInstancia($instanceId, $courseId, $bandera);
+        $this->courseInstanceService->cambiarEstadoInstancia($instanceId, $courseId, $bandera);
         return redirect()->back();
     }
 

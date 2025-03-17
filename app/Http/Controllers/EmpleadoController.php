@@ -16,7 +16,7 @@ use Session;
 use Auth;
 use DB;
 use App\Services\EnrolamientoCursoService;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
 use App\Services\CursoService;
 use App\Services\EmpleadoService;
@@ -30,7 +30,7 @@ use Log;
 class EmpleadoController extends Controller
 {
     private $enrolamientoCursoService;
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $personaService;
     private $cursoService;
 
@@ -40,10 +40,10 @@ class EmpleadoController extends Controller
 
     private $areaService;
 
-    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService, EmpleadoService $empleadoService, UserService $userService, AreaService $areaService)
+    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CourseInstanceService $courseInstanceService, PersonaService $personaService, CursoService $cursoService, EmpleadoService $empleadoService, UserService $userService, AreaService $areaService)
     {
         $this->enrolamientoCursoService = $enrolamientoCursoService;
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
         $this->cursoService = $cursoService;
         $this->empleadoService = $empleadoService;

@@ -25,41 +25,41 @@
         </script>
     @endif
     <div class="container mt-5">
-        <div id="courses-instances-edit-container">
+        <div id="cursos-instancias-edit-container">
             <h1 class="mb-4 text-center">Editar Instancia</h1>
             <form id="courseForm"
                 action="{{ route('cursos.instancias.update', ['instancia' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT') <!-- Asegúrate de usar el método PUT para la actualización -->
+                @method('PUT')
 
                 <div class="form-group">
-                    <label for="fecha_inicio">Fecha Inicio</label>
-                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+                    <label for="start_date"><b>Fecha Inicio</b></label>
+                    <input type="date" class="form-control" id="start_date" name="start_date"
                         value="{{ $instance->fecha_inicio->format('Y-m-d') }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="fecha_fin">Fecha Fin</label>
-                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+                    <label for="end_date"><b>Fecha Fin</b></label>
+                    <input type="date" class="form-control" id="end_date" name="end_date"
                         value="{{ $instance->fecha_fin ? $instance->fecha_fin->format('Y-m-d') : '' }}">
                 </div>
                 <div class="form-group">
-                    <label for="hora">Hora</label>
-                    <input type="time" class="form-control" id="hora" name="hora"
+                    <label for="hour"><b>Hora</b></label>
+                    <input type="time" class="form-control" id="hour" name="hour"
                         value="{{ \Carbon\Carbon::parse($instance->hora)->format('H:i') }}">
                 </div>
 
 
                 <div class="form-group">
-                    <label for="cupo">Cupos</label>
-                    <input type="number" class="form-control" id="cupo" name="cupo" value="{{ $instance->cupo }}" required
+                    <label for="quota"><b>Cupo</b></label>
+                    <input type="number" class="form-control" id="quota" name="quota" value="{{ $instance->cupo }}" required
                         min="0" max="999999999" oninput="limitInputLength(this)">
                 </div>
 
                 <div class="form-group">
-                    <label for="modalidad">Modalidad</label>
-                    <select class="form-control" id="modalidad" name="modalidad">
-                        <option value="">Seleccione una modalidad</option>
+                    <label for="modality"><b>Modalidad</b></label>
+                    <select class="form-control" id="modality" name="modality">
+                        <option value="">Seleccione una modality</option>
                         <option value="Presencial" {{ old('modalidad', $modality) == 'Presencial' ? 'selected' : '' }}>
                             Presencial
                         </option>
@@ -71,8 +71,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="capacitador">Capacitador</label>
-                    <select class="form-control" id="capacitador" name="capacitador" required>
+                    <label for="trainer"><b>Capacitador</b></label>
+                    <select class="form-control" id="trainer" name="trainer" required>
                         <option value="">Seleccione un capacitador</option>
                         @foreach($persons as $person)
                             <option value="{{ $person->nombre_p }} {{ $person->apellido }}" {{ old('capacitador', $trainer) == $person->nombre_p . ' ' . $person->apellido ? 'selected' : '' }}>
@@ -81,29 +81,29 @@
                         @endforeach
                     </select>
                 </div>
-                <a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
-                <a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
-                <div id="otroCapacitadorInput" style="display: none;">
-                    <label for="otro_capacitador">Escribe el nombre del capacitador</label>
-                    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador"
-                        value="{{ old('otro_capacitador', $trainer) }}" maxlength="60">
+                <a href="javascript:void(0);" id="anotherTrainerLink">Otro capacitador</a>
+                <a href="javascript:void(0);" id="closeTrainerLink" style="display: none;">Cerrar</a>
+                <div id="anotherTrainerInput" style="display: none;">
+                    <label for="another_trainer">Escribe el nombre del capacitador</label>
+                    <input type="text" class="form-control" id="another_trainer" name="another_trainer"
+                        value="{{ old('another_trainer', $trainer) }}" maxlength="60">
                 </div>
                 <div class="form-group">
-                    <label for="codigo">Codigo</label>
-                    <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49"
+                    <label for="code"><b>Codigo</b></label>
+                    <input type="text" class="form-control" id="code" name="code" maxlength="49"
                         value="{{$instance->codigo }}">
                 </div>
                 <div class="form-group">
-                    <label for="lugar">Lugar</label>
-                    <input type="text" class="form-control" id="lugar" name="lugar" value="{{ $instance->lugar }}"
+                    <label for="place"><b>Lugar</b></label>
+                    <input type="text" class="form-control" id="place" name="place" value="{{ $instance->lugar }}"
                         maxlength="100">
                 </div>
                 <div class="form-group">
-                    <label for="anexos">Registros de Capacitación</label>
-                    <div id="anexos">
+                    <label for="annexes"><b>Registros de Capacitación</b></label>
+                    <div id="annexes">
                         @foreach($annexes as $form)
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="anexos[]"
+                                <input class="form-check-input" type="checkbox" name="annexes[]"
                                     id="anexo_{{ $form->formulario_id }}" value="{{ $form->formulario_id }}"
                                     @if(in_array($form->formulario_id, $selectedAnnexes->pluck('formulario_id')->toArray())) checked @endif>
                                 <p class="form-check-label" for="anexo_{{ $form->formulario_id }}">
@@ -114,38 +114,38 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Certificados</label><br>
+                    <label><b>Certificados</b></label><br>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
+                        <input class="form-check-input" type="radio" name="certificate" id="approval_certificate"
                             value="Aprobacion" {{ old('certificado', $instance->certificado) == 'Aprobacion' ? 'checked' : '' }} required>
-                        <label for="certificado_aprobacion" style="font-weight: normal;">
+                        <label for="approval_certificate" style="font-weight: normal;">
                             Certificado de Aprobación
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="certificado" id="certificado_participacion"
+                        <input class="form-check-input" type="radio" name="certificate" id="participation_certificate"
                             value="Participacion" {{ old('certificado', $instance->certificado) == 'Participacion' ? 'checked' : '' }} required>
-                        <label for="certificado_participacion" style="font-weight: normal;">
+                        <label for="participation_certificate" style="font-weight: normal;">
                             Certificado de Participación
                         </label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
-                    <input type="text" name="examen" class="form-control" maxlength="200" value="{{ $instance->examen }}" id="examenInput">
+                    <label for="exam"><b>Examen (Insertar Link de Microsoft Form)</b></label>
+                    <input type="text" name="exam" class="form-control" maxlength="200" value="{{ $instance->examen }}" id="examInput">
                 </div>
                
 
                 <div class="form-group">
-                    <label for="estado">Estado</label>
-                    <select name="estado" class="form-control" required>
+                    <label for="status"><b>Estado</b></label>
+                    <select name="status" class="form-control" required>
                         <option value="" disabled>Selecciona una opción</option>
                         <option value="Activo" {{ $instance->estado == 'Activo' ? 'selected' : '' }}>Activo</option>
                         <option value="No Activo" {{ $instance->estado == 'No Activo' ? 'selected' : '' }}>No Activo</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="version">Version</label>
+                    <label for="version"><b>Version</b></label>
                     <input type="number" class="form-control" id="version" name="version" value="{{ $instance->version }}"
                         min="0" max="999999999" oninput="limitInputLength(this)">
                 </div>
@@ -167,11 +167,11 @@
     <script>
 
                 document.addEventListener('DOMContentLoaded', function () {
-                    const selectCapacitador = document.getElementById('capacitador');
-                const otroLink = document.getElementById('otroCapacitadorLink');
-                const cerrarLink = document.getElementById('cerrarCapacitadorLink');
-                const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
-                const otroCapacitadorInput = document.getElementById('otro_capacitador');
+                    const selectCapacitador = document.getElementById('trainer');
+                const otroLink = document.getElementById('anotherTrainerLink');
+                const cerrarLink = document.getElementById('closeTrainerLink');
+                const inputOtroCapacitador = document.getElementById('anotherTrainerInput');
+                const otroCapacitadorInput = document.getElementById('another_trainer');
 
                 // Verificar si el capacitador seleccionado es "Otro" o no
                 if (selectCapacitador.value === "") {
@@ -246,27 +246,27 @@
     </script>
 
     <script>
-    // Obtener los elementos de los radio buttons y el input de examen
-    const examenInput = document.getElementById("examenInput");
-    const certificadoAprobacion = document.getElementById("certificado_aprobacion");
-    const certificadoParticipacion = document.getElementById("certificado_participacion");
+        // Obtener los elementos de los radio buttons y el input de examen
+        const examenInput = document.getElementById("examInput");
+        const certificadoAprobacion = document.getElementById("approval_certificate");
+        const certificadoParticipacion = document.getElementById("participation_certificate");
 
-    // Función que activa o desactiva el campo 'examen' según la opción seleccionada
-    function toggleExamenField() {
-        if (certificadoParticipacion.checked) {
-            examenInput.disabled = true;  // Desactivar input cuando 'Participacion' está seleccionado
-        } else {
-            examenInput.disabled = false;  // Habilitar input cuando 'Aprobacion' está seleccionado
+        // Función que activa o desactiva el campo 'examen' según la opción seleccionada
+        function toggleExamenField() {
+            if (certificadoParticipacion.checked) {
+                examenInput.disabled = true;  // Desactivar input cuando 'Participacion' está seleccionado
+            } else {
+                examenInput.disabled = false;  // Habilitar input cuando 'Aprobacion' está seleccionado
+            }
         }
-    }
 
-    // Ejecutar la función cada vez que cambie el estado de los radios
-    certificadoAprobacion.addEventListener("change", toggleExamenField);
-    certificadoParticipacion.addEventListener("change", toggleExamenField);
+        // Ejecutar la función cada vez que cambie el estado de los radios
+        certificadoAprobacion.addEventListener("change", toggleExamenField);
+        certificadoParticipacion.addEventListener("change", toggleExamenField);
 
-    // Llamar la función al cargar la página para que el estado inicial sea correcto
-    window.onload = function() {
-        toggleExamenField();
-    }
-</script>
+        // Llamar la función al cargar la página para que el estado inicial sea correcto
+        window.onload = function() {
+            toggleExamenField();
+        }
+    </script>
 @endpush

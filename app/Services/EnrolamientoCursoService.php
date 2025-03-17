@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\CursoInstancia;
 use App\Models\EnrolamientoCurso;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
 use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,14 +16,14 @@ use Exception;
 
 class EnrolamientoCursoService
 {
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $personaService;
 
     private $cursoService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService)
+    public function __construct(CourseInstanceService $courseInstanceService, PersonaService $personaService, CursoService $cursoService)
     {
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
         $this->cursoService = $cursoService;
 
@@ -77,9 +77,9 @@ class EnrolamientoCursoService
 
             $person = Persona::where('dni', $userDni)->first();
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($instanceId, $cursoId);
+            $instancia = $this->courseInstanceService->getInstanceById($instanceId, $cursoId);
 
-            if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
+            if ($this->courseInstanceService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
                 if ($instancia->certificado == "Participacion") {
                     $data = [
                         'id_persona' => $person->id_p,
@@ -496,7 +496,7 @@ class EnrolamientoCursoService
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
@@ -519,7 +519,7 @@ class EnrolamientoCursoService
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;

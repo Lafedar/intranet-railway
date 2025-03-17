@@ -22,28 +22,28 @@
                 enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
-                    <label for="fecha_inicio">Fecha inicio</label>
-                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                    <label for="start_date">Fecha inicio</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="fecha_fin">Fecha Fin</label>
-                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                    <label for="end_date">Fecha Fin</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" required>
                 </div>
                 <div class="form-group">
-                    <label for="hora">Hora</label>
-                    <input type="time" class="form-control" id="hora" name="hora" required>
+                    <label for="hour">Hora</label>
+                    <input type="time" class="form-control" id="hour" name="hour" required>
                 </div>
 
 
                 <div class="form-group">
-                    <label for="cupo">Cupos</label>
-                    <input type="number" class="form-control" id="cupo" name="cupo" required min="0" max="999999999"
+                    <label for="quota">Cupos</label>
+                    <input type="number" class="form-control" id="quota" name="quota" required min="0" max="999999999"
                         oninput="limitInputLength(this)">
                 </div>
                 <div class="form-group">
-                    <label for="modalidad">Modalidad</label>
-                    <select class="form-control" id="modalidad" name="modalidad">
+                    <label for="modality">Modalidad</label>
+                    <select class="form-control" id="modality" name="modality">
                         <option value="">Seleccione una modalidad</option>
                         <option value="Presencial">Presencial</option>
                         <option value="Hibrido">Hibrido</option>
@@ -52,8 +52,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="capacitador">Capacitador</label>
-                    <select class="form-control" id="capacitador" name="capacitador" required>
+                    <label for="trainer">Capacitador</label>
+                    <select class="form-control" id="trainer" name="trainer" required>
                         <option value="">Seleccione un capacitador</option>
                         @foreach($persons as $person)
                             <option value="{{ $person->nombre_p }} {{ $person->apellido }}">
@@ -64,29 +64,29 @@
                 </div>
 
 
-                <a href="javascript:void(0);" id="otroCapacitadorLink">Otro capacitador</a>
+                <a href="javascript:void(0);" id="anotherTrainerLink">Otro capacitador</a>
 
 
-                <a href="javascript:void(0);" id="cerrarCapacitadorLink" style="display: none;">Cerrar</a>
+                <a href="javascript:void(0);" id="closeTrainerLink" style="display: none;">Cerrar</a>
 
-                <div id="otroCapacitadorInput" style="display: none;">
-                    <label for="otro_capacitador">Escribe el nombre del capacitador</label>
-                    <input type="text" class="form-control" id="otro_capacitador" name="otro_capacitador" maxlength="60">
+                <div id="anotherTrainerInput" style="display: none;">
+                    <label for="another_trainer">Escribe el nombre del capacitador</label>
+                    <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60">
                 </div>
                 <div class="form-group">
-                    <label for="codigo">Codigo</label>
-                    <input type="text" class="form-control" id="codigo" name="codigo" maxlength="49">
+                    <label for="code">Codigo</label>
+                    <input type="text" class="form-control" id="code" name="code" maxlength="49">
                 </div>
                 <div class="form-group">
-                    <label for="lugar">Lugar</label>
-                    <input type="text" class="form-control" id="lugar" name="lugar" maxlength="100">
+                    <label for="place">Lugar</label>
+                    <input type="text" class="form-control" id="place" name="place" maxlength="100">
                 </div>
                 <div class="form-group">
-                    <label for="anexos">Registros de Capacitación</label>
-                    <div id="anexos">
+                    <label for="annexes">Registros de Capacitación</label>
+                    <div id="annexes">
                         @foreach($annexes as $form)
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="anexos[]"
+                                <input class="form-check-input" type="checkbox" name="annexes[]"
                                     id="anexo_{{ $form->formulario_id }}" value="{{ $form->formulario_id }}">
                                 <p class="form-check-label" for="anexo_{{ $form->formulario_id }}">
                                     {{ $form->valor_formulario }} - {{ $form->valor2 }}
@@ -98,29 +98,29 @@
                 <div class="form-group">
                     <label>Certificados</label><br>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="certificado" id="certificado_aprobacion"
+                        <input class="form-check-input" type="radio" name="certificate" id="approval_certificate"
                             value="Aprobacion" required>
-                        <label for="certificado_aprobacion" style="font-weight: normal;">
+                        <label for="approval_certificate" style="font-weight: normal;">
                             Certificado de Aprobación
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="certificado" id="certificado_participacion"
+                        <input class="form-check-input" type="radio" name="certificate" id="participation_certificate"
                             value="Participacion" required>
-                        <label for="certificado_participacion" style="font-weight: normal;">
+                        <label for="participation_certificate" style="font-weight: normal;">
                             Certificado de Participación
                         </label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="examen">Examen (Insertar Link de Microsoft Form)</label>
-                    <input type="text" name="examen" class="form-control" maxlength="200" id="examenInput">
+                    <label for="exam">Examen (Insertar Link de Microsoft Form)</label>
+                    <input type="text" name="exam" class="form-control" maxlength="200" id="examInput">
                 </div>
 
 
                 <div class="form-group">
-                    <label for="estado">Estado</label>
-                    <select name="estado" class="form-control" required>
+                    <label for="status">Estado</label>
+                    <select name="status" class="form-control" required>
                         <option value="" disabled selected>Selecciona una opción</option>
                         <option value="Activo">Activo</option>
                         <option value="No Activo">No Activo</option>
@@ -162,8 +162,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Escuchar el cambio en el campo 'fecha_inicio'
-            const fechaInicio = document.getElementById('fecha_inicio');
-            const fechaFin = document.getElementById('fecha_fin');
+            const fechaInicio = document.getElementById('start_date');
+            const fechaFin = document.getElementById('end_date');
 
             // Si el campo fecha_fin está vacío, asignamos el valor de fecha_inicio
             fechaInicio.addEventListener('input', function () {
@@ -176,11 +176,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const selectCapacitador = document.getElementById('capacitador');
-            const otroLink = document.getElementById('otroCapacitadorLink');
-            const cerrarLink = document.getElementById('cerrarCapacitadorLink');
-            const inputOtroCapacitador = document.getElementById('otroCapacitadorInput');
-            const otroCapacitadorInput = document.getElementById('otro_capacitador');
+            const selectCapacitador = document.getElementById('trainer');
+            const otroLink = document.getElementById('anotherTrainerLink');
+            const cerrarLink = document.getElementById('closeTrainerLink');
+            const inputOtroCapacitador = document.getElementById('anotherTrainerInput');
+            const otroCapacitadorInput = document.getElementById('another_trainer');
 
             // Mostrar el input cuando se hace clic en el enlace "Otro"
             otroLink.addEventListener('click', function () {
@@ -238,9 +238,9 @@
     </script>
    <script>
     // Obtener los elementos de los radio buttons y el input de examen
-    const examenInput = document.getElementById("examenInput");
-    const certificadoAprobacion = document.getElementById("certificado_aprobacion");
-    const certificadoParticipacion = document.getElementById("certificado_participacion");
+    const examenInput = document.getElementById("examInput");
+    const certificadoAprobacion = document.getElementById("approval_certificate");
+    const certificadoParticipacion = document.getElementById("participation_certificate");
 
     // Función que activa o desactiva el campo 'examen' según la opción seleccionada
     function toggleExamenField() {

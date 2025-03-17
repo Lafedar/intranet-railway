@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CursoService;
 use App\Services\PersonaService;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\AreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -23,15 +23,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CursoController extends Controller
 {
     private CursoService $cursoService;
-    private CursoInstanciaService $cursoInstanciaService;
+    private CourseInstanceService $courseInstanceService;
     private EnrolamientoCursoService $enrolamientoCursoService;
     private AreaService $areaService;
     private PersonaService $personaService;
 
-    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService)
+    public function __construct(CursoService $cursoService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService)
     {
         $this->cursoService = $cursoService;
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->areaService = $areaService;
         $this->personaService = $personaService;
@@ -57,14 +57,14 @@ class CursoController extends Controller
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $cursosData = $this->cursoService->getAll()->load('areas');
                 $enroll_data=null;
-                $cursoInstanciaService = null;
+                $courseInstanceService = null;
                 $enrolamientoCursoService = null;
                 $personaService = null;
             } else {
                 $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->dni);
                 $enroll_data = $this->enrolamientoCursoService->get_all_courses_and_instances_by_id($personaDni->id_p);
-                $cursoInstanciaService = new CursoInstanciaService();
-                $enrolamientoCursoService = new EnrolamientoCursoService( $this->cursoInstanciaService, $this->personaService,$this->cursoService );
+                $courseInstanceService = new courseInstanceService();
+                $enrolamientoCursoService = new EnrolamientoCursoService( $this->courseInstanceService, $this->personaService,$this->cursoService );
                 $personaService = new PersonaService();
               
             }
@@ -109,7 +109,7 @@ class CursoController extends Controller
                 $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
                 $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion($curso->id, $personaDni->id_p);
                 $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
-                $curso->cantInstancias = $this->cursoInstanciaService->getCountInstances($curso->id);
+                $curso->cantInstancias = $this->courseInstanceService->getCountInstances($curso->id);
 
                 return $curso;
             });
@@ -132,7 +132,7 @@ class CursoController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
 
-            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni', 'enroll_data', 'cursoInstanciaService', 'enrolamientoCursoService', 'personaService'));
+            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni', 'enroll_data', 'courseInstanceService', 'enrolamientoCursoService', 'personaService'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
@@ -332,12 +332,12 @@ class CursoController extends Controller
             }
 
 
-            $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
+            $instancias = $this->courseInstanceService->getInstancesByCourse($id);
 
 
             foreach ($instancias as $instancia) {
                 $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id);
-                $this->cursoInstanciaService->delete($instancia, $curso->id);
+                $this->courseInstanceService->delete($instancia, $curso->id);
             }
             DB::table('relacion_curso_instancia_anexo')
                 ->where('id_curso', $id)
