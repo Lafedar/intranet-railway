@@ -17,7 +17,7 @@ use Carbon\Carbon;
 use Exception;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Database\Eloquent\Collection;
-use App\Mail\InscripcioncourseMail;
+use App\Mail\InscripcionCursoMail;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -53,9 +53,9 @@ class InstanceCourseController extends Controller
     {
         try {
 
-            
+
             $course = $this->cursoService->getById($courseId);
-            
+
             $personDni = Auth::user()->dni;
             $person = $this->personaService->getByDni($personDni);
             $assessment = $this->enrolamientoCursoService->getEvaluacion($courseId, $person->id_p);
@@ -95,8 +95,8 @@ class InstanceCourseController extends Controller
                 $instance->amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
 
                 $quota = $this->cursoInstanciaService->checkInstanceQuota($course->id, $instance->id_instancia);
-                
-                $amountRegistered  = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
+
+                $amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
                 $percentageAPP = $this->enrolamientoCursoService->getPorcentajeAprobacionInstancia($instance->id_instancia, $course->id);
                 $amountAnnexes = $this->cursoInstanciaService->getCountAnexosInstancia($course->id, $instance->id_instancia);
 
@@ -183,7 +183,7 @@ class InstanceCourseController extends Controller
             $data['capacitador'] = $trainer;
             $data['codigo'] = $request->input('codigo');
             $data['certificado'] = $request->input('certificado');
-            
+
             $data['hora'] = $request->input('hora');
 
 
@@ -193,16 +193,15 @@ class InstanceCourseController extends Controller
             $nextInstanceId = $this->cursoInstanciaService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
-            if($request->input('certificado') == "Participacion")
-            {
+            if ($request->input('certificado') == "Participacion") {
                 $data['examen'] = null;
-            }else{
+            } else {
                 $data['examen'] = $request->input('examen');
             }
 
             $this->cursoInstanciaService->create($data);
 
-            
+
 
 
             if ($request->has('anexos') && is_array($request->input('anexos'))) {
@@ -333,22 +332,22 @@ class InstanceCourseController extends Controller
             $instance->update($data);
 
             $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instance->id_instancia, $courseId);
-            if($instance->certificado == "Participacion"){
+            if ($instance->certificado == "Participacion") {
                 $instance->examen = "";
                 $instance->save();
-                foreach($registered as $enrolled){
+                foreach ($registered as $enrolled) {
                     $enrolled->evaluacion = "Participacion";
-                    
+
                     $enrolled->save();
                 }
-            }elseif($instance->certificado == "Aprobacion"){
-            
-                foreach($registered as $enrolled){
+            } elseif ($instance->certificado == "Aprobacion") {
+
+                foreach ($registered as $enrolled) {
                     $enrolled->evaluacion = "N/A";
                     $enrolled->save();
                 }
             }
-           
+
             if (!$request->has('anexos') || empty($request->input('anexos'))) {
                 // Eliminar todas las relaciones con los anexos de esta instancia
                 $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
@@ -363,7 +362,7 @@ class InstanceCourseController extends Controller
                     $annexedType = $this->annexedService->getById($form_id);
 
                     if ($annexedType) {
-                        
+
                         $this->annexedService->insert_annexed_course_instance($courseId, $instanceId, $form_id, $annexedType);
                     } else {
                         Log::warning("Attachment type not found for formulario_id: $form_id");
@@ -410,7 +409,7 @@ class InstanceCourseController extends Controller
         try {
             $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
             $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
-            $countRegistered = $registered ->count();
+            $countRegistered = $registered->count();
             $instance->amountRegistered = $countRegistered;
 
 
@@ -448,7 +447,8 @@ class InstanceCourseController extends Controller
                 return $person;
             });
 
-            $personsConEstado =  $personsWithStatus->sortByDesc('estadoEnrolado');
+
+            $personsWithStatus = $personsWithStatus->sortByDesc('estadoEnrolado');
 
 
             $quota = $this->cursoInstanciaService->checkInstanceQuota($course->id, $instance->id_instancia);
@@ -462,7 +462,7 @@ class InstanceCourseController extends Controller
                 });
             }
 
-            return view('cursos.instancias.personas', compact(' $personsWithStatus', 'course', 'instance', 'remaining'));
+            return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining'));
 
         } catch (Exception $e) {
             Log::error('Error al obtener las personas para inscribir: ' . $e->getMessage());
@@ -473,15 +473,16 @@ class InstanceCourseController extends Controller
 
 
 
-    public function inscribirVariasPersonas(Request $request, int $instance_id, int $courseId, $gestor)
+    public function inscribirVariasPersonas(Request $request, int $instance_id, int $courseId, $manager_dni)
     {
         try {
-            $personsSeleccionadas = $request->input('personas', []);
-            $gestor = $this->personaService->getByDni($gestor);
+            $selectedPersons = $request->input('personas', []);
+            $manager = $this->personaService->getByDni($manager_dni);
 
-            if (empty($personsSeleccionadas)) {
+            if (empty($selectedPersons)) {
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
             }
+
             $imagePath2 = storage_path('app/public/courses/firma.jpg');
 
             if (file_exists($imagePath2)) {
@@ -491,36 +492,40 @@ class InstanceCourseController extends Controller
             } else {
                 $imageBase64Firma = null;
             }
-            
-            foreach ($personsSeleccionadas as $id_persona => $inscribir) { //$id_persona es el id de la persona seleccionada
-                // $inscribir es para saber si esta seleccionado el checkbox, el valor es 1
-                $user = $this->personaService->getById($id_persona);
-                $gestor = $this->personaService->getByDni($gestor->dni);
 
-                // Inscribir a la persona
-                $this->enrolamientoCursoService->enroll($user->dni, $instance_id, $courseId);
+            $successfulRegistrations = 0;  // Contador de inscripciones exitosas
 
-                // Enviar el correo de inscripción
-                $course = $this->cursoService->getById($courseId); // Aquí deberías obtener el nombre real del course
-                $fechaInicio = $this->cursoInstanciaService->getFechaInicio($courseId, $instance_id);
-                $sala = $this->cursoInstanciaService->get_room($courseId, $instance_id);
-                $hora = $this->cursoInstanciaService->get_hour($courseId, $instance_id);
+            foreach ($selectedPersons as $id_persona => $inscribir) {
+                if ($inscribir == 1) {  // Solo inscribir si la persona fue seleccionada
+                    $user = $this->personaService->getById($id_persona);
+                    $manager = $this->personaService->getByDni($manager->dni);
 
-                if ($request->input('mail')) {
-                    // Enviar el correo
-                    if (!empty($user->correo)) {
-                        Mail::to($user->correo)->send(new InscripcioncourseMail($user, $course, $fechaInicio, $imageBase64Firma, $gestor, $sala, $hora));
-                        return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
+                    // Inscribir a la persona
+                    $this->enrolamientoCursoService->enroll($user->dni, $instance_id, $courseId);
+
+                    // Enviar el correo de inscripción
+                    $course = $this->cursoService->getById($courseId);
+                    $startDate = $this->cursoInstanciaService->getFechaInicio($courseId, $instance_id);
+                    $room = $this->cursoInstanciaService->get_room($courseId, $instance_id);
+                    $hour = $this->cursoInstanciaService->get_hour($courseId, $instance_id);
+
+                    if ($request->input('mail') && !empty($user->correo)) {
+                        Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                     }
-                }else{
-                    return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente.');
-                }
 
+                    $successfulRegistrations++;  // Incrementar el contador de inscripciones exitosas
+                }
             }
 
-           
+            // Verificar si al menos una inscripción fue exitosa
+            if ($successfulRegistrations > 0) {
+                return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente' . ($request->input('mail') ? ' y se les ha enviado un correo.' : ''));
+            } else {
+                return redirect()->back()->with('error', 'Hubo un problema al inscribir las personas.');
+            }
+
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al inscribir la/s personas' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error registering the person(s)' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al inscribir la/s personas.');
         }
     }
@@ -532,7 +537,7 @@ class InstanceCourseController extends Controller
             $this->enrolamientoCursoService->unEnroll($userId, $instanceId, $courseId);
             return redirect()->back()->with('success', 'La persona ha sido desenrolada correctamente.');
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al desinscribir la persona' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error unsubscribing the person' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al desinscribir la persona.');
         }
 
@@ -545,37 +550,37 @@ class InstanceCourseController extends Controller
     {
         try {
 
-            $resultado = $this->enrolamientoCursoService->evaluarInstancia($userId, $instanceId, $courseId, $bandera);
+            $this->enrolamientoCursoService->evaluarInstancia($userId, $instanceId, $courseId, $bandera);
             return redirect()->back()
                 ->with('success', 'La persona fue evaluada correctamente.');
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al evaluar la persona' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error in evaluating the person' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al evaluar la persona.');
 
 
         }
     }
 
-    public function evaluarInstanciaTodos(Request $request, $courseId, $instanceId, $bandera)
+    public function evaluarInstanciaTodos(Request $request, $courseId, $instanceId, $flag)
     {
         try {
 
             // Obtener todas las personas inscritas en esta instancia
-            $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+            $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
             // Aprobar a todas las personas
-            foreach ($inscriptos as $enrolamiento) {
-                $this->enrolamientoCursoService->evaluarInstancia($enrolamiento->id_persona, $instanceId, $courseId, $bandera);
+            foreach ($registered as $enlistment) {
+                $this->enrolamientoCursoService->evaluarInstancia($enlistment->id_persona, $instanceId, $courseId, $flag);
             }
-            if ($bandera == 0) {
+            if ($flag == 0) {
                 return redirect()->back()->with('success', 'Todas las personas fueron aprobadas correctamente.');
             } else {
                 return redirect()->back()->with('success', 'Todas las personas fueron desaprobadas correctamente.');
             }
 
         } catch (Exception $e) {
-            Log::error('Error en la clase: ' . get_class($this) . ' .Error al aprobar a todas las personas: ' . $e->getMessage());
+            Log::error('Error en la clase: ' . get_class($this) . ' .Error approving all people: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al aprobar a todas las personas.');
         }
     }
@@ -583,19 +588,19 @@ class InstanceCourseController extends Controller
 
     public function verPlanilla(int $instanceId, int $courseId, string $tipo)
     {
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+        $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
         $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
-        $anexo = $this->cursoInstanciaService->getAnexoByTipo($courseId, $instanceId, $tipo);
+        $annexed = $this->cursoInstanciaService->getAnexoByTipo($courseId, $instanceId, $tipo);
 
 
 
-        $inscriptos->each(function ($inscripto) use ($instanceId, $courseId) {
-            $inscripto->fecha_enrolamiento = Carbon::parse($this->enrolamientoCursoService->getFechaCreacion($instanceId, $courseId, $inscripto->id_persona))
+        $registered->each(function ($registered) use ($instanceId, $courseId) {
+            $registered->fecha_enrolamiento = Carbon::parse($this->enrolamientoCursoService->getFechaCreacion($instanceId, $courseId, $registered->id_persona))
                 ->format('d/m/Y');
         });
 
-        $inscriptosChunks = array_chunk($inscriptos->toArray(), 17);
+        $registeredChunks = array_chunk($registered->toArray(), 17);
 
         $imagePath = storage_path('app/public/courses/logo-lafedar.png');
         if (file_exists($imagePath)) {
@@ -606,7 +611,7 @@ class InstanceCourseController extends Controller
             $imageBase64 = null;
         }
 
-        return view('courses.planillacourses', compact('inscriptos', 'anexo', 'instancia', 'course', 'imageBase64', 'inscriptosChunks'));
+        return view('cursos.planillaCursos', compact('registered', 'annexed', 'instance', 'course', 'imageBase64', 'registeredChunks'));
     }
 
 
@@ -615,38 +620,38 @@ class InstanceCourseController extends Controller
         $is_pdf = true;
         $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+        $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
-        $inscriptosArray = $inscriptos->toArray();
+        $registeredArray = $registered->toArray();
 
         // Dividir la lista de inscriptos en páginas (cada página tendrá 17 inscriptos)
-        $inscriptosChunks = array_chunk($inscriptosArray, 17);
+        $registeredChunks = array_chunk($registeredArray, 17);
 
-        foreach ($inscriptosChunks as &$pagina) {
-            while (count($pagina) < 17) {
-                $pagina[] = [
+        foreach ($registeredChunks as &$page) {
+            while (count($page) < 17) {
+                $page[] = [
                     'fecha_enrolamiento' => null,
                     'persona' => [
-                        'nombre_p' => null,
-                        'apellido' => null
-                    ]
+                            'nombre_p' => null,
+                            'apellido' => null
+                        ]
                 ];
             }
         }
 
-        foreach ($pagina as &$inscripto) {
-            if (!empty($inscripto['fecha_enrolamiento'])) {
+        foreach ($page as &$registered) {
+            if (!empty($registered['fecha_enrolamiento'])) {
 
-                $inscripto['fecha_enrolamiento'] = Carbon::parse($inscripto['fecha_enrolamiento'])->format('d/m/Y');
+                $registered['fecha_enrolamiento'] = Carbon::parse($registered['fecha_enrolamiento'])->format('d/m/Y');
             }
         }
 
 
-        $fechaSeleccionada = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
+        $selectedDate = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
 
 
-        $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $courseId, $instanceId);
-        if (!$anexo) {
+        $annexed = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $courseId, $instanceId);
+        if (!$annexed) {
             return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
         }
 
@@ -660,7 +665,7 @@ class InstanceCourseController extends Controller
         }
 
 
-        $html = view('courses.planillacourses', compact('inscriptos', 'instancia', 'course', 'anexo', 'imageBase64', 'inscriptosChunks', 'is_pdf', 'fechaSeleccionada'))->render();
+        $html = view('cursos.planillaCursos', compact('registered', 'instance', 'course', 'annexed', 'imageBase64', 'registeredChunks', 'is_pdf', 'selectedDate'))->render();
 
 
         $pdf = SnappyPdf::loadHTML($html)
@@ -679,10 +684,10 @@ class InstanceCourseController extends Controller
 
 
 
-    public function verPlanillaPrevia(string $formulario_id, int $courseId, int $instanceId)
+    public function verPlanillaPrevia(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->cursoService->getById($courseId);
-        $anexo = $this->cursoInstanciaService->getDocumentacionById($formulario_id, $courseId, $instanceId);
+        $annexed = $this->cursoInstanciaService->getDocumentacionById($form_id, $courseId, $instanceId);
         $imagePath = storage_path('app/public/courses/logo-lafedar.png');
 
         if (file_exists($imagePath)) {
@@ -698,32 +703,31 @@ class InstanceCourseController extends Controller
         }
 
 
-        return view('courses.planillaPrevia', compact('anexo', 'imageBase64'));
+        return view('cursos.planillaPrevia', compact('annexed', 'imageBase64'));
     }
 
     public function getDocumentacion(int $instanceId, int $courseId)
     {
 
-        $documentos = $this->cursoInstanciaService->getDocumentacion($instanceId, $courseId);
+        $documents = $this->cursoInstanciaService->getDocumentacion($instanceId, $courseId);
         $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
 
-        return view('courses.documentacion', compact('documentos', 'instancia', 'course'));
+        return view('cursos.documentacion', compact('documents', 'instance', 'course'));
     }
 
 
     public function enviarCertificado($courseId, $instanceId)
     {
 
-        $aprobados = $this->enrolamientoCursoService->getAprobados($courseId, $instanceId);
+        $approved = $this->enrolamientoCursoService->getAprobados($courseId, $instanceId);
         $course = $this->cursoService->getById($courseId);
         $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+        $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
-        if($instance->certificado == "Participacion"){
-            $aprobados = $inscriptos;
-        }
-        elseif ($aprobados->isEmpty()) {
+        if ($instance->certificado == "Participacion") {
+            $approved = $registered ;
+        } elseif ($approved->isEmpty()) {
             return "No hay personas aprobadas para esta instancia.";
         }
         //logo lafedar
@@ -755,14 +759,14 @@ class InstanceCourseController extends Controller
         $errorCount = 0;
 
 
-        foreach ($aprobados as $personId) {
+        foreach ($approved as $personId) {
 
-            if($instance->certificado == "Aprobacion"){
+            if ($instance->certificado == "Aprobacion") {
                 $person = $this->personaService->getById($personId);
-            }else if($instance->certificado == "Participacion"){
+            } else if ($instance->certificado == "Participacion") {
                 $person = $this->personaService->getById($personId->id_persona);
             }
-           
+
 
 
             if (!$person || empty($person->correo)) {
@@ -798,23 +802,19 @@ class InstanceCourseController extends Controller
 
             if ($instance->certificado == "Aprobacion") {
                 // Generar el PDF y guardarlo en la ruta
-                $pdf = SnappyPdf::loadView('courses.certificadoMail', $data)
+                $pdf = SnappyPdf::loadView('cursos.certificadoMail', $data)
                     ->setPaper('a4')
                     ->setOrientation('landscape');
 
                 $pdf->save($filePath);
 
             } elseif ($instance->certificado == "Participacion") {
-                $pdf = SnappyPdf::loadView('courses.certificadoMailParticipacion', $data)
+                $pdf = SnappyPdf::loadView('cursos.certificadoMailParticipacion', $data)
                     ->setPaper('a4')
                     ->setOrientation('landscape');
 
                 $pdf->save($filePath);
             }
-
-
-
-
 
             if (file_exists($filePath)) {
                 // Enviar por correo con el archivo adjunto
@@ -850,10 +850,9 @@ class InstanceCourseController extends Controller
         $course = $this->cursoService->getById($courseId);
 
         $person = $this->personaService->getById($id_persona);
-        //$instanceEnrolada = $person->enrolamientos()->where('id_course', $courseId)->first();
         $instance = $this->cursoInstanciaService->getInstanceById($id_instancia, $courseId);
-        $enrolamiento = $this->enrolamientoCursoService->get_enlistment($person->id_p, $course->id, $instance->id_instancia)->first();
-        $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
+        $enlistment = $this->enrolamientoCursoService->get_enlistment($person->id_p, $course->id, $instance->id_instancia)->first();
+        $date = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 
         if (file_exists($imagePath)) {
@@ -884,11 +883,11 @@ class InstanceCourseController extends Controller
             $imageBase64_firma = null;
         }
 
-       
-        if ($enrolamiento->evaluacion == "Aprobado") {
-            return view('courses.certificado', compact('course', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
-        } elseif ($enrolamiento->evaluacion  == "Participacion") {
-            return view('courses.certificadoParticipacion', compact('course', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
+
+        if ($enlistment->evaluacion == "Aprobado") {
+            return view('cursos.certificado', compact('course', 'person', 'imageBase64', 'date', 'instance', 'imageBase64_firma'));
+        } elseif ($enlistment->evaluacion == "Participacion") {
+            return view('cursos.certificadoParticipacion', compact('course', 'person', 'imageBase64', 'date', 'instance', 'imageBase64_firma'));
         }
     }
 
@@ -897,7 +896,7 @@ class InstanceCourseController extends Controller
         $is_pdf = true;
         $course = $this->cursoService->getById($courseId);
         $person = $this->personaService->getById($id_persona);
-        $fecha = now()->format('d/m/Y');
+        $date = now()->format('d/m/Y');
         $instance = $this->cursoInstanciaService->getInstanceById($instanceId, $courseId);
 
 
@@ -933,9 +932,9 @@ class InstanceCourseController extends Controller
 
 
         if ($instance->certificado == 'Aprobacion') {
-            $html = view('courses.certificado', compact('instancia', 'course', 'persona', 'imageBase64_firma', 'imageBase64', 'fecha', 'is_pdf'))->render();
+            $html = view('cursos.certificado', compact('instance', 'course', 'person', 'imageBase64_firma', 'imageBase64', 'date', 'is_pdf'))->render();
         } else {
-            $html = view('courses.certificadoParticipacion', compact('instancia', 'course', 'persona', 'imageBase64_firma', 'imageBase64', 'fecha', 'is_pdf'))->render();
+            $html = view('cursos.certificadoParticipacion', compact('instance', 'course', 'person', 'imageBase64_firma', 'imageBase64', 'date', 'is_pdf'))->render();
         }
 
         $pdf = SnappyPdf::loadHTML($html)

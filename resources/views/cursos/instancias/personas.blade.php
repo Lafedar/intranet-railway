@@ -116,7 +116,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @dd($personsWithStatus)
+                    
                     @foreach($personsWithStatus as $person)
                                     <tr>
                                         <td>{{ $person->legajo }}</td>

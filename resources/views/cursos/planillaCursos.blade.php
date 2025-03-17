@@ -32,7 +32,7 @@
 
 <body>
   <!-- Contenedor principal -->
-  @if (empty($inscriptosChunks) || count($inscriptosChunks) === 0)
+  @if (empty($registeredChunks) || count($registeredChunks) === 0)
     <!-- Si inscriptosChunks es null o está vacío, mostrar este contenido -->
     <div class="pagina">
     <div class="contenedor" style="max-width: 900px; margin: 20px auto; padding: 20px;">
@@ -42,11 +42,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda"
         style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>{{$anexo->valor_formulario}}</b>
+        <b>{{$annexed->valor_formulario}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>POE N°: {{$anexo->valor1}}</b>
+        <b>POE N°: {{$annexed->valor1}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -64,20 +64,20 @@
         <!-- Celda central -->
         <div class="celda-central"
         style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-        <b>{{$anexo->valor2}}</b>
+        <b>{{$annexed->valor2}}</b>
         </div>
 
         <!-- Celda derecha -->
         <div class="celda-derecha-2"
         style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
         <div class="arriba" style="margin-bottom: 2px;">
-          <b>Version N°: {{$anexo->valor3}}</b>
+          <b>Version N°: {{$annexed->valor3}}</b>
         </div>
 
         <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
 
         <div class="abajo" style="margin-top: 5px;">
-          <b>Pagina N°: {{$anexo->valor4}}</b>
+          <b>Pagina N°: {{$annexed->valor4}}</b>
         </div>
         </div>
       </div>
@@ -116,7 +116,7 @@
     </div>
   @else
     <!-- Si inscriptosChunks tiene datos, muestra la tabla con los inscritos -->
-    @foreach ($inscriptosChunks as $paginaInscriptos)
+    @foreach ($registeredChunks as $paginaInscriptos)
     <div class="pagina">
     <div class="contenedor" style="max-width: 900px; margin: 20px auto; padding: 20px;">
       <!-- Tabla -->
@@ -124,11 +124,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
       <div class="celda-izquierda"
       style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>{{$anexo->valor_formulario}}</b>
+      <b>{{$annexed->valor_formulario}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>POE N°: {{$anexo->valor1}}</b>
+      <b>POE N°: {{$annexed->valor1}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -142,16 +142,16 @@
       </div>
       <div class="celda-central"
       style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-      <b>{{$anexo->valor2}}</b>
+      <b>{{$annexed->valor2}}</b>
       </div>
       <div class="celda-derecha-2"
       style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
       <div class="arriba" style="margin-bottom: 2px;">
-        <b>Version N°: {{$anexo->valor3}}</b>
+        <b>Version N°: {{$annexed->valor3}}</b>
       </div>
       <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
       <div class="abajo" style="margin-top: 5px;">
-        <b>Pagina N°: {{$anexo->valor4}}</b>
+        <b>Pagina N°: {{$annexed->valor4}}</b>
       </div>
       </div>
       </div>
@@ -201,7 +201,7 @@
   @endif
 
 
-  @if(!empty($instancia->id_instancia) && empty($is_pdf))
+  @if(!empty($instance->id_instancia) && empty($is_pdf))
     <div class="centrado-horizontal">
 
     </div>
@@ -212,7 +212,7 @@
     <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
       Fechas</button>
     <form
-      action="{{ route('cursos.generarPDF', ['formulario_id' => $anexo->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+      action="{{ route('cursos.generarPDF', ['formulario_id' => $annexed->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
       method="GET">
       @csrf
       <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">

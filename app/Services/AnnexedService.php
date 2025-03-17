@@ -26,7 +26,7 @@ class AnnexedService
                 ->delete();
     }
 
-    public function getById(int $form_id){
+    public function getById($form_id){
         return DB::table('anexos')
             ->where('formulario_id', $form_id)
             ->value('tipo');
