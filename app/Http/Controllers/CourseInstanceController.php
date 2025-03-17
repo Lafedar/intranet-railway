@@ -98,7 +98,7 @@ class CourseInstanceController extends Controller
 
                 $amountRegistered = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instance->id_instancia, $course->id);
                 $percentageAPP = $this->enrolamientoCursoService->getPorcentajeAprobacionInstancia($instance->id_instancia, $course->id);
-                $amountAnnexes = $this->courseInstanceService->getCountAnexosInstancia($course->id, $instance->id_instancia);
+                $amountAnnexes = $this->courseInstanceService->getCountAnnexesInstance($course->id, $instance->id_instancia);
 
                 $remaining = $quota - $amountRegistered;
                 $instance->remaining = $remaining;
@@ -270,8 +270,8 @@ class CourseInstanceController extends Controller
             $trainer = $this->courseInstanceService->getInstanceById($instanceId, $courseId)->capacitador;
             $persons = $this->personaService->getAll();
             $modality = $this->courseInstanceService->getInstanceById($instanceId, $courseId)->modalidad;
-            $annexes = $this->courseInstanceService->getAnexos();
-            $selectedAnnexes = $this->courseInstanceService->getDocumentacion($instanceId, $courseId);
+            $annexes = $this->courseInstanceService->getAnnexes();
+            $selectedAnnexes = $this->courseInstanceService->getDocumentation($instanceId, $courseId);
 
 
             return view('cursos.instancias.edit', compact('instance', 'course', 'trainer', 'persons', 'modality', 'annexes', 'selectedAnnexes'));
@@ -385,7 +385,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function getAsistentesInstancia(int $instanceId, int $courseId, string $tipo)
+    public function getInstanceHelpers(int $instanceId, int $courseId, string $tipo)
     {
         try {
 
@@ -395,7 +395,7 @@ class CourseInstanceController extends Controller
 
             $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $course = $this->cursoService->getById($courseId);
-            $annexed = $this->courseInstanceService->getAnexoByTipo($courseId, $instanceId, $tipo);
+            $annexed = $this->courseInstanceService->getAnnexedByType($courseId, $instanceId, $tipo);
             $amountApproved = $this->enrolamientoCursoService->getCountAprobadosInstancia($course->id, $instance->id_instancia);
             $registered->each(function ($enrolled) use ($instanceId, $courseId) {
                 $enrolled->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanceId, $courseId, $enrolled->id_persona);
@@ -409,7 +409,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function getCountAsistentes(int $instanceId, int $courseId)
+    public function getCountRegistered(int $instanceId, int $courseId)
     {
         try {
             $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
@@ -427,7 +427,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function getPersonas(int $courseId, int $instanceId)
+    public function getPersons(int $courseId, int $instanceId)
     {
         try {
 
@@ -478,7 +478,7 @@ class CourseInstanceController extends Controller
 
 
 
-    public function inscribirVariasPersonas(Request $request, int $instance_id, int $courseId, $manager_dni)
+    public function registerMultiplePeople(Request $request, int $instance_id, int $courseId, $manager_dni)
     {
         try {
             $selectedPersons = $request->input('personas', []);
@@ -510,7 +510,7 @@ class CourseInstanceController extends Controller
 
                     // Enviar el correo de inscripción
                     $course = $this->cursoService->getById($courseId);
-                    $startDate = $this->courseInstanceService->getFechaInicio($courseId, $instance_id);
+                    $startDate = $this->courseInstanceService->getStartDate($courseId, $instance_id);
                     $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                     $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
@@ -536,7 +536,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function desinscribirPersona(int $userId, int $instanceId, int $courseId)
+    public function unsubscribePerson(int $userId, int $instanceId, int $courseId)
     {
         try {
             $this->enrolamientoCursoService->unEnroll($userId, $instanceId, $courseId);
@@ -551,11 +551,11 @@ class CourseInstanceController extends Controller
 
 
 
-    public function evaluarInstancia($userId, $instanceId, $courseId, $bandera)
+    public function evaluateInstance($userId, $instanceId, $courseId, $bandera)
     {
         try {
 
-            $this->enrolamientoCursoService->evaluarInstancia($userId, $instanceId, $courseId, $bandera);
+            $this->enrolamientoCursoService->evaluateInstance($userId, $instanceId, $courseId, $bandera);
             return redirect()->back()
                 ->with('success', 'La persona fue evaluada correctamente.');
 
@@ -567,7 +567,7 @@ class CourseInstanceController extends Controller
         }
     }
 
-    public function evaluarInstanciaTodos(Request $request, $courseId, $instanceId, $flag)
+    public function evaluateInstanceForAll(Request $request, $courseId, $instanceId, $flag)
     {
         try {
 
@@ -576,7 +576,7 @@ class CourseInstanceController extends Controller
 
             // Aprobar a todas las personas
             foreach ($registered as $enlistment) {
-                $this->enrolamientoCursoService->evaluarInstancia($enlistment->id_persona, $instanceId, $courseId, $flag);
+                $this->enrolamientoCursoService->evaluateInstance($enlistment->id_persona, $instanceId, $courseId, $flag);
             }
             if ($flag == 0) {
                 return redirect()->back()->with('success', 'Todas las personas fueron aprobadas correctamente.');
@@ -591,12 +591,12 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function verPlanilla(int $instanceId, int $courseId, string $tipo)
+    public function seeSpreadsheet(int $instanceId, int $courseId, string $tipo)
     {
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
-        $annexed = $this->courseInstanceService->getAnexoByTipo($courseId, $instanceId, $tipo);
+        $annexed = $this->courseInstanceService->getAnnexedByType($courseId, $instanceId, $tipo);
 
 
 
@@ -607,7 +607,7 @@ class CourseInstanceController extends Controller
 
         $registeredChunks = array_chunk($registered->toArray(), 17);
 
-        $imagePath = storage_path('app/public/courses/logo-lafedar.png');
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
         if (file_exists($imagePath)) {
             $imageData = base64_encode(file_get_contents($imagePath));
             $mimeType = mime_content_type($imagePath);
@@ -620,7 +620,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function generarPDF(string $formulario_id, int $courseId, int $instanceId, Request $request)
+    public function generatePDF(string $formulario_id, int $courseId, int $instanceId, Request $request)
     {
         $is_pdf = true;
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
@@ -655,12 +655,12 @@ class CourseInstanceController extends Controller
         $selectedDate = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
 
 
-        $annexed = $this->courseInstanceService->getDocumentacionById($formulario_id, $courseId, $instanceId);
+        $annexed = $this->courseInstanceService->getDocumentationById($formulario_id, $courseId, $instanceId);
         if (!$annexed) {
             return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
         }
 
-        $imagePath = storage_path('app/public/courses/logo-lafedar.png');
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
         if (file_exists($imagePath)) {
             $imageData = base64_encode(file_get_contents($imagePath));
             $mimeType = mime_content_type($imagePath);
@@ -689,11 +689,11 @@ class CourseInstanceController extends Controller
 
 
 
-    public function verPlanillaPrevia(string $form_id, int $courseId, int $instanceId)
+    public function seeSpreadsheetPrevious(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->cursoService->getById($courseId);
-        $annexed = $this->courseInstanceService->getDocumentacionById($form_id, $courseId, $instanceId);
-        $imagePath = storage_path('app/public/courses/logo-lafedar.png');
+        $annexed = $this->courseInstanceService->getDocumentationById($form_id, $courseId, $instanceId);
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
 
         if (file_exists($imagePath)) {
 
@@ -711,10 +711,10 @@ class CourseInstanceController extends Controller
         return view('cursos.planillaPrevia', compact('annexed', 'imageBase64'));
     }
 
-    public function getDocumentacion(int $instanceId, int $courseId)
+    public function getDocumentation(int $instanceId, int $courseId)
     {
 
-        $documents = $this->courseInstanceService->getDocumentacion($instanceId, $courseId);
+        $documents = $this->courseInstanceService->getDocumentation($instanceId, $courseId);
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->cursoService->getById($courseId);
 
@@ -722,7 +722,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function enviarCertificado($courseId, $instanceId)
+    public function sendCertificate($courseId, $instanceId)
     {
 
         $approved = $this->enrolamientoCursoService->getAprobados($courseId, $instanceId);
@@ -746,7 +746,7 @@ class CourseInstanceController extends Controller
             $imageBase64 = null;
         }
 
-        $firmaPath = storage_path('app/public/courses/firma_rrhh.png');
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
 
         if (file_exists($firmaPath)) {
 
@@ -849,7 +849,7 @@ class CourseInstanceController extends Controller
 
 
     }
-    public function generarCertificado(int $courseId, int $id_persona, int $id_instancia)
+    public function generateCertificate(int $courseId, int $id_persona, int $id_instancia)
     {
 
         $course = $this->cursoService->getById($courseId);
@@ -874,7 +874,7 @@ class CourseInstanceController extends Controller
 
 
 
-        $firmaPath = storage_path('app/public/courses/firma_rrhh.png');
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
 
         if (file_exists($firmaPath)) {
 
@@ -896,7 +896,7 @@ class CourseInstanceController extends Controller
         }
     }
 
-    public function generarPDFcertificado(int $instanceId, int $courseId, int $id_persona)
+    public function generatePDFcertificate(int $instanceId, int $courseId, int $id_persona)
     {
         $is_pdf = true;
         $course = $this->cursoService->getById($courseId);
@@ -920,7 +920,7 @@ class CourseInstanceController extends Controller
         }
 
 
-        $firmaPath = storage_path('app/public/courses/firma_rrhh.png');
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
 
         if (file_exists($firmaPath)) {
 
@@ -955,9 +955,9 @@ class CourseInstanceController extends Controller
 
         return $pdf->download('certificado.pdf');
     }
-    public function cambiarEstadoInstancia(int $instanceId, int $courseId, string $bandera)
+    public function changeInstanceStatus(int $instanceId, int $courseId, string $bandera)
     {
-        $this->courseInstanceService->cambiarEstadoInstancia($instanceId, $courseId, $bandera);
+        $this->courseInstanceService->changeInstanceStatus($instanceId, $courseId, $bandera);
         return redirect()->back();
     }
 

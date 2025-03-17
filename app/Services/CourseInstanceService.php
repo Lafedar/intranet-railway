@@ -164,14 +164,6 @@ class CourseInstanceService
         }
 
     }
-    public function getModality(int $instanciaId, int $cursoId)
-    {
-        return CursoInstancia::where('id_curso', $cursoId)
-            ->where('id_instancia', $instanciaId)
-            ->value('modalidad');
-    }
-
-
 
     public function getDocumentation(int $instanciaId, int $cursoId)
     {
@@ -193,7 +185,7 @@ class CourseInstanceService
 
     }
 
-    public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
+    public function getDocumentationById(string $formulario_id, int $cursoId, int $instanciaId)
     {
 
         $formulario = DB::table('relacion_curso_instancia_anexo')
@@ -216,13 +208,13 @@ class CourseInstanceService
     }
 
 
-    public function getAnexos()
+    public function getAnnexes()
     {
         return Anexo::all();
     }
 
 
-    public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo)
+    public function getAnnexedByType(int $cursoId, int $instanciaId, string $tipo)
     {
         $formulario = DB::table('relacion_curso_instancia_anexo')
             ->where('id_instancia', $instanciaId)
@@ -243,7 +235,7 @@ class CourseInstanceService
         return $anexo;
     }
 
-    public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
+    public function changeInstanceStatus(int $instanciaId, int $cursoId, string $bandera)
     {
         $instancia = CursoInstancia::where('id_instancia', $instanciaId)
             ->where('id_curso', $cursoId)
@@ -265,28 +257,14 @@ class CourseInstanceService
     }
 
 
-
-
-
-
-    public function validarAnexo(string $formulario_id, int $cursoId, int $instanciaId)
-    {
-        $formulario = DB::table('relacion_curso_instancia_anexo')
-            ->where('id_instancia', $instanciaId)
-            ->where('id_curso', $cursoId)
-            ->where('formulario_id', $formulario_id)
-            ->value('formulario_id');
-
-    }
-
-    public function getFechaInicio(int $cursoId, int $instanciaId)
+    public function getStartDate(int $cursoId, int $instanciaId)
     {
         return CursoInstancia::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->value('fecha_inicio');
     }
 
-    public function getCountAnexosInstancia(int $cursoId, int $instanciaId)
+    public function getCountAnnexesInstance(int $cursoId, int $instanciaId)
     {
         return CursoInstanciaAnexo::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)

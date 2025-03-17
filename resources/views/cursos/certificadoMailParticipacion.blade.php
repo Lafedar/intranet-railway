@@ -23,7 +23,7 @@
                     <p>Se otorga el presente certificado a:</p>
                     <h2 class="recipient-name">{{$nombre}} {{$apellido}}</h2>
                     <p>por haber participado de la capacitación</p>
-                    <h3 class="course-title">{{$curso}}</h3>
+                    <h3 class="course-title">{{$course}}</h3>
 
                 </div>
 

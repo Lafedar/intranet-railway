@@ -212,7 +212,7 @@
     <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
       Fechas</button>
     <form
-      action="{{ route('cursos.generarPDF', ['formulario_id' => $annexed->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
+      action="{{ route('cursos.generatePDF', ['formulario_id' => $annexed->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
       method="GET">
       @csrf
       <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">

@@ -49,7 +49,7 @@
 
                 @if(!is_null($annexed))
                     <form
-                        action="{{ route('verPlanilla', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'tipo' => 'ane']) }}"
+                        action="{{ route('seeSpreadsheet', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'tipo' => 'ane']) }}"
                         method="GET">
                         <button type="submit" id="BI">Ver Registro</button>
                     </form>
@@ -85,7 +85,7 @@
 
                 @if($instance->certificado != "Participacion")
                     <form
-                        action="{{ route('evaluarInstanciaTodos', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'bandera' => 0]) }}"
+                        action="{{ route('evaluateInstanceForAll', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'bandera' => 0]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn btn-primary" id="BI" style="margin-left: 480px">Aprobar a
@@ -93,7 +93,7 @@
                     </form>
 
                     <form
-                        action="{{ route('evaluarInstanciaTodos', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'bandera' => 1]) }}"
+                        action="{{ route('evaluateInstanceForAll', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'bandera' => 1]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" id="BI">Desaprobar a todos</button>
@@ -148,7 +148,7 @@
                                     @if($instance->certificado != "Participacion")
                                         @if($enlistment->evaluacion == "N/A")
                                             <form
-                                                action="{{ route('evaluarInstancia', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 1]) }}"
+                                                action="{{ route('evaluateInstance', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 1]) }}"
                                                 method="POST" id="form">
                                                 @csrf
                                                 <button type="submit" title="Desaprobar" id="icono"><img
@@ -156,7 +156,7 @@
                                                         id="img-icono"></button>
                                             </form>
                                             <form
-                                                action="{{ route('evaluarInstancia', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 0]) }}"
+                                                action="{{ route('evaluateInstance', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 0]) }}"
                                                 method="POST" id="form">
                                                 @csrf
                                                 <button type="submit" title="Aprobar" id="icono"><img
@@ -165,7 +165,7 @@
                                             </form>
                                         @elseif($enlistment->evaluacion == "Aprobado") 
                                             <form
-                                                action="{{ route('evaluarInstancia', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 1]) }}"
+                                                action="{{ route('evaluateInstance', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 1]) }}"
                                                 method="POST" id="form">
                                                 @csrf
                                                 <button type="submit" title="Desaprobar" id="icono"><img
@@ -174,7 +174,7 @@
                                             </form>
                                         @else
                                             <form
-                                                action="{{ route('evaluarInstancia', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 0]) }}"
+                                                action="{{ route('evaluateInstance', ['userId' => $enlistment->id_persona, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 0]) }}"
                                                 method="POST" id="form">
                                                 @csrf
                                                 <button type="submit" title="Aprobar" id="icono"><img
@@ -188,7 +188,7 @@
                                     @role(['administrador', 'Gestor-cursos'])
                                     @if($enlistment->evaluacion == "Aprobado")
                                         <form
-                                            action="{{ route('generarCertificado', ['cursoId' => $course->id, 'personaId' => $enlistment->id_persona, 'id_instancia' => $instance->id_instancia ]) }}"
+                                            action="{{ route('generateCertificate', ['cursoId' => $course->id, 'personaId' => $enlistment->id_persona, 'id_instancia' => $instance->id_instancia ]) }}"
                                             method="POST" id="form">
                                             @csrf
 
@@ -199,7 +199,7 @@
                                     @endif
                                     @if($instance->certificado == "Participacion")
                                         <form
-                                            action="{{ route('generarCertificado', ['cursoId' => $course->id, 'personaId' => $enlistment->id_persona, 'id_instancia' => $instance->id_instancia ]) }}"
+                                            action="{{ route('generateCertificate', ['cursoId' => $course->id, 'personaId' => $enlistment->id_persona, 'id_instancia' => $instance->id_instancia ]) }}"
                                             method="POST" id="form">
                                             @csrf
 

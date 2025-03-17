@@ -33,7 +33,7 @@
                             @if($doc->formulario_id)
                                 <!-- El formulario ahora tiene el formulario_id correspondiente a cada fila -->
                                 <form
-                                    action="{{ route('verPlanillaPrevia', ['formularioId' => $doc->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
+                                    action="{{ route('seeSpreadsheetPrevious', ['formularioId' => $doc->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
                                     method="GET">
                                     @csrf
                                     <button type="submit" style="border: none; background: none; padding: 0;"

@@ -130,7 +130,7 @@ class ExcelService
             $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
             $user = $this->personaService->getByDni($persona['dni']);
             $curso = $this->cursoService->getById($cursoId)->titulo;
-            $fechaInicio = $this->courseInstanceService->getFechaInicio($cursoId, $instancia_id);
+            $fechaInicio = $this->courseInstanceService->getStartDate($cursoId, $instancia_id);
 
             $imageBase64Firma = null;
             $imagePath2 = storage_path('app/public/cursos/firma.jpg');

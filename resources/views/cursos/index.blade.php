@@ -183,7 +183,7 @@
                         @if(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Aprobado") 
                             
                             
-                            <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia]) }}" method="POST" title="Ver Certificado">
+                            <form action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia]) }}" method="POST" title="Ver Certificado">
                                 @csrf
                                 <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                             </form>
@@ -191,7 +191,7 @@
                         @elseif(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Participacion")
                             @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                                 
-                                <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia ]) }}" method="POST" title="Ver Certificado">
+                                <form action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia ]) }}" method="POST" title="Ver Certificado">
                                     @csrf
                                     <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                                 </form>

@@ -327,7 +327,7 @@ class EnrolamientoCursoService
             throw $e;
         }
     }
-    public function evaluarInstancia(int $userId, int $instanciaId, int $cursoId, int $bandera)
+    public function evaluateInstance(int $userId, int $instanciaId, int $cursoId, int $bandera)
     {
         try {
 

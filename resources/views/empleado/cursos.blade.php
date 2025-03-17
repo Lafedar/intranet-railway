@@ -44,7 +44,7 @@
                     <td>
                         @if($curso->pivot->evaluacion == "Aprobado" | $curso->pivot->evaluacion == "Participacion")
                             <form
-                                action="{{ route('generarCertificado', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
+                                action="{{ route('generateCertificate', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
                                 method="POST" id="form">
                                 @csrf
                                 <button type="submit" title="Ver Certificado" id="icono"><img

@@ -51,7 +51,7 @@
 
     @if(empty($is_pdf))
         <form
-            action="{{ route('cursos.generarPDFcertificado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'personaId' => $person->id_p]) }}"
+            action="{{ route('cursos.generatePDFcertificate', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'personaId' => $person->id_p]) }}"
             method="GET" class="hide-when-pdf">
             @csrf
             <button type="submit" class="btn btn-primary">Generar PDF</button>
