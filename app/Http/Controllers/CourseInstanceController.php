@@ -652,7 +652,7 @@ class CourseInstanceController extends Controller
         }
 
 
-        $selectedDate = $request->input('fechaSeleccionada', null); // 'null' por defecto si no se pasa
+        $selectedDate = $request->input('selectedDate', null); // 'null' por defecto si no se pasa
 
 
         $annexed = $this->courseInstanceService->getDocumentationById($formulario_id, $courseId, $instanceId);

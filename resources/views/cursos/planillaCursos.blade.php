@@ -180,7 +180,7 @@
       <tr>
       <td style="border: 1px solid black; text-align: center; height:55px" class="fecha-inscripcion">
       @if(!empty($enrolamiento['persona']['nombre_p']) && !empty($enrolamiento['persona']['apellido']))
-      {{ !empty($fechaSeleccionada) ? $fechaSeleccionada : ($enrolamiento['fecha_enrolamiento'] ?? '') }}
+      {{ !empty($selectedDate) ? $selectedDate : ($enrolamiento['fecha_enrolamiento'] ?? '') }}
     @else
       {{ $enrolamiento['fecha_enrolamiento'] ?? '' }}
     @endif
@@ -206,8 +206,8 @@
 
     </div>
     <div style="text-align: center; margin-top: 20px;">
-    <label for="fechaSeleccionada"><b>Seleccionar Fecha:</b></label>
-    <input type="date" id="fechaSeleccionada" name="fechaSeleccionada"
+    <label for="selectedDate"><b>Seleccionar Fecha:</b></label>
+    <input type="date" id="selectedDate" name="selectedDate"
       style="padding: 10px; font-size: 16px; margin-right: 10px;">
     <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
       Fechas</button>
@@ -215,7 +215,7 @@
       action="{{ route('cursos.generatePDF', ['formulario_id' => $annexed->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
       method="GET">
       @csrf
-      <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">
+      <input type="hidden" id="selectedDateInput" name="selectedDate" value="">
       <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Generar PDF</button>
     </form>
     </div>
@@ -225,7 +225,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("actualizarFechas").addEventListener("click", function () {
       // Obtener la fecha seleccionada
-      var fechaSeleccionada = document.getElementById("fechaSeleccionada").value;
+      var fechaSeleccionada = document.getElementById("selectedDate").value;
 
       // Verificar si se seleccionó una fecha
       if (fechaSeleccionada) {
@@ -256,7 +256,7 @@
         });
 
         // Asignar la fecha seleccionada al campo oculto para enviarla al controlador
-        document.getElementById("fechaSeleccionadaInput").value = fechaFormateada;
+        document.getElementById("selectedDateInput").value = fechaFormateada;
       } else {
         alert("Por favor, seleccione una fecha.");
       }
