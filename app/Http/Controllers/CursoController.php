@@ -60,15 +60,11 @@ class CursoController extends Controller
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $cursosData = $this->cursoService->getAll()->load('areas');
                 $enroll_data=null;
-                $courseInstanceService = null;
-                $enrolamientoCursoService = null;
-                $personaService = null;
+                
             } else {
                 $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->dni);
                 $enroll_data = $this->enrolamientoCursoService->get_all_courses_and_instances_by_id($personaDni->id_p);
-                $courseInstanceService = new courseInstanceService();
-                $enrolamientoCursoService = new EnrolamientoCursoService( $this->courseInstanceService, $this->personaService,$this->cursoService );
-                $personaService = new PersonaService();
+                
               
             }
 
@@ -144,7 +140,7 @@ class CursoController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
 
-            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni', 'enroll_data', 'courseInstanceService', 'enrolamientoCursoService', 'personaService'));
+            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni', 'enroll_data'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
