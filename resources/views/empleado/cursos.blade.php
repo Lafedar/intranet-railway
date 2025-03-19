@@ -29,6 +29,7 @@
             </tr>
         </thead>
         <tbody>
+           
             @foreach($cursosConDetalles as $curso)
                 <tr>
                     <td>{{ $curso->titulo}}</td>
@@ -44,7 +45,7 @@
                     <td>
                         @if($curso->pivot->evaluacion == "Aprobado" | $curso->pivot->evaluacion == "Participacion")
                             <form
-                                action="{{ route('generateCertificate', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
+                                action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $persona->id_p,'id_instancia' => $curso->instancia]) }}"
                                 method="POST" id="form">
                                 @csrf
                                 <button type="submit" title="Ver Certificado" id="icono"><img

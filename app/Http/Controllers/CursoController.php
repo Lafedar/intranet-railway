@@ -6,6 +6,7 @@ use App\Services\CursoService;
 use App\Services\PersonaService;
 use App\Services\CourseInstanceService;
 use App\Services\AreaService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
@@ -27,14 +28,16 @@ class CursoController extends Controller
     private EnrolamientoCursoService $enrolamientoCursoService;
     private AreaService $areaService;
     private PersonaService $personaService;
+    private UserService $userService;
 
-    public function __construct(CursoService $cursoService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService)
+    public function __construct(CursoService $cursoService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService, UserService $userService)
     {
         $this->cursoService = $cursoService;
         $this->courseInstanceService = $courseInstanceService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->areaService = $areaService;
         $this->personaService = $personaService;
+        $this->userService = $userService;
     }
 
     /**
@@ -110,6 +113,15 @@ class CursoController extends Controller
                 $curso->evaluacion = $this->enrolamientoCursoService->getEvaluacion($curso->id, $personaDni->id_p);
                 $curso->porcentajeAprobados = $this->enrolamientoCursoService->getPorcentajeAprobacion($curso->id);
                 $curso->cantInstancias = $this->courseInstanceService->getCountInstances($curso->id);
+                $curso->user = $this->userService->getByDni(auth()->user()->dni);
+                
+                if(!$curso->user->first()->hasRole('administrador') && !$curso->user->first()->hasRole('Gestor-cursos'))
+                {
+                    $curso->instancia = $this->courseInstanceService->getInstanceById($curso->id_instancia, $curso->id);
+                    $curso->persona = $this->personaService->getByDni(auth()->user()->dni);
+                    $curso->enrolamiento = $this->enrolamientoCursoService->get_enlistment($curso->persona->id_p, $curso->id,  $curso->instancia->id_instancia)->first();
+                }
+                
 
                 return $curso;
             });
@@ -383,7 +395,7 @@ class CursoController extends Controller
     {
         $cursosConDetalles = $this->enrolamientoCursoService->getCursos($userId);
         $persona = $this->personaService->getById($userId);
-
+       
         return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }
 

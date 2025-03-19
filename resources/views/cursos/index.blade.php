@@ -144,9 +144,9 @@
                                 
                                
                                             @php
-                                                $instance = $courseInstanceService->getInstanceById($curso->id_instancia, $curso->id);
-                                                $persona = $personaService->getByDni(Auth::user()->dni);
-                                                $enrolamiento = $enrolamientoCursoService->get_enlistment($persona->id_p, $curso->id,  $instance->id_instancia)->first();
+                                                $instance = $curso->instancia;
+                                                $persona = $curso->persona;
+                                                $enrolamiento = $curso->enrolamiento;
                                            
                                             @endphp
                                            
