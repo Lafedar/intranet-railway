@@ -44,7 +44,7 @@
                     <option value="" {{ old('area_id', $areaId) === null ? 'selected' : '' }}>Seleccionar un área</option>
                     <!-- Mostrar el área 'Todas las Áreas' primero -->
                     @foreach ($areas->sortBy(function($area) { return $area->id_a === 'tod' ? -1 : 1; }) as $area)
-                        <option value="{{ $area->id_a }}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
+                        <option value="{{ $area->nombre_a}}" {{ old('area_id', $areaId) == $area->id_a ? 'selected' : '' }}>
                             {{ $area->nombre_a }}
                         </option>
                     @endforeach
@@ -105,6 +105,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach($cursosPaginated as $curso)
                     <tr>
                         <td>{{ $curso->titulo }}</td>
@@ -113,28 +114,16 @@
                         @role(['administrador', 'Gestor-cursos'])
                         
                         <td>
-                            @if($curso->areas->isEmpty()) 
-                                <span>N/A</span>
-                            @else
-                                @if($curso->areas->count() == $totalAreas)
-                                    <span>Todas las áreas</span>
-                                @else
-                                    @foreach($curso->areas->take(5) as $area)
-                                        <span>{{ $area->nombre_a ?? 'N/A' }}/</span><br>
-                                    @endforeach
-                                    @if($curso->areas->count() > 5)
-                                        <span>...</span>
-                                    @endif
-                                @endif
-                            @endif
+                            
+                        {{ $curso->areas }}
                         </td>
 
                         @endrole
-                        <td>{{ $curso->created_at->format('d/m/Y') }}</td>
+                        <td>{{ $curso->created_at }}</td>
                         @role(['administrador', 'Gestor-cursos'])
                         <td>{{$curso->cantInstancias}}</td>
                         <td>{{ $curso->cantInscriptos}}</td>
-                        <td>{{ number_format($curso->porcentajeAprobados, 2) }}%</td>
+                        <td>{{ number_format($curso->porcentajeAprobacion, 2) }}%</td>
                         @endrole
 
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
@@ -149,14 +138,8 @@
                                 <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
                             </a>
                         @endrole
-                        @if(Auth::user()->dni == $personaDni->dni && $curso->evaluacion == "Aprobado") 
-                            @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
-                            <form action="{{ route('generarCertificado', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p]) }}" method="POST" title="Ver Certificado">
-                                @csrf
-                                <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
-                            </form>
-                            @endif
-                        @endif
+                        <!--aca va el codigo-->
+                       
                         </td>
 
                         @role(['administrador', 'Gestor-cursos'])

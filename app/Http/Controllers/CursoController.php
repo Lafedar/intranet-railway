@@ -49,13 +49,16 @@ class CursoController extends Controller
         try {
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
+           
             $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
 
 
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
-                $cursosData = $this->cursoService->getAll()->load('areas');
+                $cursosData = $this->cursoService->getAll();
+               
+               
             } else {
                 $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p);
 
@@ -70,65 +73,26 @@ class CursoController extends Controller
                     return str_contains(strtolower($tituloCursoSinTildes), strtolower($nombreCursoSinTildes));
                 });
             }
-
+            $areas = $this->areaService->getAll();
             if ($areaId && $areaId !== 'all') {
-
                 $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
-                    return $curso->areas->contains('id_a', $areaId);
-                });
-            }
-
-            if ($areaId === 'all') {
-
-                $cursosData = $cursosData->filter(function ($curso) {
-                    return $curso->areas->count() === $this->areaService->getAll()->count();
+                    // Convertir la cadena de áreas en un arreglo de áreas
+                    $areas = explode(',', $curso->areas);
+                    
+                    // Verificar si el areaId está en el arreglo de áreas
+                    return in_array($areaId, $areas);
                 });
             }
 
             if ($areaId && $areaId !== 'all') {
-                $cursosData = $cursosData->filter(function ($curso) {
-
-                    return $curso->areas->count() !== $this->areaService->getAll()->count();
+                $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
+                    // Si el campo areas es un string, haz la comparación aquí
+                    return strpos($curso->areas, $areaId) !== false; // Verifica si el areaId está presente en el string
                 });
             }
-            $cursosData = $cursosData->map(function ($curso) {
-                $curso->cantInscriptos = $this->enrolamientoCursoService->getCountPersonas($curso->id);
-                return $curso;
-            });
-
-
-            // 1. Obtener todos los IDs de los cursos
-            $cursoIds = $cursosData->pluck('id')->toArray();
-
-            // 2. Inicializar los arrays de resultados
-            $cantInscriptos = [];
-            $evaluaciones = [];
-            $porcentajeAprobados = [];
-            $cantInstancias = [];
-
-            // 3. Llamar a los métodos una sola vez para obtener los datos y almacenarlos en arrays
-            foreach ($cursoIds as $cursoId) {
-                $cantInscriptos[$cursoId] = $this->enrolamientoCursoService->getCountPersonas($cursoId);
-                $evaluaciones[$cursoId] = $this->enrolamientoCursoService->getEvaluacion($cursoId, $personaDni->id_p);
-                $porcentajeAprobados[$cursoId] = $this->enrolamientoCursoService->getPorcentajeAprobacion($cursoId);
-                $cantInstancias[$cursoId] = $this->cursoInstanciaService->getCountInstances($cursoId);
-            }
-
-            // 4. Ahora, dentro del map, asignamos los valores previamente obtenidos
-            $cursosData = $cursosData->map(function ($curso) use ($cantInscriptos, $evaluaciones, $porcentajeAprobados, $cantInstancias) {
-                // Asignar los valores pre-cargados a las propiedades correspondientes de cada curso
-                $curso->cantInscriptos = $cantInscriptos[$curso->id] ?? 0;
-                $curso->evaluacion = $evaluaciones[$curso->id] ?? null;
-                $curso->porcentajeAprobados = $porcentajeAprobados[$curso->id] ?? 0;
-                $curso->cantInstancias = $cantInstancias[$curso->id] ?? 0;
-
-                return $curso;
-            });
 
             
-
-            $cursosData = $cursosData->sortByDesc('curso.created_at');
-            $areas = $this->areaService->getAll();
+            
             $totalAreas = $areas->count();
 
 
@@ -142,8 +106,10 @@ class CursoController extends Controller
                 $currentPage,
                 ['path' => $request->url(), 'query' => $request->query()]
             );
-
-            return view('cursos.index', compact('cursosPaginated', 'areas', 'nombreCurso', 'areaId', 'totalAreas', 'personaDni'));
+           
+           
+       
+            return view('cursos.index', compact('cursosPaginated',   'areas', 'areaId','nombreCurso', 'personaDni'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());

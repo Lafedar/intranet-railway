@@ -7,7 +7,7 @@ use App\Models\CursoInstancia;
 use Illuminate\Database\Eloquent\Collection;
 use Exception;
 use Log;
-
+use DB;
 class CursoService
 {
 
@@ -21,20 +21,23 @@ class CursoService
         }
 
     }
-
-    public function getAll(): Collection
+    public function getAll()
     {
         try {
-            return Curso::with('areas')
-                ->orderBy('created_at', 'desc')
-                ->get();
+            // Ejecutar el procedimiento almacenado para obtener los cursos
+            $cursos = DB::select('CALL GetAllCursosConAreas2()');
+            
+            // Crear una colección de cursos a partir del resultado del procedimiento almacenado
+            $cursosCollection = collect($cursos);
+
+            return $cursosCollection;
+
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos: ' . $e->getMessage());
             throw $e;
         }
-
     }
-
+    
     public function getById($id): ?Curso
     {
         try {
