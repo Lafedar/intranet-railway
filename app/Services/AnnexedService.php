@@ -35,5 +35,11 @@ class AnnexedService
     {
         return Anexo::all();
     }
+
+    public function deleteAnnexCourseInstanceByCourseId(int $id){
+        DB::table('relacion_curso_instancia_anexo')
+        ->where('id_curso', $id)
+        ->delete();
+    }
     
 }

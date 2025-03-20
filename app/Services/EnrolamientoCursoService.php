@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\CursoInstancia;
+
 use App\Models\EnrolamientoCurso;
 use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
+use App\Services\courseService;
 use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -19,13 +20,13 @@ class EnrolamientoCursoService
     private $courseInstanceService;
     private $personaService;
 
-    private $cursoService;
+    private $courseService;
 
-    public function __construct(CourseInstanceService $courseInstanceService, PersonaService $personaService, CursoService $cursoService)
+    public function __construct(CourseInstanceService $courseInstanceService, PersonaService $personaService, CourseService $courseService)
     {
         $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
-        $this->cursoService = $cursoService;
+        $this->courseService = $courseService;
 
     }
 
@@ -494,7 +495,7 @@ class EnrolamientoCursoService
     public function getCursos(int $id)
     {
         $cursos = $this->getAllEnrolledCourses($id);
-
+        $cursos = collect($cursos)->sortByDesc('created_at');
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
@@ -517,7 +518,7 @@ class EnrolamientoCursoService
     public function getCursosByDni(int $dni)
     {
         $cursos = $this->getAllEnrolledCoursesByDni($dni);
-
+        $cursos = collect($cursos)->sortByDesc('created_at');
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {

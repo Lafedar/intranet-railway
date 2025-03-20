@@ -14,21 +14,21 @@ class ExcelService
 
 
     protected $personaService;
-    protected $cursoService;
+    protected $courseService;
     protected $courseInstanceService;
-    protected $enrolamientoCursoService;
+    protected $enrolamientocourseService;
 
     // Inyectar las dependencias a través del constructor
     public function __construct(
         PersonaService $personaService,
-        CursoService $cursoService,
+        courseService $courseService,
         CourseInstanceService $courseInstanceService,
-        EnrolamientoCursoService $enrolamientoCursoService
+        EnrolamientocourseService $enrolamientocourseService
     ) {
         $this->personaService = $personaService;
-        $this->cursoService = $cursoService;
+        $this->courseService = $courseService;
         $this->courseInstanceService = $courseInstanceService;
-        $this->enrolamientoCursoService = $enrolamientoCursoService;
+        $this->enrolamientocourseService = $enrolamientocourseService;
     }
     public function inscribirDesdeExcel($request, int $instancia_id, int $cursoId)
     {
@@ -54,7 +54,7 @@ class ExcelService
             return ['error' => 'El archivo no tiene la estructura correcta.'];
         }
 
-        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia_id, $cursoId);
+        $inscriptos = $this->enrolamientocourseService->getPersonsByInstanceId($instancia_id, $cursoId);
         $inscriptosDni = collect($inscriptos)->pluck('dni')->toArray(); // Extraemos los DNIs de los inscriptos
 
         $personasParaInscribir = [];
@@ -83,7 +83,7 @@ class ExcelService
             }
 
             $areaPersona = $this->personaService->getAreaByDni($dni);
-            $areasCurso = $this->cursoService->getAreasByCourseId($cursoId);
+            $areasCurso = $this->courseService->getAreasByCourseId($cursoId);
             $areaValida = false;
 
             foreach ($areasCurso as $area) {
@@ -113,7 +113,7 @@ class ExcelService
 
         // Verificar cuántas personas pueden ser inscritas
         $cupo = $this->courseInstanceService->checkInstanceQuota($cursoId, $instancia_id);
-        $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia_id, $cursoId);
+        $cantInscriptos = $this->enrolamientocourseService->getCountPersonsByInstanceId($instancia_id, $cursoId);
         $restantes = $cupo - $cantInscriptos;
 
         if (count($personasParaInscribir) > $restantes) {
@@ -122,14 +122,14 @@ class ExcelService
 
         // Inscribir a las personas válidas
         foreach ($personasParaInscribir as $persona) {
-            $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id, $cursoId);
+            $inscrito = $this->enrolamientocourseService->isEnrolled($persona['dni'], $instancia_id, $cursoId);
             if ($inscrito) {
                 continue; // Si ya está inscrito, no inscribir nuevamente
             }
 
-            $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
+            $this->enrolamientocourseService->enroll($persona['dni'], $instancia_id, $cursoId);
             $user = $this->personaService->getByDni($persona['dni']);
-            $curso = $this->cursoService->getById($cursoId)->titulo;
+            $curso = $this->courseService->getById($cursoId)->titulo;
             $fechaInicio = $this->courseInstanceService->getStartDate($cursoId, $instancia_id);
 
             $imageBase64Firma = null;
