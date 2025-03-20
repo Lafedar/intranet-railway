@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Anexo;
 
-class CursoInstancia extends Model
+class CourseInstance extends Model
 {
     //use HasFactory;
 

@@ -8,18 +8,18 @@ use Log;
 use Illuminate\Database\Eloquent\Collection;
 use DB;
 
-class AnnexedService
+class AnnexService
 {
 
-    public function insert_annexed_course_instance($courseId, $nextInstanceId, $annexedId, $annexedType){
+    public function insert_annex_course_instance($courseId, $nextInstanceId, $annexId, $annexType){
         DB::table('relacion_curso_instancia_anexo')->insert([
             'id_curso' => $courseId,
             'id_instancia' => $nextInstanceId,
-            'formulario_id' => $annexedId,
-            'tipo' => $annexedType, 
+            'formulario_id' => $annexId,
+            'tipo' => $annexType, 
         ]);
     }
-    public function delete_annexed_course_instance($instanceId, $courseId){
+    public function delete_annex_course_instance($instanceId, $courseId){
         DB::table('relacion_curso_instancia_anexo')
                 ->where('id_instancia', $instanceId)
                 ->where('id_curso', $courseId)

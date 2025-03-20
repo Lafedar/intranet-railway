@@ -6,7 +6,7 @@ use App\Models\Area;;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Curso extends Model
+class Course extends Model
 {
     protected $table = 'cursos';
     protected $fillable = ['titulo', 'descripcion', 'creado', 'obligatorio', 'tipo'];

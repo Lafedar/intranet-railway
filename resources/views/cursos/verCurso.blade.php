@@ -14,7 +14,7 @@
             <h1 id="h1-ver-cursos" class="mb-4">Datos de la capacitación</h1>
         </div>
 
-        <form action="{{ route('cursos.update', $curso->id) }}" method="POST" class="bg-light p-4 rounded shadow"
+        <form action="{{ route('cursos.update', $course->id) }}" method="POST" class="bg-light p-4 rounded shadow"
             id="form-group-ver-cursos">
             @csrf
             @method('PUT')
@@ -22,19 +22,19 @@
 
             <div class="form-group">
                 <label id="label-ver-cursos" for="titulo"><b>Título:</b></label>
-                <p id="p-ver-cursos">{{ $curso->titulo }}</p>
+                <p id="p-ver-cursos">{{ $course->titulo }}</p>
             </div>
 
 
             <div class="form-group">
                 <label id="label-ver-cursos" for="descripcion"><b>Descripcion:</b></label>
-                <p id="p-ver-cursos">{{ !empty($curso->descripcion) ? $curso->descripcion : 'N/A' }}</p>
+                <p id="p-ver-cursos">{{ !empty($course->descripcion) ? $course->descripcion : 'N/A' }}</p>
             </div>
 
 
             <div class="form-group">
                 <label id="label-obligatorio-ver-cursos"><b>Obligatorio:</b></label>
-                <p id="p-ver-cursos">{{ $curso->obligatorio == 1 ? 'SI' : 'NO' }}</p>
+                <p id="p-ver-cursos">{{ $course->obligatorio == 1 ? 'SI' : 'NO' }}</p>
             </div>
 
 
@@ -54,13 +54,13 @@
 
             <div class="form-group">
                 <label id="label-ver-cursos" for="codigo"><b>Código:</b></label>
-                <p id="p-codigo-ver-cursos">{{ !empty($curso->codigo) ? $curso->codigo : 'N/A' }}</p>
+                <p id="p-codigo-ver-cursos">{{ !empty($course->codigo) ? $course->codigo : 'N/A' }}</p>
             </div>
 
 
             <div class="form-group">
                 <label id="label-ver-cursos"><b>Tipo:</b></label>
-                <p id="p-ver-cursos">{{ $curso->tipo }}</p>
+                <p id="p-ver-cursos">{{ $course->tipo }}</p>
             </div>
 
             <br>

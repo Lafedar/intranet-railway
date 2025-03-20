@@ -47,7 +47,7 @@
                     <button type="submit" id="BI">Exportar a Excel</button>
                 </form>
 
-                @if(!is_null($annexed))
+                @if(!is_null($annex))
                     <form
                         action="{{ route('seeSpreadsheet', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia, 'tipo' => 'ane']) }}"
                         method="GET">

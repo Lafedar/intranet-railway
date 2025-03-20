@@ -7,7 +7,8 @@ use App\Services\CourseService;
 use App\Services\AreaService;
 use App\Services\EnrolamientoCursoService;
 use App\Services\PersonaService;
-use App\Services\AnnexedService;
+use App\Services\AnnexService;
+use App\Models\Course;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -29,25 +30,18 @@ class CourseInstanceController extends Controller
     private $enrolamientoCursoService;
     private $personaService;
     private $areaService;
-    private $annexedService;
+    private $annexService;
 
 
-    public function __construct(CourseInstanceService $courseInstanceService, CourseService $courseService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService, AreaService $areaService, AnnexedService $annexedService)
+    public function __construct(CourseInstanceService $courseInstanceService, CourseService $courseService, EnrolamientoCursoService $enrolamientoCursoService, PersonaService $personaService, AreaService $areaService, AnnexService $annexService)
     {
         $this->courseInstanceService = $courseInstanceService;
         $this->courseService = $courseService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->personaService = $personaService;
         $this->areaService = $areaService;
-        $this->annexedService = $annexedService;
+        $this->annexService = $annexService;
     }
-
-    /**
-     * Display a listing of instances for a specific course.
-     *
-     * @param int $courseId
-     * @return \Illuminate\View\View
-     */
 
     public function index($courseId)
     {
@@ -131,10 +125,10 @@ class CourseInstanceController extends Controller
     public function create($instanceId, $courseId)
     {
         try {
-            $course = Curso::findOrFail($courseId);
+            $course = Course::findOrFail($courseId);
             $persons = $this->personaService->getAll();
 
-            $annexes = $this->annexedService->getAll();
+            $annexes = $this->annexService->getAll();
 
             return view('cursos.instancias.create', compact('course', 'persons', 'annexes'));
         } catch (Exception $e) {
@@ -210,17 +204,17 @@ class CourseInstanceController extends Controller
 
 
             if ($request->has('annexes') && is_array($request->input('annexes'))) {
-                foreach ($request->input('annexes') as $annexedId) {
+                foreach ($request->input('annexes') as $annexId) {
 
 
-                    $annexedType = $this->annexedService->getById($annexedId);
+                    $annexType = $this->annexService->getById($annexId);
 
                     // Verificamos si el tipo de anexo existe
-                    if ($annexedType) {
-                        $this->annexedService->insert_annexed_course_instance($courseId, $nextInstanceId, $annexedId, $annexedType);
+                    if ($annexType) {
+                        $this->annexService->insert_annex_course_instance($courseId, $nextInstanceId, $annexId, $annexType);
                     } else {
 
-                        Log::warning("Attachment type not found for formulario_id: $annexedId");
+                        Log::warning("Attachment type not found for formulario_id: $annexId");
                     }
                 }
             }
@@ -246,7 +240,7 @@ class CourseInstanceController extends Controller
                     ->withErrors('The instance was not found.');
             }
 
-            $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
+            $this->annexService->delete_annex_course_instance($instanceId, $courseId);
 
             $this->courseInstanceService->delete($instance, $courseId);
 
@@ -355,20 +349,20 @@ class CourseInstanceController extends Controller
 
             if (!$request->has('annexes') || empty($request->input('annexes'))) {
                 // Eliminar todas las relaciones con los anexos de esta instancia
-                $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
+                $this->annexService->delete_annex_course_instance($instanceId, $courseId);
 
             } elseif (is_array($request->input('annexes'))) {
                 // Si se seleccionaron anexos, primero eliminamos las relaciones actuales
-                $this->annexedService->delete_annexed_course_instance($instanceId, $courseId);
+                $this->annexService->delete_annex_course_instance($instanceId, $courseId);
 
                 // Insertamos los nuevos anexos seleccionados
-                $annexed = $request->input('annexes');
-                foreach ($annexed as $form_id) {
-                    $annexedType = $this->annexedService->getById($form_id);
+                $annex = $request->input('annexes');
+                foreach ($annex as $form_id) {
+                    $annexType = $this->annexService->getById($form_id);
 
-                    if ($annexedType) {
+                    if ($annexType) {
 
-                        $this->annexedService->insert_annexed_course_instance($courseId, $instanceId, $form_id, $annexedType);
+                        $this->annexService->insert_annex_course_instance($courseId, $instanceId, $form_id, $annexType);
                     } else {
                         Log::warning("Attachment type not found for formulario_id: $form_id");
                     }
@@ -395,12 +389,12 @@ class CourseInstanceController extends Controller
 
             $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
             $course = $this->courseService->getById($courseId);
-            $annexed = $this->courseInstanceService->getAnnexedByType($courseId, $instanceId, $tipo);
+            $annex = $this->courseInstanceService->getannexByType($courseId, $instanceId, $tipo);
             $amountApproved = $this->enrolamientoCursoService->getCountAprobadosInstancia($course->id, $instance->id_instancia);
             $registered->each(function ($enrolled) use ($instanceId, $courseId) {
                 $enrolled->fecha_enrolamiento = $this->enrolamientoCursoService->getFechaCreacion($instanceId, $courseId, $enrolled->id_persona);
             });
-            return view('cursos.instancias.inscriptos', compact('course', 'registered', 'amountRegistered', 'instance', 'annexed', 'amountApproved'));
+            return view('cursos.instancias.inscriptos', compact('course', 'registered', 'amountRegistered', 'instance', 'annex', 'amountApproved'));
 
         } catch (Exception $e) {
             Log::error('Error en la clase: ' . get_class($this) . ' .Error getting the assistants from the instance: ' . $e->getMessage());
@@ -596,7 +590,7 @@ class CourseInstanceController extends Controller
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
         $course = $this->courseService->getById($courseId);
-        $annexed = $this->courseInstanceService->getAnnexedByType($courseId, $instanceId, $tipo);
+        $annex = $this->courseInstanceService->getannexByType($courseId, $instanceId, $tipo);
 
 
 
@@ -616,7 +610,7 @@ class CourseInstanceController extends Controller
             $imageBase64 = null;
         }
 
-        return view('cursos.planillaCursos', compact('registered', 'annexed', 'instance', 'course', 'imageBase64', 'registeredChunks'));
+        return view('cursos.planillaCursos', compact('registered', 'annex', 'instance', 'course', 'imageBase64', 'registeredChunks'));
     }
 
 
@@ -655,8 +649,8 @@ class CourseInstanceController extends Controller
         $selectedDate = $request->input('selectedDate', null); // 'null' por defecto si no se pasa
 
 
-        $annexed = $this->courseInstanceService->getDocumentationById($formulario_id, $courseId, $instanceId);
-        if (!$annexed) {
+        $annex = $this->courseInstanceService->getDocumentationById($formulario_id, $courseId, $instanceId);
+        if (!$annex) {
             return redirect()->back()->withErrors('La instancia no tiene un anexo relacionado.');
         }
 
@@ -670,7 +664,7 @@ class CourseInstanceController extends Controller
         }
 
 
-        $html = view('cursos.planillaCursos', compact('registered', 'instance', 'course', 'annexed', 'imageBase64', 'registeredChunks', 'is_pdf', 'selectedDate'))->render();
+        $html = view('cursos.planillaCursos', compact('registered', 'instance', 'course', 'annex', 'imageBase64', 'registeredChunks', 'is_pdf', 'selectedDate'))->render();
 
 
         $pdf = SnappyPdf::loadHTML($html)
@@ -692,7 +686,7 @@ class CourseInstanceController extends Controller
     public function seeSpreadsheetPrevious(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->courseService->getById($courseId);
-        $annexed = $this->courseInstanceService->getDocumentationById($form_id, $courseId, $instanceId);
+        $annex = $this->courseInstanceService->getDocumentationById($form_id, $courseId, $instanceId);
         $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
 
         if (file_exists($imagePath)) {
@@ -708,7 +702,7 @@ class CourseInstanceController extends Controller
         }
 
 
-        return view('cursos.planillaPrevia', compact('annexed', 'imageBase64'));
+        return view('cursos.planillaPrevia', compact('annex', 'imageBase64'));
     }
 
     public function getDocumentation(int $instanceId, int $courseId)
@@ -856,7 +850,7 @@ class CourseInstanceController extends Controller
 
         $person = $this->personaService->getById($id_persona);
         $instance = $this->courseInstanceService->getInstanceById($id_instancia, $courseId);
-        $enlistment = $this->enrolamientoCursoService->get_enlistment($person->id_p, $course->id, $instance->id_instancia)->first();
+        $enlistment = $this->enrolamientoCursoService->getEnrollment($person->id_p, $course->id, $instance->id_instancia)->first();
         $date = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
         $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
 

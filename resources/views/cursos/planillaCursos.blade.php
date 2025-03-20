@@ -42,11 +42,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda"
         style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>{{$annexed->valor_formulario}}</b>
+        <b>{{$annex->valor_formulario}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>POE N°: {{$annexed->valor1}}</b>
+        <b>POE N°: {{$annex->valor1}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -64,20 +64,20 @@
         <!-- Celda central -->
         <div class="celda-central"
         style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-        <b>{{$annexed->valor2}}</b>
+        <b>{{$annex->valor2}}</b>
         </div>
 
         <!-- Celda derecha -->
         <div class="celda-derecha-2"
         style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
         <div class="arriba" style="margin-bottom: 2px;">
-          <b>Version N°: {{$annexed->valor3}}</b>
+          <b>Version N°: {{$annex->valor3}}</b>
         </div>
 
         <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
 
         <div class="abajo" style="margin-top: 5px;">
-          <b>Pagina N°: {{$annexed->valor4}}</b>
+          <b>Pagina N°: {{$annex->valor4}}</b>
         </div>
         </div>
       </div>
@@ -124,11 +124,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
       <div class="celda-izquierda"
       style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>{{$annexed->valor_formulario}}</b>
+      <b>{{$annex->valor_formulario}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>POE N°: {{$annexed->valor1}}</b>
+      <b>POE N°: {{$annex->valor1}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -142,16 +142,16 @@
       </div>
       <div class="celda-central"
       style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-      <b>{{$annexed->valor2}}</b>
+      <b>{{$annex->valor2}}</b>
       </div>
       <div class="celda-derecha-2"
       style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
       <div class="arriba" style="margin-bottom: 2px;">
-        <b>Version N°: {{$annexed->valor3}}</b>
+        <b>Version N°: {{$annex->valor3}}</b>
       </div>
       <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
       <div class="abajo" style="margin-top: 5px;">
-        <b>Pagina N°: {{$annexed->valor4}}</b>
+        <b>Pagina N°: {{$annex->valor4}}</b>
       </div>
       </div>
       </div>
@@ -212,7 +212,7 @@
     <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
       Fechas</button>
     <form
-      action="{{ route('cursos.generatePDF', ['formulario_id' => $annexed->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
+      action="{{ route('cursos.generatePDF', ['formulario_id' => $annex->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
       method="GET">
       @csrf
       <input type="hidden" id="selectedDateInput" name="selectedDate" value="">

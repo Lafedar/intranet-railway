@@ -544,7 +544,7 @@ class EnrolamientoCursoService
     }
 
 
-    public function get_enlistment(int $id_persona, int $id_curso, int $id_instancia){
+    public function getEnrollment(int $id_persona, int $id_curso, int $id_instancia){
         return EnrolamientoCurso::where('id_persona', $id_persona)
         ->where('id_curso', $id_curso)
         ->where('id_instancia', $id_instancia)

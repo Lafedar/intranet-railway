@@ -7,21 +7,14 @@ use App\Services\PersonaService;
 use App\Services\CourseInstanceService;
 use App\Services\AreaService;
 use App\Services\UserService;
-use App\Services\AnnexedService;
+use App\Services\AnnexService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
-use App\Models\Area;
 use App\Models\Anexo;
-use App\Models\Curso;
 use Exception;
-use DB;
-use Barryvdh\Snappy\Facades\SnappyPdf;
-use PDF;
 use Normalizer;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Auth;
-
 
 class CourseController extends Controller
 {
@@ -32,9 +25,9 @@ class CourseController extends Controller
     private PersonaService $personaService;
     private UserService $userService;
 
-    private AnnexedService $annexedService;
+    private AnnexService $annexService;
 
-    public function __construct(CourseService $courseService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService, UserService $userService, AnnexedService $annexedService)
+    public function __construct(CourseService $courseService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService, UserService $userService, AnnexService $annexService)
     {
         $this->courseService = $courseService;
         $this->courseInstanceService = $courseInstanceService;
@@ -42,7 +35,7 @@ class CourseController extends Controller
         $this->areaService = $areaService;
         $this->personaService = $personaService;
         $this->userService = $userService;
-        $this->annexedService = $annexedService;
+        $this->annexService = $annexService;
     }
 
     public function listAll(Request $request)
@@ -94,7 +87,6 @@ class CourseController extends Controller
             }
             
             $areas = $this->areaService->getAll();
-            $totalAreas = $areas->count();
             
 
             // Paginar los resultados
@@ -265,7 +257,7 @@ class CourseController extends Controller
                 $this->courseInstanceService->delete($instance, $course->id);
             }
 
-            $this->annexedService->deleteAnnexCourseInstanceByCourseId($course->id);
+            $this->annexService->deleteAnnexCourseInstanceByCourseId($course->id);
             $this->courseService->delete($course);
 
             return redirect()->route('cursos.index')->with('success', 'El curso y sus instancias fueron eliminados exitosamente.');
@@ -296,7 +288,7 @@ class CourseController extends Controller
     {
         $course = $this->courseService->getById($courseId);
         $areas = $this->courseService->getAreasByCourseId(($courseId));
-        return view('courses.showCourse', compact('course', 'areas'));
+        return view('cursos.verCurso', compact('course', 'areas'));
     }
 
 

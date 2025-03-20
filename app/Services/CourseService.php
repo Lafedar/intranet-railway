@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Curso;
+use App\Models\Course;
 
 use Illuminate\Database\Eloquent\Collection;
 use Exception;
@@ -43,7 +43,7 @@ class CourseService
     {
         try {
            
-            return Curso::with('areas')  // Asegúrate de cargar 'anexos' aquí
+            return Course::with('areas')  // Asegúrate de cargar 'anexos' aquí
                 ->find($id);
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting course by ID' . $e->getMessage());
@@ -54,7 +54,7 @@ class CourseService
     public function getAreasByCourseId(int $courseId)
     {
         try {
-            $course = Curso::with('areas')->find($courseId);
+            $course = Course::with('areas')->find($courseId);
             if (!$course) {
 
                 return null;
@@ -71,7 +71,7 @@ class CourseService
     public function create(array $data)
     {
         try {
-            $course = Curso::create([
+            $course = Course::create([
                 'titulo' => $data['titulo'],
                 'descripcion' => $data['descripcion'],
                 'obligatorio' => $data['obligatorio'],
@@ -86,7 +86,7 @@ class CourseService
 
     }
 
-    public function update(Curso $course, array $data): bool
+    public function update(Course $course, array $data): bool
     {
         try {
             $this->validateData($data);
@@ -97,7 +97,7 @@ class CourseService
         }
     }
 
-    public function delete(Curso $course): ?bool
+    public function delete(Course $course): ?bool
     {
         try {
             return $course->delete();

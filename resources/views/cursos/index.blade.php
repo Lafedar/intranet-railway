@@ -116,9 +116,25 @@
                         @role(['administrador', 'Gestor-cursos'])
                         
                         <td>
-                            
-                        {{ $curso['areas'] }}
+                            @php
+                                // Divide el string de áreas por comas en un array
+                                $areas = explode(',', $curso['areas']);
+                                
+                                // Si hay más de 5 áreas, corta el array a los primeros 5
+                                $areasLimitadas = array_slice($areas, 0, 5);
+                                
+                                // Combina las áreas limitadas en una cadena, separadas por coma
+                                $areasString = implode(', ', $areasLimitadas);
+                                
+                                // Si había más de 5 áreas, añade '...'
+                                if (count($areas) > 5) {
+                                    $areasString .= '...';
+                                }
+                            @endphp
+
+                            {{ $areasString }}
                         </td>
+
 
                         @endrole
                         <td>{{$curso['created_at'] }}</td>

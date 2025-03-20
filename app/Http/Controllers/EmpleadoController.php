@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Krucas\Notification\Middleware\NotificationMiddleware;
-use Krucas\Notification\Facades\Notification;
 use Illuminate\Routing\Controller;
-use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
 use App\JefeXArea;
 use App\Empleado;
-use App\Persona;
 use App\User;
-use PHPUnit\Framework\Constraint\IsEmpty;
 use Session;
-use Auth;
 use DB;
 use App\Services\EnrolamientoCursoService;
 use App\Services\CourseInstanceService;
