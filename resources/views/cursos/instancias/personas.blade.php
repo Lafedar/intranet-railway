@@ -40,10 +40,10 @@
 
 
         <div id="encabezados">
-            <h1 id="titulo-personas">Inscripción para la capacitación: {{ $curso->titulo }}</h1>
+            <h1 id="titulo-personas">Inscripción para la capacitación: {{ $course->titulo }}</h1>
 
         </div>
-        <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $restantes }}</span></h5>
+        <h5 id="cupo">Cupo disponible: <span id="cupoDisponible">{{ $remaining }}</span></h5>
 
         <div class="form-group">
 
@@ -64,9 +64,9 @@
             <a href="{{ asset('storage/plantillas/plantilla.xlsx') }}" download class="download-link">
                 Descargar Plantilla Excel
             </a>
-            @if($restantes != 0)
+            @if($remaining != 0)
                 <form id="excelForm"
-                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
@@ -76,7 +76,7 @@
                 </form>
             @else
                 <form id="excelForm"
-                    action="{{ route('inscribir.excel', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                    action="{{ route('inscribir.excel', ['instancia_id' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="excel_file" accept=".xlsx,.xls" id="excel_file" style="display:none;"
@@ -88,12 +88,12 @@
         </div>
 
         <form
-            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+            action="{{ route('inscribir.varias.personas', ['instancia_id' => $instance->id_instancia, 'cursoId' => $course->id, 'gestor' => Auth::user()->dni]) }}"
             method="POST">
             @csrf
             <table>
                 <thead>
-                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
+                    <a href="{{ route('cursos.instancias.index', ['cursoId' => $course->id]) }}" class="btn btn-secondary"
                         id="asignar-btn" style="margin-top:-80px;">Volver</a>
                     <div style="margin-top: -75px; margin-left: 80px;">
                         <button type="submit" class="btn btn-primary d-inline-block"
@@ -116,32 +116,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($personasConEstado as $persona)
+                    
+                    @foreach($personsWithStatus as $person)
                                     <tr>
-                                        <td>{{ $persona->legajo }}</td>
-                                        <td>{{ $persona->apellido }} {{ $persona->nombre_p }}</td>
+                                        <td>{{ $person->legajo }}</td>
+                                        <td>{{ $person->apellido }} {{ $person->nombre_p }}</td>
                                         <td>
-                                            @if($persona->area)
-                                                {{ $persona->area ? $persona->area->nombre_a : 'Sin área asignada' }}
+                                            @if($person->area)
+                                                {{ $person->area ? $person->area->nombre_a : 'Sin área asignada' }}
                                             @else
                                                 N/A
                                             @endif
                                         </td>
 
                                         <td>
-                                            @if($persona->estadoEnrolado)
+                                            @if($person->estadoEnrolado)
                                                 <p>Ya inscripto</p>
                                             @else
 
-                                                <input type="checkbox" class="persona-checkbox" name="personas[{{ $persona->id_p }}]" value="1">
+                                                <input type="checkbox" class="persona-checkbox" name="personas[{{ $person->id_p }}]" value="1">
                                             @endif
                                         </td>
                         </form>
                         <td>
-                            @if($persona->estadoEnrolado)
+                            @if($person->estadoEnrolado)
 
                                 <form
-                                    action="{{ route('desinscribir', ['userId' => $persona->id_p, 'instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id]) }}"
+                                    action="{{ route('desinscribir', ['userId' => $person->id_p, 'instanciaId' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
                                     method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desuscribir a esta persona ?');">
                                     @csrf
                                     @method('POST')
@@ -175,7 +176,7 @@
             // Función para actualizar el cupo disponible
             function actualizarCupo() {
                 var totalSeleccionados = $("input[name^='personas']:checked").length;
-                var cupoMaximo = {{ $restantes }};  // El valor del cupo original
+                var cupoMaximo = {{ $remaining }};  // El valor del cupo original
                 var cupoDisponible = cupoMaximo - totalSeleccionados;
                 $("#cupoDisponible").text(cupoDisponible);
 

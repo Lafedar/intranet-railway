@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use App\User;
-use Exception;
-use Log;
-use Illuminate\Database\Eloquent\Collection;
+use DB;
 
 
 class UserService
@@ -19,7 +17,11 @@ class UserService
             'password' => $password 
         ]);
     }
-
+    public function getByDni(int $dni){
+        return User::where('dni', $dni)
+        ->get();
+    }
+  
     
 
 }

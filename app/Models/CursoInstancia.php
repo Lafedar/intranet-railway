@@ -17,14 +17,18 @@ class CursoInstancia extends Model
         'id_curso',
         'fecha_inicio',
         'fecha_fin',
+        'hora',
         'cupo',
         'modalidad',
         'capacitador',
         'codigo',
+        'certificado',
         'lugar',
         'estado',
         'version',
-        'id_instancia'
+        'id_instancia',
+        'examen',
+
 
 
     ];
@@ -65,7 +69,7 @@ class CursoInstancia extends Model
     }
 
 
-   
+
 
 
 

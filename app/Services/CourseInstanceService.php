@@ -11,7 +11,7 @@ use App\Models\Anexo;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class CursoInstanciaService
+class CourseInstanceService
 {
     /**
      * Get all instances of a specific course by the course ID.
@@ -164,16 +164,8 @@ class CursoInstanciaService
         }
 
     }
-    public function getModalidad(int $instanciaId, int $cursoId)
-    {
-        return CursoInstancia::where('id_curso', $cursoId)
-            ->where('id_instancia', $instanciaId)
-            ->value('modalidad');
-    }
 
-
-
-    public function getDocumentacion(int $instanciaId, int $cursoId)
+    public function getDocumentation(int $instanciaId, int $cursoId)
     {
         try {
             $anexos = DB::table('relacion_curso_instancia_anexo')
@@ -193,7 +185,7 @@ class CursoInstanciaService
 
     }
 
-    public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
+    public function getDocumentationById(string $formulario_id, int $cursoId, int $instanciaId)
     {
 
         $formulario = DB::table('relacion_curso_instancia_anexo')
@@ -216,13 +208,13 @@ class CursoInstanciaService
     }
 
 
-    public function getAnexos()
+    public function getAnnexes()
     {
         return Anexo::all();
     }
 
 
-    public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo)
+    public function getAnnexedByType(int $cursoId, int $instanciaId, string $tipo)
     {
         $formulario = DB::table('relacion_curso_instancia_anexo')
             ->where('id_instancia', $instanciaId)
@@ -243,7 +235,7 @@ class CursoInstanciaService
         return $anexo;
     }
 
-    public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
+    public function changeInstanceStatus(int $instanciaId, int $cursoId, string $bandera)
     {
         $instancia = CursoInstancia::where('id_instancia', $instanciaId)
             ->where('id_curso', $cursoId)
@@ -265,33 +257,55 @@ class CursoInstanciaService
     }
 
 
-
-
-
-
-    public function validarAnexo(string $formulario_id, int $cursoId, int $instanciaId)
-    {
-        $formulario = DB::table('relacion_curso_instancia_anexo')
-            ->where('id_instancia', $instanciaId)
-            ->where('id_curso', $cursoId)
-            ->where('formulario_id', $formulario_id)
-            ->value('formulario_id');
-
-    }
-
-    public function getFechaInicio(int $cursoId, int $instanciaId)
+    public function getStartDate(int $cursoId, int $instanciaId)
     {
         return CursoInstancia::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->value('fecha_inicio');
     }
 
-    public function getCountAnexosInstancia(int $cursoId, int $instanciaId)
+    public function getCountAnnexesInstance(int $cursoId, int $instanciaId)
     {
         return CursoInstanciaAnexo::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->count() ?? 0;
     }
+
+    public function get_room($cursoId, $instanciaId)
+    {
+        $instance = CursoInstancia::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->first();
+
+        if ($instance) {
+
+            return $instance->lugar;
+        }
+
+        return null;
+    }
+
+    public function get_hour($cursoId, $instanciaId)
+    {
+        $instance = CursoInstancia::where('id_curso', $cursoId)
+            ->where('id_instancia', $instanciaId)
+            ->first();
+
+        if ($instance) {
+
+            return $instance->hora;
+        }
+
+        return null;
+    }
+
+
+    public function getAllInstances(){
+        return CursoInstancia::all();
+    }
+
+    
+
 
 
 }

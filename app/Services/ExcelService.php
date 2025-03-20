@@ -15,19 +15,19 @@ class ExcelService
 
     protected $personaService;
     protected $cursoService;
-    protected $cursoInstanciaService;
+    protected $courseInstanceService;
     protected $enrolamientoCursoService;
 
     // Inyectar las dependencias a través del constructor
     public function __construct(
         PersonaService $personaService,
         CursoService $cursoService,
-        CursoInstanciaService $cursoInstanciaService,
+        CourseInstanceService $courseInstanceService,
         EnrolamientoCursoService $enrolamientoCursoService
     ) {
         $this->personaService = $personaService;
         $this->cursoService = $cursoService;
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
     }
     public function inscribirDesdeExcel($request, int $instancia_id, int $cursoId)
@@ -112,7 +112,7 @@ class ExcelService
         }
 
         // Verificar cuántas personas pueden ser inscritas
-        $cupo = $this->cursoInstanciaService->checkInstanceQuota($cursoId, $instancia_id);
+        $cupo = $this->courseInstanceService->checkInstanceQuota($cursoId, $instancia_id);
         $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia_id, $cursoId);
         $restantes = $cupo - $cantInscriptos;
 
@@ -130,7 +130,7 @@ class ExcelService
             $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
             $user = $this->personaService->getByDni($persona['dni']);
             $curso = $this->cursoService->getById($cursoId)->titulo;
-            $fechaInicio = $this->cursoInstanciaService->getFechaInicio($cursoId, $instancia_id);
+            $fechaInicio = $this->courseInstanceService->getStartDate($cursoId, $instancia_id);
 
             $imageBase64Firma = null;
             $imagePath2 = storage_path('app/public/cursos/firma.jpg');

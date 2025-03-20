@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificado de Aprobación</title>
+    <title>Certificado de Participación</title>
+    <link rel="stylesheet" href="styles.css">
 
 </head>
 
@@ -15,34 +16,47 @@
                 <div class="certificate-header">
                     <img src="{{ $imageBase64 }}" alt="Logo" width="200" height="70" />
                     <br><br>
-                    <h1>Certificado de Aprobación</h1>
+                    <h1>Certificado de Participación</h1>
                     <p>Otorgado por <strong>Laboratorios Lafedar</strong></p>
                 </div>
 
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
-                    <h2 class="recipient-name">{{$nombre}} {{$apellido}}</h2>
-                    <p>por haber aprobado la capacitación</p>
-                    <h3 class="course-title">{{$course}}</h3>
+                    <h2 class="recipient-name">{{$person->nombre_p}} {{$person->apellido}}</h2>
+                    <p>por haber participado de la capacitación</p>
+                    <h3 class="course-title">{{$course->titulo}}</h3>
 
                 </div>
 
                 <div class="certificate-footer">
-                    <p>Capacitador/a: {{$capacitador}}</p>
+                    <p>Capacitador/a: {{$instance->capacitador}}</p>
                     <br>
                     <br>
-                    <p>Fecha de Capacitación: {{$fecha}}</p>
+                    <p>Fecha de Capacitación: {{$instance->fecha_inicio->format('d-m-Y')}}</p>
+
                     <br><br><br><br><br>
                     <div style="display: inline-block; width: 48%; text-align: center;">
-                    <img src="{{ $imageBase64Firma }}" alt="Logo" width="auto" height="150px;" style="margin-bottom: -30px; margin-top: -90px;"/>
+                    <img src="{{ $imageBase64_firma }}" alt="Logo" width="auto" height="150px;" style="margin-bottom: -30px; margin-top: -90px;"/>
                         <p>______________________________</p>
                         <p>Firma de RRHH</p>
                     </div>
+                    
+
                 </div>
+
             </div>
         </div>
     </div>
+    </div>
 
+    @if(empty($is_pdf))
+        <form
+            action="{{ route('cursos.generatePDFcertificate', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'personaId' => $person->id_p]) }}"
+            method="GET" class="hide-when-pdf">
+            @csrf
+            <button type="submit" class="btn btn-primary">Generar PDF</button>
+        </form>
+    @endif
 </body>
 
 </html>
@@ -63,8 +77,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 60vh;
-        width: 90vw;
+        height: 90vh;
+        width: 100vw;
         overflow: hidden;
     }
 
@@ -73,13 +87,13 @@
         justify-content: center;
         align-items: center;
         padding: 50px;
-        height: 90%;
-        width: 90%;
+        height: 95%;
+        width: 100%;
     }
 
     .certificate-border {
         width: 1200px;
-        height: 790px;
+        height: 800px;
         padding: 30px;
         background: #fff;
         border: 6px solid #003366;
@@ -95,7 +109,6 @@
         border: 1px solid #003366;
         text-align: center;
         flex-grow: 1;
-        height: 710px;
     }
 
     .certificate-header {

@@ -6,7 +6,7 @@ use App\Models\EnrolamientoCurso;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use App\Services\CursoInstanciaService;
+use App\Services\courseInstanceService;
 
 class CursosExport implements FromCollection, WithHeadings, ShouldAutoSize
 {

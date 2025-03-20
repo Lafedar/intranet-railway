@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Services\CursoService;
 use App\Services\PersonaService;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\AreaService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\EnrolamientoCursoService;
 use App\Models\Area;
-;
 use App\Models\Anexo;
 use App\Models\Curso;
 use Exception;
@@ -23,18 +23,20 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CursoController extends Controller
 {
     private CursoService $cursoService;
-    private CursoInstanciaService $cursoInstanciaService;
+    private CourseInstanceService $courseInstanceService;
     private EnrolamientoCursoService $enrolamientoCursoService;
     private AreaService $areaService;
     private PersonaService $personaService;
+    private UserService $userService;
 
-    public function __construct(CursoService $cursoService, CursoInstanciaService $cursoInstanciaService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService)
+    public function __construct(CursoService $cursoService, CourseInstanceService $courseInstanceService, EnrolamientoCursoService $enrolamientoCursoService, AreaService $areaService, PersonaService $personaService, UserService $userService)
     {
         $this->cursoService = $cursoService;
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->enrolamientoCursoService = $enrolamientoCursoService;
         $this->areaService = $areaService;
         $this->personaService = $personaService;
+        $this->userService = $userService;
     }
 
     /**
@@ -56,12 +58,14 @@ class CursoController extends Controller
 
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
-                $cursosData = $this->cursoService->getAll();
-               
-               
+                $cursosData = $this->cursoService->getAll()->load('areas');
+                $enroll_data=null;
+                
             } else {
-                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->id_p);
-
+                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->dni);
+                $enroll_data = $this->enrolamientoCursoService->get_all_courses_and_instances_by_id($personaDni->id_p);
+                
+              
             }
 
             //filtros
@@ -109,7 +113,7 @@ class CursoController extends Controller
            
            
        
-            return view('cursos.index', compact('cursosPaginated',   'areas', 'areaId','nombreCurso', 'personaDni'));
+            return view('cursos.index', compact('cursosPaginated',   'areas', 'areaId','nombreCurso', 'personaDni', 'enroll_data'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al mostrar los cursos: ' . $e->getMessage());
@@ -309,12 +313,12 @@ class CursoController extends Controller
             }
 
 
-            $instancias = $this->cursoInstanciaService->getInstancesByCourse($id);
+            $instancias = $this->courseInstanceService->getInstancesByCourse($id);
 
 
             foreach ($instancias as $instancia) {
                 $this->enrolamientoCursoService->deleteByInstanceId($curso->id, $instancia->id);
-                $this->cursoInstanciaService->delete($instancia, $curso->id);
+                $this->courseInstanceService->delete($instancia, $curso->id);
             }
             DB::table('relacion_curso_instancia_anexo')
                 ->where('id_curso', $id)
@@ -345,49 +349,7 @@ class CursoController extends Controller
         }
 
     }
-    public function generarCertificado(int $cursoId, int $id_persona)
-    {
 
-        $curso = $this->cursoService->getById($cursoId);
-
-        $persona = $this->personaService->getById($id_persona);
-        $instanciaEnrolada = $persona->enrolamientos()->where('id_curso', $cursoId)->first();
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaEnrolada->id_instancia, $cursoId);
-        $fecha = now()->format('d/m/Y');  // Fecha en formato DD/MM/YYYY
-        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $imageBase64 = null;
-        }
-
-
-
-        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-        if (file_exists($firmaPath)) {
-
-            $imageData2 = base64_encode(file_get_contents($firmaPath));
-            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-        } else {
-
-            $imageBase64_firma = null;
-        }
-
-
-
-        return view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'instancia', 'imageBase64_firma'));
-    }
 
     public function verCurso($cursoId)
     {
@@ -396,68 +358,13 @@ class CursoController extends Controller
         return view('cursos.verCurso', compact('curso', 'areas'));
     }
 
-    public function generarPDFcertificado(int $instanciaId, int $cursoId, int $id_persona)
-    {
-        $is_pdf = true;
-        $curso = $this->cursoService->getById($cursoId);
-        $persona = $this->personaService->getById($id_persona);
-        $fecha = now()->format('d/m/Y');
-        $instancia = $this->cursoInstanciaService->getInstanceById($instanciaId, $cursoId);
 
-
-        $imagePath = storage_path('app/public/Imagenes-principal-nueva/LOGO-LAFEDAR.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-
-            $imageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $imageBase64 = null;
-        }
-
-
-        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-        if (file_exists($firmaPath)) {
-
-            $imageData2 = base64_encode(file_get_contents($firmaPath));
-            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $imageBase64_firma = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-        } else {
-
-            $imageBase64_firma = null;
-        }
-
-
-
-        $html = view('cursos.certificado', compact('curso', 'persona', 'imageBase64', 'fecha', 'is_pdf', 'instancia', 'imageBase64_firma'))->render();
-
-
-        $pdf = SnappyPdf::loadHTML($html)
-            ->setOption('orientation', 'landscape') // Establece la orientación a apaisado
-            ->setOption('enable-local-file-access', true)
-            ->setOption('enable-javascript', true)
-            ->setOption('javascript-delay', 200)
-            ->setOption('margin-top', 10)
-            ->setOption('margin-right', 10)
-            ->setOption('margin-bottom', 5)
-            ->setOption('margin-left', 10);
-
-
-        return $pdf->download('certificado.pdf');
-    }
 
     public function getCursos(int $userId)
     {
         $cursosConDetalles = $this->enrolamientoCursoService->getCursos($userId);
         $persona = $this->personaService->getById($userId);
-
+       
         return view('empleado.cursos', compact('cursosConDetalles', 'persona'));
     }
 

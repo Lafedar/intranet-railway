@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\CursoInstancia;
 use App\Models\EnrolamientoCurso;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
 use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,14 +16,14 @@ use Exception;
 
 class EnrolamientoCursoService
 {
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $personaService;
 
     private $cursoService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService,  CursoService $cursoService)
+    public function __construct(CourseInstanceService $courseInstanceService, PersonaService $personaService, CursoService $cursoService)
     {
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
         $this->cursoService = $cursoService;
 
@@ -38,6 +38,7 @@ class EnrolamientoCursoService
     {
         return EnrolamientoCurso::find($id);
     }
+  
 
     public function update(EnrolamientoCurso $enrolamiento, array $data)
     {
@@ -76,15 +77,29 @@ class EnrolamientoCursoService
 
             $person = Persona::where('dni', $userDni)->first();
 
-            if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
-                $data = [
-                    'id_persona' => $person->id_p,
-                    'id_instancia' => $instanceId,
-                    'id_curso' => $cursoId,
-                    'fecha_enrolamiento' => Carbon::now(),
-                    'estado' => 'Alta',
-                    'evaluacion' => 'N/A',
-                ];
+            $instancia = $this->courseInstanceService->getInstanceById($instanceId, $cursoId);
+
+            if ($this->courseInstanceService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
+                if ($instancia->certificado == "Participacion") {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'Participacion',
+                    ];
+                } else {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'N/A',
+                    ];
+                }
+
                 $courseEnrollment = EnrolamientoCurso::create($data);
             } else
                 Log::alert('Alert in class: ' . get_class($this) . '.No hay cupo para el id_curso: ' . $cursoId . ' y la instancia id: ' . $instanceId);
@@ -109,20 +124,41 @@ class EnrolamientoCursoService
 
     }
 
-    public function getCursosByUserId(int $userId): Collection //envio los cursos con la relacion de area
+    public function getCursosByUserId(int $dni): Collection //envio los cursos con la relacion de area
     {
         try {
-            return EnrolamientoCurso::where('id_persona', $userId)
-                ->with('curso.areas')
-                ->get()
-                ->map(function ($enrolamiento) {
-                    return $enrolamiento->curso;
-                });
+            // Obtener la persona por su DNI
+            $persona = $this->personaService->getByDni($dni);
+
+            // Si la persona no existe, retornamos null
+            if (!$persona) {
+                return null;
+            }
+
+            // Obtener los enrolamientos asociados con la persona
+            $enrolamientos = $persona->enrolamientos; // Asegúrate de que esta relación esté definida en el modelo Persona
+
+            // Para cada enrolamiento, obtén el curso y el id_instancia
+            $cursosConInstancia = $enrolamientos->map(function ($enrolamiento) {
+                // Accedemos al curso relacionado
+                $curso = $enrolamiento->curso;
+
+                // Añadimos el id_instancia del enrolamiento
+                $curso->id_instancia = $enrolamiento->id_instancia;
+
+                return $curso;
+            });
+
+            return $cursosConInstancia;
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos del usuario en getCursosByUserId' . $e->getMessage());
             throw $e;
         }
     }
+
+
+
 
     public function getPersonsByCourseId(int $cursoId): Collection  //obtengo las personas enroladas en un curso
     {
@@ -291,7 +327,7 @@ class EnrolamientoCursoService
             throw $e;
         }
     }
-    public function evaluarInstancia(int $userId, int $instanciaId, int $cursoId, int $bandera)
+    public function evaluateInstance(int $userId, int $instanciaId, int $cursoId, int $bandera)
     {
         try {
 
@@ -452,15 +488,15 @@ class EnrolamientoCursoService
         }
 
     }
-    public function getCursos(int $id)    
+    public function getCursos(int $id)
     {
         $cursos = $this->getAllEnrolledCourses($id);
-        
+
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
@@ -471,19 +507,19 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
 
-    public function getCursosByDni(int $dni)    
+    public function getCursosByDni(int $dni)
     {
         $cursos = $this->getAllEnrolledCoursesByDni($dni);
-        
+
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
@@ -494,7 +530,20 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
+    public function get_all_courses_and_instances_by_id(int $id)
+    {
+        return EnrolamientoCurso::where('id_persona', $id)
+            ->get();
+    }
+
+
+    public function get_enlistment(int $id_persona, int $id_curso, int $id_instancia){
+        return EnrolamientoCurso::where('id_persona', $id_persona)
+        ->where('id_curso', $id_curso)
+        ->where('id_instancia', $id_instancia)
+        ->get();
+    }
 }

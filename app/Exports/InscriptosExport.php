@@ -6,19 +6,19 @@ use App\Models\EnrolamientoCurso;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use App\Services\CursoInstanciaService;
+use App\Services\courseInstanceService;
 
 class InscriptosExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     protected $curso;
     protected $instancia;
-    private $cursoInstanciaService;
+    private $courseInstanceService;
 
-    public function __construct($curso, $instancia, CursoInstanciaService $cursoInstanciaService)
+    public function __construct($curso, $instancia, courseInstanceService $courseInstanceService)
     {
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->curso = $curso;
-        $this->instancia = $this->cursoInstanciaService->getInstanceById($instancia, $curso->id);
+        $this->instancia = $this->courseInstanceService->getInstanceById($instancia, $curso->id);
     }
 
     public function collection()

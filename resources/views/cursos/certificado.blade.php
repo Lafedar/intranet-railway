@@ -22,17 +22,17 @@
 
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
-                    <h2 class="recipient-name">{{$persona->nombre_p}} {{$persona->apellido}}</h2>
+                    <h2 class="recipient-name">{{$person->nombre_p}} {{$person->apellido}}</h2>
                     <p>por haber aprobado la capacitación</p>
-                    <h3 class="course-title">{{$curso->titulo}}</h3>
+                    <h3 class="course-title">{{$course->titulo}}</h3>
 
                 </div>
 
                 <div class="certificate-footer">
-                    <p>Capacitador/a: {{$instancia->capacitador}}</p>
+                    <p>Capacitador/a: {{$instance->capacitador}}</p>
                     <br>
                     <br>
-                    <p>Fecha de Capacitación: {{$instancia->fecha_inicio->format('d-m-Y')}}</p>
+                    <p>Fecha de Capacitación: {{$instance->fecha_inicio->format('d-m-Y')}}</p>
 
                     <br><br><br><br><br>
                     <div style="display: inline-block; width: 48%; text-align: center;">
@@ -51,7 +51,7 @@
 
     @if(empty($is_pdf))
         <form
-            action="{{ route('cursos.generarPDFcertificado', ['instanciaId' => $instancia->id_instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
+            action="{{ route('cursos.generatePDFcertificate', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'personaId' => $person->id_p]) }}"
             method="GET" class="hide-when-pdf">
             @csrf
             <button type="submit" class="btn btn-primary">Generar PDF</button>
