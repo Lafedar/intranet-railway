@@ -110,38 +110,33 @@
                     
                     @foreach($cursosPaginated as $curso)
                     <tr>
-                        <td>{{ $curso->titulo }}</td>
-                        <td>{{ $curso->descripcion }}</td>
-                        <td>{{ $curso->obligatorio ? 'Sí' : 'No' }}</td>
+                        <td>{{ $curso['titulo'] }}</td>
+                        <td>{{ $curso['descripcion'] }}</td>
+                        <td>{{ $curso['obligatorio'] ? 'Sí' : 'No' }}</td>
                         @role(['administrador', 'Gestor-cursos'])
                         
                         <td>
                             
-                        {{ $curso->areas }}
+                        {{ $curso['areas'] }}
                         </td>
 
                         @endrole
-                        <td>{{ $curso->created_at }}</td>
+                        <td>{{$curso['created_at'] }}</td>
                         @role(['administrador', 'Gestor-cursos'])
-                        <td>{{$curso->cantInstancias}}</td>
-                        <td>{{ $curso->cantInscriptos}}</td>
-                        <td>{{ number_format($curso->porcentajeAprobacion, 2) }}%</td>
+                        <td>{{$curso['cantInstancias']}}</td>
+                        <td>{{ $curso['cantInscriptos']}}</td>
+                        <td>{{ number_format($curso['porcentajeAprobacion'], 2) }}%</td>
                         @endrole
                         
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                             <td>
                                 
                                
-                                            @php
-                                                $instance = $curso->instancia;
-                                                $persona = $curso->persona;
-                                                $enrolamiento = $curso->enrolamiento;
                                            
-                                            @endphp
                                            
   
-                                            @if(!empty($instance->examen))
-                                                <a href="{{ $instance->examen }}" target="_blank">
+                                            @if(!empty($curso['examen']))
+                                                <a href="{{ $curso['examen'] }}" target="_blank">
                                                     <img src="{{ asset('storage/cursos/examen.png') }}" alt="Examen" id="img-icono">
                                                 </a>
 
@@ -154,7 +149,7 @@
                                     
                             </td>
                             <td>
-                                {{ $enrolamiento->evaluacion }}
+                                {{ $curso['enrolamientoEvaluacion'] }}
                                 
                             </td>
                        
@@ -163,24 +158,24 @@
                         <td>            
                         @role(['administrador', 'Gestor-cursos'])            
                           
-                            <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn" title="Ver Instancia">
+                            <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso['id']]) }}" class="btn" title="Ver Instancia">
                                 <img src="{{ asset('storage/cursos/tocar.png') }}"  loading="lazy" alt="Ver Instancia">
                             </a>
                         @endrole
                         @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
 
-                        @if(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Aprobado") 
+                        @if(Auth::user()->dni == $personaDni->dni && $curso['enrolamientoEvaluacion'] == "Aprobado") 
                             
                             
-                            <form action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia]) }}" method="POST" title="Ver Certificado">
+                            <form action="{{ route('generateCertificate', ['cursoId' => $curso['id'], 'personaId' => $personaDni->id_p, 'id_instancia' => $curso['id_instancia']]) }}" method="POST" title="Ver Certificado">
                                 @csrf
                                 <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                             </form>
                             
-                        @elseif(Auth::user()->dni == $personaDni->dni && $enrolamiento->evaluacion == "Participacion")
+                        @elseif(Auth::user()->dni == $personaDni->dni && $curso['enrolamientoEvaluacion'] == "Participacion")
                             @if(!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('Gestor-cursos'))
                                 
-                                <form action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $personaDni->id_p, 'id_instancia' => $instance->id_instancia ]) }}" method="POST" title="Ver Certificado">
+                                <form action="{{ route('generateCertificate', ['cursoId' => $curso['id'], 'personaId' => $personaDni->id_p, 'id_instancia' => $curso['id_instancia'] ]) }}" method="POST" title="Ver Certificado">
                                     @csrf
                                     <button type="submit" id="icono"><img src="{{ asset('storage/cursos/ver.png') }}" alt="Ver" id="img-icono"></button>
                                 </form>
@@ -194,12 +189,12 @@
                         @role(['administrador', 'Gestor-cursos'])
                         <td id="acciones-cursos">
                         <div class="acciones-cursos">
-                        <a href="{{ route('cursos.edit', $curso->id) }}" title="Editar capacitación">
+                        <a href="{{ route('cursos.edit', $curso['id']) }}" title="Editar capacitación">
                                 <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar" id="icono">
                             </a>
 
-                            @if($curso->cantInscriptos == 0)
-                                <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST"  onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta capacitación y sus instancias?');">
+                            @if($curso['cantInscriptos'] == 0)
+                                <form action="{{ route('cursos.destroy', $curso['id']) }}" method="POST"  onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta capacitación y sus instancias?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"  title="Eliminar capacitación" id="icono" >
@@ -211,7 +206,7 @@
                                         <img src="{{ asset('storage/cursos/eliminar.png') }}" loading="lazy" alt="Eliminar" >
                                     </button>
                             @endif
-                            <a href="{{ route('cursos.verCurso', $curso->id) }}" title="Ver datos de la capacitación" id="icono">
+                            <a href="{{ route('cursos.verCurso', $curso['id']) }}" title="Ver datos de la capacitación" id="icono">
                                 <img src="{{ asset('storage/cursos/ver.png') }}" loading="lazy" alt="Ver" id="img-icono">
                             </a>
                         </div>

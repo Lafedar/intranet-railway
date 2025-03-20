@@ -24,16 +24,17 @@ class CursoService
     public function getAll()
     {
         try {
-            // Ejecutar el procedimiento almacenado para obtener los cursos
-            $cursos = DB::select('CALL GetAllCursosConAreas2()');
             
-            // Crear una colección de cursos a partir del resultado del procedimiento almacenado
-            $cursosCollection = collect($cursos);
+            $courses = DB::select('CALL GetAllCursosConAreas2()');
+            
+            $coursesCollection = collect($courses)->map(function ($curso) {
+                return (array) $curso;  // Convierte cada objeto en un array asociativo
+            });
 
-            return $cursosCollection;
+            return $coursesCollection;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting courses: ' . $e->getMessage());
             throw $e;
         }
     }

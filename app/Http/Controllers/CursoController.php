@@ -19,6 +19,8 @@ use Barryvdh\Snappy\Facades\SnappyPdf;
 use PDF;
 use Normalizer;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+
 
 class CursoController extends Controller
 {
@@ -51,19 +53,18 @@ class CursoController extends Controller
         try {
             $nombreCurso = $request->input('nombre_curso', '');
             $areaId = $request->input('area_id', null);
-           
             $userDni = auth()->user()->dni;
             $personaDni = $this->personaService->getByDni($userDni);
 
 
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
-                $cursosData = $this->cursoService->getAll()->load('areas');
+                $cursosData = $this->cursoService->getAll();
                 $enroll_data=null;
                 
             } else {
-                $cursosData = $this->enrolamientoCursoService->getCursosByUserId($personaDni->dni);
-                $enroll_data = $this->enrolamientoCursoService->get_all_courses_and_instances_by_id($personaDni->id_p);
+                $cursosData = $this->enrolamientoCursoService->getCoursesByUserDni($personaDni->dni);
+                $enroll_data = $this->enrolamientoCursoService->getAllCoursesInstancesById($personaDni->id_p);
                 
               
             }
@@ -71,7 +72,7 @@ class CursoController extends Controller
             //filtros
             if ($nombreCurso) {
                 $cursosData = $cursosData->filter(function ($curso) use ($nombreCurso) {
-                    $tituloCursoSinTildes = $this->removeAccents($curso->titulo);
+                    $tituloCursoSinTildes = $this->removeAccents($curso['titulo']);
                     $nombreCursoSinTildes = $this->removeAccents($nombreCurso);
 
                     return str_contains(strtolower($tituloCursoSinTildes), strtolower($nombreCursoSinTildes));
@@ -81,7 +82,7 @@ class CursoController extends Controller
             if ($areaId && $areaId !== 'all') {
                 $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
                     // Convertir la cadena de áreas en un arreglo de áreas
-                    $areas = explode(',', $curso->areas);
+                    $areas = explode(',', $curso['areas']);
                     
                     // Verificar si el areaId está en el arreglo de áreas
                     return in_array($areaId, $areas);
@@ -91,14 +92,15 @@ class CursoController extends Controller
             if ($areaId && $areaId !== 'all') {
                 $cursosData = $cursosData->filter(function ($curso) use ($areaId) {
                     // Si el campo areas es un string, haz la comparación aquí
-                    return strpos($curso->areas, $areaId) !== false; // Verifica si el areaId está presente en el string
+                    return strpos($curso['areas'], $areaId) !== false; // Verifica si el areaId está presente en el string
                 });
             }
 
-            
-            
+    
+            //$cursosData = $cursosData->sortByDesc('curso.created_at');
+            $areas = $this->areaService->getAll();
             $totalAreas = $areas->count();
-
+            
 
             // Paginar los resultados
             $perPage = 10; // Número de cursos por página
@@ -111,7 +113,7 @@ class CursoController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
            
-           
+           //$cursosPaginated = $cursosData;
        
             return view('cursos.index', compact('cursosPaginated',   'areas', 'areaId','nombreCurso', 'personaDni', 'enroll_data'));
 
