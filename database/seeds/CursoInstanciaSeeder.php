@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Curso;
+use App\Models\Course;
 use App\Models\CursoInstancia;
 use Faker\Factory as Faker;
 
@@ -19,7 +19,7 @@ class CursoInstanciaSeeder extends Seeder
     {
         $faker = Faker::create('es_ES'); // Configura Faker para español
         // Obtener todos los cursos existentes
-        $cursos = Curso::all();
+        $cursos = Course::all();
         foreach ($cursos as $curso) {
             // Crear 2 instancias por cada curso
             foreach (range(1, 2) as $index) {

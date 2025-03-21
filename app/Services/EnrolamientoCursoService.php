@@ -353,7 +353,7 @@ class EnrolamientoCursoService
                     ->where('id_instancia', $instanciaId)
                     ->update(['evaluacion' => 'Aprobado']);
 
-                return response()->json(['success' => 'Curso aprobado correctamente.']);
+                return response()->json(['success' => 'Course aprobado correctamente.']);
 
             } else {
                 DB::table('enrolamiento_cursos')
@@ -362,7 +362,7 @@ class EnrolamientoCursoService
                     ->where('id_instancia', $instanciaId)
                     ->update(['evaluacion' => 'No Aprobado']);
 
-                return response()->json(['success' => 'Curso desaprobado correctamente.']);
+                return response()->json(['success' => 'Course desaprobado correctamente.']);
 
             }
 

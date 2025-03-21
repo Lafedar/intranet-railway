@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="container">
-    <h1>Inscriptos en el Curso: </h1><h3>{{ $curso->titulo }}</h3>
+    <h1>Inscriptos en el Course: </h1><h3>{{ $curso->titulo }}</h3>
     <br>
-    <h2>ID del Curso: </h2><h4>{{ $curso->id }}</h4>
+    <h2>ID del Course: </h2><h4>{{ $curso->id }}</h4>
     
     @if($inscritos->isEmpty())
         <p>No hay inscritos en este curso.</p>

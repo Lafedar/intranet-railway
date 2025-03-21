@@ -40,7 +40,7 @@ class InscriptosExport implements FromCollection, WithHeadings, ShouldAutoSize
 
         // Crear los datos adicionales antes de la tabla
         $datosAdicionales = collect([
-            ['Nombre del Curso', $this->curso->titulo], // Nombre del curso
+            ['Nombre del Course', $this->curso->titulo], // Nombre del curso
             ['Fecha de Inicio', \Carbon\Carbon::parse($this->instancia->fecha_inicio)->format('d/m/Y')] // Fecha de inicio
         ]);
 

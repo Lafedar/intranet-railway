@@ -28,7 +28,7 @@ class Anexo extends Model
 
     public function cursos()
     {
-        return $this->belongsToMany(Curso::class, 'relacion_curso_instancia_anexo', 'id_instancia', 'id_curso')
+        return $this->belongsToMany(Course::class, 'relacion_curso_instancia_anexo', 'id_instancia', 'id_curso')
                     ->withPivot('formulario_id');
     }
 }

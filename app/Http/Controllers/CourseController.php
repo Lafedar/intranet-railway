@@ -50,22 +50,22 @@ class CourseController extends Controller
 
             if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $coursesData = $this->courseService->getAll();
-                $enroll_data=null;
-                
+                $enroll_data = null;
+
             } else {
                 $coursesData = $this->enrolamientoCursoService->getCoursesByUserDni($personDni->dni);
                 $enroll_data = $this->enrolamientoCursoService->getAllCoursesInstancesById($personDni->id_p);
-                
-              
+
+
             }
 
             //filtros
             if ($courseName) {
                 $coursesData = $coursesData->filter(function ($course) use ($courseName) {
                     $courseTitleWithoutAccents = $this->removeAccents($course['titulo']);
-                    $courseNameWithoutAccents  = $this->removeAccents($courseName);
+                    $courseNameWithoutAccents = $this->removeAccents($courseName);
 
-                    return str_contains(strtolower($courseTitleWithoutAccents ), strtolower($courseNameWithoutAccents));
+                    return str_contains(strtolower($courseTitleWithoutAccents), strtolower($courseNameWithoutAccents));
                 });
             }
             $areas = $this->areaService->getAll();
@@ -73,7 +73,7 @@ class CourseController extends Controller
                 $coursesData = $coursesData->filter(function ($course) use ($areaId) {
                     // Convertir la cadena de áreas en un arreglo de áreas
                     $areas = explode(',', $course['areas']);
-                    
+
                     // Verificar si el areaId está en el arreglo de áreas
                     return in_array($areaId, $areas);
                 });
@@ -85,9 +85,9 @@ class CourseController extends Controller
                     return strpos($course['areas'], $areaId) !== false; // Verifica si el areaId está presente en el string
                 });
             }
-            
+
             $areas = $this->areaService->getAll();
-            
+
 
             // Paginar los resultados
             $perPage = 10; // Número de cursos por página
@@ -99,9 +99,9 @@ class CourseController extends Controller
                 $currentPage,
                 ['path' => $request->url(), 'query' => $request->query()]
             );
-           
-       
-            return view('cursos.index', compact('coursesPaginated',   'areas', 'areaId','courseName', 'personDni', 'enroll_data'));
+
+
+            return view('cursos.index', compact('coursesPaginated', 'areas', 'areaId', 'courseName', 'personDni', 'enroll_data'));
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error displaying courses: ' . $e->getMessage());
@@ -120,24 +120,7 @@ class CourseController extends Controller
         return $string;
     }
 
-
-    public function show(int $id)
-    {
-        try {
-            $course = $this->courseService->getById($id);
-            if (!$course) {
-                throw new Exception('El curso no fue encontrado.');
-            }
-            return view('cursos.show', compact('course'));
-        } catch (Exception $e) {
-            // Registrar el error y redirigir con un mensaje de error
-            Log::error('Error in class: ' . get_class($this) . ' . Controller error while displaying course: ' . $e->getMessage());
-            return redirect()->back();
-        }
-    }
-
-
-    public function create()
+    public function showCreateCourseForm()
     {
         try {
             $areas = $this->areaService->getAll();  // Recupera todas las áreas
@@ -151,7 +134,7 @@ class CourseController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function saveNewCourse(Request $request)
     {
         try {
 
@@ -184,7 +167,7 @@ class CourseController extends Controller
         }
     }
 
-    public function edit(int $id)
+    public function showEditCourseForm(int $id)
     {
         try {
             $course = $this->courseService->getById($id);
@@ -202,7 +185,7 @@ class CourseController extends Controller
         }
     }
 
-    public function update(Request $request, int $id)
+    public function updateDetails(Request $request, int $id)
     {
         try {
 
@@ -240,7 +223,7 @@ class CourseController extends Controller
         }
     }
 
-    public function destroy(int $id)
+    public function deleteCourseWithAssociations(int $id)
     {
         try {
             $course = $this->courseService->getById($id);
@@ -269,22 +252,7 @@ class CourseController extends Controller
         }
     }
 
-
-    public function getRegistered(int $courseId)
-    {
-        try {
-            $registered = $this->enrolamientoCursoService->getPersonsByCourseId($courseId);
-            $course = $this->courseService->getById($courseId);
-            return view('courses.registeredptos', compact(' $registered', 'course'));
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting course registrations: ' . $e->getMessage());
-            return redirect()->back()->withErrors('Hubo un problema al obtener los incriptos del curso.');
-        }
-
-    }
-
-
-    public function showCourse($courseId)
+    public function displayCourseDetails($courseId)
     {
         $course = $this->courseService->getById($courseId);
         $areas = $this->courseService->getAreasByCourseId(($courseId));
@@ -293,15 +261,15 @@ class CourseController extends Controller
 
 
 
-    public function getCourses(int $userId)
+    public function listUserCourses(int $userId)
     {
         $coursesWithDetails = $this->enrolamientoCursoService->getCursos($userId);
         $person = $this->personaService->getById($userId);
-       
+
         return view('empleado.cursos', compact('coursesWithDetails', 'person'));
     }
 
-    public function getCoursesByDni(int $dni)
+    public function listUserCoursesByDni(int $dni)
     {
         $person = $this->personaService->getByDni($dni);
         $coursesWithDetails = $this->enrolamientoCursoService->getCursosByDni($dni);

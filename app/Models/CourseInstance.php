@@ -43,7 +43,7 @@ class CourseInstance extends Model
 
     public function curso()
     {
-        return $this->belongsTo(Curso::class, 'id_curso');
+        return $this->belongsTo(Course::class, 'id_curso');
     }
 
 

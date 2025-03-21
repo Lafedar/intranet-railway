@@ -12,7 +12,6 @@ use App\Models\Course;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Models\Curso;
 use DB;
 use Carbon\Carbon;
 use Exception;
@@ -43,7 +42,7 @@ class CourseInstanceController extends Controller
         $this->annexService = $annexService;
     }
 
-    public function index($courseId)
+    public function listAll($courseId)
     {
         try {
 
@@ -122,7 +121,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function create($instanceId, $courseId)
+    public function showCreateCourseInstanceForm($instanceId, $courseId)
     {
         try {
             $course = Course::findOrFail($courseId);
@@ -138,7 +137,7 @@ class CourseInstanceController extends Controller
 
     }
 
-    public function store(Request $request, $courseId)
+    public function saveNewCourseInstance(Request $request, $courseId)
     {
         try {
             $request->validate([
@@ -229,7 +228,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function destroy(int $courseId, int $instanceId)
+    public function deleteCourseInstanceWithAssociations(int $courseId, int $instanceId)
     {
         try {
 
@@ -256,7 +255,7 @@ class CourseInstanceController extends Controller
 
 
 
-    public function edit($instanceId, $courseId)
+    public function showEditCourseInstanceForm($instanceId, $courseId)
     {
         try {
             $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
@@ -277,7 +276,7 @@ class CourseInstanceController extends Controller
 
     }
 
-    public function update(Request $request, $instanceId, $courseId)
+    public function updateDetails(Request $request, $instanceId, $courseId)
     {
         try {
 
@@ -421,7 +420,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function getPersons(int $courseId, int $instanceId)
+    public function getPeopleToSignUp(int $courseId, int $instanceId)
     {
         try {
 
@@ -545,7 +544,7 @@ class CourseInstanceController extends Controller
 
 
 
-    public function evaluateInstance($userId, $instanceId, $courseId, $bandera)
+    public function evaluateInstanceForPerson($userId, $instanceId, $courseId, $bandera)
     {
         try {
 
@@ -585,7 +584,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function seeSpreadsheet(int $instanceId, int $courseId, string $tipo)
+    public function seeCourseWorkSheet(int $instanceId, int $courseId, string $tipo)
     {
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
@@ -614,7 +613,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function generatePDF(string $formulario_id, int $courseId, int $instanceId, Request $request)
+    public function generatePdfWorkSheet(string $formulario_id, int $courseId, int $instanceId, Request $request)
     {
         $is_pdf = true;
         $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
@@ -631,9 +630,9 @@ class CourseInstanceController extends Controller
                 $page[] = [
                     'fecha_enrolamiento' => null,
                     'persona' => [
-                            'nombre_p' => null,
-                            'apellido' => null
-                        ]
+                        'nombre_p' => null,
+                        'apellido' => null
+                    ]
                 ];
             }
         }
@@ -683,7 +682,7 @@ class CourseInstanceController extends Controller
 
 
 
-    public function seeSpreadsheetPrevious(string $form_id, int $courseId, int $instanceId)
+    public function seeCourseWorkSheetPrevious(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->courseService->getById($courseId);
         $annex = $this->courseInstanceService->getDocumentationById($form_id, $courseId, $instanceId);
@@ -716,7 +715,7 @@ class CourseInstanceController extends Controller
     }
 
 
-    public function sendCertificate($courseId, $instanceId)
+    public function sendCertificateToPeople($courseId, $instanceId)
     {
 
         $approved = $this->enrolamientoCursoService->getAprobados($courseId, $instanceId);
@@ -725,7 +724,7 @@ class CourseInstanceController extends Controller
         $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
 
         if ($instance->certificado == "Participacion") {
-            $approved = $registered ;
+            $approved = $registered;
         } elseif ($approved->isEmpty()) {
             return "No hay personas aprobadas para esta instancia.";
         }
