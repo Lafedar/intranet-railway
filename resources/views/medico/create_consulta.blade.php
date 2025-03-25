@@ -79,4 +79,3 @@
 
   @include('medico.modal_añadir_motivo')
  
-@endsection

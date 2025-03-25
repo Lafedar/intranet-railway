@@ -25,7 +25,7 @@ class CourseService
     {
         try {
             
-            $courses = DB::select('CALL GetAllCursosConAreas2()');
+            $courses = DB::select('CALL GetAllCoursesWithAreas()');
             
             $coursesCollection = collect($courses)->map(function ($curso) {
                 return (array) $curso;  // Convierte cada objeto en un array asociativo

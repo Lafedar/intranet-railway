@@ -13,12 +13,7 @@ use Throwable;
 
 class CourseInstanceService
 {
-    /**
-     * Get all instances of a specific course by the course ID.
-     *
-     * @param int $cursoId
-     * @return \Illuminate\Database\Eloquent\Collection|CursoInstancia[]
-     */
+ 
     public function getInstancesByCourse(int $cursoId): EloquentCollection
     {
         try {

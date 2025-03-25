@@ -568,7 +568,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/seeSpreadsheet', [CourseInstanceController::class, 'seeCourseWorkSheet'])->name('seeSpreadsheet')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'generatePdfWorkSheet'])->name('cursos.generatePDF')->middleware('role:administrador|Gestor-cursos');
   Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CourseInstanceController::class, 'getDocumentation'])->name('verDocumentos')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'seeCourseWorkSheetPrevious'])->name('seeSpreadsheetPrevious')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'showPreviousCourseWorkSheet'])->name('seeSpreadsheetPrevious')->middleware('role:administrador|Gestor-cursos');
   Route::post('/generar-certificado/{cursoId}/{personaId}/{id_instancia}', [CourseInstanceController::class, 'generateCertificate'])->name('generateCertificate');
   Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CourseInstanceController::class, 'generatePDFcertificate'])->name('cursos.generatePDFcertificate');
   Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'sendCertificateToPeople'])->name('enviarMail');

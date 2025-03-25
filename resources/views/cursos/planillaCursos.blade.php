@@ -1,33 +1,12 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
   <meta charset="UTF-8">
-  <style>
-    /* Estilo para controlar la paginación */
-    @media print {
-      .pagina {
-        page-break-before: always;
-      }
 
-      .pagina:first-of-type {
-        page-break-before: auto;
-        /* No insertar salto de página antes de la primera */
-      }
+  <link href="{{ asset('css/planillaCursos.css') }}" rel="stylesheet">
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th,
-      td {
-        border: 1px solid black;
-        padding: 10px;
-        text-align: center;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -94,7 +73,8 @@
       <thead>
         <tr style="border: 1px solid black;">
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Fecha</b></th>
-        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Apellido y Nombre del Entrenado</b></th>
+        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Apellido y
+          Nombre del Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
           Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
@@ -186,7 +166,7 @@
     @endif
       </td>
       <td style="border: 1px solid black; text-align: center;">
-      {{ $enrolamiento['persona']['apellido'] ?? '' }} {{ $enrolamiento['persona']['nombre_p'] ?? '' }} 
+      {{ $enrolamiento['persona']['apellido'] ?? '' }} {{ $enrolamiento['persona']['nombre_p'] ?? '' }}
       </td>
       <td style="border: 1px solid black; text-align: center;"></td>
       <td style="border: 1px solid black; text-align: center;"></td>
@@ -270,15 +250,3 @@
 </body>
 
 </html>
-<style>
-  .centrado-horizontal {
-    display: flex;
-    justify-content: center;
-  }
-
-  .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-</style>

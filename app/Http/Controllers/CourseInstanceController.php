@@ -682,7 +682,7 @@ class CourseInstanceController extends Controller
 
 
 
-    public function seeCourseWorkSheetPrevious(string $form_id, int $courseId, int $instanceId)
+    public function showPreviousCourseWorkSheet(string $form_id, int $courseId, int $instanceId)
     {
         $course = $this->courseService->getById($courseId);
         $annex = $this->courseInstanceService->getDocumentationById($form_id, $courseId, $instanceId);
