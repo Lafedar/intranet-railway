@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-use App\Models\Area;;
+use App\Models\Area;
+;
 use Empresa;
 use DB;
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,17 +40,18 @@ class Persona extends Model
     }
     public function area()
     {
-        
+
         return $this->belongsTo(Area::class, 'area', 'id_a');
     }
     public function cursos()
     {
-        return $this->belongsToMany(Curso::class, 'enrolamiento_cursos', 'id_persona', 'id_curso')
-        ->withPivot('id_instancia', 'evaluacion'); 
+        return $this->belongsToMany(Course::class, 'enrolamiento_cursos', 'id_persona', 'id_curso')
+            ->withPivot('id_instancia', 'evaluacion');
     }
-        public function traerPersonas() {
+    public function traerPersonas()
+    {
         return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
     }
-   
-    
+
+
 }

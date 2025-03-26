@@ -1,0 +1,33 @@
+ /* Estilo para controlar la paginación */
+ @media print {
+    .pagina {
+      page-break-before: always;
+    }
+
+    .pagina:first-of-type {
+      page-break-before: auto;
+      /* No insertar salto de página antes de la primera */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 10px;
+      text-align: center;
+    }
+    .centrado-horizontal {
+        display: flex;
+        justify-content: center;
+      }
+    
+      .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+  }

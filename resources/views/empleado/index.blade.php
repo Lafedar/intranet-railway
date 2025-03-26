@@ -150,7 +150,7 @@
       title="{{ $empleado->jefe == 1 ? 'Areas' : 'No disponible' }}" id="icono-area" {{ $empleado->jefe == 1 ? '' : 'disabled' }} style="{{ $empleado->jefe == 1 ? '' : 'opacity: 0.5; cursor: not-allowed;' }}">
       <img src="{{ asset('storage/cursos/settings.png') }}" alt="Areas" id="img-icono">
       </button>
-      <a href="{{ route('empleado.cursos', $empleado->id_p) }}" title="Ver Capacitaciones"><img
+      <a href="{{ route('employee.courses', $empleado->id_p) }}" title="Ver Capacitaciones"><img
       src="{{ asset('storage/cursos/ver.png') }}" alt="Ver Capacitaciones" id="img-icono"></a>
 
 

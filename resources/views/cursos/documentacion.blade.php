@@ -11,12 +11,12 @@
 <div>
 
     <header id="encabezados">
-        <h2 id="titulo">{{$curso->titulo}}</h2>
-        <h3 id="titulo">Fecha: {{$instancia->fecha_inicio->format('d/m/Y')}}</h3>
+        <h2 id="titulo">{{$course->titulo}}</h2>
+        <h3 id="titulo">Fecha: {{$instance->fecha_inicio->format('d/m/Y')}}</h3>
     </header>
 
     <main>
-        <a href="{{ route('cursos.instancias.index', ['cursoId' => $curso->id]) }}" class="btn btn-secondary"
+        <a href="{{ route('cursos.instancias.index', ['cursoId' => $course->id]) }}" class="btn btn-secondary"
             id="asignar-btn">Volver</a>
         <table>
             <thead>
@@ -26,14 +26,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($documentos as $doc)
+                @foreach($documents as $doc)
                     <tr>
                         <td>{{ $doc->formulario_id ?? "No hay anexos" }}</td>
                         <td>
                             @if($doc->formulario_id)
                                 <!-- El formulario ahora tiene el formulario_id correspondiente a cada fila -->
                                 <form
-                                    action="{{ route('verPlanillaPrevia', ['formularioId' => $doc->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+                                    action="{{ route('seeSpreadsheetPrevious', ['formularioId' => $doc->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
                                     method="GET">
                                     @csrf
                                     <button type="submit" style="border: none; background: none; padding: 0;"

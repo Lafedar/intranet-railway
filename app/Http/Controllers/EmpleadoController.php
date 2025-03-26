@@ -2,23 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Krucas\Notification\Middleware\NotificationMiddleware;
-use Krucas\Notification\Facades\Notification;
 use Illuminate\Routing\Controller;
-use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
 use App\JefeXArea;
 use App\Empleado;
-use App\Persona;
 use App\User;
-use PHPUnit\Framework\Constraint\IsEmpty;
 use Session;
-use Auth;
 use DB;
 use App\Services\EnrolamientoCursoService;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
-use App\Services\CursoService;
+use App\Services\courseService;
 use App\Services\EmpleadoService;
 use App\Services\AreaService;
 use App\Services\UserService;
@@ -30,9 +24,9 @@ use Log;
 class EmpleadoController extends Controller
 {
     private $enrolamientoCursoService;
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $personaService;
-    private $cursoService;
+    private $courseService;
 
     private $empleadoService;
 
@@ -40,12 +34,12 @@ class EmpleadoController extends Controller
 
     private $areaService;
 
-    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CursoInstanciaService $cursoInstanciaService, PersonaService $personaService, CursoService $cursoService, EmpleadoService $empleadoService, UserService $userService, AreaService $areaService)
+    public function __construct(EnrolamientoCursoService $enrolamientoCursoService, CourseInstanceService $courseInstanceService, PersonaService $personaService, courseService $courseService, EmpleadoService $empleadoService, UserService $userService, AreaService $areaService)
     {
         $this->enrolamientoCursoService = $enrolamientoCursoService;
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
-        $this->cursoService = $cursoService;
+        $this->courseService = $courseService;
         $this->empleadoService = $empleadoService;
         $this->userService = $userService;
         $this->areaService = $areaService;

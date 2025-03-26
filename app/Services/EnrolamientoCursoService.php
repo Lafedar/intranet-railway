@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\CursoInstancia;
+
 use App\Models\EnrolamientoCurso;
-use App\Services\CursoInstanciaService;
+use App\Services\CourseInstanceService;
 use App\Services\PersonaService;
+use App\Services\courseService;
 use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -16,16 +17,16 @@ use Exception;
 
 class EnrolamientoCursoService
 {
-    private $cursoInstanciaService;
+    private $courseInstanceService;
     private $personaService;
 
-    private $cursoService;
+    private $courseService;
 
-    public function __construct(CursoInstanciaService $cursoInstanciaService, PersonaService $personaService,  CursoService $cursoService)
+    public function __construct(CourseInstanceService $courseInstanceService, PersonaService $personaService, CourseService $courseService)
     {
-        $this->cursoInstanciaService = $cursoInstanciaService;
+        $this->courseInstanceService = $courseInstanceService;
         $this->personaService = $personaService;
-        $this->cursoService = $cursoService;
+        $this->courseService = $courseService;
 
     }
 
@@ -38,6 +39,7 @@ class EnrolamientoCursoService
     {
         return EnrolamientoCurso::find($id);
     }
+  
 
     public function update(EnrolamientoCurso $enrolamiento, array $data)
     {
@@ -76,15 +78,29 @@ class EnrolamientoCursoService
 
             $person = Persona::where('dni', $userDni)->first();
 
-            if ($this->cursoInstanciaService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
-                $data = [
-                    'id_persona' => $person->id_p,
-                    'id_instancia' => $instanceId,
-                    'id_curso' => $cursoId,
-                    'fecha_enrolamiento' => Carbon::now(),
-                    'estado' => 'Alta',
-                    'evaluacion' => 'N/A',
-                ];
+            $instancia = $this->courseInstanceService->getInstanceById($instanceId, $cursoId);
+
+            if ($this->courseInstanceService->checkInstanceQuota($cursoId, $instanceId) - $this->getCountPersonsByInstanceId($instanceId, $cursoId) > 0) {
+                if ($instancia->certificado == "Participacion") {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'Participacion',
+                    ];
+                } else {
+                    $data = [
+                        'id_persona' => $person->id_p,
+                        'id_instancia' => $instanceId,
+                        'id_curso' => $cursoId,
+                        'fecha_enrolamiento' => Carbon::now(),
+                        'estado' => 'Alta',
+                        'evaluacion' => 'N/A',
+                    ];
+                }
+
                 $courseEnrollment = EnrolamientoCurso::create($data);
             } else
                 Log::alert('Alert in class: ' . get_class($this) . '.No hay cupo para el id_curso: ' . $cursoId . ' y la instancia id: ' . $instanceId);
@@ -108,18 +124,42 @@ class EnrolamientoCursoService
         }
 
     }
-
-    public function getCursosByUserId(int $userId): Collection //envio los cursos con la relacion de area
+    public function getCoursesByUserDni(int $dni)
     {
         try {
-            return EnrolamientoCurso::where('id_persona', $userId)
-                ->with('curso.areas')
-                ->get()
-                ->map(function ($enrolamiento) {
-                    return $enrolamiento->curso;
-                });
+            
+            $results = DB::select('CALL GetCoursesByUserDni(?)', [$dni]);
+    
+            $courses = collect();
+        
+            foreach ($results as $row) {
+                if (isset($row->id)) {
+                    $curso = [
+                        'id' => $row->id,
+                        'titulo' => $row->titulo,
+                        'descripcion' => $row->descripcion,
+                        'obligatorio' => $row->obligatorio,
+                        'created_at' => $row->created_at,
+                        'areas' => $row->areas,
+                        'cantInscriptos' => $row->cantInscriptos,
+                        'cantAprobados' => $row->cantAprobados,
+                        'porcentajeAprobacion' => $row->porcentajeAprobacion,
+                        'cantInstancias' => $row->cantInstancias,
+                        'id_instancia' => $row->id_instancia,
+                        'fecha_inicio' => $row->fecha_inicio,
+                        'fecha_fin' => $row->fecha_fin,
+                        'estado_instancia' => $row->estado_instancia,
+                        'enrolamientoEvaluacion' => $row->enrolamientoEvaluacion,
+                        'examen' => $row->examen,
+                    ];
+                    $courses->push($curso);
+                } 
+            }
+    
+            return $courses;
+    
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener los cursos del usuario en getCursosByUserId' . $e->getMessage());
+            Log::error('Error al obtener los cursos y los detalles del usuario: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -291,7 +331,7 @@ class EnrolamientoCursoService
             throw $e;
         }
     }
-    public function evaluarInstancia(int $userId, int $instanciaId, int $cursoId, int $bandera)
+    public function evaluateInstance(int $userId, int $instanciaId, int $cursoId, int $bandera)
     {
         try {
 
@@ -313,7 +353,7 @@ class EnrolamientoCursoService
                     ->where('id_instancia', $instanciaId)
                     ->update(['evaluacion' => 'Aprobado']);
 
-                return response()->json(['success' => 'Curso aprobado correctamente.']);
+                return response()->json(['success' => 'Course aprobado correctamente.']);
 
             } else {
                 DB::table('enrolamiento_cursos')
@@ -322,7 +362,7 @@ class EnrolamientoCursoService
                     ->where('id_instancia', $instanciaId)
                     ->update(['evaluacion' => 'No Aprobado']);
 
-                return response()->json(['success' => 'Curso desaprobado correctamente.']);
+                return response()->json(['success' => 'Course desaprobado correctamente.']);
 
             }
 
@@ -452,15 +492,15 @@ class EnrolamientoCursoService
         }
 
     }
-    public function getCursos(int $id)    
+    public function getCursos(int $id)
     {
         $cursos = $this->getAllEnrolledCourses($id);
-        
+        $cursos = collect($cursos)->sortByDesc('created_at');
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
@@ -471,19 +511,19 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
 
-    public function getCursosByDni(int $dni)    
+    public function getCursosByDni(int $dni)
     {
         $cursos = $this->getAllEnrolledCoursesByDni($dni);
-        
+        $cursos = collect($cursos)->sortByDesc('created_at');
         $cursosConDetalles = [];
 
         foreach ($cursos as $curso) {
 
-            $instancia = $this->cursoInstanciaService->getInstanceById($curso->pivot->id_instancia, $curso->id);
+            $instancia = $this->courseInstanceService->getInstanceById($curso->pivot->id_instancia, $curso->id);
 
             if ($instancia) {
                 $curso->fecha_inicio = $instancia->fecha_inicio;
@@ -494,7 +534,20 @@ class EnrolamientoCursoService
 
             $cursosConDetalles[] = $curso;
         }
-        return  $cursosConDetalles;
+        return $cursosConDetalles;
     }
 
+    public function getAllCoursesInstancesById(int $id)
+    {
+        return EnrolamientoCurso::where('id_persona', $id)
+            ->get();
+    }
+
+
+    public function getEnrollment(int $id_persona, int $id_curso, int $id_instancia){
+        return EnrolamientoCurso::where('id_persona', $id_persona)
+        ->where('id_curso', $id_curso)
+        ->where('id_instancia', $id_instancia)
+        ->get();
+    }
 }

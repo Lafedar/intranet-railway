@@ -6,10 +6,10 @@
 
 @section('content')
 <div id="empleados-cursos-conteiner">
-    <h1 id="titulo-cursos-empleado">Listado de Capacitaciones y Evaluaciones de: {{$persona->nombre_p}}
-        {{$persona->apellido}}
+    <h1 id="titulo-cursos-empleado">Listado de Capacitaciones y Evaluaciones de: {{$person->nombre_p}}
+        {{$person->apellido}}
     </h1>
-    <form action="{{ route('exportarCursos', ['personaId' => $persona->id_p]) }}" method="GET">
+    <form action="{{ route('exportarCursos', ['personaId' => $person->id_p]) }}" method="GET">
         @csrf
         <button type="submit" id="asignar-btn">Exportar a Excel</button>
     </form>
@@ -29,7 +29,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($cursosConDetalles as $curso)
+           
+            @foreach($coursesWithDetails as $curso)
                 <tr>
                     <td>{{ $curso->titulo}}</td>
                     <td>{{ $curso->codigo}}</td>
@@ -42,9 +43,9 @@
                     <td>{{ $curso->pivot->evaluacion ?? 'N/A' }}</td>
                     <td>{{ $curso->obligatorio == 1 ? 'Sí' : 'No' }}</td>
                     <td>
-                        @if($curso->pivot->evaluacion == "Aprobado")
+                        @if($curso->pivot->evaluacion == "Aprobado" | $curso->pivot->evaluacion == "Participacion")
                             <form
-                                action="{{ route('generarCertificado', ['instanciaId' => $curso->instancia, 'cursoId' => $curso->id, 'personaId' => $persona->id_p]) }}"
+                                action="{{ route('generateCertificate', ['cursoId' => $curso->id, 'personaId' => $person->id_p,'id_instancia' => $curso->instancia]) }}"
                                 method="POST" id="form">
                                 @csrf
                                 <button type="submit" title="Ver Certificado" id="icono"><img

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Curso;
+use App\Models\Course;
 use Faker\Factory as Faker;
 
 class CursoSeeder extends Seeder
@@ -20,7 +20,7 @@ class CursoSeeder extends Seeder
         $titulos = [
             'Introducción a la programación',
             'Desarrollo web con PHP',
-            'Curso de administración de bases de datos',
+            'Course de administración de bases de datos',
             'Gestión de proyectos ágiles',
             'Marketing digital',
             'Seguridad informática',
@@ -31,7 +31,7 @@ class CursoSeeder extends Seeder
         ];
         // Crear algunos cursos de ejemplo
         foreach (range(1, 10) as $index) {
-            Curso::create([
+            Course::create([
                 'id' => $faker->unique()->numberBetween(1, 1000), // Genera un ID único entre 1 y 1000
                 'titulo' => $faker->randomElement($titulos), // Título del curso en español
                 'descripcion' => $faker->realText(100, 2), // Descripción del curso en español

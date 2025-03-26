@@ -1,38 +1,17 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
   <meta charset="UTF-8">
-  <style>
-    /* Estilo para controlar la paginación */
-    @media print {
-      .pagina {
-        page-break-before: always;
-      }
 
-      .pagina:first-of-type {
-        page-break-before: auto;
-        /* No insertar salto de página antes de la primera */
-      }
+  <link href="{{ asset('css/planillaCursos.css') }}" rel="stylesheet">
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th,
-      td {
-        border: 1px solid black;
-        padding: 10px;
-        text-align: center;
-      }
-    }
-  </style>
 </head>
 
 <body>
   <!-- Contenedor principal -->
-  @if (empty($inscriptosChunks) || count($inscriptosChunks) === 0)
+  @if (empty($registeredChunks) || count($registeredChunks) === 0)
     <!-- Si inscriptosChunks es null o está vacío, mostrar este contenido -->
     <div class="pagina">
     <div class="contenedor" style="max-width: 900px; margin: 20px auto; padding: 20px;">
@@ -42,11 +21,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
         <div class="celda-izquierda"
         style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>{{$anexo->valor_formulario}}</b>
+        <b>{{$annex->valor_formulario}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-        <b>POE N°: {{$anexo->valor1}}</b>
+        <b>POE N°: {{$annex->valor1}}</b>
         </div>
         <div class="celda-derecha"
         style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -64,20 +43,20 @@
         <!-- Celda central -->
         <div class="celda-central"
         style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-        <b>{{$anexo->valor2}}</b>
+        <b>{{$annex->valor2}}</b>
         </div>
 
         <!-- Celda derecha -->
         <div class="celda-derecha-2"
         style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
         <div class="arriba" style="margin-bottom: 2px;">
-          <b>Version N°: {{$anexo->valor3}}</b>
+          <b>Version N°: {{$annex->valor3}}</b>
         </div>
 
         <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
 
         <div class="abajo" style="margin-top: 5px;">
-          <b>Pagina N°: {{$anexo->valor4}}</b>
+          <b>Pagina N°: {{$annex->valor4}}</b>
         </div>
         </div>
       </div>
@@ -94,7 +73,8 @@
       <thead>
         <tr style="border: 1px solid black;">
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Fecha</b></th>
-        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Apellido y Nombre del Entrenado</b></th>
+        <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Apellido y
+          Nombre del Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
           Entrenado</b></th>
         <th style="border: 1px solid black; text-align: center; font-size: 17px; padding: 10px;"><b>Firma
@@ -116,7 +96,7 @@
     </div>
   @else
     <!-- Si inscriptosChunks tiene datos, muestra la tabla con los inscritos -->
-    @foreach ($inscriptosChunks as $paginaInscriptos)
+    @foreach ($registeredChunks as $paginaInscriptos)
     <div class="pagina">
     <div class="contenedor" style="max-width: 900px; margin: 20px auto; padding: 20px;">
       <!-- Tabla -->
@@ -124,11 +104,11 @@
       <div class="fila-1" style="display: table-row; width: 100%; border-bottom: 2px solid black;">
       <div class="celda-izquierda"
       style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>{{$anexo->valor_formulario}}</b>
+      <b>{{$annex->valor_formulario}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-      <b>POE N°: {{$anexo->valor1}}</b>
+      <b>POE N°: {{$annex->valor1}}</b>
       </div>
       <div class="celda-derecha"
       style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -142,16 +122,16 @@
       </div>
       <div class="celda-central"
       style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-      <b>{{$anexo->valor2}}</b>
+      <b>{{$annex->valor2}}</b>
       </div>
       <div class="celda-derecha-2"
       style="display: table-cell; position: relative; padding: 2px; text-align: center; font-size: 20px; width: 30%;">
       <div class="arriba" style="margin-bottom: 2px;">
-        <b>Version N°: {{$anexo->valor3}}</b>
+        <b>Version N°: {{$annex->valor3}}</b>
       </div>
       <div class="linea-horizontal" style="position: relative; border-bottom: 2px solid black;"></div>
       <div class="abajo" style="margin-top: 5px;">
-        <b>Pagina N°: {{$anexo->valor4}}</b>
+        <b>Pagina N°: {{$annex->valor4}}</b>
       </div>
       </div>
       </div>
@@ -180,13 +160,13 @@
       <tr>
       <td style="border: 1px solid black; text-align: center; height:55px" class="fecha-inscripcion">
       @if(!empty($enrolamiento['persona']['nombre_p']) && !empty($enrolamiento['persona']['apellido']))
-      {{ !empty($fechaSeleccionada) ? $fechaSeleccionada : ($enrolamiento['fecha_enrolamiento'] ?? '') }}
+      {{ !empty($selectedDate) ? $selectedDate : ($enrolamiento['fecha_enrolamiento'] ?? '') }}
     @else
       {{ $enrolamiento['fecha_enrolamiento'] ?? '' }}
     @endif
       </td>
       <td style="border: 1px solid black; text-align: center;">
-      {{ $enrolamiento['persona']['apellido'] ?? '' }} {{ $enrolamiento['persona']['nombre_p'] ?? '' }} 
+      {{ $enrolamiento['persona']['apellido'] ?? '' }} {{ $enrolamiento['persona']['nombre_p'] ?? '' }}
       </td>
       <td style="border: 1px solid black; text-align: center;"></td>
       <td style="border: 1px solid black; text-align: center;"></td>
@@ -201,21 +181,21 @@
   @endif
 
 
-  @if(!empty($instancia->id_instancia) && empty($is_pdf))
+  @if(!empty($instance->id_instancia) && empty($is_pdf))
     <div class="centrado-horizontal">
 
     </div>
     <div style="text-align: center; margin-top: 20px;">
-    <label for="fechaSeleccionada"><b>Seleccionar Fecha:</b></label>
-    <input type="date" id="fechaSeleccionada" name="fechaSeleccionada"
+    <label for="selectedDate"><b>Seleccionar Fecha:</b></label>
+    <input type="date" id="selectedDate" name="selectedDate"
       style="padding: 10px; font-size: 16px; margin-right: 10px;">
     <button type="button" id="actualizarFechas" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Actualizar
       Fechas</button>
     <form
-      action="{{ route('cursos.generarPDF', ['formulario_id' => $anexo->formulario_id, 'cursoId' => $curso->id, 'instanciaId' => $instancia->id_instancia]) }}"
+      action="{{ route('cursos.generatePDF', ['formulario_id' => $annex->formulario_id, 'cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
       method="GET">
       @csrf
-      <input type="hidden" id="fechaSeleccionadaInput" name="fechaSeleccionada" value="">
+      <input type="hidden" id="selectedDateInput" name="selectedDate" value="">
       <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Generar PDF</button>
     </form>
     </div>
@@ -225,7 +205,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("actualizarFechas").addEventListener("click", function () {
       // Obtener la fecha seleccionada
-      var fechaSeleccionada = document.getElementById("fechaSeleccionada").value;
+      var fechaSeleccionada = document.getElementById("selectedDate").value;
 
       // Verificar si se seleccionó una fecha
       if (fechaSeleccionada) {
@@ -256,7 +236,7 @@
         });
 
         // Asignar la fecha seleccionada al campo oculto para enviarla al controlador
-        document.getElementById("fechaSeleccionadaInput").value = fechaFormateada;
+        document.getElementById("selectedDateInput").value = fechaFormateada;
       } else {
         alert("Por favor, seleccione una fecha.");
       }
@@ -270,15 +250,3 @@
 </body>
 
 </html>
-<style>
-  .centrado-horizontal {
-    display: flex;
-    justify-content: center;
-  }
-
-  .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-</style>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificado de Aprobación</title>
+    <title>Certificado de Participación</title>
     <link href="{{ asset('css/certificado.css') }}" rel="stylesheet">
 
 </head>
@@ -16,14 +16,14 @@
                 <div class="certificate-header">
                     <img src="{{ $imageBase64 }}" alt="Logo" width="200" height="70" />
                     <br><br>
-                    <h1>Certificado de Aprobación</h1>
+                    <h1>Certificado de Participación</h1>
                     <p>Otorgado por <strong>Laboratorios Lafedar</strong></p>
                 </div>
 
                 <div class="certificate-body">
                     <p>Se otorga el presente certificado a:</p>
                     <h2 class="recipient-name">{{$person->nombre_p}} {{$person->apellido}}</h2>
-                    <p>por haber aprobado la capacitación</p>
+                    <p>por haber participado de la capacitación</p>
                     <h3 class="course-title">{{$course->titulo}}</h3>
 
                 </div>
@@ -60,5 +60,7 @@
 </body>
 
 </html>
+
+
 
 

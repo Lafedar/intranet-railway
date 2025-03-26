@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use app\Models\Persona;
-use app\Models\Curso;
+use app\Models\Course;
 use app\Models\Location;
 
 class Area extends Model
@@ -17,7 +17,7 @@ class Area extends Model
     protected $keyType = 'string';
     public function cursos()
     {
-        return $this->belongsToMany(Curso::class, 'relacion_curso_area', 'id_area', 'id_curso');
+        return $this->belongsToMany(Course::class, 'relacion_curso_area', 'id_area', 'id_curso');
     }
 
     public function scopeIndex($query)

@@ -27,14 +27,14 @@
 
 
     <div id="encabezados">
-        <h1 id="titulo">Capacitación: {{ $curso->titulo }} </h1>
+        <h1 id="titulo">Capacitación: {{ $course->titulo }} </h1>
     </div>
 
 
 
 
     @role(['administrador', 'Gestor-cursos'])
-    <a href="{{ route('cursos.instancias.create', ['instanciaId' => $cantInstancias, 'curso' => $curso->id]) }}"
+    <a href="{{ route('cursos.instancias.create', ['instanciaId' => $amountInstances, 'curso' => $course->id]) }}"
         class="btn btn-warning btn-sm mb-3" id="btn-agregar">
         Crear Nueva Instancia
     </a>
@@ -59,7 +59,9 @@
                 <th>Lugar</th>
                 <th>Estado</th>
                 <th>Version</th>
+                <th>Examen</th>
                 <th>% de Aprobación</th>
+                <th>Certificado</th>
                 @endrole
                 <th>Acciones</th>
             </tr>
@@ -69,36 +71,37 @@
                         <tr>
 
 
-                            <td>{{ $instance->fecha_inicio_formateada }}</td>
-                            <td>{{ $instance->fecha_fin_formateada }}</td>
-                            <td>{{ $instance->hora_formateada}}</td>
+                            <td>{{ $instance->formatted_start_date}}</td>
+                            <td>{{ $instance->formatted_end_date}}</td>
+                            <td>{{ $instance->formatted_hour}}</td>
 
 
                             @role(['administrador', 'Gestor-cursos'])
                             <td>
-                                @if($instance->cupo === null || $instance->cupo === '')
+                               
+                                @if($instance->quota === null || $instance->quota === '')
                                     <!-- Si cantInscriptos es null, mostramos 0 -->
-                                    {{ $instance->cantInscriptos ?? 0 }}
+                                    {{ $instance->amountRegistered ?? 0 }}
                                 @else
-                                    {{ $instance->cupo }}
+                                    {{ $instance->quota }}
                                 @endif
                             </td>
                             <td>
-                                @if ($instance->restantes == null)
+                                @if ($instance->remaining == null)
                                     <span class="badge bg-danger text-dark">
                                         <i class="bi bi-x-circle-fill"></i> completo
                                     </span>
-                                @elseif ($instance->restantes === 0)
+                                @elseif ($instance->remaining === 0)
                                     <span class="badge bg-danger text-dark">
                                         <i class="bi bi-x-circle-fill"></i> completo
                                     </span>
-                                @elseif ($instance->restantes < 0)
+                                @elseif ($instance->remaining < 0)
                                     <span class="badge bg-danger text-dark">
                                         <i class="bi bi-x-circle-fill"></i> completo
                                     </span>
                                 @else
                                     <span class="badge bg-success">
-                                        <i class="bi bi-check-circle-fill"></i> {{ $instance->restantes }} disponibles
+                                        <i class="bi bi-check-circle-fill"></i> {{ $instance->remaining }} disponibles
                                     </span>
                                 @endif
                             </td>
@@ -108,7 +111,18 @@
                             <td>{{ $instance->lugar }}</td>
                             <td>{{ $instance->estado }}</td>
                             <td>{{ $instance->version }}</td>
-                            <td>{{ number_format($instance->porcentajeAPR, 2) }}%</td>
+                            <td>
+                                @if(!empty($instance->examen))
+                                <a href="{{ $instance->examen }}" target="_blank">
+                                    <img src="{{ asset('storage/cursos/examen.png') }}" alt="Examen" id="img-icono">
+                                </a>
+
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>{{ number_format($instance->percentageAPP, 2) }}%</td>
+                            <td>{{ $instance->certificado}}</td>
 
                             @endrole
                             <td>
@@ -120,13 +134,13 @@
 
                                 @if ($availabilityItem)
                                     @if ($availabilityItem['enabled'])
-                                        @if ($instance->restantes > 0)
-                                            <a href="{{ route('cursos.instancias.personas', ['cursoId' => $curso->id, 'instanceId' => $instance->id_instancia]) }}"
+                                        @if ($instance->remaining > 0)
+                                            <a href="{{ route('cursos.instancias.personas', ['cursoId' => $course->id, 'instanceId' => $instance->id_instancia]) }}"
                                                 style="margin: 5px" title="Inscribir personas">
                                                 <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
                                             </a>
                                         @else
-                                            <!-- Botón deshabilitado cuando no hay cupos restantes -->
+                                            <!-- Botón deshabilitado cuando no hay quotas restantes -->
                                             <a href="javascript:void(0)" id="btn-disabled" title="Inscripción no disponible">
                                                 <img src="{{ asset('storage/cursos/inscribir.png') }}" alt="Inscribir" id="img-icono">
                                             </a>
@@ -140,8 +154,8 @@
                                 @endif
 
                                 @if($instance->estado == "Activo")
-                                    <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $curso->id]) }}"
-                                        id="iconos-instancias" title="Editar Instancia" @if($instance->restantes == 0) disabled @endif>
+                                    <a href="{{ route('cursos.instancias.edit', ['instancia' => $instance->id_instancia, 'cursoId' => $course->id]) }}"
+                                        id="iconos-instancias" title="Editar Instancia" @if($instance->remaining == 0) disabled @endif>
                                         <img src="{{ asset('storage/cursos/editar.png') }}" alt="Editar" id="img-icono">
                                     </a>
                                 @else
@@ -151,14 +165,14 @@
                                     </button>
                                 @endif
 
-                                @if ($instance->restantes == $instance->cupo)
+                                @if ($instance->remaining == $instance->quota)
                                     <form
-                                        action="{{ route('cursos.instancias.destroy', ['cursoId' => $curso->id, 'instanciaId' => $instance->id_instancia]) }}"
+                                        action="{{ route('cursos.instancias.destroy', ['cursoId' => $course->id, 'instanciaId' => $instance->id_instancia]) }}"
                                         method="POST" id="btn-eliminar"
                                         onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta instancia?');" id="icono">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" id="icono" title="Eliminar Instancia" @if($instance->restantes != $instance->cupo) disabled @endif>
+                                        <button type="submit" id="icono" title="Eliminar Instancia" @if($instance->remaining != $instance->quota) disabled @endif>
                                             <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
                                         </button>
                                     </form>
@@ -169,32 +183,36 @@
 
                                 @endif
 
-                                @if($instance->cantAnexos == 0)
+                                @if($instance->amountAnnexes == 0)
                                     <a href="javascript:void(0);" title="No hay documentos asociados" id="btn-disabled" disabled>
                                         <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Documentos" id="img-icono"
                                             disabled>
                                     </a>
                                 @else
-                                    <a href="{{ route('verDocumentos', [$instance->id_instancia, $curso->id]) }}" title="Ver Documentos"
+                                    <a href="{{ route('verDocumentos', [$instance->id_instancia, $course->id]) }}" title="Ver Documentos"
                                         id="iconos-instancias" @if($instance->estado != 'Activo') disabled @endif>
                                         <img src="{{ asset('storage/cursos/documentos.png') }}" alt="Documentos" id="img-icono"
                                             @if($instance->estado != 'Activo') disabled @endif>
                                     </a>
                                 @endif
 
-
-                                <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $curso->id, 'tipo' => 'ane']) }}"
-                                    title="Ver Inscriptos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled @endif>
-                                    <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
-                                </a>
-
+                                @if($instance->amountRegistered > 0)
+                                    <a href="{{ route('cursos.instancias.inscriptos', [$instance->id_instancia, $course->id, 'tipo' => 'ane']) }}"
+                                        title="Ver Inscriptos" id="iconos-instancias" @if(!$instance->estado == 'Activo') disabled @endif>
+                                        <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono">
+                                    </a>
+                                @else
+                                    <a>
+                                        <img src="{{ asset('storage/cursos/inscriptos.png') }}" alt="Inscriptos" id="img-icono-disabled" title="No hay inscriptos">
+                                    </a>
+                                @endif
                                 @if($instance->estado == "Activo")
-                                    <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'bandera' => 'No']) }}"
+                                    <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 'No']) }}"
                                         title="Cerrar Instancia" @if(!$instance->restantes > 0) disabled @endif>
                                         <img src="{{ asset('storage/cursos/cerrar.png') }}" alt="Cerrar" id="img-icono">
                                     </a>
                                 @else
-                                    <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $curso->id, 'bandera' => 'Si']) }}"
+                                    <a href="{{ route('cambiarEstado', ['instanciaId' => $instance->id_instancia, 'cursoId' => $course->id, 'bandera' => 'Si']) }}"
                                         title="Abrir Instancia">
                                         <img src="{{ asset('storage/cursos/abrir.png') }}" alt="Abrir" id="img-icono">
                                     </a>

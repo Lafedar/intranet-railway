@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Anexo;
 
-class CursoInstancia extends Model
+class CourseInstance extends Model
 {
     //use HasFactory;
 
@@ -22,10 +22,13 @@ class CursoInstancia extends Model
         'modalidad',
         'capacitador',
         'codigo',
+        'certificado',
         'lugar',
         'estado',
         'version',
-        'id_instancia'
+        'id_instancia',
+        'examen',
+
 
 
     ];
@@ -40,7 +43,7 @@ class CursoInstancia extends Model
 
     public function curso()
     {
-        return $this->belongsTo(Curso::class, 'id_curso');
+        return $this->belongsTo(Course::class, 'id_curso');
     }
 
 
@@ -66,7 +69,7 @@ class CursoInstancia extends Model
     }
 
 
-   
+
 
 
 

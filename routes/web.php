@@ -1,7 +1,7 @@
 <?php
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\CursoInstanciaController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseInstanceController;
 use App\Exports\InscriptosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\EmpleadoController;
@@ -57,8 +57,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('selectTurnosEmpleados', 'EmpleadoController@selectTurnosEmpleados');
 
   Route::get('/empleado/curso', [EmpleadoController::class, 'curso'])->name('empleado.curso');
-  Route::get('/empleado/{id}/cursos', [CursoController::class, 'getCursos'])->name('empleado.cursos');
-  Route::get('/empleado/{dni}/cursosByDni', [CursoController::class, 'getCursosByDni'])->name('empleado.cursos.dni');
+  Route::get('/empleado/{id}/cursos', [CourseController::class, 'listUserCourses'])->name('employee.courses');
+  Route::get('/empleado/{dni}/cursosByDni', [CourseController::class, 'listUserCoursesByDni'])->name('employee.courses.dni');
 });
 //****************PUESTOS**********************
 Route::group(['middleware' => ['auth']], function () {
@@ -224,7 +224,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************POLITICAS**********************
 Route::group(['middleware' => ['auth']], function () {
-  
+
   Route::post('store_policy', 'PolicyController@store_policy')->name('agregar-policy')->middleware('role:administrador|politicas');
   Route::get('destroy_policy/{policy}', ['uses' => 'PolicyController@destroy_policy'])->middleware('role:administrador|politicas');
   Route::post('update_policy', 'PolicyController@update_policy')->middleware('role:administrador|politicas')->name('update_policy');
@@ -233,7 +233,7 @@ Route::get('policy', 'PolicyController@list_all_policy');
 
 //****************PUBLIC DOCUMENTATION**********************
 Route::group(['middleware' => ['auth']], function () {
-  
+
   Route::post('store_public_documentation', 'PublicDocumentationController@store_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('agregar_public_documentation');
   Route::get('destroy_public_documentation/{documentation}', 'PublicDocumentationController@destroy_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('destroy_public_documentation');
   Route::post('update_public_documentation', 'PublicDocumentationController@update_public_documentation')->middleware('role:administrador|rrhh|Documentacion-Publica')->name('update_public_documentation');
@@ -537,43 +537,42 @@ Route::get('/novedades/{id}', [NovedadesController::class, 'show'])->name('noved
 
 Route::group(['middleware' => ['auth']], function () {
 
-  Route::get('/capacitaciones', [CursoController::class, 'listAll'])->name('cursos.index');
-  Route::post('/cursos/store', [CursoController::class, 'store'])->name('cursos.store')->middleware('role:administrador|Gestor-cursos');
-  Route::delete('/cursos/destroy/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{id}/edit', [CursoController::class, 'edit'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');
-  Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/ver/{cursoId}', [CursoController::class, 'verCurso'])->name('cursos.verCurso')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/capacitaciones', [CourseController::class, 'listAll'])->name('cursos.index');
+  Route::post('/cursos/store', [CourseController::class, 'saveNewCourse'])->name('cursos.store')->middleware('role:administrador|Gestor-cursos');
+  Route::delete('/cursos/destroy/{id}', [CourseController::class, 'deleteCourseWithAssociations'])->name('cursos.destroy')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{id}/edit', [CourseController::class, 'showEditCourseForm'])->name('cursos.edit')->middleware('role:administrador|Gestor-cursos');
+  Route::put('/cursos/{id}', [CourseController::class, 'updateDetails'])->name('cursos.update')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/create', [CourseController::class, 'showCreateCourseForm'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/ver/{cursoId}', [CourseController::class, 'displayCourseDetails'])->name('courses.showCourse')->middleware('role:administrador|Gestor-cursos');
 
-  Route::post('cursos/{curso}/instancias', [CursoInstanciaController::class, 'store'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{cursoId}/inscritos', [CursoController::class, 'getInscriptos'])->name('cursos.inscritos')->middleware('role:administrador|Gestor-cursos');
+  Route::post('cursos/{curso}/instancias', [CourseInstanceController::class, 'saveNewCourseInstance'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{cursoId}/inscritos', [CourseController::class, 'getRegistered'])->name('course.registered')->middleware('role:administrador|Gestor-cursos');
 
-  Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas/{tipo}', [CursoInstanciaController::class, 'getAsistentesInstancia'])
+  Route::get('/cursos/{cursoId}/instancias/{instanceId}/personas/{tipo}', [CourseInstanceController::class, 'getInstanceHelpers'])
     ->name('cursos.instancias.inscriptos')->middleware('role:administrador|Gestor-cursos');
-  Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CursoInstanciaController::class, 'create'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{cursoId}/instancias', [CursoInstanciaController::class, 'index'])->name('cursos.instancias.index')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
-  Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CursoInstanciaController::class, 'destroy'])->name('cursos.instancias.destroy')->middleware('role:administrador|Gestor-cursos');
-  Route::get('instancias/{instancia}/{cursoId}/edit', [CursoInstanciaController::class, 'edit'])->name('cursos.instancias.edit')->middleware('role:administrador|Gestor-cursos');
-  Route::put('instancias/{instancia}/{cursoId}', [CursoInstanciaController::class, 'update'])->name('cursos.instancias.update')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersonas', [CursoInstanciaController::class, 'getPersonas'])->name('cursos.instancias.personas')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CursoInstanciaController::class, 'InscribirPersona'])
+  Route::get('cursos/{instanciaId}/{curso}/instancias/create', [CourseInstanceController::class, 'showCreateCourseInstanceForm'])->name('cursos.instancias.create')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{cursoId}/instancias', [CourseInstanceController::class, 'listAll'])->name('cursos.instancias.index')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'inscription'])->name('cursos.instancias.inscription')->middleware('role:administrador|Gestor-cursos');
+  Route::delete('/cursos/{cursoId}/instancia/{instanciaId}', [CourseInstanceController::class, 'deleteCourseInstanceWithAssociations'])->name('cursos.instancias.destroy')->middleware('role:administrador|Gestor-cursos');
+  Route::get('instancias/{instancia}/{cursoId}/edit', [CourseInstanceController::class, 'showEditCourseInstanceForm'])->name('cursos.instancias.edit')->middleware('role:administrador|Gestor-cursos');
+  Route::put('instancias/{instancia}/{cursoId}', [CourseInstanceController::class, 'updateDetails'])->name('cursos.instancias.update')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{cursoId}/instancias/{instanceId}/getPersons', [CourseInstanceController::class, 'getPeopleToSignUp'])->name('cursos.instancias.personas')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/inscribir-persona/{id_persona}/{instancia_id}/{numInstancia}', [CourseInstanceController::class, 'InscribirPersona'])
     ->name('inscribir.persona')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CursoInstanciaController::class, 'getAsistentesInstancia'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/curso/{cursoId}/instancia/{instanciaId}/asistentes', [CursoController::class, 'getCountAsistentes'])->name('curso.asistentes.count')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}/{gestor}', [CursoInstanciaController::class, 'inscribirVariasPersonas'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'desinscribirPersona'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'evaluarInstancia'])->name('evaluarInstancia')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CursoInstanciaController::class, 'evaluarInstanciaTodos'])->name('evaluarInstanciaTodos')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{cursoId}/instancias/{instanciaId}/inscriptos', [CourseInstanceController::class, 'getInstanceHelpers'])->name('inscriptos')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/inscripcion/varias-personas/{instancia_id}/{cursoId}/{gestor}', [CourseInstanceController::class, 'registerMultiplePeople'])->name('inscribir.varias.personas')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/desinscribir/{userId}/{instanciaId}/{cursoId}', [CourseInstanceController::class, 'unsubscribePerson'])->name('desinscribir')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/aprobar-instancia/{userId}/{instanciaId}/{cursoId}/{bandera}', [CourseInstanceController::class, 'evaluateInstanceForPerson'])->name('evaluateInstance')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/cursos/{cursoId}/instancias/{instanciaId}/{bandera}/evaluar-todos', [CourseInstanceController::class, 'evaluateInstanceForAll'])->name('evaluateInstanceForAll')->middleware('role:administrador|Gestor-cursos');
 
-  Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/verPlanilla', [CursoInstanciaController::class, 'verPlanilla'])->name('verPlanilla')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'generarPDF'])->name('cursos.generarPDF')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CursoInstanciaController::class, 'getDocumentacion'])->name('verDocumentos')->middleware('role:administrador|Gestor-cursos');
-  Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'verPlanillaPrevia'])->name('verPlanillaPrevia')->middleware('role:administrador|Gestor-cursos');
-  Route::post('/generar-certificado/{cursoId}/{personaId}', [CursoController::class, 'generarCertificado'])->name('generarCertificado');
-  Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CursoController::class, 'generarPDFcertificado'])->name('cursos.generarPDFcertificado');
-  Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CursoInstanciaController::class, 'enviarCertificado'])->name('enviarMail');
-  Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CursoInstanciaController::class, 'cambiarEstadoInstancia'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/{instanciaId}/{cursoId}/{tipo}/seeSpreadsheet', [CourseInstanceController::class, 'seeCourseWorkSheet'])->name('seeSpreadsheet')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/generar-pdf/{formulario_id}/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'generatePdfWorkSheet'])->name('cursos.generatePDF')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/ver-documentos/{instanciaId}/{cursoId}', [CourseInstanceController::class, 'getDocumentation'])->name('verDocumentos')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/ver-planilla-previa/{formularioId}/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'showPreviousCourseWorkSheet'])->name('seeSpreadsheetPrevious')->middleware('role:administrador|Gestor-cursos');
+  Route::post('/generar-certificado/{cursoId}/{personaId}/{id_instancia}', [CourseInstanceController::class, 'generateCertificate'])->name('generateCertificate');
+  Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CourseInstanceController::class, 'generatePDFcertificate'])->name('cursos.generatePDFcertificate');
+  Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'sendCertificateToPeople'])->name('enviarMail');
+  Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CourseInstanceController::class, 'changeInstanceStatus'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
 });
 
 
@@ -582,16 +581,16 @@ Route::group(['middleware' => ['auth']], function () {
 Route::get('cursos/{cursoId}/instancias/{instanciaId}/exportar', function ($cursoId, $instanciaId) {
 
   // Recuperar el curso desde la base de datos
-  $curso = \App\Models\Curso::findOrFail($cursoId);
+  $curso = \App\Models\Course::findOrFail($cursoId);
 
   // Resolver el servicio desde el contenedor
-  $cursoInstanciaService = app(\App\Services\CursoInstanciaService::class);
+  $courseInstanceService = app(\App\Services\courseInstanceService::class);
 
   // Limpiar el título del curso para usarlo como nombre de archivo
   $safeTitulo = Str::slug($curso->titulo, '_'); // Reemplaza espacios y caracteres especiales con "_"
 
   // Crear la instancia del export, pasando el servicio y demás parámetros
-  return Excel::download(new \App\Exports\InscriptosExport($curso, $instanciaId, $cursoInstanciaService), 'Inscriptos_' . $safeTitulo . '.xlsx');
+  return Excel::download(new \App\Exports\InscriptosExport($curso, $instanciaId, $courseInstanceService), 'Inscriptos_' . $safeTitulo . '.xlsx');
 })->name('exportarInscriptos');
 
 
@@ -616,7 +615,7 @@ Route::get('/descargar/{filename}', function ($filename) {
   $filePath = storage_path('app/public/' . $filename);
 
   if (file_exists($filePath)) {
-      return response()->download($filePath)->deleteFileAfterSend(true);
+    return response()->download($filePath)->deleteFileAfterSend(true);
   }
 
   return redirect()->back()->with('error', 'El archivo no existe.');

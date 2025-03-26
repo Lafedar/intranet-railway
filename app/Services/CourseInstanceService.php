@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\CursoInstancia;
+use App\Models\CourseInstance;
 use App\Models\CursoInstanciaAnexo;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -11,19 +11,14 @@ use App\Models\Anexo;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class CursoInstanciaService
+class CourseInstanceService
 {
-    /**
-     * Get all instances of a specific course by the course ID.
-     *
-     * @param int $cursoId
-     * @return \Illuminate\Database\Eloquent\Collection|CursoInstancia[]
-     */
+ 
     public function getInstancesByCourse(int $cursoId): EloquentCollection
     {
         try {
             // Fetch all instances related to the course ID
-            return CursoInstancia::where('id_curso', $cursoId)->get();
+            return CourseInstance::where('id_curso', $cursoId)->get();
         } catch (Throwable $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error obteniendo las instancias del curso' . $e->getMessage());
             throw new Exception('Error al buscar las instancias.');
@@ -45,7 +40,7 @@ class CursoInstanciaService
     {
         try {
 
-            $quota = CursoInstancia::where('id_instancia', $instanceId)
+            $quota = CourseInstance::where('id_instancia', $instanceId)
                 ->where('id_curso', $courseId)
                 ->value('cupo');
 
@@ -61,7 +56,7 @@ class CursoInstanciaService
 
     public function decrementQuota($courseId, $instanceId): int
     {
-        $instance = CursoInstancia::where('id', $instanceId)
+        $instance = CourseInstance::where('id', $instanceId)
             ->where('id_curso', $courseId)
             ->first();
 
@@ -72,10 +67,10 @@ class CursoInstanciaService
         return $instance->cupo;
     }
 
-    public function create(array $data): CursoInstancia
+    public function create(array $data): CourseInstance
     {
         try {
-            return CursoInstancia::create($data);
+            return CourseInstance::create($data);
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al crear la instancia' . $e->getMessage());
             throw $e;
@@ -83,11 +78,11 @@ class CursoInstanciaService
     }
 
 
-    public function getInstanceById(int $id_instancia, int $cursoId): ?CursoInstancia
+    public function getInstanceById(int $id_instancia, int $cursoId): ?CourseInstance
     {
         try {
 
-            $instancia = CursoInstancia::with('anexos')
+            $instancia = CourseInstance::with('anexos')
                 ->where('id_instancia', $id_instancia)
                 ->where('id_curso', $cursoId)
                 ->first();
@@ -101,10 +96,10 @@ class CursoInstanciaService
 
 
 
-    public function delete(CursoInstancia $instancia, int $cursoId): ?bool
+    public function delete(CourseInstance $instancia, int $cursoId): ?bool
     {
         try {
-            $instanciaToDelete = CursoInstancia::where('id_instancia', $instancia->id_instancia)
+            $instanciaToDelete = CourseInstance::where('id_instancia', $instancia->id_instancia)
                 ->where('id_curso', $cursoId)
                 ->first();
 
@@ -122,7 +117,7 @@ class CursoInstanciaService
     public function getCountInstances(int $cursoId)
     {
         try {
-            return CursoInstancia::where('id_curso', $cursoId)
+            return CourseInstance::where('id_curso', $cursoId)
                 ->distinct('id_instancia')
                 ->count('id_instancia');
         } catch (Exception $e) {
@@ -135,7 +130,7 @@ class CursoInstanciaService
     public function getMaxInstanceId(int $cursoId)
     {
         try {
-            $maxIdInstancia = CursoInstancia::where('id_curso', $cursoId)
+            $maxIdInstancia = CourseInstance::where('id_curso', $cursoId)
                 ->max('id_instancia');
 
 
@@ -156,7 +151,7 @@ class CursoInstanciaService
     public function getIdCourseByInstanceId(int $instanceId)
     {
         try {
-            return CursoInstancia::where('id', $instanceId)
+            return CourseInstance::where('id', $instanceId)
                 ->value('id_curso');
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el curso mediante el Id de instancia' . $e->getMessage());
@@ -164,16 +159,8 @@ class CursoInstanciaService
         }
 
     }
-    public function getModalidad(int $instanciaId, int $cursoId)
-    {
-        return CursoInstancia::where('id_curso', $cursoId)
-            ->where('id_instancia', $instanciaId)
-            ->value('modalidad');
-    }
 
-
-
-    public function getDocumentacion(int $instanciaId, int $cursoId)
+    public function getDocumentation(int $instanciaId, int $cursoId)
     {
         try {
             $anexos = DB::table('relacion_curso_instancia_anexo')
@@ -193,7 +180,7 @@ class CursoInstanciaService
 
     }
 
-    public function getDocumentacionById(string $formulario_id, int $cursoId, int $instanciaId)
+    public function getDocumentationById(string $formulario_id, int $cursoId, int $instanciaId)
     {
 
         $formulario = DB::table('relacion_curso_instancia_anexo')
@@ -216,13 +203,13 @@ class CursoInstanciaService
     }
 
 
-    public function getAnexos()
+    public function getAnnexes()
     {
         return Anexo::all();
     }
 
 
-    public function getAnexoByTipo(int $cursoId, int $instanciaId, string $tipo)
+    public function getannexByType(int $cursoId, int $instanciaId, string $tipo)
     {
         $formulario = DB::table('relacion_curso_instancia_anexo')
             ->where('id_instancia', $instanciaId)
@@ -243,9 +230,9 @@ class CursoInstanciaService
         return $anexo;
     }
 
-    public function cambiarEstadoInstancia(int $instanciaId, int $cursoId, string $bandera)
+    public function changeInstanceStatus(int $instanciaId, int $cursoId, string $bandera)
     {
-        $instancia = CursoInstancia::where('id_instancia', $instanciaId)
+        $instancia = CourseInstance::where('id_instancia', $instanciaId)
             ->where('id_curso', $cursoId)
             ->first();
 
@@ -265,28 +252,14 @@ class CursoInstanciaService
     }
 
 
-
-
-
-
-    public function validarAnexo(string $formulario_id, int $cursoId, int $instanciaId)
+    public function getStartDate(int $cursoId, int $instanciaId)
     {
-        $formulario = DB::table('relacion_curso_instancia_anexo')
-            ->where('id_instancia', $instanciaId)
-            ->where('id_curso', $cursoId)
-            ->where('formulario_id', $formulario_id)
-            ->value('formulario_id');
-
-    }
-
-    public function getFechaInicio(int $cursoId, int $instanciaId)
-    {
-        return CursoInstancia::where('id_curso', $cursoId)
+        return CourseInstance::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->value('fecha_inicio');
     }
 
-    public function getCountAnexosInstancia(int $cursoId, int $instanciaId)
+    public function getCountAnnexesInstance(int $cursoId, int $instanciaId)
     {
         return CursoInstanciaAnexo::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
@@ -295,7 +268,7 @@ class CursoInstanciaService
 
     public function get_room($cursoId, $instanciaId)
     {
-        $instance = CursoInstancia::where('id_curso', $cursoId)
+        $instance = CourseInstance::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->first();
 
@@ -309,7 +282,7 @@ class CursoInstanciaService
 
     public function get_hour($cursoId, $instanciaId)
     {
-        $instance = CursoInstancia::where('id_curso', $cursoId)
+        $instance = CourseInstance::where('id_curso', $cursoId)
             ->where('id_instancia', $instanciaId)
             ->first();
 
@@ -320,6 +293,14 @@ class CursoInstanciaService
 
         return null;
     }
+
+
+    public function getAllInstances(){
+        return CourseInstance::all();
+    }
+
+    
+
 
 
 }

@@ -18,29 +18,29 @@
 
     <div id="cursos-edit-container">
         <h1 class="mb-4 text-center">Editar Capacitación</h1>
-        <form action="{{ route('cursos.update', $curso->id) }}" method="POST">
+        <form action="{{ route('cursos.update', $course->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="form-group">
                 <label for="titulo">Título</label>
                 <input type="text" class="form-control" id="titulo" name="titulo"
-                    value="{{ old('titulo', $curso->titulo) }}" required maxlength="252">
+                    value="{{ old('titulo', $course->titulo) }}" required maxlength="252">
                 <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
             </div>
 
             <div class="form-group">
                 <label for="descripcion">Descripción</label>
                 <textarea class="form-control" id="descripcion" name="descripcion"
-                    maxlength="252">{{ old('descripcion', $curso->descripcion) }}</textarea>
+                    maxlength="252">{{ old('descripcion', $course->descripcion) }}</textarea>
                 <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
             </div>
 
             <div class="form-group">
                 <label>Obligatorio</label>
                 <select name="obligatorio" class="form-control" required>
-                    <option value="1" {{ $curso->obligatorio == 1 ? 'selected' : '' }}>Sí</option>
-                    <option value="0" {{ $curso->obligatorio == 0 ? 'selected' : '' }}>No</option>
+                    <option value="1" {{ $course->obligatorio == 1 ? 'selected' : '' }}>Sí</option>
+                    <option value="0" {{ $course->obligatorio == 0 ? 'selected' : '' }}>No</option>
                 </select>
             </div>
 
@@ -52,7 +52,7 @@
                     @if($area->id_a == 'tod')
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]"
-                                value="{{ $area->id_a }}" @if($curso->areas->contains('id_a', $area->id_a)) checked @endif>
+                                value="{{ $area->id_a }}" @if($course->areas->contains('id_a', $area->id_a)) checked @endif>
                             <p class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</p>
                         </div>
                     @endif
@@ -62,7 +62,7 @@
                     @if($area->id_a != 'tod')
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input area-checkbox" id="area_{{ $area->id_a }}"
-                                name="area[]" value="{{ $area->id_a }}" @if($curso->areas->contains('id_a', $area->id_a))
+                                name="area[]" value="{{ $area->id_a }}" @if($course->areas->contains('id_a', $area->id_a))
                                 checked @endif>
                             <p class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</p>
                         </div>
@@ -74,8 +74,8 @@
                 <label>Tipo</label>
                 <select name="tipo" class="form-control" required>
                     <option value="">Selecciona una opción</option>
-                    <option value="Interna" {{ $curso->tipo == 'Interna' ? 'selected' : '' }}>Interna</option>
-                    <option value="Externa" {{ $curso->tipo == 'Externa' ? 'selected' : '' }}>Externa</option>
+                    <option value="Interna" {{ $course->tipo == 'Interna' ? 'selected' : '' }}>Interna</option>
+                    <option value="Externa" {{ $course->tipo == 'Externa' ? 'selected' : '' }}>Externa</option>
                 </select>
             </div>
             <a href="{{ route('cursos.index') }}" id="asignar-btn">Cancelar</a>

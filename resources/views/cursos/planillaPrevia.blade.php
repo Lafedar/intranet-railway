@@ -16,11 +16,11 @@
         <div class="celda-izquierda"
           style="display: table-cell; width: 20%; border-right: none; padding: 2px; text-align: right; font-size: 20px;">
 
-          <b>{{$anexo->valor_formulario}}</b>
+          <b>{{$annex->valor_formulario}}</b>
         </div>
         <div class="celda-derecha"
           style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
-          <b>POE N°: {{$anexo->valor1}}</b>
+          <b>POE N°: {{$annex->valor1}}</b>
         </div>
         <div class="celda-derecha"
           style="display: table-cell; width: 40%; border-left: none; padding: 2px; text-align: right; font-size: 20px;">
@@ -42,7 +42,7 @@
         <!-- Celda central -->
         <div class="celda-central"
           style="display: table-cell; width: 50%; padding: 5px; border-right: 2px solid black; text-align: center; font-size: 20px; box-sizing: border-box;">
-          <b>{{$anexo->valor2}}</b>
+          <b>{{$annex->valor2}}</b>
         </div>
 
         <!-- Celda derecha -->
@@ -51,7 +51,7 @@
           <!-- Cambié el ancho de esta celda -->
           <!-- Contenedor para el texto "Version N°" -->
           <div class="arriba" style="margin-bottom: 2px;">
-            <b>Version N°: {{$anexo->valor3}}</b>
+            <b>Version N°: {{$annex->valor3}}</b>
           </div>
 
           <!-- Línea horizontal centrada en la celda -->
@@ -59,7 +59,7 @@
 
           <!-- Contenido inferior -->
           <div class="abajo" style="margin-top: 5px;">
-            <b>Pagina N°: {{$anexo->valor4}}</b>
+            <b>Pagina N°: {{$annex->valor4}}</b>
           </div>
         </div>
       </div>

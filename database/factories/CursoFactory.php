@@ -3,15 +3,15 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Curso;
+use App\Models\Course;
 use Faker\Factory as FakerFactory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Curso>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Course>
  */
 class CursoFactory extends Factory
 {
-    protected $model = Curso::class;
+    protected $model = Course::class;
 
     /**
      * Define the model's default state.
