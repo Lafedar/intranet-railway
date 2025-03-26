@@ -62,7 +62,7 @@ class CourseInstanceController extends Controller
             $person = $this->personaService->getById($personDni->id_p);
             $instancesIds = $this->enrolamientoCursoService->getInstancesByPersonId($courseId, $person->id_p);
             $instances = new Collection();
-            if (auth()->user()->hasRole(['administrador', 'Gestor-courses'])) {
+            if (auth()->user()->hasRole(['administrador', 'Gestor-cursos'])) {
                 $instances = $this->courseInstanceService->getInstancesByCourse($courseId)->sortByDesc('created_at');
             } else {
                 foreach ($instancesIds as $idInstancia) {
