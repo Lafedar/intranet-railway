@@ -276,6 +276,14 @@ class CourseController extends Controller
 
         return view('empleado.cursos', compact('coursesWithDetails', 'person'));
     }
+    public function saveNewOptimizedCourse()
+    {
+        $areas = $this->areaService->getAll();
+        $persons = $this->personaService->getAll();
+        $courses = $this->courseService->getAll();
+
+        return view('cursos.createOptimized', compact('areas', 'persons', 'courses'));
+    }
 
 }
 

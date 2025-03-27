@@ -319,6 +319,7 @@
 
     $.get('select_puesto', function (data) {
       var html_select = '<option value="">Seleccione </option>'
+      console.log(data);
       for (var i = 0; i < data.length; i++) {
         if (data[i].nombre_p == null) {
           html_select += '<option value ="' + data[i].id_puesto + '">' + data[i].nombre_a + ' - ' + data[i].nombre + ' - ' + data[i].desc_puesto + '</option>';

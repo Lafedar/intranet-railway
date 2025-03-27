@@ -1,0 +1,177 @@
+.table-responsive {
+    max-height: 300px;  /* Limitar la altura */
+    overflow-y: auto;   /* Habilitar el scroll vertical solo para el cuerpo */
+}
+
+.table {
+    width: 100%;
+    table-layout: fixed; /* Asegura que las columnas tengan el mismo tamaño */
+
+    border-collapse: separate; /* Necesario para que funcione border-spacing */
+    border-spacing: 0 8px; /* Separar las filas con un espacio de 8px */
+}
+
+.table thead th {
+    position: sticky;  /* Fijar el encabezado al hacer scroll */
+    top: 0;
+    background-color: #fff; /* Fondo blanco para el encabezado */
+    z-index: 2; /* Asegura que el encabezado esté por encima de las filas */
+    text-align: center;  /* Centrar el texto del encabezado */
+}
+
+.table tbody {
+    height: 250px;  /* Establece el alto del cuerpo para permitir el scroll */
+    overflow-y: auto;  /* Habilita el scroll solo en el cuerpo */
+}
+
+.table th, .table td {
+    padding: 8px;  /* Espaciado dentro de las celdas */
+    text-align: center;  /* Centrar el contenido de las celdas */
+    border-bottom: 1px solid #ddd;  /* Línea de separación entre filas */
+}
+
+.table td {
+    vertical-align: middle;  /* Centra el contenido verticalmente en las celdas */
+}
+
+.table tbody tr {
+    background-color: #fff;  /* Fondo blanco para las filas */
+    border-radius: 4px;  /* Bordes redondeados para las filas */
+}
+
+table thead {
+    background: rgba(15, 79, 141, 0.83) !important;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+
+
+}
+
+table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 750;
+    line-height: 19.2px;
+    letter-spacing: -0.03em;
+    text-align: center !important;
+    /* Centrado horizontal */
+    vertical-align: middle !important;
+    /* Centrado vertical */
+    color: rgba(255, 255, 255, 1);
+}
+
+
+/*filas */
+table {
+    border: none !important;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Espacio entre filas (10px vertical) */
+    margin-top: 10px;
+
+}
+
+table td,
+table th {
+    border: none !important;
+    padding: 10px;
+}
+
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+}
+
+
+table tbody tr {
+    background: rgba(217, 217, 217, 0.6);
+}
+
+
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/* Para redondear las celdas de la primera y última columna */
+table thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+table thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+table tbody tr {
+    margin-bottom: 10px;
+}
+
+/*contenido de la tabla*/
+table tbody td {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: -0.03em;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(15, 79, 141, 0.83);
+    background: rgba(217, 217, 217, 0.6);
+    /*agregar font para internos*/
+    text-align: center;
+}
+
+/* estilos para el encabezado de la tabla */
+table thead th {
+    background: rgba(15, 79, 141, 0.83) !important;
+    color: white;
+}
+
+#asignar-btn {
+    background: linear-gradient(90deg, rgba(199, 218, 233, 0.88) 0%, #5098CD 0.01%, #357AAB 46.5%, #3D83B5 85.5%);
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+    box-shadow: 0px 4px 4.6px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+    font-family: Calibri, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 16.8px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(245, 245, 245, 1);
+    height: 40px;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+}
+
+/* Asegurar que ambos bloques ocupen el 50% del ancho */
+.col-md-6 {
+    width: 50%;
+}
+
+/* Eliminar márgenes negativos en el contenedor de la tabla */
+#table-container {
+    max-width: 100%;
+    margin-left: 0;
+}
+
+#cursos-create-container{
+    margin-top: 50px;
+}
+#container-to-registering-people{
+    width: 97.5vw; 
+    display: flex; 
+    margin: 0; 
+    margin-top: -50px;
+}

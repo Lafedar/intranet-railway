@@ -545,6 +545,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/cursos/create', [CourseController::class, 'showCreateCourseForm'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/ver/{cursoId}', [CourseController::class, 'displayCourseDetails'])->name('courses.showCourse')->middleware('role:administrador|Gestor-cursos');
 
+  Route::get('/cursos/createOptimized', [CourseController::class, 'saveNewOptimizedCourse'])->middleware('role:administrador|Gestor-cursos')->name('cursos.createOptimized');
+
   Route::post('cursos/{curso}/instancias', [CourseInstanceController::class, 'saveNewCourseInstance'])->name('cursos.instancias.store')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/{cursoId}/inscritos', [CourseController::class, 'getRegistered'])->name('course.registered')->middleware('role:administrador|Gestor-cursos');
 
