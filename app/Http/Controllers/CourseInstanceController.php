@@ -955,6 +955,101 @@ class CourseInstanceController extends Controller
     }
 
 
+    public function saveNewOptimizedCourseInstance(Request $request, $courseId)
+    {
+        try {
+            $request->validate([
+                'start_date' => 'required|date',
+                'trainer' => 'nullable|string|max:255',
+                'another_trainer' => 'nullable|string|max:255',
+               
+    
+            ]);
+            $trainer = $request->input('trainer');
 
+
+
+            if ($request->input('another_trainer')) {
+                $trainer = $request->input('another_trainer');
+
+            }
+
+    
+            $data = $request->all();
+            $data['capacitador'] = $trainer;
+            $data['codigo'] = "N/A";
+            $data['certificado'] = "Aprobacion";
+            $data['lugar'] = "Lafedar";
+            $data['estado'] = "Activo";
+            $data['hora'] = "00:00:00";
+            $data['cupo'] = 100;
+            $data['modalidad'] = "Presencial";
+            $data['fecha_inicio'] = $request->input('start_date');
+            $data['fecha_fin'] = $data['fecha_inicio'];
+            $data['examen'] = null;
+           
+            $data['id_curso'] = $courseId;
+
+            $version = $this->courseInstanceService->getCountInstances($courseId);
+            $data['version'] = $version + 1;
+            $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
+            $data['id_instancia'] = $nextInstanceId;
+
+
+            $this->courseInstanceService->create($data);
+
+            /*--------------------------------------------------------------------*/
+           
+                $selectedPersons = $request->input('personas', []);
+                $manager = $this->personaService->getByDni(Auth::user()->dni);
+                $instance_id = $nextInstanceId;
+    
+                if (empty($selectedPersons)) {
+                    return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
+                }
+    
+                $imagePath2 = storage_path('app/public/courses/firma.jpg');
+    
+                if (file_exists($imagePath2)) {
+                    $imageData = base64_encode(file_get_contents($imagePath2));
+                    $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
+                    $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+                } else {
+                    $imageBase64Firma = null;
+                }
+    
+                $successfulRegistrations = 0;  // Contador de inscripciones exitosas
+    
+                foreach ($selectedPersons as $id_persona => $inscribir) {
+                    if ($inscribir == 1) {  // Solo inscribir si la persona fue seleccionada
+                        $user = $this->personaService->getById($id_persona);
+                        $manager = $this->personaService->getByDni($manager->dni);
+    
+                        // Inscribir a la persona
+                        $this->enrolamientoCursoService->enroll($user->dni, $instance_id, $courseId);
+    
+                        // Enviar el correo de inscripción
+                        $course = $this->courseService->getById($courseId);
+                        $startDate = $this->courseInstanceService->getStartDate($courseId, $instance_id);
+                        $room = $this->courseInstanceService->get_room($courseId, $instance_id);
+                        $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
+    
+                        if ($request->input('mail') && !empty($user->correo)) {
+                            Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
+                        }
+    
+                        $successfulRegistrations++;  // Incrementar el contador de inscripciones exitosas
+                    }
+                }
+    
+                
+    
+            return redirect()->route('cursos.instancias.index', $courseId)
+                ->with('success', 'Instance created successfully.');
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
+            return redirect()->back()->withErrors('There was a problem creating the course instance.');
+        }
+    }
 
 }

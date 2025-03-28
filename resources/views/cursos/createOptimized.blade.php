@@ -10,6 +10,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+    @if (session('success'))
+        <div class="alert alert-success" style="margin-top: 80px; text-align: center;" id="successMessage">
+            {{ session('success') }}
+        </div>
+    @endif
+
     @if ($errors->any())
         <div class="alert alert-danger text-center">
             <ul class="list-unstyled">
@@ -19,15 +25,16 @@
             </ul>
         </div>
     @endif
-    
+
     <div id="cursos-create-container">
         <h1 class="mb-4 text-center">Crear Instancia</h1>
-        <form id="cursoForm" action="{{ route('cursos.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="cursoForm" action="{{ route('courses.instances.optmizedStore', ['course' => ':course']) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
 
             <div class="form-group d-flex justify-content-between">
                 <div class="mr-2">
-                    <label for="titulo">ID</label>
+                    <label for="titulo"><b>ID</b></label>
                     <select class="form-control" id="course" name="course" required>
                         <option value="">Seleccione una capacitacion</option>
                         @foreach($courses as $course)
@@ -36,21 +43,17 @@
                             </option>
                         @endforeach
                     </select>
+                    <a href="javascript:void(0);" id="toggle-capacitacion">Crear Capacitación</a>
+
+
                 </div>
+
                 <div class="flex-fill mr-2">
-                    <label>Tipo</label>
-                    <select name="tipo" class="form-control" required>
-                        <option value="">Selecciona una opción</option>
-                        <option value="Interna">Interna</option>
-                        <option value="Externa">Externa</option>
-                    </select>
-                </div>
-                <div class="flex-fill mr-2">
-                    <label for="start_date">Fecha inicio</label>
+                    <label for="start_date"><b>Fecha Inicio</b></label>
                     <input type="date" class="form-control" id="start_date" name="start_date" required>
                 </div>
                 <div class="flex-fill">
-                    <label for="trainer">Capacitador</label>
+                    <label for="trainer"><b>Capacitador</b></label>
                     <select class="form-control" id="trainer" name="trainer" required>
                         <option value="">Seleccione un capacitador</option>
                         @foreach($persons as $person)
@@ -65,13 +68,13 @@
                 </div>
             </div>
 
-            
-            <div id="anotherTrainerInput" style="display: none;">
-                <label for="another_trainer">Escribe el nombre del capacitador</label>
-                <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60">
+
+            <div id="anotherTrainerInput" style="display: none; margin-left: 1480px;">
+                <label for="another_trainer"><b>Escribe el nombre del capacitador</b></label>
+                <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60" style="width: 400px;">
             </div>
-        </form>
-        
+
+
     </div>
 
     <br><br><br>
@@ -83,9 +86,12 @@
             <h3 class="mb-4 text-center">Inscribir Personas</h3>
             <div class="form-group">
                 <input type="text" id="filtro" class="form-control"
-                       placeholder="Filtrar por Nombre, Apellido, Área o Legajo" autocomplete="off">
+                    placeholder="Filtrar por Nombre, Apellido, Área o Legajo" autocomplete="off">
             </div>
-
+            <div class="d-inline-block">
+                <input type="checkbox" name="mail"> <label for="mail" id="mail"><b>Enviar Mail a los
+                        inscriptos</b></label>
+            </div>
             <div class="table-responsive flex-grow-1">
                 <table class="table">
                     <thead>
@@ -97,17 +103,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         @foreach($persons as $person)
                             <tr>
                                 <td>{{ $person->legajo }}</td>
                                 <td>{{ $person->apellido }} {{ $person->nombre_p }}</td>
-                                <td>{{ $person->area?? 'N/A' }}</td>
+                                <td>{{ $person->area->nombre_a ?? 'N/A' }}</td>
                                 <td>
                                     @if($person->estadoEnrolado)
                                         <p>Ya inscripto</p>
                                     @else
-                                        <input type="checkbox" class="persona-checkbox" name="personas[{{ $person->id_p }}]" value="1">
+                                        <input type="checkbox" class="persona-checkbox" name="personas[{{ $person->id_p }}]"
+                                            value="1">
                                     @endif
                                 </td>
                             </tr>
@@ -116,64 +123,89 @@
                 </table>
             </div>
             <div class="text-center" style="margin-top: 50px;">
-            <a href="{{ route('cursos.index') }}" id="asignar-btn">Cancelar</a>
-            <button type="submit" id="asignar-btn">Crear Instancia</button>
-        </div>
-    </div>
-
-    <div class="col-md-6 d-flex flex-column" style="width: 50vw; padding: 20px;">
-        <h3 class="mb-4 text-center">Crear Capacitacion</h3>
-        
-        <div class="form-group">
-            <label for="titulo">ID</label>
-            <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252">
-            <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
-        </div>
-
-        <div class="form-group">
-            <label>Tipo</label>
-            <select name="tipo" class="form-control" required>
-                <option value="">Selecciona una opción</option>
-                <option value="Interna">Interna</option>
-                <option value="Externa">Externa</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="start_date">Fecha inicio</label>
-            <input type="date" class="form-control" id="start_date" name="start_date" required>
-        </div>
-
-    <div class="form-group">
-    <label for="area">Áreas</label><br>
-    <div class="row">
-        @foreach($areas as $index => $area)
-            @if($index % 4 == 0 && $index != 0) 
-                </div><div class="row">
-            @endif
-            <div class="col-3">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}" name="area[]" value="{{ $area->id_a }}">
-                    <label class="form-check-label" for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
-                </div>
+                <a href="{{ route('cursos.index') }}" id="asignar-btn">Cancelar</a>
+                <button type="submit" id="asignar-btn">Crear Instancia</button>
             </div>
-        @endforeach
-    </div>
-    <div class="text-center">
-        <a href="{{ route('cursos.index') }}" id="asignar-btn">Cancelar</a>
-        <button type="submit" id="asignar-btn">Crear Capacitación</button>
-    </div>
-</div>
+        </div>
+        </form>
 
-</div> 
+        <div class="col-md-6 d-flex flex-column" style="width: 50vw; padding: 20px;">
+            <div id="capacitacion-form" style="display: none;">
+                <h3 class="mb-4 text-center">Crear Capacitacion</h3>
+                <form id="cursoForm" action="{{ route('course.optimizedStore') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group">
+                        <label for="titulo"><b>ID</b></label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252">
+                        <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
+                    </div>
 
-    
+                    <div class="form-group">
+                        <label for="area"><b>Áreas</b></label><br>
+                        <div class="row">
+                            @foreach($areas as $index => $area)
+                                    @if($index % 4 == 0 && $index != 0)
+                                        </div>
+                                        <div class="row">
+                                    @endif
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}"
+                                                name="area[]" value="{{ $area->id_a }}">
+                                            <label class="form-check-label"
+                                                for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
+                                        </div>
+                                    </div>
+                            @endforeach
+                        </div>
+                        <div class="text-center">
+                            <a href="javascript:void(0);" class="cancelar-btn" id="asignar-btn">Cancelar</a>
+                            <button type="submit" id="asignar-btn">Crear Capacitación</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 @endsection
 
 
 
 
 @push('scripts')
+    <script>
+        $(document).ready(function () {
+            $('#toggle-capacitacion').click(function () {
+                // Alternar la visibilidad del bloque
+                $('#capacitacion-form').toggle();
+
+                // Cambiar el texto del enlace según la visibilidad del bloque
+                if ($('#capacitacion-form').is(':visible')) {
+                    $(this).text('Cerrar');  // Cambiar a "Cerrar" cuando el bloque esté visible
+                } else {
+                    $(this).text('Crear Capacitación');  // Cambiar de vuelta a "Capacitación" cuando el bloque esté oculto
+                }
+            });
+
+            $('.cancelar-btn').click(function () {
+                $('#capacitacion-form').hide(); // Ocultar el bloque
+                $('#toggle-capacitacion').text('Crear Capacitación'); // Cambiar el texto de "Capacitación"
+            });
+        });
+
+    </script>
+
+
+    <script>
+        document.getElementById('cursoForm').addEventListener('submit', function (e) {
+            var courseValue = document.getElementById('course').value;
+            // Reemplaza ":course" en la ruta con el valor seleccionado
+            var actionUrl = this.action.replace(':course', courseValue);
+            this.action = actionUrl;
+        });
+    </script>
     <!-- Incluyendo Select2 (si usas un CDN, por ejemplo) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

@@ -280,10 +280,52 @@ class CourseController extends Controller
     {
         $areas = $this->areaService->getAll();
         $persons = $this->personaService->getAll();
+        $persons = $this->personaService->getAll();
+
+        $persons->each(function ($person) {
+            $person->area = $this->areaService->getAreaById($person->area);
+        });
         $courses = $this->courseService->getAll();
 
         return view('cursos.createOptimized', compact('areas', 'persons', 'courses'));
     }
+
+
+    public function saveNewOptmizedCourse(Request $request)
+    {
+        try {
+
+
+            $validatedData = $request->validate([
+                'titulo' => 'required|string|max:253',
+                'area' => 'required|array|min:1',
+            ]);
+
+            $validatedData['obligatorio'] = 1;
+            $validatedData['tipo'] = 'Interna';
+            $validatedData['descripcion'] = null;
+            // Si no se ha seleccionado ninguna área, mostrar un error
+            if (empty($validatedData['area'])) {
+                return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+            }
+
+
+            $course = $this->courseService->create($validatedData);
+            $course->areas()->attach($validatedData['area']);
+
+
+            return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación creada exitosamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return redirect()->back()->withErrors($e->validator->errors());
+        } catch (Exception $e) {
+
+            return redirect()->back()->withErrors('There was a problem creating the course: ' . $e->getMessage());
+        }
+    }
+
+
+    
 
 }
 
