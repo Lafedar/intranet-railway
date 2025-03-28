@@ -999,7 +999,7 @@ class CourseInstanceController extends Controller
             $this->courseInstanceService->create($data);
 
             /*--------------------------------------------------------------------*/
-           
+           if(!empty($request->input('personas', []))){
                 $selectedPersons = $request->input('personas', []);
                 $manager = $this->personaService->getByDni(Auth::user()->dni);
                 $instance_id = $nextInstanceId;
@@ -1041,11 +1041,12 @@ class CourseInstanceController extends Controller
                         $successfulRegistrations++;  // Incrementar el contador de inscripciones exitosas
                     }
                 }
-    
+            }
                 
     
-            return redirect()->route('cursos.instancias.index', $courseId)
+                return redirect()->route('cursos.instancias.index', $courseId)
                 ->with('success', 'Instance created successfully.');
+            
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
             return redirect()->back()->withErrors('There was a problem creating the course instance.');

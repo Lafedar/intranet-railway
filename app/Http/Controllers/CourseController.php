@@ -258,7 +258,17 @@ class CourseController extends Controller
         $areas = $this->courseService->getAreasByCourseId(($courseId));
         return view('cursos.verCurso', compact('course', 'areas'));
     }
+    public function displayCourseDetailsJson($courseId)
+    {
+        $course = $this->courseService->getById($courseId);
+        $areas = $this->courseService->getAreasByCourseId($courseId);
 
+        // Devolver los datos como JSON para la petición AJAX
+        return response()->json([
+            'course' => $course,
+            'areas' => $areas
+        ]);
+    }
 
 
     public function listUserCourses(int $userId)
@@ -325,7 +335,7 @@ class CourseController extends Controller
     }
 
 
-    
+
 
 }
 

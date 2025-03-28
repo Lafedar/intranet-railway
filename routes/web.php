@@ -544,6 +544,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::put('/cursos/{id}', [CourseController::class, 'updateDetails'])->name('cursos.update')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/create', [CourseController::class, 'showCreateCourseForm'])->name('cursos.create')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/ver/{cursoId}', [CourseController::class, 'displayCourseDetails'])->name('courses.showCourse')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/courses/json/{cursoId}', [CourseController::class, 'displayCourseDetailsJson'])->name('courses.showCourseJson')->middleware('role:administrador|Gestor-cursos');
 
   Route::get('/courses/instances/create/optimized', [CourseController::class, 'saveNewOptimizedCourse'])->middleware('role:administrador|Gestor-cursos')->name('cursos.createOptimized');
 
