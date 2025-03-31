@@ -14,7 +14,7 @@
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger text-center">
+        <div class="alert alert-danger text-center" style="margin-top: 80px; text-align: center;" id="errorMessage">
             <ul class="list-unstyled">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -142,26 +142,47 @@
                             <div class="form-group">
                                 <label for="area"><b>Áreas</b></label><br>
                                 <div class="row">
+                                    <!-- Checkbox "Todas las Áreas" -->
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            @foreach($areas as $area)
+                                                @if($area->id_a == 'tod')
+                                                    <input type="checkbox" class="form-check-input" id="select-all-areas"
+                                                    value={{$area->id_a}}>
+                                                    <label class="form-check-label" style="pointer-events: none;" for="select-all-areas">{{$area->nombre_a}}</label>
+                                                @endif
+                                            @endforeach
+                                            <!-- Checkbox con id único "select-all-areas" -->
+                                            
+                                        </div>
+                                    </div>
+
                                     @foreach($areas as $index => $area)
-                                            @if($index % 4 == 0 && $index != 0)
-                                                </div>
-                                                <div class="row">
+                                            @if($area->id_a != 'tod')
+                                                    @if($index % 4 == 0 && $index != 0)
+                                                        </div>
+                                                        <div class="row">
+                                                    @endif
+                                                    <div class="col-3">
+                                                        <div class="form-check">
+                                                            <!-- Todos los checkboxes de áreas deben tener la clase "area-checkbox" -->
+                                                            <input type="checkbox" class="form-check-input area-checkbox" style="pointer-events: none;"
+                                                                id="area_{{ $area->id_a }}" name="area[]" value="{{ $area->id_a }}">
+                                                            <label class="form-check-label" style="pointer-events: none;"
+                                                                for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
+                                                        </div>
+                                                    </div>
                                             @endif
-                                            <div class="col-3">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="area_{{ $area->id_a }}"
-                                                        name="area[]" value="{{ $area->id_a }}" style="pointer-events: none;">
-                                                    <label class="form-check-label" style="pointer-events: none;"
-                                                        for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
-                                                </div>
-                                            </div>
                                     @endforeach
                                 </div>
                             </div>
 
-                            <div class="text-center mt-4" style="display: none">
-                                <a href="javascript:void(0);"  id="asignar-btn">Cancelar</a>
-                                <button type="submit"  id="asignar-btn" >Crear Capacitación</button>
+
+
+                            <div class="text-center mt-4" style="display: none" id="botones">
+                                <a href="{{ route('cursos.createOptimized') }}" id="asignar-btn">Cancelar</a>
+
+                                <button type="submit" id="asignar-btn">Crear Capacitación</button>
                             </div>
                         </form>
                     </div>
@@ -173,74 +194,125 @@
 
 
             @push('scripts')
-            <script>
-              document.addEventListener("DOMContentLoaded", function () {
-    const toggleCapacitacion = document.getElementById("toggle-capacitacion");
-    const tituloInput = document.getElementById("titulo");
-    const areaCheckboxes = document.querySelectorAll(".form-check-input");
-    const submitButton = document.querySelector("#capacitacionForm button[type='submit']");
-    const cancelButton = document.querySelector("#capacitacionForm a.btn-secondary");
-    const capacitacionTitle = document.getElementById("capacitacion-title");
+             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+             
+                <!-- DESACTIVAR Y ACTIVAR CREACION DE CURSOS -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const toggleCapacitacion = document.getElementById("toggle-capacitacion");
+                        const tituloInput = document.getElementById("titulo");
+                        const areaCheckboxes = document.querySelectorAll(".form-check-input");
+                        const submitButton = document.querySelector("#capacitacionForm button[type='submit']");
+                        const cancelButton = document.querySelector("#capacitacionForm a.btn-secondary");
+                        const capacitacionTitle = document.getElementById("capacitacion-title");
+                        const botonesDiv = document.getElementById("botones");
+                        const courseSelect = document.getElementById("course");
+                        const courseSelectLabel = document.querySelectorAll(".form-check-label");
+                        
 
-    let isCreating = false; // Estado para controlar el texto y acciones
+                        let isCreating = false;
+                        let previousTitle = tituloInput.value; // Guardar el título original
+                        let previousCheckboxStates = new Map(); // Guardar estados de checkboxes
 
-    toggleCapacitacion.addEventListener("click", function () {
-        isCreating = !isCreating; // Alternar estado
+                        // Guardar el estado original de los checkboxes
+                        areaCheckboxes.forEach((checkbox) => {
+                            previousCheckboxStates.set(checkbox, checkbox.checked);
+                        });
 
-        if (isCreating) {
-            console.log("Modo Crear Capacitación activado");
+                        toggleCapacitacion.addEventListener("click", function () {
+                            isCreating = !isCreating;
 
-            // Cambiar el texto del título
-            capacitacionTitle.textContent = "Crear Capacitación";
+                            if (isCreating) {
+                                //courseSelect.setAttribute("disabled", "true");
+                                toggleCapacitacion.textContent = "Cerrar";
+                                // Cambiar el texto del título
+                                capacitacionTitle.textContent = "Crear Capacitación";
 
-            // Habilitar el campo de título y limpiar su contenido
-            tituloInput.removeAttribute("readonly");
-            tituloInput.value = "";
+                                // Habilitar el campo de título y limpiar su contenido
+                                tituloInput.removeAttribute("readonly");
+                                tituloInput.value = "";
 
-            // Habilitar y desmarcar todos los checkboxes de áreas
-            areaCheckboxes.forEach((checkbox) => {
-                checkbox.style.pointerEvents = "auto";
-                checkbox.removeAttribute("disabled");
-                checkbox.checked = false; // Desmarcar el checkbox
-            });
+                                // Habilitar y desmarcar todos los checkboxes de áreas
+                                areaCheckboxes.forEach((checkbox) => {
+                                    checkbox.style.pointerEvents = "auto";  // Permitir interacción
+                                    checkbox.removeAttribute("disabled");
+                                    checkbox.checked = false; // Desmarcar el checkbox
+                                });
 
-            // Mostrar los botones
-            [submitButton, cancelButton].forEach(button => {
-                if (button) {
-                    button.style.display = "inline-block";
-                    button.style.visibility = "visible";
-                    button.style.opacity = "1";
-                }
-            });
-        } else {
-            console.log("Modo Crear Capacitación desactivado");
+                                // Mostrar los botones del formulario
+                                [submitButton, cancelButton].forEach(button => {
+                                    if (button) {
+                                        button.style.display = "inline-block";
+                                        button.style.visibility = "visible";
+                                        button.style.opacity = "1";
+                                    }
+                                });
 
-            // Restaurar el texto original
-            capacitacionTitle.textContent = "Capacitación";
+                                // Mostrar el div de los botones adicionales
+                                botonesDiv.style.display = "block";
+                                courseSelect.setAttribute("disabled", "true");
+                                
 
-            // Deshabilitar el campo de título y restaurar el contenido
-            tituloInput.setAttribute("readonly", true);
-            tituloInput.value = "";
+                            } else {
+                                //courseSelect.setAttribute("disabled");
+                                toggleCapacitacion.textContent = "Crear Capacitación";
+                                // Restaurar el título original
+                                capacitacionTitle.textContent = "Capacitación";
+                                tituloInput.value = previousTitle;
+                                tituloInput.setAttribute("readonly", true);
 
-            // Deshabilitar los checkboxes y desmarcarlos
-            areaCheckboxes.forEach((checkbox) => {
-                checkbox.style.pointerEvents = "none";
-                checkbox.setAttribute("disabled", true);
-                checkbox.checked = false;
-            });
+                                // Restaurar el estado de los checkboxes
+                                areaCheckboxes.forEach((checkbox) => {
+                                    checkbox.style.pointerEvents = "none";  // Deshabilitar la interacción visualmente
+                                    checkbox.checked = previousCheckboxStates.get(checkbox); // Mantener su estado original
+                                });
 
-            // Ocultar los botones
-            [submitButton, cancelButton].forEach(button => {
-                if (button) {
-                    button.style.display = "none";
-                }
-            });
-        }
-    });
-});
+                                // Ocultar los botones del formulario
+                                [submitButton, cancelButton].forEach(button => {
+                                    if (button) {
+                                        button.style.display = "none";
+                                    }
+                                });
 
+                                // Ocultar el div de los botones adicionales
+                                botonesDiv.style.display = "none";
+                                courseSelect.removeAttribute("disabled");
+                            }
+                        });
+                    });
+                </script>
 
-            </script>
+                <!-- DESACTIVAR CHECKBOXES DE ÁREAS CUANDO SE MARCA "TODAS LAS ÁREAS" -->
+                <script>
+                    $(document).ready(function () {
+                        // Obtener el checkbox "Todas las Áreas" por id
+                        const selectAllCheckbox = $('#select-all-areas')[0]; // Usar jQuery para obtenerlo y luego acceder al DOM
+
+                        // Obtener todos los checkboxes de áreas con la clase "area-checkbox"
+                        const areaCheckboxes = $('.area-checkbox');
+
+                        // Evento cuando se cambia el estado del checkbox "Todas las Áreas"
+                        $(selectAllCheckbox).change(function () {
+                            // Si el checkbox "Todas las Áreas" está marcado
+                            if (this.checked) {
+                                areaCheckboxes.each(function () {
+                                    this.checked = true;  // Marcar todos los checkboxes
+                                    this.disabled = true; // Deshabilitar los demás checkboxes
+                                });
+                            } else {
+                                areaCheckboxes.each(function () {
+                                    this.checked = false; // Deseleccionar todos
+                                    this.disabled = false; // Habilitar los demás
+                                });
+                            }
+                        });
+                    });
+                </script>
+
+                <!--COMPLETAR DATOS AL SELECCIONAR CURSO-->
                 <script>
                     $(document).ready(function () {
                         $('#course').change(function () {
@@ -271,7 +343,8 @@
                         });
                     });
                 </script>
-                
+
+                    <!--CONTADOR DE CARACTERES-->
                 <script>
                     function updateCharacterCount() {
                         const tituloInput = document.getElementById('titulo');
@@ -280,7 +353,7 @@
                         tituloCount.textContent = `Quedan ${remainingChars} caracteres`;
                     }
                 </script>
-                
+
 
                 <script>
                     document.getElementById('cursoForm').addEventListener('submit', function (e) {
@@ -290,11 +363,8 @@
                         this.action = actionUrl;
                     });
                 </script>
-               
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+                <!--OCULTAR MENSAJES DE EXITO Y ERRROR-->
                 <script>
                     $(document).ready(function () {
                         // Ocultar el mensaje de éxito después de 3 segundos
@@ -308,21 +378,9 @@
                         }, 3000);
                     });
                 </script>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        // Escuchar el cambio en el campo 'fecha_inicio'
-                        const fechaInicio = document.getElementById('start_date');
-                        const fechaFin = document.getElementById('end_date');
+               
 
-                        // Si el campo fecha_fin está vacío, asignamos el valor de fecha_inicio
-                        fechaInicio.addEventListener('input', function () {
-                            if (!fechaFin.value) {  // Solo actualizamos 'fecha_fin' si está vacío
-                                fechaFin.value = fechaInicio.value;
-                            }
-                        });
-                    });
-                </script>
-
+               <!--OTRO CAPACITADOR-->
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         const selectCapacitador = document.getElementById('trainer');
@@ -377,59 +435,11 @@
                     });
 
                 </script>
-                <script>
-                    // Función para limitar la longitud del input a 11 caracteres
-                    function limitInputLength(input) {
-                        if (input.value.length > 9) {
-                            input.value = input.value.slice(0, 9);
-                        }
-                    }
-                </script>
-                <script>
-                    // Obtener los elementos de los radio buttons y el input de examen
-                    const examenInput = document.getElementById("examInput");
-                    const certificadoAprobacion = document.getElementById("approval_certificate");
-                    const certificadoParticipacion = document.getElementById("participation_certificate");
+               
+                
 
-                    // Función que activa o desactiva el campo 'examen' según la opción seleccionada
-                    function toggleExamenField() {
-                        if (certificadoParticipacion.checked) {
-                            examenInput.disabled = true;  // Desactivar input cuando 'Participacion' está seleccionado
-                        } else {
-                            examenInput.disabled = false;  // Habilitar input cuando 'Aprobacion' está seleccionado
-                        }
-                    }
-
-                    // Ejecutar la función cada vez que cambie el estado de los radios
-                    certificadoAprobacion.addEventListener("change", toggleExamenField);
-                    certificadoParticipacion.addEventListener("change", toggleExamenField);
-
-                    // Llamar la función al cargar la página para que el estado inicial sea correcto
-                    window.onload = function () {
-                        toggleExamenField();
-                    }
-                </script>
-
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-
-
-
-
-                <script>
-                    $(document).ready(function () {
-                        // Ocultar los mensajes de éxito y error después de 3 segundos
-                        setTimeout(function () {
-                            $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
-                        }, 5000); // 3000 milisegundos = 3 segundos
-                    });
-                </script>
-                <script>
-                    function submitForm() {
-                        document.getElementById('excelForm').submit();  // Enviar el formulario cuando se selecciona el archivo
-                    }
-                </script>
-
+               
+                    <!--FILTRO DE PERSONAS-->
 
                 <script>
                     $('#filtro').on('input', function () {
