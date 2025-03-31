@@ -1,42 +1,42 @@
 .table-responsive {
-    max-height: 300px;  /* Limitar la altura */
-    overflow-y: auto;   /* Habilitar el scroll vertical solo para el cuerpo */
+    max-height: 350px;  
+    overflow-y: auto;   
 }
 
 .table {
     width: 100%;
-    table-layout: fixed; /* Asegura que las columnas tengan el mismo tamaño */
+    table-layout: fixed;
 
-    border-collapse: separate; /* Necesario para que funcione border-spacing */
-    border-spacing: 0 8px; /* Separar las filas con un espacio de 8px */
+    border-collapse: separate; 
+    border-spacing: 0 8px; 
 }
 
 .table thead th {
-    position: sticky;  /* Fijar el encabezado al hacer scroll */
+    position: sticky;  
     top: 0;
-    background-color: #fff; /* Fondo blanco para el encabezado */
-    z-index: 2; /* Asegura que el encabezado esté por encima de las filas */
-    text-align: center;  /* Centrar el texto del encabezado */
+    background-color: #fff; 
+    z-index: 2; 
+    text-align: center;  
 }
 
 .table tbody {
-    height: 250px;  /* Establece el alto del cuerpo para permitir el scroll */
-    overflow-y: auto;  /* Habilita el scroll solo en el cuerpo */
+    height: 250px;  
+    overflow-y: auto;  
 }
 
 .table th, .table td {
-    padding: 8px;  /* Espaciado dentro de las celdas */
-    text-align: center;  /* Centrar el contenido de las celdas */
-    border-bottom: 1px solid #ddd;  /* Línea de separación entre filas */
+    padding: 8px;  
+    text-align: center;  
+    border-bottom: 1px solid #ddd;  
 }
 
 .table td {
-    vertical-align: middle;  /* Centra el contenido verticalmente en las celdas */
+    vertical-align: middle; 
 }
 
 .table tbody tr {
-    background-color: #fff;  /* Fondo blanco para las filas */
-    border-radius: 4px;  /* Bordes redondeados para las filas */
+    background-color: #fff;  
+    border-radius: 4px; 
 }
 
 table thead {
@@ -124,7 +124,6 @@ table tbody td {
     text-align: center;
 }
 
-/* estilos para el encabezado de la tabla */
 table thead th {
     background: rgba(15, 79, 141, 0.83) !important;
     color: white;
@@ -168,16 +167,13 @@ table thead th {
 
 #cursos-create-container{
     margin-top: 50px;
+    margin-bottom: 30px;
 }
 #container-to-registering-people{
     width: 97.5vw; 
     display: flex; 
     margin: 0; 
     margin-top: -50px;
-}
-.d-flex.justify-content-between {
-    display: flex;
-    flex-wrap: wrap;
 }
 
 .col-md-6:nth-child(1) {
@@ -186,4 +182,56 @@ table thead th {
 
 .col-md-6:nth-child(2) {
     order: 1;
+}
+
+
+#message{
+    margin-top: 80px; 
+    text-align: center;
+}
+
+#flex1{
+    flex: 1;
+}
+#display-none{
+    display: none;
+}
+#other-trainer{
+    width: 500px;
+}
+
+#blocked{
+    pointer-events: none;
+}
+
+#anotherTrainerInput{
+    display: none; 
+    margin-left: 1255px;
+}
+#botones{
+    display:none;
+    
+  
+}
+#select-all-areas{
+    pointer-events: none;
+}
+[id^="area_"] {
+    pointer-events: none;
+}
+#closeTrainerLink{
+    display: none;
+}
+
+
+@media (max-width: 1366px) and (min-width: 1280px),
+(max-width: 1360px) and (min-width: 1280px),
+(max-width: 1280px) {
+    #botones{
+        margin-bottom: 30px;
+    }
+    #anotherTrainerInput{
+        margin-left: 890px;
+    }
+    
 }

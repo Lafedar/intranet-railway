@@ -220,7 +220,7 @@ class CourseInstanceController extends Controller
 
 
             return redirect()->route('cursos.instancias.index', $courseId)
-                ->with('success', 'Instance created successfully.');
+                ->with('success', 'Instancia creada correctamente.');
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
             return redirect()->back()->withErrors('There was a problem creating the course instance.');
@@ -1038,14 +1038,14 @@ class CourseInstanceController extends Controller
                             Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                         }
     
-                        $successfulRegistrations++;  // Incrementar el contador de inscripciones exitosas
+                        $successfulRegistrations++;  
                     }
                 }
             }
                 
     
                 return redirect()->route('cursos.instancias.index', $courseId)
-                ->with('success', 'Instance created successfully.');
+                ->with('success', 'Instancia creada correctamente');
             
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());

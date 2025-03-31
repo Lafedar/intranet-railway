@@ -304,8 +304,6 @@ class CourseController extends Controller
     public function saveNewOptmizedCourse(Request $request)
     {
         try {
-
-
             $validatedData = $request->validate([
                 'titulo' => 'required|string|max:253',
                 'area' => 'required|array|min:1',
