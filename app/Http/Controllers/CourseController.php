@@ -286,7 +286,7 @@ class CourseController extends Controller
 
         return view('empleado.cursos', compact('coursesWithDetails', 'person'));
     }
-    public function saveNewOptimizedCourse()
+    public function showCreateNewOptimizedCourse()
     {
         $areas = $this->areaService->getAll();
         $persons = $this->personaService->getAll();
@@ -301,28 +301,52 @@ class CourseController extends Controller
     }
 
 
-    public function saveNewOptmizedCourse(Request $request)
+    public function saveNewOptimizedCourse(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'titulo' => 'required|string|max:253',
-                'area' => 'required|array|min:1',
-            ]);
 
-            $validatedData['obligatorio'] = 1;
-            $validatedData['tipo'] = 'Interna';
-            $validatedData['descripcion'] = null;
-            // Si no se ha seleccionado ninguna área, mostrar un error
-            if (empty($validatedData['area'])) {
-                return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+            $flag = $request->input('flag2');
+            $courseId = $request->input('course');
+
+            if($flag == 0){
+                $validatedData = $request->validate([
+                    'titulo' => 'required|string|max:253',
+                    'area' => 'required|array|min:1',
+                ]);
+    
+                $validatedData['obligatorio'] = 1;
+                $validatedData['tipo'] = 'Interna';
+                $validatedData['descripcion'] = null;
+                // Si no se ha seleccionado ninguna área, mostrar un error
+                if (empty($validatedData['area'])) {
+                    return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+                }
+    
+    
+                $course = $this->courseService->create($validatedData);
+                $course->areas()->attach($validatedData['area']);
+    
+    
+                return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación creada exitosamente.');
+            }elseif($flag == 1){
+                $validatedData = $request->validate([
+                    'titulo' => 'required|string|max:253',
+                    'area' => 'required|array|min:1',
+                ]);
+                //dd($validatedData);
+                // Si no se ha seleccionado ninguna área, mostrar un error
+                if (empty($validatedData['area'])) {
+                    return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+                }
+    
+                $course=$this->courseService->getById($courseId);
+               
+                $course->areas()->attach($validatedData['area']);
+    
+    
+                return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación actualizada exitosamente.');
             }
-
-
-            $course = $this->courseService->create($validatedData);
-            $course->areas()->attach($validatedData['area']);
-
-
-            return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación creada exitosamente.');
+            
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             return redirect()->back()->withErrors($e->validator->errors());
@@ -332,10 +356,10 @@ class CourseController extends Controller
         }
     }
 
+    
 
 
-
+   
 }
-
 
 

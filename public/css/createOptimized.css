@@ -210,6 +210,9 @@ table thead th {
 }
 #botones{
     display:none;
+    text-align: center;
+    margin-top: -20px;
+    
     
   
 }
@@ -222,6 +225,58 @@ table thead th {
 #closeTrainerLink{
     display: none;
 }
+.disabled {
+    opacity: 0.5;
+    pointer-events: none; /* Evita interacciones */
+}
+#enroll-div {
+    
+    background-color: white; /* Color de fondo */
+    border-radius: 10px; /* Esquinas redondeadas */
+    border: 2px solid #ccc; /* Borde normal */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Sombra */
+}
+#training-div {
+    
+    background-color: white; /* Color de fondo */
+    border-radius: 10px; /* Esquinas redondeadas */
+    border: 2px solid #ccc; /* Borde normal */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Sombra */
+}
+#instance-div {
+    
+    background-color: white; /* Color de fondo */
+    border-radius: 10px; /* Esquinas redondeadas */
+    border: 2px solid #ccc; /* Borde normal */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Sombra */
+    margin-bottom: -20px;
+    
+}
+#cursos-create-container{
+    margin-top: 60px;
+    width: 100%;    
+}
+.d-flex.justify-content-between {
+    padding: 5px; /* Ajusta según sea necesario */
+}
+
+#enroll-div h3{
+    text-align: center;
+   
+}
+#enroll-buttons{
+    margin-top: 7px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 5px; 
+}
+#enroll-div button{
+    text-align: center;
+}
+
+
+
 
 
 @media (max-width: 1366px) and (min-width: 1280px),

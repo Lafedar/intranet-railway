@@ -973,7 +973,7 @@ class CourseInstanceController extends Controller
                 $trainer = $request->input('another_trainer');
 
             }
-
+            $flag = $request->input('flag');
     
             $data = $request->all();
             $data['capacitador'] = $trainer;
@@ -1042,15 +1042,21 @@ class CourseInstanceController extends Controller
                     }
                 }
             }
-                
-    
+              
+        if($flag == 0){
                 return redirect()->route('cursos.instancias.index', $courseId)
                 ->with('success', 'Instancia creada correctamente');
+
+        }
+        elseif($flag == 1){
+            return redirect()->route('cursos.createOptimized',)
+                ->with('success', 'Instancia creada correctamente');
+        }
             
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
             return redirect()->back()->withErrors('There was a problem creating the course instance.');
         }
     }
-
+    
 }
