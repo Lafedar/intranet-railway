@@ -307,8 +307,7 @@ class CourseController extends Controller
 
             $flag = $request->input('flag2');
             $courseId = $request->input('course');
-
-            if($flag == 0){
+            if($flag == 3){
                 $validatedData = $request->validate([
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',
@@ -317,7 +316,7 @@ class CourseController extends Controller
                 $validatedData['obligatorio'] = 1;
                 $validatedData['tipo'] = 'Interna';
                 $validatedData['descripcion'] = null;
-                // Si no se ha seleccionado ninguna área, mostrar un error
+              
                 if (empty($validatedData['area'])) {
                     return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
                 }
@@ -328,7 +327,7 @@ class CourseController extends Controller
     
     
                 return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación creada exitosamente.');
-            }elseif($flag == 1){
+            }elseif($flag == 2){
                 $validatedData = $request->validate([
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',

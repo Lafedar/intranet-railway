@@ -72,7 +72,7 @@
                     <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60"
                         id="other-trainer">
                 </div>
-            </form>
+
         </div>
 
 
@@ -158,8 +158,7 @@
                                             @if($area->id_a == 'tod')
                                                 <input type="checkbox" class="form-check-input" id="select-all-areas" name="area[]"
                                                     value="{{ $area->id_a }}">
-                                                <label class="form-check-label" id="blocked"
-                                                    for="select-all-areas">{{$area->nombre_a}}</label>
+                                                <label class="form-check-label" for="select-all-areas">{{$area->nombre_a}}</label>
                                             @endif
                                         @endforeach
 
@@ -176,7 +175,7 @@
                                                     <div class="form-check">
                                                         <input type="checkbox" class="form-check-input area-checkbox"
                                                             id="area_{{ $area->id_a }}" name="area[]" value="{{ $area->id_a }}">
-                                                        <label class="form-check-label" id="blocked"
+                                                        <label class="form-check-label"
                                                             for="area_{{ $area->id_a }}">{{ $area->nombre_a }}</label>
                                                     </div>
                                                 </div>
@@ -186,15 +185,16 @@
 
                         </div>
                         <input type="hidden" name="flag2" id="flagInput2" value="0">
-                        <input type="hidden" name="course" id="id_course" value="">
+                        <input type="hidden" id="hidden-course" name="course">
 
-                        <!--<div id="update-areas">
-                            <button type="submit" id="asignar-btn" onclick="setFlag(1)" style="display:none;">Editar Capacitación</button>
-                        </div>-->
+                        <div id="update-areas" style="margin-top:-17px;">
+                            <button type="submit" id="asignar-btn" style="display:none;" onclick="setFlag(2)">Editar
+                                Capacitación</button>
+                        </div>
                         <div id="botones">
                             <a href="{{ route('cursos.createOptimized') }}" id="asignar-btn">Cancelar</a>
 
-                            <button type="submit" id="asignar-btn" onclick="setFlag(0)">Crear Capacitación</button>
+                            <button type="submit" id="asignar-btn" onclick="setFlag(3)">Crear Capacitación</button>
                         </div>
 
 
@@ -215,6 +215,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+        <!--OBTENGO EL VALOR DE ID CURSO PARA ENVIAR AL CONTROLADOR-->
+        <script>
+            // Actualiza el valor del campo oculto cada vez que el usuario cambie el valor en el select
+            document.getElementById('course').addEventListener('change', function () {
+                var courseValue = this.value;  
+                document.getElementById('hidden-course').value = courseValue; 
+            });
+        </script>
+
         <!--BANDERA PARA REDIRECCIONAR AL CREAR UNA INSTANCIA-->
         <script>
             function setFlag(value) {
@@ -226,6 +235,7 @@
                 document.getElementById('flagInput2').value = value;
             }
         </script>
+
         <!-- DESACTIVAR Y ACTIVAR CREACION DE CURSOS -->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -244,6 +254,7 @@
                 const trainer = document.getElementById("trainer");
                 const anotherTrainer = document.getElementById("anotherTrainerLink");
                 const instanceDiv = document.getElementById("instance-div");
+                const updateAreas = document.getElementById("update-areas");
 
 
 
@@ -297,6 +308,9 @@
                         instanceDiv.disabled = true;
                         instanceDiv.classList.add("disabled");
                         toggleCapacitacion.setAttribute("disabled", "false");
+                        updateAreas.setAttribute("disabled", "true");
+                        updateAreas.style.display = "none";
+
 
 
                     } else {
@@ -370,40 +384,51 @@
                 $('#course').change(function () {
                     var courseId = $(this).val();
 
-                    if (courseId) {
+                    // Verificar si se seleccionó la opción predeterminada (por ejemplo, "Selecciona una opción")
+                    if (courseId === "") {
+                        // Limpiar todos los checkboxes
+                        $('input[name="area[]"]').prop('checked', false);
+                        $('#titulo').val('');
+                        // Ocultar el botón "Editar Capacitación"
+                        $('#update-areas button').hide();
+                    } else {
+                        if (courseId) {
+                            $.ajax({
+                                url: '/courses/json/' + courseId,
+                                method: 'GET',
+                                success: function (response) {
+                                    $('#titulo').val(response.course.titulo);
 
-                        $.ajax({
-                            url: '/courses/json/' + courseId,
-                            method: 'GET',
-                            success: function (response) {
+                                    // Limpiar los checkboxes de áreas
+                                    $('input[name="area[]"]').prop('checked', false);
 
-                                $('#titulo').val(response.course.titulo);
+                                    // Verificar si alguna de las áreas es "tod"
+                                    var marcarTodos = response.areas.some(area => area.id_a === "tod");
 
-                                // Limpiar los checkboxes de áreas
-                                $('input[name="area[]"]').prop('checked', false);
+                                    if (marcarTodos) {
+                                        // Si existe "tod", marcar todos los checkboxes
+                                        $('input[name="area[]"]').prop('checked', true);
+                                    } else {
+                                        // Si no, marcar solo las áreas correspondientes
+                                        response.areas.forEach(function (area) {
+                                            $('#area_' + area.id_a).prop('checked', true);
+                                        });
+                                    }
 
-                                // Verificar si alguna de las áreas es "tod"
-                                var marcarTodos = response.areas.some(area => area.id_a === "tod");
-
-                                if (marcarTodos) {
-                                    // Si existe "tod", marcar todos los checkboxes
-                                    $('input[name="area[]"]').prop('checked', true);
-                                } else {
-                                    // Si no, marcar solo las áreas correspondientes
-                                    response.areas.forEach(function (area) {
-                                        $('#area_' + area.id_a).prop('checked', true);
-                                    });
+                                    // MOSTRAR EL BOTÓN "Editar Capacitación"
+                                    $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
+                                },
+                                error: function (xhr, status, error) {
+                                    alert('Error al cargar los detalles del curso.');
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                alert('Error al cargar los detalles del curso.');
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             });
-
         </script>
+
+
 
         <!--CONTADOR DE CARACTERES-->
         <script>

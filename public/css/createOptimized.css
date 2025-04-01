@@ -217,10 +217,10 @@ table thead th {
   
 }
 #select-all-areas{
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 [id^="area_"] {
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 #closeTrainerLink{
     display: none;
@@ -275,7 +275,13 @@ table thead th {
     text-align: center;
 }
 
-
+#update-areas{
+    margin-top: 7px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+  
+}
 
 
 
