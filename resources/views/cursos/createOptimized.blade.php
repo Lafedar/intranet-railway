@@ -188,13 +188,13 @@
                         <input type="hidden" id="hidden-course" name="course">
 
                         <div id="update-areas" style="margin-top:-17px;">
-                            <button type="submit" id="asignar-btn" style="display:none;" onclick="setFlag(2)">Editar
+                            <button type="submit" id="asignar-btn" style="display:none;" onclick="setFlag2(2)">Editar
                                 Capacitación</button>
                         </div>
                         <div id="botones">
                             <a href="{{ route('cursos.createOptimized') }}" id="asignar-btn">Cancelar</a>
 
-                            <button type="submit" id="asignar-btn" onclick="setFlag(3)">Crear Capacitación</button>
+                            <button type="submit" id="asignar-btn" onclick="setFlag2(3)">Crear Capacitación</button>
                         </div>
 
 
@@ -231,7 +231,7 @@
             }
         </script>
         <script>
-            function setFlag(value) {
+            function setFlag2(value) {
                 document.getElementById('flagInput2').value = value;
             }
         </script>
