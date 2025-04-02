@@ -222,7 +222,7 @@
                 const form = document.getElementById("capacitacionForm");
                 const selectAllCheckbox = document.getElementById("select-all-areas");
                 const areaCheckboxes = document.querySelectorAll(".area-checkbox");
-                const cancelButton = document.querySelector("#botones a"); // El enlace de "Cancelar"
+                const cancelButton = document.querySelector("#botones a"); 
 
                 // Función para actualizar los checkboxes dependiendo de la selección de "Todas las Áreas"
                 selectAllCheckbox.addEventListener("change", function () {
@@ -236,7 +236,7 @@
                     // Verifica si al menos un checkbox está seleccionado o si "Todas las Áreas" está marcado
                     const isChecked = Array.from(areaCheckboxes).some(checkbox => checkbox.checked);
 
-                    // Si no se seleccionó ninguno, marcamos "Todas las Áreas"
+                    
                     if (!isChecked && !selectAllCheckbox.checked) {
                         event.preventDefault(); // Detiene el envío del formulario
                         alert("Por favor, selecciona al menos un área.");

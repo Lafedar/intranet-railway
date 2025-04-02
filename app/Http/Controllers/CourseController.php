@@ -339,6 +339,7 @@ class CourseController extends Controller
                 }
     
                 $course=$this->courseService->getById($courseId);
+                $course->areas()->detach();
                
                 $course->areas()->attach($validatedData['area']);
     
