@@ -78,14 +78,14 @@
 
         <div class="row mt-4">
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content">
 
                 <div class="col-md-6" id="enroll-div">
                     <h3 id="enroll-persons-h3">Inscribir Personas</h3>
                     <form id="cursoForm" action="{{ route('courses.instances.optmizedStore', ['course' => ':course']) }}"
                         method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group" style="margin-top: 56px;">
+                        <div class="form-group" id="filter">
                             <input type="text" id="filtro" class="form-control"
                                 placeholder="Filtrar por Nombre, Apellido, Área o Legajo" autocomplete="off">
                         </div>
@@ -181,14 +181,15 @@
                                                 </div>
                                         @endif
                                 @endforeach
+
                             </div>
 
                         </div>
                         <input type="hidden" name="flag2" id="flagInput2" value="0">
                         <input type="hidden" id="hidden-course" name="course">
 
-                        <div id="update-areas" style="margin-top:-17px;">
-                            <button type="submit" id="asignar-btn" style="display:none;" onclick="setFlag2(2)">Editar
+                        <div id="update-areas">
+                            <button type="submit" id="asignar-btn" onclick="setFlag2(2)">Editar
                                 Capacitación</button>
                         </div>
                         <div id="botones">
@@ -215,12 +216,48 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+        <!--VALIDAR QUE AL MENOS SE SELECCIONE UN CHECK BOX DE AREAS-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("capacitacionForm");
+                const selectAllCheckbox = document.getElementById("select-all-areas");
+                const areaCheckboxes = document.querySelectorAll(".area-checkbox");
+                const cancelButton = document.querySelector("#botones a"); // El enlace de "Cancelar"
+
+                // Función para actualizar los checkboxes dependiendo de la selección de "Todas las Áreas"
+                selectAllCheckbox.addEventListener("change", function () {
+                    areaCheckboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+
+                // Evitar el envío del formulario si no se selecciona ningún área
+                form.addEventListener("submit", function (event) {
+                    // Verifica si al menos un checkbox está seleccionado o si "Todas las Áreas" está marcado
+                    const isChecked = Array.from(areaCheckboxes).some(checkbox => checkbox.checked);
+
+                    // Si no se seleccionó ninguno, marcamos "Todas las Áreas"
+                    if (!isChecked && !selectAllCheckbox.checked) {
+                        event.preventDefault(); // Detiene el envío del formulario
+                        alert("Por favor, selecciona al menos un área.");
+                        return;  // Evita el envío del formulario si no se selecciona nada
+                    }
+
+                    // Si no se selecciona nada, marcar "Todas las Áreas" automáticamente
+                    if (!isChecked) {
+                        selectAllCheckbox.checked = true; // Marca "Todas las Áreas"
+                    }
+                });
+            });
+        </script>
+
+
         <!--OBTENGO EL VALOR DE ID CURSO PARA ENVIAR AL CONTROLADOR-->
         <script>
             // Actualiza el valor del campo oculto cada vez que el usuario cambie el valor en el select
             document.getElementById('course').addEventListener('change', function () {
-                var courseValue = this.value;  
-                document.getElementById('hidden-course').value = courseValue; 
+                var courseValue = this.value;
+                document.getElementById('hidden-course').value = courseValue;
             });
         </script>
 
@@ -382,6 +419,8 @@
         <script>
             $(document).ready(function () {
                 $('#course').change(function () {
+                    
+                    
                     var courseId = $(this).val();
 
                     // Verificar si se seleccionó la opción predeterminada (por ejemplo, "Selecciona una opción")
@@ -401,6 +440,7 @@
 
                                     // Limpiar los checkboxes de áreas
                                     $('input[name="area[]"]').prop('checked', false);
+                                   
 
                                     // Verificar si alguna de las áreas es "tod"
                                     var marcarTodos = response.areas.some(area => area.id_a === "tod");
@@ -414,7 +454,7 @@
                                             $('#area_' + area.id_a).prop('checked', true);
                                         });
                                     }
-
+                                  
                                     // MOSTRAR EL BOTÓN "Editar Capacitación"
                                     $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
                                 },
