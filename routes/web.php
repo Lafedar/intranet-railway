@@ -435,9 +435,6 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('store_equipo_mant', 'Equipo_mantController@store_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('store_equipo_mant');
   Route::get('show_update_equipo_mant/{equipo_mant}', ['uses' => 'Equipo_mantController@show_update_equipo_mant'])->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('show_update_equipo_mant');
   Route::post('update_equipo_mant', 'Equipo_mantController@update_equipo_mant')->middleware('role:administrador|Jefe-GarantiaDeCalidad|Jefe-Mantenimiento')->name('update_equipo_mant');
-
-  Route::get('select_tipo_equipo', 'Equipo_mantController@select_tipo_equipo')->name('select_tipo_equipo');
-  Route::get('select_area_localizacion', 'Equipo_mantController@select_area_localizacion')->name('select_area_localizacion');
 });
 
 //****************Areas**********************

@@ -18,6 +18,7 @@ class Equipo_mantController extends Controller{
         ->paginate(50);
 
         $tiposEquipos = DB::table('tipos_equipos')->orderBy('nombre','asc')->get();
+    
         $areas = DB::table('area')->orderBy('nombre_a','asc')->get();
         $localizaciones = DB::table('localizaciones')->orderBy('nombre','asc')->get();
 
@@ -106,12 +107,6 @@ class Equipo_mantController extends Controller{
         return redirect('equipos_mant');
     }
 
-    public function select_tipo_equipo(){
-        return DB::table('tipos_equipos')->get();
-    }   
-
-    public function select_area_localizacion(){
-        return [DB::table('area')->get(), DB::table('localizaciones')->get()];
-    }   
+ 
  
 }

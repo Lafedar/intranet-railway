@@ -197,161 +197,161 @@
     var closeButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="asignar-btn">Cancelar</button>');
     var saveButton = $('<button type="submit" class="btn btn-info" id="asignar-btn">Guardar</button>');
 
-    //modal store
+
     function fnOpenModalStore() {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
     var url = window.location.origin + "/show_store_equipo_mant/";
+
     $.get(url, function (data) {
-      // Borrar contenido anterior
+
       $("#modalshow").empty();
 
-      // Establecer el contenido del modal
+
       $("#modalshow").html(data);
 
-      // Borrar contenido anterior
+
       $("#modalfooter").empty();
 
-      // Agregar el botón "Cerrar y Guardar" al footer
+
       $("#modalfooter").append(closeButton);
       $("#modalfooter").append(saveButton);
 
-      // Cambiar la acción del formulario
+
       $('#myForm').attr('action', ruta_create);
 
-      // Mostrar el modal
+
       myModal.show();
 
-      // Cambiar el tamaño del modal a "modal-lg"
-      var modalDialog = myModal._element.querySelector('.modal-dialog');
-      modalDialog.classList.remove('modal-sm');
-      modalDialog.classList.remove('modal-lg');
-
-
-    });
-    $('#show2').on('show.bs.modal', function (event) {
-      $.get('select_area_localizacion/', function (data) {
-      var html_select = '<option value="">Seleccione </option>'
-      var html_select2 = '<option value="">Seleccione </option>'
-      for (var i = 0; i < data[0].length; i++) {
-        html_select += '<option value ="' + data[0][i].id_a + '">' + data[0][i].nombre_a + '</option>';
-      }
-
-      $('#area').html(html_select);
-      $('#localizacion').html(html_select2);
-
-      $('#area').on('change', function () {
-        var selectedOption = $(this).val();
-        var html_select2 = '<option value="">Seleccione </option>';
-        for (var i = 0; i < data[1].length; i++) {
-        if (data[1][i].id_area == selectedOption) {
-          html_select2 += '<option value="' + data[1][i].id + '">' + data[1][i].nombre + '</option>';
-          $('#localizacion').html(html_select2);
-        }
-        }
-        if (selectedOption == '') {
-        $('#localizacion').html(html_select2);
-        $('#div_localizacion').hide();
-        }
-        else {
-        $('#localizacion').html(html_select2);
-        $('#div_localizacion').show();
-        }
+      // Llenar select de tipos de equipos sin AJAX
+      var tiposEquipos = @json($tiposEquipos);
+      var html_select = '<option value="">Seleccione</option>';
+      tiposEquipos.forEach(function (tipo) {
+      html_select += '<option value="' + tipo.id + '">' + tipo.nombre + '</option>';
       });
-      });
-      $.get('select_tipo_equipo/', function (data) {
-      var html_select = '<option value="">Seleccione </option>'
-      for (var i = 1; i < data.length; i++) {
-        html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
-      }
       $('#tipo_e').html(html_select);
+
+      // Llenar select de áreas y localizaciones sin AJAX
+      var areas = @json($areas);
+      var localizaciones = @json($localizaciones);
+
+      var html_select_areas = '<option value="">Seleccione</option>';
+      areas.forEach(function (area) {
+      html_select_areas += '<option value="' + area.id_a + '">' + area.nombre_a + '</option>';
       });
+
+      var html_select_localizaciones = '<option value="">Seleccione</option>';
+      localizaciones.forEach(function (loc) {
+      html_select_localizaciones += '<option value="' + loc.id + '">' + loc.nombre + '</option>';
+      });
+
+      $('#area').html(html_select_areas);
+      $('#localizacion').html(html_select_localizaciones);
+
+      // Manejo del cambio en el select de áreas para filtrar localizaciones
+      $('#area').on('change', function () {
+      var selectedOption = $(this).val();
+      var filteredLocalizaciones = localizaciones.filter(loc => loc.id_area == selectedOption);
+
+      var html_select_localizaciones = '<option value="">Seleccione</option>';
+      filteredLocalizaciones.forEach(function (loc) {
+        html_select_localizaciones += '<option value="' + loc.id + '">' + loc.nombre + '</option>';
+      });
+
+      $('#localizacion').html(html_select_localizaciones);
+
+      if (selectedOption === '') {
+        $('#div_localizacion').hide();
+      } else {
+        $('#div_localizacion').show();
+      }
+      });
+
       closeButton.on('click', function () {
-      myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
+      myModal.hide();
       });
     });
     }
-    //modal update
+
+
     function fnOpenModalUpdate(id_e) {
     var myModal = new bootstrap.Modal(document.getElementById('show2'));
+
+
     var tipo = document.getElementById('edit-' + id_e).getAttribute('data-tipo');
     var area = document.getElementById('edit-' + id_e).getAttribute('data-area');
     var localizacion = document.getElementById('edit-' + id_e).getAttribute('data-localizacion');
-    $.ajax({
-      url: window.location.protocol + '//' + window.location.host + "/show_update_equipo_mant/" + id_e,
-      type: 'GET',
-      success: function (data) {
-      // Borrar contenido anterior
+
+    var url = window.location.origin + "/show_update_equipo_mant/" + id_e;
+
+    $.get(url, function (data) {
+
       $("#modalshow").empty();
-      // Establecer el contenido del modal
+
       $("#modalshow").html(data);
 
-      // Borrar contenido anterior
+
       $("#modalfooter").empty();
-      // Agregar el botón "Cerrar y Guardar" al footer
+      // Agregar botones al footer
       $("#modalfooter").append(closeButton);
       $("#modalfooter").append(saveButton);
 
-      // Cambiar la acción del formulario
+
       $('#myForm').attr('action', ruta_update);
 
-      // Mostrar el modal
+
       myModal.show();
-      },
-    });
-    $('#show2').on('show.bs.modal', function (event) {
-      $.get('select_tipo_equipo', function (data) {
-      var html_select = '<option value="">Seleccione </option>'
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].id == tipo) {
-        html_select += '<option value ="' + data[i].id + '"selected>' + data[i].nombre + '</option>';
-        }
-        else {
-        html_select += '<option value ="' + data[i].id + '">' + data[i].nombre + '</option>';
-        }
-      }
+
+      // Llenar select de tipos de equipos sin AJAX
+      var tiposEquipos = @json($tiposEquipos);
+      var html_select = '<option value="">Seleccione</option>';
+      tiposEquipos.forEach(function (tipoEquipo) {
+      var selected = (tipoEquipo.id == tipo) ? "selected" : "";
+      html_select += `<option value="${tipoEquipo.id}" ${selected}>${tipoEquipo.nombre}</option>`;
+      });
       $('#tipo_equipo_mant_editar').html(html_select);
+
+      // Llenar select de áreas y localizaciones sin AJAX
+      var areas = @json($areas);
+      var localizaciones = @json($localizaciones);
+
+      var html_select_areas = '<option value="">Seleccione</option>';
+      areas.forEach(function (areaData) {
+      var selected = (areaData.id_a == area) ? "selected" : "";
+      html_select_areas += `<option value="${areaData.id_a}" ${selected}>${areaData.nombre_a}</option>`;
       });
+      $('#area_editar').html(html_select_areas);
 
-      $.get('select_area_localizacion/', function (data) {
-      let html_select = '<option value="">Seleccione </option>';
-      let html_select2 = '<option value="">Seleccione </option>';
-
-      data[0].forEach(function (areaData) {
-        const selected = (areaData.id_a == area) ? "selected" : "";
-        html_select += `<option value="${areaData.id_a}" ${selected}>${areaData.nombre_a}</option>`;
+      // Filtrar localizaciones basadas en el área seleccionada
+      var html_select_localizaciones = '<option value="">Seleccione</option>';
+      localizaciones.forEach(function (loc) {
+      if (loc.id_area == area) {
+        var selected = (loc.id == localizacion) ? "selected" : "";
+        html_select_localizaciones += `<option value="${loc.id}" ${selected}>${loc.nombre}</option>`;
+      }
       });
+      $('#localizacion_editar').html(html_select_localizaciones);
 
-      data[1].forEach(function (localizacionData) {
-        const selected = (localizacionData.id == localizacion) ? "selected" : "";
-        if (localizacionData.id_area == area) {
-        html_select2 += `<option value="${localizacionData.id}" ${selected}>${localizacionData.nombre}</option>`;
-        }
-      });
-
-      $('#area_editar').html(html_select);
-      $('#localizacion_editar').html(html_select2);
-
+      // Evento para actualizar localizaciones cuando cambia el área
       $('#area_editar').on('change', function () {
-        const selectedOption = $(this).val();
-        let htmlSelect2 = '<option value="">Seleccione </option>';
+      var selectedOption = $(this).val();
+      var filteredLocalizaciones = localizaciones.filter(loc => loc.id_area == selectedOption);
 
-        data[1].forEach(function (localizacionData) {
-        if (localizacionData.id_area == selectedOption) {
-          const selected = (localizacionData.id == localizacion) ? "selected" : "";
-          htmlSelect2 += `<option value="${localizacionData.id}" ${selected}>${localizacionData.nombre}</option>`;
-        }
-        });
-
-        $('#localizacion_editar').html(htmlSelect2);
-        $('#div_localizacion').css('display', selectedOption ? "block" : "none");
-
-
+      var html_select_localizaciones = '<option value="">Seleccione</option>';
+      filteredLocalizaciones.forEach(function (loc) {
+        var selected = (loc.id == localizacion) ? "selected" : "";
+        html_select_localizaciones += `<option value="${loc.id}" ${selected}>${loc.nombre}</option>`;
       });
+
+      $('#localizacion_editar').html(html_select_localizaciones);
+      $('#div_localizacion').css('display', selectedOption ? "block" : "none");
+      });
+
+
       closeButton.on('click', function () {
-        myModal.hide(); // Cierra el modal cuando se hace clic en el botón Cerrar
-      });
+      myModal.hide();
       });
     });
     }
+
   </script>
 @endpush
