@@ -8,8 +8,8 @@
 @section('content')
 
 
-<div id="permisos-container">
-  @if(Session::has('message'))
+  <div id="permisos-container">
+    @if(Session::has('message'))
     <div class="container" id="div.alert">
     <div class="row">
       <div class="col-1"></div>
@@ -20,48 +20,48 @@
     </div>
   @endif
 
-  <div id="permisos-nav">
+    <div id="permisos-nav">
     <a href="#" class="btn btn-info" data-toggle="modal" data-target="#agregar_permiso" type="submit"
       id="btn-agregar">Nuevo permiso</a>
     <h1>
       <div>
-        <form method="GET" class="form-inline" action="{{ route('permisos.index') }}">
-          <div class="form-group mr-2">
-            <label for="search" style="font-size: 20px; margin-right: -5px;">Empleado:</label>
-            <input type="text" class="form-control mx-2" style="width:60%" id="search" name="empleado"
-              placeholder="Buscar">
-          </div>
-          <div class="form-group mr-2">
-            <label for="search" style="font-size: 20px; margin-right: 2px">Motivo:</label>
-            <select class="form-control" name="motivo" id="motivo">
-              <option value="0">Sin motivo</option>
-              @foreach($tipo_permisos as $tipo_permiso)
-          <option value="{{ $tipo_permiso->id_tip }}">{{ $tipo_permiso->desc }}</option>
-        @endforeach
-            </select>
-          </div>
-          <button type="submit" class="btn btn-default" id="asignar-btn">Buscar</button>
+      <form method="GET" class="form-inline" action="{{ route('permisos.index') }}">
+        <div class="form-group mr-2">
+        <label for="search" style="font-size: 20px; margin-right: -5px;">Empleado:</label>
+        <input type="text" class="form-control mx-2" style="width:60%" id="search" name="empleado"
+          placeholder="Buscar">
+        </div>
+        <div class="form-group mr-2">
+        <label for="search" style="font-size: 20px; margin-right: 2px">Motivo:</label>
+        <select class="form-control" name="motivo" id="motivo">
+          <option value="0">Sin motivo</option>
+          @foreach($tipo_permisos as $tipo_permiso)
+        <option value="{{ $tipo_permiso->id_tip }}">{{ $tipo_permiso->desc }}</option>
+      @endforeach
+        </select>
+        </div>
+        <button type="submit" class="btn btn-default" id="asignar-btn">Buscar</button>
 
 
-        </form>
+      </form>
 
     </h1>
-  </div>
-  <div id="table-container">
+    </div>
+    <div id="table-container">
     <table id="permisos-table">
       <thead>
-        <th class="text-center">Empleado</th>
-        <th class="text-center">Area</th>
-        <th class="text-center">Fecha solicitud</th>
-        <th class="text-center">Fecha desde</th>
-        <th class="text-center">Fecha hasta</th>
-        <th class="text-center">Horario</th>
-        <th class="text-center">Motivo</th>
-        <th class="text-center">Acciones</th>
+      <th class="text-center">Empleado</th>
+      <th class="text-center">Area</th>
+      <th class="text-center">Fecha solicitud</th>
+      <th class="text-center">Fecha desde</th>
+      <th class="text-center">Fecha hasta</th>
+      <th class="text-center">Horario</th>
+      <th class="text-center">Motivo</th>
+      <th class="text-center">Acciones</th>
       </thead>
       <tbody>
-        @if(count($permisos))
-      @foreach($permisos as $permiso) 
+      @if(count($permisos))
+      @foreach($permisos as $permiso)
       <tr>
       <td> {{$permiso->nombre_autorizado . ' ' . $permiso->apellido_autorizado}}</td>
       <td> {{$permiso->area}}</td>
@@ -76,21 +76,21 @@
       <td class="text-center">{{$permiso->motivo}}</td>
       <td align="center" width="95">
       <form action="{{route('destroy_permiso', $permiso->id)}}" method="put">
-        <a href="#" data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}"
-        data-fecha_desde="{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format('d-m-Y') !!}"
-        data-fecha_hasta="{!! \Carbon\Carbon::parse($permiso->fecha_hasta)->format('d-m-Y') !!}"
-        data-horario="{{'de ' . $permiso->hora_desde . ' a ' . $permiso->hora_hasta}}"
-        data-motivo="{{$permiso->motivo}}" data-descripcion="{{$permiso->descripcion}}"
-        data-solicitante="{{$permiso->nombre_autorizado . ' ' . $permiso->apellido_autorizado}}"
-        data-area="{{$permiso->area}}"
-        data-autorizante="{{$permiso->nombre_autorizante . ' ' . $permiso->apellido_autorizante}}"
-        data-toggle="modal" data-target="#ver" title="Ver"><img src="{{ asset('storage/cursos/ver.png') }}"
-        alt="Editar" id="img-icono">
-        </a>
-        <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar" id="icono"
-        title="Eliminar">
-        <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
-        </button>
+      <a href="#" data-fecha_soli="{!! \Carbon\Carbon::parse($permiso->fecha_permiso)->format('d-m-Y') !!}"
+      data-fecha_desde="{!! \Carbon\Carbon::parse($permiso->fecha_desde)->format('d-m-Y') !!}"
+      data-fecha_hasta="{!! \Carbon\Carbon::parse($permiso->fecha_hasta)->format('d-m-Y') !!}"
+      data-horario="{{'de ' . $permiso->hora_desde . ' a ' . $permiso->hora_hasta}}"
+      data-motivo="{{$permiso->motivo}}" data-descripcion="{{$permiso->descripcion}}"
+      data-solicitante="{{$permiso->nombre_autorizado . ' ' . $permiso->apellido_autorizado}}"
+      data-area="{{$permiso->area}}"
+      data-autorizante="{{$permiso->nombre_autorizante . ' ' . $permiso->apellido_autorizante}}"
+      data-toggle="modal" data-target="#ver" title="Ver"><img src="{{ asset('storage/cursos/ver.png') }}"
+      alt="Editar" id="img-icono">
+      </a>
+      <button type="submit" class="btn btn-danger btn-sm btn-borrar" data-tooltip="Borrar" id="icono"
+      title="Eliminar">
+      <img src="{{ asset('storage/cursos/eliminar.png') }}" alt="Eliminar" id="img-icono">
+      </button>
 
       </form>
       </td>
@@ -100,19 +100,42 @@
       </tbody>
     </table>
     {{ $permisos->links('pagination::bootstrap-4') }} <!--paginacion-->
+    </div>
+
   </div>
 
-</div>
-
-@include('permisos.show') 
-@include('permisos.create')   
+  @include('permisos.show')
+  @include('permisos.create')
 
 @endsection
 @push('scripts')
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- 
+  <script>
+    $(document).ready(function () {
+    // Previene el doble envío del formulario
+    $('form').on('submit', function (e) {
+      var $submitButton = $(this).find('.btn-create-permission');
+
+
+      if ($submitButton.prop('disabled')) {
+      e.preventDefault(); // Previene el envío
+      return;
+      }
+
+      // Deshabilitar el botón para evitar clics múltiples
+      $submitButton.prop('disabled', true).text('Procesando...');
+
+      // Si el formulario es válido, lo enviamos
+      if (!this.checkValidity()) {
+      e.preventDefault(); // Evita el envío si el formulario no es válido
+      $submitButton.prop('disabled', false).text('Crear Permiso');
+      }
+    });
+    });
+
+  </script>
   <script>
     function fnSaveSolicitud() {
     var form = document.getElementById('myForm');
