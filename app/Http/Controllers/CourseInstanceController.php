@@ -132,7 +132,7 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.create', compact('course', 'persons', 'annexes'));
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error returning course to courses.instances.create' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem returning the course to courses.instancias.create.');
+            return redirect()->back()->withErrors('Hubo un problema al mostrar el curso.');
         }
 
     }
@@ -223,7 +223,7 @@ class CourseInstanceController extends Controller
                 ->with('success', 'Instancia creada correctamente.');
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem creating the course instance.');
+            return redirect()->back()->withErrors('Hubo un problema creando la instancia del curso.');
         }
     }
 
@@ -244,11 +244,11 @@ class CourseInstanceController extends Controller
             $this->courseInstanceService->delete($instance, $courseId);
 
             return redirect()->route('curso.instancias.index', ['cursoId' => $courseId])
-                ->with('success', 'Instance successfully deleted.');
+                ->with('success', 'Instancia eliminada correctamente.');
         } catch (Exception $e) {
 
             Log::error('Error in class: ' . get_class($this) . ' .Error deleting course instance: ' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem deleting the course instance.');
+            return redirect()->back()->withErrors('Hubo un problema eliminando la instancia del curso.');
         }
     }
 
@@ -270,7 +270,7 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.edit', compact('instance', 'course', 'trainer', 'persons', 'modality', 'annexes', 'selectedAnnexes'));
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error returning the instance to courses.instancias.edit' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem returning the instance to courses.instancias.edit.');
+            return redirect()->back()->withErrors('Hubo un problema mostrando la instancia del curso.');
         }
 
 
@@ -463,7 +463,7 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining'));
 
         } catch (Exception $e) {
-            Log::error('Error al obtener las personas para inscribir: ' . $e->getMessage());
+            Log::error('Error getting people to register: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las personas para inscribir.');
         }
     }
@@ -1055,7 +1055,7 @@ class CourseInstanceController extends Controller
             
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem creating the course instance.');
+            return redirect()->back()->withErrors('Hubo un problema creando la instancia del curso.');
         }
     }
     

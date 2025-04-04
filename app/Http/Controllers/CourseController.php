@@ -352,7 +352,7 @@ class CourseController extends Controller
             return redirect()->back()->withErrors($e->validator->errors());
         } catch (Exception $e) {
 
-            return redirect()->back()->withErrors('There was a problem creating the course: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema creando el curso: ' . $e->getMessage());
         }
     }
 
