@@ -332,16 +332,20 @@ class CourseController extends Controller
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',
                 ]);
-                //dd($validatedData);
-                // Si no se ha seleccionado ninguna área, mostrar un error
+                
                 if (empty($validatedData['area'])) {
                     return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
                 }
-    
+                
                 $course=$this->courseService->getById($courseId);
-                $course->areas()->detach();
-               
-                $course->areas()->attach($validatedData['area']);
+                if (in_array("tod", $validatedData['area'])) {
+                    $course->areas()->detach();
+                    $course->areas()->attach("tod");
+                }else{
+                    $course->areas()->detach();
+                    $course->areas()->attach($validatedData['area']);
+                }
+                
     
     
                 return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación actualizada exitosamente.');

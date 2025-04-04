@@ -128,10 +128,10 @@
                         <input type="hidden" name="flag" id="flagInput" value="0">
                         <div id="enroll-buttons">
                             <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
-                            <button type="submit" class="btn btn-primary" id="asignar-btn"
-                                onclick="setFlag(0)">Crear</button>
+                            <button type="submit" class="btn btn-primary" id="asignar-btn" onclick="setFlag(0)">Crear
+                                Instancia</button>
                             <button type="submit" class="btn btn-primary" id="asignar-btn" onclick="setFlag(1)">Crear y
-                                agregar otro</button>
+                                Agregar Nueva Instancia</button>
                         </div>
                     </form>
                 </div>
@@ -222,7 +222,7 @@
                 const form = document.getElementById("capacitacionForm");
                 const selectAllCheckbox = document.getElementById("select-all-areas");
                 const areaCheckboxes = document.querySelectorAll(".area-checkbox");
-                const cancelButton = document.querySelector("#botones a"); 
+                const cancelButton = document.querySelector("#botones a");
 
                 // Función para actualizar los checkboxes dependiendo de la selección de "Todas las Áreas"
                 selectAllCheckbox.addEventListener("change", function () {
@@ -236,7 +236,7 @@
                     // Verifica si al menos un checkbox está seleccionado o si "Todas las Áreas" está marcado
                     const isChecked = Array.from(areaCheckboxes).some(checkbox => checkbox.checked);
 
-                    
+
                     if (!isChecked && !selectAllCheckbox.checked) {
                         event.preventDefault(); // Detiene el envío del formulario
                         alert("Por favor, selecciona al menos un área.");
@@ -418,17 +418,15 @@
         <!--COMPLETAR DATOS AL SELECCIONAR CURSO-->
         <script>
             $(document).ready(function () {
+                // Al cambiar la selección del curso
                 $('#course').change(function () {
-                    
-                    
                     var courseId = $(this).val();
 
                     // Verificar si se seleccionó la opción predeterminada (por ejemplo, "Selecciona una opción")
                     if (courseId === "") {
                         // Limpiar todos los checkboxes
-                        $('input[name="area[]"]').prop('checked', false);
+                        $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer la capacidad de marcar/desmarcar
                         $('#titulo').val('');
-                        // Ocultar el botón "Editar Capacitación"
                         $('#update-areas button').hide();
                     } else {
                         if (courseId) {
@@ -439,22 +437,34 @@
                                     $('#titulo').val(response.course.titulo);
 
                                     // Limpiar los checkboxes de áreas
-                                    $('input[name="area[]"]').prop('checked', false);
-                                   
+                                    $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer
 
-                                    // Verificar si alguna de las áreas es "tod"
-                                    var marcarTodos = response.areas.some(area => area.id_a === "tod");
+                                    // Comprobar si el id_a "tod" está presente
+                                    var marcarTodos = response.areas.some(function (area) {
+                                        return area.id_a === "tod";
+                                    });
 
                                     if (marcarTodos) {
                                         // Si existe "tod", marcar todos los checkboxes
-                                        $('input[name="area[]"]').prop('checked', true);
+                                        $('input[name="area[]"]').prop('checked', true); // Marcar todos los checkboxes
                                     } else {
-                                        // Si no, marcar solo las áreas correspondientes
+                                        // Marcar solo las áreas correspondientes
                                         response.areas.forEach(function (area) {
-                                            $('#area_' + area.id_a).prop('checked', true);
+                                            $('#area_' + area.id_a).prop('checked', true); // Marcar el checkbox correspondiente
                                         });
                                     }
-                                  
+
+                                    // Asegurarse de que los checkboxes ya marcados no se puedan desmarcar
+                                    $('input[name="area[]"]:checked').each(function () {
+                                        $(this).on('click', function (e) {
+                                            // Si el checkbox ya está marcado, evitar que se desmarque
+                                            if ($(this).prop('checked') === false) {
+                                                e.preventDefault();
+                                                $(this).prop('checked', true); // Mantenerlo marcado
+                                            }
+                                        });
+                                    });
+
                                     // MOSTRAR EL BOTÓN "Editar Capacitación"
                                     $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
                                 },
@@ -467,6 +477,7 @@
                 });
             });
         </script>
+
 
 
 
