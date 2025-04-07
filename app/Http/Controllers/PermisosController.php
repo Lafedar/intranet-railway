@@ -122,6 +122,7 @@ class PermisosController extends Controller
             $message->to('gustavo.lecman@lafedar.com')->subject('Solicitud de permiso'.' '.$permiso->area);
             $message->cc($jefe->correo);
             $message->cc('laura.cersofio@lafedar.com');
+            $message->cc('marcia.monzalvo@lafedar.com');
         });
         
         Session::flash('message','Permiso agregado con éxito');
@@ -139,6 +140,7 @@ class PermisosController extends Controller
             $message->from('notificaciones@lafedar.com', 'Notificaciones');
             $message->to('gustavo.lecman@lafedar.com')->subject('Permiso cancelado'.' '.$permiso->area);
             $message->cc('laura.cersofio@lafedar.com');
+            $message->cc('marcia.monzalvo@lafedar.com');
         });
         
         $permiso_borrar = Permiso::find($id);
