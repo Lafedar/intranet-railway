@@ -48,7 +48,8 @@
 
                     <div class="mr-2" id="flex1">
                         <label for="start_date"><b>Fecha Inicio</b></label>
-                        <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        <input type="date" class="form-control" id="start_date" name="start_date"
+                            value="{{ old('start_date', $course->start_date ?? '') }}" required>
                     </div>
 
                     <div id="flex1">
@@ -56,7 +57,7 @@
                         <select class="form-control" id="trainer" name="trainer" required>
                             <option value="">Seleccione un capacitador</option>
                             @foreach($persons as $person)
-                                <option value="{{ $person->nombre_p }} {{ $person->apellido }}">
+                                <option value="{{ $person->nombre_p }} {{ $person->apellido }}" @if(old('trainer') == $person->nombre_p . ' ' . $person->apellido) selected @endif>
                                     {{ $person->apellido }} {{ $person->nombre_p }}
                                 </option>
                             @endforeach
@@ -84,6 +85,7 @@
                     <form id="cursoForm" action="{{ route('courses.instances.optmizedStore', ['course' => ':course']) }}"
                         method="POST" enctype="multipart/form-data">
                         @csrf
+
                         <div class="form-group" id="filter">
                             <input type="text" id="filtro" class="form-control"
                                 placeholder="Filtrar por Nombre, Apellido, Área o Legajo" autocomplete="off">
@@ -140,10 +142,13 @@
                     <form id="capacitacionForm" action="{{ route('course.optimizedStore') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
+
+                        <input type="hidden" id="start_date_2" name="start_date">
+                        <input type="hidden" id="trainer_2" name="trainer">
                         <div class="form-group">
                             <label for="titulo"><b>Título</b></label>
                             <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252"
-                                oninput="updateCharacterCount()" readonly>
+                                oninput="updateCharacterCount()">
                             <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
                         </div>
 
@@ -188,7 +193,7 @@
                         <input type="hidden" id="hidden-course" name="course">
 
                         <div id="update-areas">
-                            <button type="submit" id="asignar-btn" onclick="setFlag2(2)">Editar
+                            <button type="submit" id="asignar-btn" class="captureData" onclick="setFlag2(2)">Editar
                                 Capacitación</button>
                         </div>
                         <div id="botones">
@@ -214,7 +219,24 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Cuando se hace clic en el botón "Capturar Datos" de form1
+                $('.captureData').click(function () {
+                    // Capturamos los valores de los inputs de form1
+                    var startDate = $('#start_date').val();
+                    var trainer = $('#trainer').val();
 
+                    // Asignamos esos valores a los campos ocultos en form2
+                    $('#start_date_2').val(startDate);
+                    $('#trainer_2').val(trainer);
+
+                    // Enviar form2 al controlador
+                    $('#capacitacionForm').submit();
+                });
+            });
+
+        </script>
         <!--VALIDAR QUE AL MENOS SE SELECCIONE UN CHECK BOX DE AREAS-->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
