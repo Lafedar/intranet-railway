@@ -36,13 +36,12 @@
                         <select class="form-control" id="course" name="course" required>
                             <option value="">Seleccione una capacitación</option>
                             @foreach($courses as $course)
-                                <option value="{{ $course['id'] }}"
-                                    data-areas="{{ is_array($course['areas']) ? implode(',', $course['areas']) : $course['areas'] }}">
-                                    {{ $course['titulo'] }}
+                                <option value="{{ $course['id'] }}" @if(old('course') == $course['id'] || isset($courseId) && $courseId == $course['id']) selected @endif>{{ $course['titulo'] }}
                                 </option>
-
                             @endforeach
                         </select>
+
+
 
                         <a href="javascript:void(0);" id="toggle-capacitacion">Crear Capacitación</a>
                     </div>
@@ -233,10 +232,22 @@
 
                 // Evitar el envío del formulario si no se selecciona ningún área
                 form.addEventListener("submit", function (event) {
-                    // Verifica si al menos un checkbox está seleccionado o si "Todas las Áreas" está marcado
-                    const isChecked = Array.from(areaCheckboxes).some(checkbox => checkbox.checked);
+                    // Primero, habilitar temporalmente los checkboxes deshabilitados que están marcados
+                    areaCheckboxes.forEach(checkbox => {
+                        if (checkbox.disabled && checkbox.checked) {
+                            checkbox.disabled = false;  // Habilitar el checkbox marcado
+                        }
+                    });
 
+                    // Verificar si al menos un checkbox está seleccionado
+                    let isChecked = false;
+                    areaCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            isChecked = true; // Si hay al menos un checkbox marcado
+                        }
+                    });
 
+                    // Si no hay ningún checkbox seleccionado ni "Todas las Áreas" marcada, previene el envío
                     if (!isChecked && !selectAllCheckbox.checked) {
                         event.preventDefault(); // Detiene el envío del formulario
                         alert("Por favor, selecciona al menos un área.");
@@ -247,9 +258,18 @@
                     if (!isChecked) {
                         selectAllCheckbox.checked = true; // Marca "Todas las Áreas"
                     }
+
+                    // Volver a deshabilitar los checkboxes que estaban deshabilitados antes
+                    areaCheckboxes.forEach(checkbox => {
+                        if (checkbox.disabled && checkbox.checked) {
+                            checkbox.disabled = true;  // Deshabilitar los checkboxes que estaban deshabilitados
+                        }
+                    });
                 });
             });
         </script>
+
+
 
 
         <!--OBTENGO EL VALOR DE ID CURSO PARA ENVIAR AL CONTROLADOR-->
@@ -388,95 +408,181 @@
             });
         </script>
 
+
         <!-- DESACTIVAR CHECKBOXES DE ÁREAS CUANDO SE MARCA "TODAS LAS ÁREAS" -->
         <script>
             $(document).ready(function () {
+                const selectAllCheckbox = $('#select-all-areas')[0];  // Checkbox "Todas las Áreas"
+                const areaCheckboxes = $('.area-checkbox'); // Todos los checkboxes de área
+                let courseAreasState = {}; // Objeto que guardará el estado original de los checkboxes del curso
 
-                const selectAllCheckbox = $('#select-all-areas')[0];
+                // Función para completar los datos del curso
+                function completarDatosCurso(courseId) {
+                    if (courseId === "") {
+                        // Limpiar todos los checkboxes
+                        areaCheckboxes.prop('checked', false).prop('disabled', false);
+                        return;
+                    }
 
-                // Obtener todos los checkboxes de áreas con la clase "area-checkbox"
-                const areaCheckboxes = $('.area-checkbox');
+                    $.ajax({
+                        url: '/courses/json/' + courseId,
+                        method: 'GET',
+                        success: function (response) {
+                            // Guardamos el estado de los checkboxes correspondientes al curso
+                            const courseAreas = response.areas.map(area => 'area_' + area.id_a);
+                            courseAreasState = {}; // Limpiar el estado previo
 
-                // Evento cuando se cambia el estado del checkbox "Todas las Areas"
+                            // Guardar el estado de los checkboxes del curso
+                            areaCheckboxes.each(function () {
+                                const areaId = $(this).attr('id');
+                                if (courseAreas.includes(areaId)) {
+                                    courseAreasState[areaId] = { checked: true, disabled: true };
+                                } else {
+                                    courseAreasState[areaId] = { checked: false, disabled: false };
+                                }
+                            });
+
+                            // Marcar y deshabilitar los checkboxes del curso
+                            response.areas.forEach(function (area) {
+                                $('#area_' + area.id_a).prop('checked', true).prop('disabled', true);
+                            });
+
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Error al cargar los detalles del curso.');
+                        }
+                    });
+                }
+
+                // Evento cuando se cambia el estado del checkbox "Todas las Áreas"
                 $(selectAllCheckbox).change(function () {
-                    // Si el checkbox "Todas las Areas" está marcado
                     if (this.checked) {
+                        // Cuando se marca "Todas las Áreas", marcar todos los checkboxes habilitados y deshabilitar
                         areaCheckboxes.each(function () {
-                            this.checked = true;  // Marcar todos los checkboxes
-                            this.disabled = true; // Deshabilitar los demás checkboxes
+                            if (!$(this).prop('disabled')) {
+                                $(this).prop('checked', true);  // Marcar
+                                $(this).prop('disabled', true); // Deshabilitar
+                            }
                         });
                     } else {
+                        // Cuando se desmarca "Todas las Áreas", restaurar los checkboxes del curso
                         areaCheckboxes.each(function () {
-                            this.checked = false; // Deseleccionar todos
-                            this.disabled = false; // Habilitar los demás
+                            const areaId = $(this).attr('id');
+                            if (courseAreasState[areaId]) {
+                                // Restaurar los checkboxes del curso (marcarlos y deshabilitarlos)
+                                $(this).prop('checked', courseAreasState[areaId].checked);
+                                $(this).prop('disabled', courseAreasState[areaId].disabled);
+                            } else {
+                                // Para los checkboxes que no son parte del curso, desmarcar y habilitar
+                                $(this).prop('checked', false);
+                                $(this).prop('disabled', false);
+                            }
                         });
                     }
                 });
+
+                // Al cambiar la selección del curso
+                $('#course').change(function () {
+                    var courseId = $(this).val();
+                    completarDatosCurso(courseId); // Llama a la función para completar los datos
+                });
+
+                // Si hay un curso previamente seleccionado al cargar la página, completa los datos
+                var selectedCourseId = $('#course').val();
+                if (selectedCourseId) {
+                    completarDatosCurso(selectedCourseId); // Completa los datos del curso seleccionado
+                }
             });
         </script>
+
 
         <!--COMPLETAR DATOS AL SELECCIONAR CURSO-->
         <script>
             $(document).ready(function () {
-                // Al cambiar la selección del curso
-                $('#course').change(function () {
-                    var courseId = $(this).val();
-
-                    // Verificar si se seleccionó la opción predeterminada (por ejemplo, "Selecciona una opción")
+                // Función que se ejecuta cuando se selecciona un curso
+                function completarDatosCurso(courseId) {
                     if (courseId === "") {
                         // Limpiar todos los checkboxes
                         $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer la capacidad de marcar/desmarcar
                         $('#titulo').val('');
                         $('#update-areas button').hide();
                     } else {
-                        if (courseId) {
-                            $.ajax({
-                                url: '/courses/json/' + courseId,
-                                method: 'GET',
-                                success: function (response) {
-                                    $('#titulo').val(response.course.titulo);
+                        $.ajax({
+                            url: '/courses/json/' + courseId,
+                            method: 'GET',
+                            success: function (response) {
+                                $('#titulo').val(response.course.titulo);
 
-                                    // Limpiar los checkboxes de áreas
-                                    $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer
+                                // Limpiar los checkboxes de áreas
+                                $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer
 
-                                    // Comprobar si el id_a "tod" está presente
-                                    var marcarTodos = response.areas.some(function (area) {
-                                        return area.id_a === "tod";
+                                // Comprobar si el id_a "tod" está presente
+                                var marcarTodos = response.areas.some(function (area) {
+                                    return area.id_a === "tod";
+                                });
+
+                                if (marcarTodos) {
+                                    // Si existe "tod", marcar todos los checkboxes y deshabilitarlos
+                                    $('input[name="area[]"]').prop('checked', true).prop('disabled', true); // Marcar todos los checkboxes y deshabilitarlos
+                                } else {
+                                    // Marcar solo las áreas correspondientes
+                                    response.areas.forEach(function (area) {
+                                        $('#area_' + area.id_a).prop('checked', true).prop('disabled', true); // Marcar y deshabilitar los checkboxes correspondientes
                                     });
-
-                                    if (marcarTodos) {
-                                        // Si existe "tod", marcar todos los checkboxes
-                                        $('input[name="area[]"]').prop('checked', true); // Marcar todos los checkboxes
-                                    } else {
-                                        // Marcar solo las áreas correspondientes
-                                        response.areas.forEach(function (area) {
-                                            $('#area_' + area.id_a).prop('checked', true); // Marcar el checkbox correspondiente
-                                        });
-                                    }
-
-                                    // Asegurarse de que los checkboxes ya marcados no se puedan desmarcar
-                                    $('input[name="area[]"]:checked').each(function () {
-                                        $(this).on('click', function (e) {
-                                            // Si el checkbox ya está marcado, evitar que se desmarque
-                                            if ($(this).prop('checked') === false) {
-                                                e.preventDefault();
-                                                $(this).prop('checked', true); // Mantenerlo marcado
-                                            }
-                                        });
-                                    });
-
-                                    // MOSTRAR EL BOTÓN "Editar Capacitación"
-                                    $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
-                                },
-                                error: function (xhr, status, error) {
-                                    alert('Error al cargar los detalles del curso.');
                                 }
-                            });
-                        }
+
+                                // Asegurarse de que los checkboxes ya marcados no se puedan desmarcar
+                                $('input[name="area[]"]:checked').each(function () {
+                                    $(this).on('click', function (e) {
+                                        if ($(this).prop('disabled')) {
+                                            // Si el checkbox está deshabilitado (marcado automáticamente), evitar el desmarcado
+                                            e.preventDefault();
+                                        }
+                                    });
+                                });
+
+                                // Asegurarse de que los checkboxes no marcados puedan ser interactivos (marcar/desmarcar)
+                                $('input[name="area[]"]:not(:checked)').prop('disabled', false); // Habilitar checkboxes no marcados
+
+                                // MOSTRAR EL BOTÓN "Editar Capacitación"
+                                $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
+                            },
+                            error: function (xhr, status, error) {
+                                alert('Error al cargar los detalles del curso.');
+                            }
+                        });
+                    }
+                }
+
+                // Al cambiar la selección del curso
+                $('#course').change(function () {
+                    var courseId = $(this).val();
+                    if (courseId) {
+                        completarDatosCurso(courseId); // Llama a la función para completar los datos
                     }
                 });
+
+                // Si hay un curso previamente seleccionado al cargar la página, completa los datos
+                var selectedCourseId = $('#course').val();
+
+                if (selectedCourseId) {
+                    completarDatosCurso(selectedCourseId); // Completa los datos del curso seleccionado
+                }
+
+                // Si se recarga la página, se asegura que el valor del curso se mantenga
+                if ($('#course').val() === '') {
+                    // Si el valor del curso está vacío, el comportamiento se restablece para que no sea nulo
+                    var defaultCourseId = $('#course').data('default-id');  // Guardar el ID del curso en un atributo 'data' de #course
+                    if (defaultCourseId) {
+                        $('#course').val(defaultCourseId); // Si existe, se selecciona el curso por defecto
+                        completarDatosCurso(defaultCourseId);
+                    }
+                }
             });
+
+
         </script>
+
 
 
 

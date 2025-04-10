@@ -306,6 +306,7 @@ class CourseController extends Controller
         try {
 
             $flag = $request->input('flag2');
+           
             $courseId = $request->input('course');
             if($flag == 3){
                 $validatedData = $request->validate([
@@ -338,6 +339,7 @@ class CourseController extends Controller
                 }
                 
                 $course=$this->courseService->getById($courseId);
+                
                 if (in_array("tod", $validatedData['area'])) {
                     $course->areas()->detach();
                     $course->areas()->attach("tod");
@@ -348,7 +350,9 @@ class CourseController extends Controller
                 
     
     
-                return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación actualizada exitosamente.');
+                return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación actualizada exitosamente.')
+                ->withInput();  // Esto permitirá mantener los datos del formulario, incluido el campo 'course'
+
             }
             
         } catch (\Illuminate\Validation\ValidationException $e) {
