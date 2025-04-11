@@ -328,8 +328,9 @@ class CourseController extends Controller
                 $course->areas()->attach($validatedData['area']);
     
     
-                return redirect()->route('cursos.createOptimized', compact('course'))->with('success', 'Capacitación creada exitosamente.');
+                return redirect()->route('cursos.createOptimized', compact('course'))->with('success', 'Capacitación creada exitosamente.')->with('courseId', $course->id);;
             }elseif($flag == 2){
+               
                 $validatedData = $request->validate([
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',

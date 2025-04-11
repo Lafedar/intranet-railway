@@ -33,12 +33,14 @@
                 <div class=" d-flex justify-content-between">
                     <div class="mr-2" id="flex1">
                         <label for="titulo"><b>Capacitación</b></label>
-                        <select class="form-control" id="course" name="course" required>
+                        <select class="form-control" id="course" name="course" required
+                            data-default-id="{{ session('courseId') }}">
                             <option value="">Seleccione una capacitación</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course['id'] }}" @if(old('course') == $course['id'] || isset($courseId) && $courseId == $course['id']) selected @endif>{{ $course['titulo'] }}
                                 </option>
                             @endforeach
+
                         </select>
 
 
@@ -195,7 +197,8 @@
                         <input type="hidden" id="hidden-course" name="course">
 
                         <div id="update-areas">
-                            <button type="submit" id="asignar-btn" class="captureData" onclick="setFlag2(2)">Editar
+                            <button type="submit" id="asignar-btn" class="captureData"
+                                onclick="sessionStorage.setItem('modoEdicion', 'true'); setFlag2(2)">Editar
                                 Capacitación</button>
                         </div>
                         <div id="botones">
@@ -556,9 +559,10 @@
         <script>
             $(document).ready(function () {
                 const selectedCourseId = $('#course').val();
+                const defaultCourseId = $('#course').data('default-id');
                 const esEdicion = selectedCourseId !== '';
 
-                // ✅ Restaurar checkboxes SOLO si es modo edición
+                // ✅ Restaurar checkboxes de personas SOLO si es edición
                 if (esEdicion) {
                     const seleccionadas = JSON.parse(sessionStorage.getItem("personasSeleccionadas") || "[]");
 
@@ -569,7 +573,6 @@
                         }
                     });
 
-                    // ✅ Borramos los datos para que no se marquen en el futuro si no es edición
                     sessionStorage.removeItem("personasSeleccionadas");
                 }
 
@@ -588,8 +591,7 @@
                     sessionStorage.setItem("personasSeleccionadas", JSON.stringify(seleccionados));
                 });
 
-                // --- Resto de tu script sin cambios ---
-
+                // ✅ Función para autocompletar datos de curso
                 function completarDatosCurso(courseId) {
                     if (courseId === "") {
                         $('input[name="area[]"]').prop('checked', false).prop('disabled', false);
@@ -601,21 +603,19 @@
                             method: 'GET',
                             success: function (response) {
                                 $('#titulo').val(response.course.titulo);
-
                                 $('input[name="area[]"]').prop('checked', false).prop('disabled', false);
 
-                                var marcarTodos = response.areas.some(function (area) {
-                                    return area.id_a === "tod";
-                                });
+                                const marcarTodos = response.areas.some(area => area.id_a === "tod");
 
                                 if (marcarTodos) {
                                     $('input[name="area[]"]').prop('checked', true).prop('disabled', true);
                                 } else {
-                                    response.areas.forEach(function (area) {
+                                    response.areas.forEach(area => {
                                         $('#area_' + area.id_a).prop('checked', true).prop('disabled', true);
                                     });
                                 }
 
+                                // Prevenir que se desmarquen si están deshabilitados
                                 $('input[name="area[]"]:checked').each(function () {
                                     $(this).on('click', function (e) {
                                         if ($(this).prop('disabled')) {
@@ -634,38 +634,35 @@
                     }
                 }
 
+                // ✅ Cambio manual del select de curso
                 $('#course').change(function () {
-                    var courseId = $(this).val();
+                    const courseId = $(this).val();
                     if (courseId) {
                         completarDatosCurso(courseId);
                     }
 
-                    // ✅ Borramos selección previa si se cambia de curso
                     sessionStorage.removeItem("personasSeleccionadas");
                 });
 
+                // ✅ Si se acaba de crear un curso nuevo, seleccionarlo y autocompletar
                 if (selectedCourseId) {
                     completarDatosCurso(selectedCourseId);
+
+                    // ✅ Si no hay curso pero hay uno por defecto (creación recién hecha)
+                } else if (defaultCourseId) {
+                    $('#course').val(defaultCourseId);
+                    completarDatosCurso(defaultCourseId);
                 }
 
-                if ($('#course').val() === '') {
-                    var defaultCourseId = $('#course').data('default-id');
-                    if (defaultCourseId) {
-                        $('#course').val(defaultCourseId);
-                        completarDatosCurso(defaultCourseId);
-                    }
-                }
-
+                // ✅ Mostrar u ocultar input de "otro capacitador"
                 if ($('#another_trainer').val().trim() !== '') {
                     $('#anotherTrainerInput').show();
                     $('#trainer').prop('disabled', true);
                     $('#anotherTrainerLink').hide();
                     $('#closeTrainerLink').show();
-                    document.body.style.overflowY = 'auto';
                 } else {
                     $('#anotherTrainerInput').hide();
                     $('#closeTrainerLink').hide();
-                    document.body.style.overflowY = 'auto';
                 }
 
                 $('#anotherTrainerLink').click(function () {
@@ -686,8 +683,6 @@
                 });
             });
         </script>
-
-
 
 
 
@@ -734,54 +729,57 @@
                 const inputOtroCapacitador = document.getElementById('anotherTrainerInput');
                 const otroCapacitadorInput = document.getElementById('another_trainer');
 
-                // Mostrar el input cuando se hace clic en el enlace "Otro"
-                otroLink.addEventListener('click', function () {
-                    // Cambiar el valor del select a la opción predeterminada
-                    selectCapacitador.value = ""; // Esto selecciona la opción "Seleccione un capacitador"
-
-                    inputOtroCapacitador.style.display = 'block'; // Mostrar el input
-                    selectCapacitador.disabled = true; // Bloquear el select
-                    cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
-                    otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
+                // ✅ Mostrar el input al recargar si tiene contenido
+                if (otroCapacitadorInput.value.trim() !== '') {
+                    inputOtroCapacitador.style.display = 'block';
+                    selectCapacitador.disabled = true;
+                    cerrarLink.style.display = 'inline';
+                    otroLink.style.display = 'none';
                     document.body.style.overflowY = 'auto';
-                    // Limpiar el campo de texto
-                    otroCapacitadorInput.value = '';
+                }
+
+                // ✅ Mostrar el input cuando se hace clic en el enlace "Otro"
+                otroLink.addEventListener('click', function () {
+                    selectCapacitador.value = ""; // Reiniciar select
+                    inputOtroCapacitador.style.display = 'block';
+                    selectCapacitador.disabled = true;
+                    cerrarLink.style.display = 'inline';
+                    otroLink.style.display = 'none';
+                    document.body.style.overflowY = 'auto';
+                    otroCapacitadorInput.value = ''; // Limpiar input
                 });
 
-                // Mostrar el input cuando se selecciona un capacitador del select
+                // ✅ Ocultar el input si se selecciona un capacitador del select
                 selectCapacitador.addEventListener('change', function () {
                     if (selectCapacitador.value !== "") {
-                        inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no es "Otro"
-                        selectCapacitador.disabled = false; // Desbloquear el select
-                        cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-                        otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
+                        inputOtroCapacitador.style.display = 'none';
+                        selectCapacitador.disabled = false;
+                        cerrarLink.style.display = 'none';
+                        otroLink.style.display = 'inline';
                     } else {
-                        inputOtroCapacitador.style.display = 'none'; // Ocultar el input si no se elige un capacitador
-                        cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+                        inputOtroCapacitador.style.display = 'none';
+                        cerrarLink.style.display = 'none';
                     }
                 });
 
-                // Cuando se hace clic en el botón "Cerrar"
+                // ✅ Al hacer clic en "Cerrar"
                 cerrarLink.addEventListener('click', function () {
-                    inputOtroCapacitador.style.display = 'none'; // Ocultar el input de "Otro"
-                    selectCapacitador.disabled = false; // Habilitar el select
-                    otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
-                    cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
-
-
+                    inputOtroCapacitador.style.display = 'none';
+                    selectCapacitador.disabled = false;
+                    otroLink.style.display = 'inline';
+                    cerrarLink.style.display = 'none';
+                    otroCapacitadorInput.value = ''; // Limpiar el input también si querés
                 });
 
-                // Antes de enviar el formulario, asignamos el valor del input de "Otro" al campo de capacitador
-                document.querySelector('form').addEventListener('submit', function (event) {
-                    // Si el input "Otro" es visible y tiene valor, lo asignamos al select
+                // ✅ Al enviar el formulario, tomar el valor del input si está visible
+                document.querySelector('form').addEventListener('submit', function () {
                     if (inputOtroCapacitador.style.display === 'block' && otroCapacitadorInput.value.trim() !== "") {
-                        // Asignamos el valor del input al select antes de enviar
                         selectCapacitador.value = otroCapacitadorInput.value.trim();
                     }
                 });
             });
-
         </script>
+
 
 
         <!--FILTRO DE PERSONAS-->
