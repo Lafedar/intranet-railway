@@ -57,7 +57,8 @@
                         <select class="form-control" id="trainer" name="trainer" required>
                             <option value="">Seleccione un capacitador</option>
                             @foreach($persons as $person)
-                                <option value="{{ $person->nombre_p }} {{ $person->apellido }}" @if(old('trainer') == $person->nombre_p . ' ' . $person->apellido) selected @endif>
+                                <option value="{{ $person->nombre_p }} {{ $person->apellido }}"
+                                    @if(old('trainer') == $person->nombre_p . ' ' . $person->apellido) selected @endif>
                                     {{ $person->apellido }} {{ $person->nombre_p }}
                                 </option>
                             @endforeach
@@ -67,10 +68,10 @@
                     </div>
                 </div>
 
-                <div id="anotherTrainerInput">
+                <div id="anotherTrainerInput" style="display: none;">
                     <label for="another_trainer"><b>Escribe el nombre del capacitador</b></label>
                     <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60"
-                        id="other-trainer">
+                        value="{{ old('another_trainer', $anotherTrainer ?? '') }}">
                 </div>
 
         </div>
@@ -145,6 +146,7 @@
 
                         <input type="hidden" id="start_date_2" name="start_date">
                         <input type="hidden" id="trainer_2" name="trainer">
+                        <input type="hidden" id="another_trainer_2" name="another_trainer">
                         <div class="form-group">
                             <label for="titulo"><b>Título</b></label>
                             <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252"
@@ -219,6 +221,34 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+        <script>
+            $.ajax({
+                url: '/courses/create/optimized', // URL del controlador
+                method: 'POST',
+                data: $('#form-id').serialize(), // Serializa los datos del formulario
+                success: function (response) {
+                    // Verifica que el response sea un objeto y contenga las claves que esperas
+                    console.log($course);
+                    var lastCourseId = $course -> id; // ID del curso recién creado
+                    var lastCourseTitle = $course -> titulo; // Título del curso recién creado
+
+                    // Añadir el nuevo curso al select
+                    var newOption = new Option(lastCourseTitle, lastCourseId);
+                    $('#course').append(newOption);
+                    $('#course').val(lastCourseId); // Seleccionar el último curso creado automáticamente
+
+                    // Llamar a la función para autocompletar los datos del curso
+                    completarDatosCurso(lastCourseId);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);  // Muestra el error en la consola si hay algún problema
+                    alert('Error al crear el curso.');
+                }
+            });
+
+        </script>
         <script>
             $(document).ready(function () {
                 // Cuando se hace clic en el botón "Capturar Datos" de form1
@@ -226,10 +256,12 @@
                     // Capturamos los valores de los inputs de form1
                     var startDate = $('#start_date').val();
                     var trainer = $('#trainer').val();
+                    var anotherTrainer = $('#another_trainer').val();
 
                     // Asignamos esos valores a los campos ocultos en form2
                     $('#start_date_2').val(startDate);
                     $('#trainer_2').val(trainer);
+                    $('#another_trainer_2').val(anotherTrainer);
 
                     // Enviar form2 al controlador
                     $('#capacitacionForm').submit();
@@ -237,6 +269,8 @@
             });
 
         </script>
+
+
         <!--VALIDAR QUE AL MENOS SE SELECCIONE UN CHECK BOX DE AREAS-->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -518,14 +552,47 @@
         </script>
 
 
-        <!--COMPLETAR DATOS AL SELECCIONAR CURSO-->
+        <!--COMPLETAR DATOS AL SELECCIONAR CURSO y MANTENER DATOS AL EDITAR -->
         <script>
             $(document).ready(function () {
-                // Función que se ejecuta cuando se selecciona un curso
+                const selectedCourseId = $('#course').val();
+                const esEdicion = selectedCourseId !== '';
+
+                // ✅ Restaurar checkboxes SOLO si es modo edición
+                if (esEdicion) {
+                    const seleccionadas = JSON.parse(sessionStorage.getItem("personasSeleccionadas") || "[]");
+
+                    seleccionadas.forEach(id => {
+                        const checkbox = $('input[name="personas[' + id + ']"]');
+                        if (checkbox.length) {
+                            checkbox.prop('checked', true);
+                        }
+                    });
+
+                    // ✅ Borramos los datos para que no se marquen en el futuro si no es edición
+                    sessionStorage.removeItem("personasSeleccionadas");
+                }
+
+                // ✅ Guardar selección de personas en cada cambio
+                $('.persona-checkbox').on('change', function () {
+                    const seleccionados = [];
+
+                    $('.persona-checkbox:checked').each(function () {
+                        const nameAttr = $(this).attr('name');
+                        const idMatch = nameAttr.match(/personas\[(\d+)\]/);
+                        if (idMatch) {
+                            seleccionados.push(parseInt(idMatch[1]));
+                        }
+                    });
+
+                    sessionStorage.setItem("personasSeleccionadas", JSON.stringify(seleccionados));
+                });
+
+                // --- Resto de tu script sin cambios ---
+
                 function completarDatosCurso(courseId) {
                     if (courseId === "") {
-                        // Limpiar todos los checkboxes
-                        $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer la capacidad de marcar/desmarcar
+                        $('input[name="area[]"]').prop('checked', false).prop('disabled', false);
                         $('#titulo').val('');
                         $('#update-areas button').hide();
                     } else {
@@ -535,75 +602,92 @@
                             success: function (response) {
                                 $('#titulo').val(response.course.titulo);
 
-                                // Limpiar los checkboxes de áreas
-                                $('input[name="area[]"]').prop('checked', false).prop('disabled', false); // Restablecer
+                                $('input[name="area[]"]').prop('checked', false).prop('disabled', false);
 
-                                // Comprobar si el id_a "tod" está presente
                                 var marcarTodos = response.areas.some(function (area) {
                                     return area.id_a === "tod";
                                 });
 
                                 if (marcarTodos) {
-                                    // Si existe "tod", marcar todos los checkboxes y deshabilitarlos
-                                    $('input[name="area[]"]').prop('checked', true).prop('disabled', true); // Marcar todos los checkboxes y deshabilitarlos
+                                    $('input[name="area[]"]').prop('checked', true).prop('disabled', true);
                                 } else {
-                                    // Marcar solo las áreas correspondientes
                                     response.areas.forEach(function (area) {
-                                        $('#area_' + area.id_a).prop('checked', true).prop('disabled', true); // Marcar y deshabilitar los checkboxes correspondientes
+                                        $('#area_' + area.id_a).prop('checked', true).prop('disabled', true);
                                     });
                                 }
 
-                                // Asegurarse de que los checkboxes ya marcados no se puedan desmarcar
                                 $('input[name="area[]"]:checked').each(function () {
                                     $(this).on('click', function (e) {
                                         if ($(this).prop('disabled')) {
-                                            // Si el checkbox está deshabilitado (marcado automáticamente), evitar el desmarcado
                                             e.preventDefault();
                                         }
                                     });
                                 });
 
-                                // Asegurarse de que los checkboxes no marcados puedan ser interactivos (marcar/desmarcar)
-                                $('input[name="area[]"]:not(:checked)').prop('disabled', false); // Habilitar checkboxes no marcados
-
-                                // MOSTRAR EL BOTÓN "Editar Capacitación"
-                                $('#update-areas button').show(); // Usa fadeIn para que aparezca suavemente
+                                $('input[name="area[]"]:not(:checked)').prop('disabled', false);
+                                $('#update-areas button').show();
                             },
-                            error: function (xhr, status, error) {
+                            error: function () {
                                 alert('Error al cargar los detalles del curso.');
                             }
                         });
                     }
                 }
 
-                // Al cambiar la selección del curso
                 $('#course').change(function () {
                     var courseId = $(this).val();
                     if (courseId) {
-                        completarDatosCurso(courseId); // Llama a la función para completar los datos
+                        completarDatosCurso(courseId);
                     }
+
+                    // ✅ Borramos selección previa si se cambia de curso
+                    sessionStorage.removeItem("personasSeleccionadas");
                 });
 
-                // Si hay un curso previamente seleccionado al cargar la página, completa los datos
-                var selectedCourseId = $('#course').val();
-
                 if (selectedCourseId) {
-                    completarDatosCurso(selectedCourseId); // Completa los datos del curso seleccionado
+                    completarDatosCurso(selectedCourseId);
                 }
 
-                // Si se recarga la página, se asegura que el valor del curso se mantenga
                 if ($('#course').val() === '') {
-                    // Si el valor del curso está vacío, el comportamiento se restablece para que no sea nulo
-                    var defaultCourseId = $('#course').data('default-id');  // Guardar el ID del curso en un atributo 'data' de #course
+                    var defaultCourseId = $('#course').data('default-id');
                     if (defaultCourseId) {
-                        $('#course').val(defaultCourseId); // Si existe, se selecciona el curso por defecto
+                        $('#course').val(defaultCourseId);
                         completarDatosCurso(defaultCourseId);
                     }
                 }
+
+                if ($('#another_trainer').val().trim() !== '') {
+                    $('#anotherTrainerInput').show();
+                    $('#trainer').prop('disabled', true);
+                    $('#anotherTrainerLink').hide();
+                    $('#closeTrainerLink').show();
+                    document.body.style.overflowY = 'auto';
+                } else {
+                    $('#anotherTrainerInput').hide();
+                    $('#closeTrainerLink').hide();
+                    document.body.style.overflowY = 'auto';
+                }
+
+                $('#anotherTrainerLink').click(function () {
+                    $('#anotherTrainerInput').show();
+                    $('#another_trainer').prop('required', true);
+                    $('#trainer').prop('disabled', true);
+                    $(this).hide();
+                    $('#closeTrainerLink').show();
+                });
+
+                $('#closeTrainerLink').click(function () {
+                    $('#anotherTrainerInput').hide();
+                    $('#another_trainer').prop('required', false);
+                    $('#trainer').prop('disabled', false);
+                    $('#anotherTrainerLink').show();
+                    $(this).hide();
+                    $('#another_trainer').val('');
+                });
             });
-
-
         </script>
+
+
 
 
 
@@ -659,7 +743,7 @@
                     selectCapacitador.disabled = true; // Bloquear el select
                     cerrarLink.style.display = 'inline'; // Mostrar el botón "Cerrar"
                     otroLink.style.display = 'none'; // Ocultar el enlace "Otro"
-
+                    document.body.style.overflowY = 'auto';
                     // Limpiar el campo de texto
                     otroCapacitadorInput.value = '';
                 });
@@ -683,6 +767,8 @@
                     selectCapacitador.disabled = false; // Habilitar el select
                     otroLink.style.display = 'inline'; // Mostrar el enlace "Otro"
                     cerrarLink.style.display = 'none'; // Ocultar el botón "Cerrar"
+
+
                 });
 
                 // Antes de enviar el formulario, asignamos el valor del input de "Otro" al campo de capacitador

@@ -312,7 +312,7 @@ class CourseController extends Controller
                 $validatedData = $request->validate([
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',
-                    
+                   
                 ]);
     
                 $validatedData['obligatorio'] = 1;
@@ -328,16 +328,18 @@ class CourseController extends Controller
                 $course->areas()->attach($validatedData['area']);
     
     
-                return redirect()->route('cursos.createOptimized')->with('success', 'Capacitación creada exitosamente.');
+                return redirect()->route('cursos.createOptimized', compact('course'))->with('success', 'Capacitación creada exitosamente.');
             }elseif($flag == 2){
                 $validatedData = $request->validate([
                     'titulo' => 'required|string|max:253',
                     'area' => 'required|array|min:1',
+                    
                 ]);
                 
                 $date = $request->input('start_date');
                 $trainer = $request->input('trainer');
-               
+                $anotherTrainer = $request->input('another_trainer');
+              
 
                 if (empty($validatedData['area'])) {
                     return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
@@ -359,7 +361,7 @@ class CourseController extends Controller
                 
     
     
-                return redirect()->route('cursos.createOptimized', compact('date', 'trainer'))->with('success', 'Capacitación actualizada exitosamente.')
+                return redirect()->route('cursos.createOptimized', compact('date', 'trainer', 'anotherTrainer'))->with('success', 'Capacitación actualizada exitosamente.')
                 ->withInput();  // Esto permitirá mantener los datos del formulario, incluido el campo 'course'
 
             }
