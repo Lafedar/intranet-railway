@@ -37,9 +37,16 @@
                             data-default-id="{{ session('courseId') }}">
                             <option value="">Seleccione una capacitación</option>
                             @foreach($courses as $course)
-                                <option value="{{ $course['id'] }}" @if(old('course') == $course['id'] || isset($courseId) && $courseId == $course['id']) selected @endif>{{ $course['titulo'] }}
+
+                                <option value="{{ $course['id'] }}"
+                                    data-areas="{{ is_array($course['areas']) ? implode(',', $course['areas']) : $course['areas'] }}"
+                                    @if(old('course') == $course['id'] || (isset($courseId) && $courseId == $course['id'])) selected
+                                    @endif>
+                                    {{ $course['titulo'] }}
                                 </option>
+
                             @endforeach
+
 
                         </select>
 
@@ -70,7 +77,7 @@
                     </div>
                 </div>
 
-                <div id="anotherTrainerInput" style="display: none;">
+                <div id="anotherTrainerInput" class="display-none">
                     <label for="another_trainer"><b>Escribe el nombre del capacitador</b></label>
                     <input type="text" class="form-control" id="another_trainer" name="another_trainer" maxlength="60"
                         value="{{ old('another_trainer', $anotherTrainer ?? '') }}">
@@ -226,35 +233,9 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-        <script>
-            $.ajax({
-                url: '/courses/create/optimized', // URL del controlador
-                method: 'POST',
-                data: $('#form-id').serialize(), // Serializa los datos del formulario
-                success: function (response) {
-                    // Verifica que el response sea un objeto y contenga las claves que esperas
-                    console.log($course);
-                    var lastCourseId = $course -> id; // ID del curso recién creado
-                    var lastCourseTitle = $course -> titulo; // Título del curso recién creado
-
-                    // Añadir el nuevo curso al select
-                    var newOption = new Option(lastCourseTitle, lastCourseId);
-                    $('#course').append(newOption);
-                    $('#course').val(lastCourseId); // Seleccionar el último curso creado automáticamente
-
-                    // Llamar a la función para autocompletar los datos del curso
-                    completarDatosCurso(lastCourseId);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);  // Muestra el error en la consola si hay algún problema
-                    alert('Error al crear el curso.');
-                }
-            });
-
-        </script>
+       <!--ENVIAR DATOS DE FECHA INICIO Y CAPACITADORES AL CONTROLADOR-->
         <script>
             $(document).ready(function () {
-                // Cuando se hace clic en el botón "Capturar Datos" de form1
                 $('.captureData').click(function () {
                     // Capturamos los valores de los inputs de form1
                     var startDate = $('#start_date').val();
@@ -340,6 +321,7 @@
             });
         </script>
 
+
         <!--BANDERA PARA REDIRECCIONAR AL CREAR UNA INSTANCIA-->
         <script>
             function setFlag(value) {
@@ -351,6 +333,7 @@
                 document.getElementById('flagInput2').value = value;
             }
         </script>
+
 
         <!-- DESACTIVAR Y ACTIVAR CREACION DE CURSOS -->
         <script>
@@ -468,6 +451,7 @@
         </script>
 
 
+
         <!-- DESACTIVAR CHECKBOXES DE ÁREAS CUANDO SE MARCA "TODAS LAS ÁREAS" -->
         <script>
             $(document).ready(function () {
@@ -555,6 +539,7 @@
         </script>
 
 
+
         <!--COMPLETAR DATOS AL SELECCIONAR CURSO y MANTENER DATOS AL EDITAR -->
         <script>
             $(document).ready(function () {
@@ -562,7 +547,7 @@
                 const defaultCourseId = $('#course').data('default-id');
                 const esEdicion = selectedCourseId !== '';
 
-                // ✅ Restaurar checkboxes de personas SOLO si es edición
+                //Restaurar checkboxes de personas SOLO si es edición
                 if (esEdicion) {
                     const seleccionadas = JSON.parse(sessionStorage.getItem("personasSeleccionadas") || "[]");
 
@@ -576,7 +561,7 @@
                     sessionStorage.removeItem("personasSeleccionadas");
                 }
 
-                // ✅ Guardar selección de personas en cada cambio
+                //Guardar selección de personas en cada cambio
                 $('.persona-checkbox').on('change', function () {
                     const seleccionados = [];
 
@@ -591,7 +576,7 @@
                     sessionStorage.setItem("personasSeleccionadas", JSON.stringify(seleccionados));
                 });
 
-                // ✅ Función para autocompletar datos de curso
+                //Función para autocompletar datos de curso
                 function completarDatosCurso(courseId) {
                     if (courseId === "") {
                         $('input[name="area[]"]').prop('checked', false).prop('disabled', false);
@@ -634,7 +619,7 @@
                     }
                 }
 
-                // ✅ Cambio manual del select de curso
+                //Cambio manual del select de curso
                 $('#course').change(function () {
                     const courseId = $(this).val();
                     if (courseId) {
@@ -644,17 +629,17 @@
                     sessionStorage.removeItem("personasSeleccionadas");
                 });
 
-                // ✅ Si se acaba de crear un curso nuevo, seleccionarlo y autocompletar
+                //Si se acaba de crear un curso nuevo, seleccionarlo y autocompletar
                 if (selectedCourseId) {
                     completarDatosCurso(selectedCourseId);
 
-                    // ✅ Si no hay curso pero hay uno por defecto (creación recién hecha)
+                    //Si no hay curso pero hay uno por defecto (creación recién hecha)
                 } else if (defaultCourseId) {
                     $('#course').val(defaultCourseId);
                     completarDatosCurso(defaultCourseId);
                 }
 
-                // ✅ Mostrar u ocultar input de "otro capacitador"
+                //Mostrar u ocultar input de "otro capacitador"
                 if ($('#another_trainer').val().trim() !== '') {
                     $('#anotherTrainerInput').show();
                     $('#trainer').prop('disabled', true);
@@ -681,6 +666,18 @@
                     $(this).hide();
                     $('#another_trainer').val('');
                 });
+                // Sincronizar cuando se cambia manualmente el select
+                $('#course').on('change', function () {
+                    $('#hidden-course').val($(this).val());
+                });
+
+                // También sincronizar al hacer submit por si el valor fue cargado dinámicamente
+                $('form').on('submit', function () {
+                    $('#hidden-course').val($('#course').val());
+                });
+
+
+
             });
         </script>
 
@@ -707,6 +704,7 @@
             });
         </script>
 
+
         <!--OCULTAR MENSAJES DE EXITO Y ERRROR-->
         <script>
             $(document).ready(function () {
@@ -729,7 +727,7 @@
                 const inputOtroCapacitador = document.getElementById('anotherTrainerInput');
                 const otroCapacitadorInput = document.getElementById('another_trainer');
 
-                // ✅ Mostrar el input al recargar si tiene contenido
+                //Mostrar el input al recargar si tiene contenido
                 if (otroCapacitadorInput.value.trim() !== '') {
                     inputOtroCapacitador.style.display = 'block';
                     selectCapacitador.disabled = true;
@@ -738,7 +736,7 @@
                     document.body.style.overflowY = 'auto';
                 }
 
-                // ✅ Mostrar el input cuando se hace clic en el enlace "Otro"
+                //Mostrar el input cuando se hace clic en el enlace "Otro"
                 otroLink.addEventListener('click', function () {
                     selectCapacitador.value = ""; // Reiniciar select
                     inputOtroCapacitador.style.display = 'block';
@@ -749,7 +747,7 @@
                     otroCapacitadorInput.value = ''; // Limpiar input
                 });
 
-                // ✅ Ocultar el input si se selecciona un capacitador del select
+                //Ocultar el input si se selecciona un capacitador del select
                 selectCapacitador.addEventListener('change', function () {
                     if (selectCapacitador.value !== "") {
                         inputOtroCapacitador.style.display = 'none';
@@ -762,7 +760,7 @@
                     }
                 });
 
-                // ✅ Al hacer clic en "Cerrar"
+                //Al hacer clic en "Cerrar"
                 cerrarLink.addEventListener('click', function () {
                     inputOtroCapacitador.style.display = 'none';
                     selectCapacitador.disabled = false;
@@ -771,7 +769,7 @@
                     otroCapacitadorInput.value = ''; // Limpiar el input también si querés
                 });
 
-                // ✅ Al enviar el formulario, tomar el valor del input si está visible
+                //Al enviar el formulario, tomar el valor del input si está visible
                 document.querySelector('form').addEventListener('submit', function () {
                     if (inputOtroCapacitador.style.display === 'block' && otroCapacitadorInput.value.trim() !== "") {
                         selectCapacitador.value = otroCapacitadorInput.value.trim();
@@ -788,26 +786,30 @@
                 $('#filtro').on('input', function () {
                     var filtro = $(this).val().toLowerCase();
 
-
+                    // Filtrar solo sobre las filas visibles (que no fueron ocultadas por el filtro de área)
                     $('table tbody tr').each(function () {
-                        if ($(this).data('hidden-by-area') !== true) {
-                            $(this).show();
+                        // Si ya está oculto por área, lo dejamos oculto
+                        if ($(this).data('hidden-by-area') === true) {
+                            return;
                         }
-                    });
 
-                    // Ahora aplicar el filtro solo a las filas visibles (no afectamos las ocultas por área)
-                    $('table tbody tr:visible').each(function () {
                         var nombreApellido = $(this).find('td:nth-child(2)').text().toLowerCase();
                         var legajo = $(this).find('td:nth-child(1)').text().toLowerCase();
                         var area = $(this).find('td:nth-child(3)').text().toLowerCase();
 
-                        if (nombreApellido.indexOf(filtro) === -1 && legajo.indexOf(filtro) === -1 && area.indexOf(filtro) === -1) {
+                        if (
+                            nombreApellido.includes(filtro) ||
+                            legajo.includes(filtro) ||
+                            area.includes(filtro)
+                        ) {
+                            $(this).show();
+                        } else {
                             $(this).hide();
                         }
                     });
                 });
 
-                // Asegurar que el filtro de cursos funcione sin interferencias
+                // Filtro por curso (áreas)
                 $('#course').on('change', function () {
                     let selectedOption = this.options[this.selectedIndex];
                     let selectedAreas = selectedOption.getAttribute("data-areas") ? selectedOption.getAttribute("data-areas").split(",") : [];
@@ -817,16 +819,17 @@
                         let personArea = $(this).attr("data-area");
 
                         if (mostrarTodas || selectedAreas.includes(personArea) || selectedAreas.length === 0) {
-                            $(this).show().removeData('hidden-by-area'); // Mostrar y quitar marca de "ocultado por área"
+                            $(this).show().data('hidden-by-area', false); // Mostrar y marcar como visible
                         } else {
-                            $(this).hide().data('hidden-by-area', true); // Ocultar y marcar como "ocultado por área"
+                            $(this).hide().data('hidden-by-area', true); // Ocultar y marcar como ocultado por área
                         }
                     });
 
-                    // Resetear el filtro de búsqueda cuando se cambia el curso
+                    // Resetear el filtro de texto
                     $('#filtro').val("").trigger("input");
                 });
             });
+
         </script>
 
 
@@ -838,23 +841,32 @@
                 const courseSelect = document.getElementById("course");
                 const rows = document.querySelectorAll("tbody tr");
 
-                courseSelect.addEventListener("change", function () {
+                function aplicarFiltroPorCurso() {
                     let selectedOption = courseSelect.options[courseSelect.selectedIndex];
                     let selectedAreas = selectedOption.getAttribute("data-areas") ? selectedOption.getAttribute("data-areas").split(",") : [];
 
+                    console.log("Áreas seleccionadas del curso:", selectedAreas);
+
                     rows.forEach(row => {
                         let personArea = row.getAttribute("data-area");
+                        console.log("Área de persona:", personArea);
 
-                        // Si "Todas las Areas" está en la lista de áreas del curso, mostramos todas las filas
                         if (selectedAreas.includes("Todas las Areas") || selectedAreas.length === 0) {
                             row.style.display = "";
                         } else {
                             row.style.display = selectedAreas.includes(personArea) ? "" : "none";
                         }
                     });
-                });
+                }
+
+                // Ejecutar al cambiar manualmente
+                courseSelect.addEventListener("change", aplicarFiltroPorCurso);
+
+                // Ejecutar automáticamente al cargar la página
+                aplicarFiltroPorCurso();
             });
         </script>
+
 
 
     @endpush

@@ -347,7 +347,9 @@ class CourseController extends Controller
                 }
                 
                 $course=$this->courseService->getById($courseId);
-                
+                if (!$courseId) {
+                    return redirect()->back()->withErrors('No se recibió el ID del curso. Por favor, seleccione uno.');
+                }
                 if (in_array("tod", $validatedData['area'])) {
                     $course->titulo = $validatedData['titulo'];
                     $course->areas()->detach();

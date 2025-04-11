@@ -198,6 +198,9 @@ table thead th {
 #display-none{
     display: none;
 }
+.display-none{
+    display: none;
+}
 #other-trainer{
     width: 500px;
 }
