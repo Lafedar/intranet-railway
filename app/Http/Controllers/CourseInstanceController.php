@@ -137,6 +137,18 @@ class CourseInstanceController extends Controller
 
     }
 
+    public function getAllAnnexes(Request $request){
+        try {
+            $courseId = $request->input('course_id');
+            $annexes = $this->annexService->getAll(); // O filtrado por curso
+            return view('cursos.defaultFeatures', compact('annexes', 'courseId'));
+        } catch(Exception $e){
+            Log::error('Error obteniendo anexos: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudieron obtener los anexos'], 500);
+        }
+    }
+    
+
     public function saveNewCourseInstance(Request $request, $courseId)
     {
         try {
@@ -977,24 +989,103 @@ class CourseInstanceController extends Controller
     
             $data = $request->all();
             $data['capacitador'] = $trainer;
-            $data['codigo'] = "N/A";
-            $data['certificado'] = "Aprobacion";
-            $data['lugar'] = "Lafedar";
-            $data['estado'] = "Activo";
-            $data['hora'] = "00:00:00";
-            $data['cupo'] = 100;
-            $data['modalidad'] = "Presencial";
             $data['fecha_inicio'] = $request->input('start_date');
-            $data['fecha_fin'] = $data['fecha_inicio'];
-            $data['examen'] = null;
-           
             $data['id_curso'] = $courseId;
 
+            if($data['code'] == null){
+                $data['codigo'] = "N/A";
+            }else{
+                $data['codigo'] = $data['code'];
+            }
+            
+            if($data['certificate'] == null){
+                $data['certificado'] = "Aprobacion";
+            }else{
+                $data['certificado'] = $data['certificate'];
+            }
+
+            if($data['place'] == null){
+                $data['lugar'] = "Lafedar";
+            }else{
+                $data['lugar'] = $data['place'];
+            }
+            
+            if($data['status'] == null){
+                $data['estado'] = "Activo";
+            }else{
+                $data['estado'] = $data['status'];
+            }
+
+            if($data['hour'] == null){
+                $data['hora'] = "00:00:00";
+            }else{
+                $data['hora'] = $data['hour'];
+            }
+            
+            if($data['quota'] == null){
+                $data['cupo'] = 100;
+            }else{
+                $data['cupo'] = $data['quota'];
+            }
+            
+            if($data['modality'] == null){
+                $data['modalidad'] = "Presencial";
+            }else{
+                $data['modalidad'] = $data['modality'];
+            }
+            
+            if($data['end_date'] == null){
+                $data['fecha_fin'] = $data['fecha_inicio'];
+            }else{
+                $data['fecha_fin'] = $data['end_date'];
+            }
+            
+            if($data['exam'] == null){
+                $data['examen'] = null;
+            }else{
+                $data['examen'] = $data['exam'];
+            }
+  
+            if($data['exam'] == null){
+                $data['examen'] = null;
+            }else{
+                $data['examen'] = $data['exam'];
+            }
             $version = $this->courseInstanceService->getCountInstances($courseId);
             $data['version'] = $version + 1;
             $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
+
+          
+            if ($request->has('annexes_main')) {
+                // Obtener el valor del campo como JSON
+                $annexesJson = $request->input('annexes_main');
+            
+                // Decodificar el JSON para obtener un arreglo de PHP
+                $annexes = json_decode($annexesJson, true);
+             
+                // Verifica que $annexes sea un arreglo
+                if (is_array($annexes)) {
+                   
+                    foreach ($annexes as $annexId) {
+                        $annexType = $this->annexService->getById($annexId);
+                        
+                        // Verificamos si el tipo de anexo existe
+                        if ($annexType) {
+                            $this->annexService->insert_annex_course_instance($courseId, $nextInstanceId, $annexId, $annexType);
+                        } else {
+                            Log::warning("Attachment type not found for formulario_id: $annexId");
+                        }
+                    }
+                } else {
+                    Log::warning('Invalid annexes data received');
+                }
+
+            }
+            if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
+                return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            }
 
             $this->courseInstanceService->create($data);
 

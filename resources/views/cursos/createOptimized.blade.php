@@ -26,6 +26,10 @@
     <div id="cursos-create-container">
         <div id="instance-div">
             <h1 class="mb-4 text-center">Crear Instancia</h1>
+            <a href="javascript:void(0);" id="defaultFeaturesLink">Características por defecto</a>
+
+
+
             <form id="cursoForm" action="{{ route('courses.instances.optmizedStore', ['course' => ':course']) }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
@@ -74,6 +78,7 @@
                         </select>
                         <a href="javascript:void(0);" id="anotherTrainerLink">Otro capacitador</a>
                         <a href="javascript:void(0);" id="closeTrainerLink">Cerrar</a>
+
                     </div>
                 </div>
 
@@ -136,6 +141,23 @@
 
                             </table>
                         </div>
+                        <!-- Campos ocultos en la vista principal para almacenar los valores -->
+                        <input type="hidden" id="end_date_main" name="end_date">
+                        <input type="hidden" id="hour_main" name="hour">
+                        <input type="hidden" id="quota_main" name="quota">
+                        <input type="hidden" id="modality_main" name="modality">
+                        <input type="hidden" id="code_main" name="code">
+                        <input type="hidden" id="place_main" name="place">
+                        <input type="hidden" id="exam_main" name="exam">
+                        <input type="hidden" id="certificate_main" name="certificate">
+                        <input type="hidden" id="status_main" name="status">
+                        <input type="hidden" id="version_main" name="version">
+                        <input type="hidden" name="annexes_main" id="annexes_main">
+
+
+
+
+
                         <input type="hidden" name="flag" id="flagInput" value="0">
                         <div id="enroll-buttons">
                             <a href="{{ route('cursos.index') }}" class="btn btn-secondary" id="asignar-btn">Cancelar</a>
@@ -143,6 +165,14 @@
                                 Instancia</button>
                             <button type="submit" class="btn btn-primary" id="asignar-btn" onclick="setFlag(1)">Crear y
                                 Agregar Nueva Instancia</button>
+                        </div>
+                        <!-- Modal con contenido dinámico -->
+                        <div class="modal fade" id="defaultFeaturesModal" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content" id="modal-content">
+                                    <!-- El contenido llega por AJAX -->
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -222,6 +252,7 @@
         </div>
 
 
+
 @endsection
 
 
@@ -232,8 +263,79 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+ 
+        <!--OBTENER EL VALOR DE ID DEL CURSO SELECCIONADO PARA PASARLO A LA MODAL Y OBTENER VALORES DEL FORM DE LA MODAL -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const select = document.getElementById('course');
+                const link = document.getElementById('defaultFeaturesLink');
 
-       <!--ENVIAR DATOS DE FECHA INICIO Y CAPACITADORES AL CONTROLADOR-->
+                link.addEventListener('click', function () {
+                    const selectedCourseId = select.value;
+                    if (!selectedCourseId) {
+                        alert('Por favor seleccioná una capacitación primero.');
+                        return;
+                    }
+
+                    fetch(`{{ route('cursos.defaultFeatures') }}?course_id=${selectedCourseId}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('modal-content').innerHTML = html;
+                            $('#defaultFeaturesModal').modal('show');
+
+                            // Esperar a que el contenido se inserte antes de asignar el evento
+                            setTimeout(() => {
+                                $('#cargar').off('click').on('click', function (e) {
+                                    e.preventDefault();  // Evita el envío del formulario
+                                    console.log('El botón Cargar fue presionado');
+
+                                    // Obtener los valores del formulario de la modal
+                                    const endDate = $('#end_date').val();
+                                    const hour = $('#hour').val();
+                                    const quota = $('#quota').val();
+                                    const modality = $('#modality').val();
+                                    const code = $('#code').val();
+                                    const place = $('#place').val();
+                                    const exam = $('#examInput').val();
+                                    const certificate = $('input[name="certificate"]:checked').val();
+                                    const status = $('#status').val();
+                                    const version = $('#version').val();
+
+                                    // Obtener anexos seleccionados como array y unirlos con coma
+                                    const annexes = $('input[id^="anexo_"]:checked')
+                                        .map(function () {
+                                            return this.value;
+                                        }).get();
+
+                                    // Asignar valores a los inputs ocultos de la vista principal
+                                    $('#end_date_main').val(endDate);
+                                    $('#hour_main').val(hour);
+                                    $('#quota_main').val(quota);
+                                    $('#modality_main').val(modality);
+                                    $('#code_main').val(code);
+                                    $('#place_main').val(place);
+                                    $('#exam_main').val(exam);
+                                    $('#certificate_main').val(certificate);
+                                    $('#status_main').val(status);
+                                    $('#version_main').val(version);
+                                    $('#annexes_main').val(JSON.stringify(annexes));
+
+
+                                   
+                                    $('#defaultFeaturesModal').modal('hide');
+                                });
+                            }, 100); // Esperar 100ms para asegurar que el DOM se actualizó
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('Error al cargar la información.');
+                        });
+                });
+            });
+        </script>
+
+
+        <!--ENVIAR DATOS DE FECHA INICIO Y CAPACITADORES AL CONTROLADOR-->
         <script>
             $(document).ready(function () {
                 $('.captureData').click(function () {
@@ -845,12 +947,10 @@
                     let selectedOption = courseSelect.options[courseSelect.selectedIndex];
                     let selectedAreas = selectedOption.getAttribute("data-areas") ? selectedOption.getAttribute("data-areas").split(",") : [];
 
-                    console.log("Áreas seleccionadas del curso:", selectedAreas);
+
 
                     rows.forEach(row => {
                         let personArea = row.getAttribute("data-area");
-                        console.log("Área de persona:", personArea);
-
                         if (selectedAreas.includes("Todas las Areas") || selectedAreas.length === 0) {
                             row.style.display = "";
                         } else {

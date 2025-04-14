@@ -575,6 +575,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/cursos/generar-pdf-certificado/{instanciaId}/{cursoId}/{personaId}', [CourseInstanceController::class, 'generatePDFcertificate'])->name('cursos.generatePDFcertificate');
   Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'sendCertificateToPeople'])->name('enviarMail');
   Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CourseInstanceController::class, 'changeInstanceStatus'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
+  Route::get('/cursos/default-features', [CourseInstanceController::class, 'getAllAnnexes'])->name('cursos.defaultFeatures');
+
 });
 
 
