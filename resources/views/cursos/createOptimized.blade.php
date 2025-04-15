@@ -26,7 +26,7 @@
     <div id="cursos-create-container">
         <div id="instance-div">
             <h1 class="mb-4 text-center">Crear Instancia</h1>
-            <a href="javascript:void(0);" id="defaultFeaturesLink">Características por defecto</a>
+            
 
 
 
@@ -57,6 +57,7 @@
 
 
                         <a href="javascript:void(0);" id="toggle-capacitacion">Crear Capacitación</a>
+                        <a href="javascript:void(0);" id="defaultFeaturesLink">Características por defecto</a>
                     </div>
 
                     <div class="mr-2" id="flex1">
@@ -91,7 +92,7 @@
         </div>
 
 
-        <div class="row mt-4">
+        <div class="row mt-0">
 
             <div class="d-flex justify-content">
 
@@ -250,6 +251,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
 
@@ -263,7 +265,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
- 
+
         <!--OBTENER EL VALOR DE ID DEL CURSO SELECCIONADO PARA PASARLO A LA MODAL Y OBTENER VALORES DEL FORM DE LA MODAL -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -321,7 +323,7 @@
                                     $('#annexes_main').val(JSON.stringify(annexes));
 
 
-                                   
+
                                     $('#defaultFeaturesModal').modal('hide');
                                 });
                             }, 100); // Esperar 100ms para asegurar que el DOM se actualizó
@@ -642,7 +644,7 @@
 
 
 
-        <!--COMPLETAR DATOS AL SELECCIONAR CURSO y MANTENER DATOS AL EDITAR -->
+        <!--COMPLETAR DATOS AL SELECCIONAR CURSO y MANTENER DATOS EN LA VISTA AL EDITAR -->
         <script>
             $(document).ready(function () {
                 const selectedCourseId = $('#course').val();
@@ -947,8 +949,6 @@
                     let selectedOption = courseSelect.options[courseSelect.selectedIndex];
                     let selectedAreas = selectedOption.getAttribute("data-areas") ? selectedOption.getAttribute("data-areas").split(",") : [];
 
-
-
                     rows.forEach(row => {
                         let personArea = row.getAttribute("data-area");
                         if (selectedAreas.includes("Todas las Areas") || selectedAreas.length === 0) {
@@ -959,13 +959,13 @@
                     });
                 }
 
-                // Ejecutar al cambiar manualmente
                 courseSelect.addEventListener("change", aplicarFiltroPorCurso);
 
-                // Ejecutar automáticamente al cargar la página
-                aplicarFiltroPorCurso();
+                // Esperar a que el select esté bien cargado con la opción preseleccionada
+                setTimeout(aplicarFiltroPorCurso, 100); // o usar requestAnimationFrame(aplicarFiltroPorCurso);
             });
         </script>
+
 
 
 

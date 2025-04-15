@@ -100,11 +100,14 @@
             <input type="text" name="exam" class="form-control" maxlength="200" placeholder="Null" id="examInput">
         </div>
 
-        <button type="button" data-dismiss="modal" aria-label="Close" id="asignar-btn">
-            Cancelar
-        </button>
+        <div id="botones-modal">
+            <button type="button" data-dismiss="modal" aria-label="Close" id="asignar-btn">
+                Cancelar
+            </button>
 
-        <button id="cargar" class="asignar-btn">Cargar</button>
+            <button id="cargar" class="asignar-btn">Guardar</button>
+        </div>
+
     </div>
 
 </div>

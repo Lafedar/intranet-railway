@@ -230,6 +230,8 @@ table thead th {
 #anotherTrainerInput{
     display: none; 
     margin-left: 1255px;
+    margin-bottom: 10px; 
+    margin-right: 5px;
 }
 #botones{
     display:none;
@@ -272,13 +274,20 @@ table thead th {
     border-radius: 10px; /* Esquinas redondeadas */
     border: 2px solid #ccc; /* Borde normal */
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Sombra */
-    margin-bottom: -20px;
+    
     
     
 }
+#defaultFeaturesLink{
+    margin-left: 40px;
+}
+#botones-modal{
+    margin-bottom: 10px;
+}
 #cursos-create-container{
     margin-top: 60px;
-    width: 100%;    
+    width: 100%;   
+    margin-bottom: 50px; 
 }
 .d-flex.justify-content-between {
     padding: 5px; /* Ajusta según sea necesario */
