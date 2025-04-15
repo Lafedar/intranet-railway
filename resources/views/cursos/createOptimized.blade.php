@@ -57,7 +57,7 @@
 
 
                         <a href="javascript:void(0);" id="toggle-capacitacion">Crear Capacitación</a>
-                        <a href="javascript:void(0);" id="defaultFeaturesLink">Características por defecto</a>
+                        <a href="javascript:void(0);" id="defaultFeaturesLink">Más Datos</a>
                     </div>
 
                     <div class="mr-2" id="flex1">
@@ -154,6 +154,9 @@
                         <input type="hidden" id="status_main" name="status">
                         <input type="hidden" id="version_main" name="version">
                         <input type="hidden" name="annexes_main" id="annexes_main">
+                        <input type="hidden" name="mandatory" id="mandatory_main">
+                        <input type="hidden" name="type" id="type_main">
+                        <input type="hidden" id="description_main" name="description">
 
 
 
@@ -264,6 +267,34 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+    // Cuando el modal se abre completamente
+    $('#defaultFeaturesModal').on('shown.bs.modal', function () {
+        const examenInput = document.getElementById("examInput");
+        const certificadoAprobacion = document.getElementById("approval_certificate");
+        const certificadoParticipacion = document.getElementById("participation_certificate");
+
+        if (!examenInput || !certificadoAprobacion || !certificadoParticipacion) {
+            console.warn("No se encontraron los elementos esperados dentro del modal.");
+            return;
+        }
+
+        function toggleExamenField() {
+            examenInput.disabled = certificadoParticipacion.checked;
+        }
+
+        // Primero quitamos listeners anteriores para evitar duplicados
+        certificadoAprobacion.removeEventListener("change", toggleExamenField);
+        certificadoParticipacion.removeEventListener("change", toggleExamenField);
+
+        // Agregamos listeners actualizados
+        certificadoAprobacion.addEventListener("change", toggleExamenField);
+        certificadoParticipacion.addEventListener("change", toggleExamenField);
+
+        // Ejecutar función al cargar
+        toggleExamenField();
+    });
+</script>
 
 
         <!--OBTENER EL VALOR DE ID DEL CURSO SELECCIONADO PARA PASARLO A LA MODAL Y OBTENER VALORES DEL FORM DE LA MODAL -->
@@ -302,6 +333,10 @@
                                     const certificate = $('input[name="certificate"]:checked').val();
                                     const status = $('#status').val();
                                     const version = $('#version').val();
+                                    const mandatory = $('#obligatorio').val();
+                                    const description = $('#descripcion').val();
+                                    const type = $('#tipo').val();
+
 
                                     // Obtener anexos seleccionados como array y unirlos con coma
                                     const annexes = $('input[id^="anexo_"]:checked')
@@ -321,6 +356,9 @@
                                     $('#status_main').val(status);
                                     $('#version_main').val(version);
                                     $('#annexes_main').val(JSON.stringify(annexes));
+                                    $('#mandatory_main').val(mandatory);
+                                    $('#type_main').val(type);
+                                    $('#description_main').val(description);
 
 
 

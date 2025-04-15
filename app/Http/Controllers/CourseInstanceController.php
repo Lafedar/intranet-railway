@@ -137,17 +137,19 @@ class CourseInstanceController extends Controller
 
     }
 
-    public function getAllAnnexes(Request $request){
+    public function getAllAnnexes(Request $request)
+    {
         try {
             $courseId = $request->input('course_id');
+            $course = $this->courseService->getById($courseId);
             $annexes = $this->annexService->getAll(); // O filtrado por curso
-            return view('cursos.defaultFeatures', compact('annexes', 'courseId'));
-        } catch(Exception $e){
+            return view('cursos.defaultFeatures', compact('annexes', 'courseId', 'course'));
+        } catch (Exception $e) {
             Log::error('Error obteniendo anexos: ' . $e->getMessage());
             return response()->json(['error' => 'No se pudieron obtener los anexos'], 500);
         }
     }
-    
+
 
     public function saveNewCourseInstance(Request $request, $courseId)
     {
@@ -974,8 +976,8 @@ class CourseInstanceController extends Controller
                 'start_date' => 'required|date',
                 'trainer' => 'nullable|string|max:255',
                 'another_trainer' => 'nullable|string|max:255',
-               
-    
+
+
             ]);
             $trainer = $request->input('trainer');
 
@@ -986,91 +988,120 @@ class CourseInstanceController extends Controller
 
             }
             $flag = $request->input('flag');
-    
+
             $data = $request->all();
             $data['capacitador'] = $trainer;
             $data['fecha_inicio'] = $request->input('start_date');
             $data['id_curso'] = $courseId;
 
-            if($data['code'] == null){
+            if ($data['code'] == null) {
                 $data['codigo'] = "N/A";
-            }else{
+            } else {
                 $data['codigo'] = $data['code'];
             }
-            
-            if($data['certificate'] == null){
+
+            if ($data['certificate'] == null) {
                 $data['certificado'] = "Aprobacion";
-            }else{
+            } else {
                 $data['certificado'] = $data['certificate'];
             }
 
-            if($data['place'] == null){
+            if ($data['place'] == null) {
                 $data['lugar'] = "Lafedar";
-            }else{
+            } else {
                 $data['lugar'] = $data['place'];
             }
-            
-            if($data['status'] == null){
+
+            if ($data['status'] == null) {
                 $data['estado'] = "Activo";
-            }else{
+            } else {
                 $data['estado'] = $data['status'];
             }
 
-            if($data['hour'] == null){
+            if ($data['hour'] == null) {
                 $data['hora'] = "00:00:00";
-            }else{
+            } else {
                 $data['hora'] = $data['hour'];
             }
-            
-            if($data['quota'] == null){
+
+            if ($data['quota'] == null) {
                 $data['cupo'] = 100;
-            }else{
+            } else {
                 $data['cupo'] = $data['quota'];
             }
-            
-            if($data['modality'] == null){
+
+            if ($data['modality'] == null) {
                 $data['modalidad'] = "Presencial";
-            }else{
+            } else {
                 $data['modalidad'] = $data['modality'];
             }
-            
-            if($data['end_date'] == null){
+
+            if ($data['end_date'] == null) {
                 $data['fecha_fin'] = $data['fecha_inicio'];
-            }else{
+            } else {
                 $data['fecha_fin'] = $data['end_date'];
             }
-            
-            if($data['exam'] == null){
+
+            if ($data['exam'] == null) {
                 $data['examen'] = null;
-            }else{
+            } else {
                 $data['examen'] = $data['exam'];
             }
-  
-            if($data['exam'] == null){
+
+            if ($data['exam'] == null) {
+                
                 $data['examen'] = null;
-            }else{
+            } else {
                 $data['examen'] = $data['exam'];
             }
-            $version = $this->courseInstanceService->getCountInstances($courseId);
-            $data['version'] = $version + 1;
+
+            if ($data['version'] == null) {
+                $version = $this->courseInstanceService->getCountInstances($courseId);
+                $data['version'] = $version + 1;
+            } else {
+                $data['version'] = $data['version'];
+            }
+
+           
             $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
+            $course = $this->courseService->getById($courseId);
 
-          
+            
+            if ($data['description'] == null) {
+                $course->descripcion = "N/A";
+            } else {
+                $course->descripcion =$data['description'];
+            }
+
+            if ($data['mandatory'] == null) {
+                $course->obligatorio = 1;
+            } else {
+                $course->obligatorio = $data['mandatory'];
+            }
+
+            if ($data['type'] == null) {
+                $course->tipo = "Interna";
+            } else {
+                $course->tipo = $data['type'];
+            }
+        
+            $course->save();
+
             if ($request->has('annexes_main')) {
                 // Obtener el valor del campo como JSON
                 $annexesJson = $request->input('annexes_main');
-            
+
                 // Decodificar el JSON para obtener un arreglo de PHP
                 $annexes = json_decode($annexesJson, true);
-             
+
                 // Verifica que $annexes sea un arreglo
                 if (is_array($annexes)) {
-                   
+
                     foreach ($annexes as $annexId) {
                         $annexType = $this->annexService->getById($annexId);
-                        
+
                         // Verificamos si el tipo de anexo existe
                         if ($annexType) {
                             $this->annexService->insert_annex_course_instance($courseId, $nextInstanceId, $annexId, $annexType);
@@ -1090,17 +1121,17 @@ class CourseInstanceController extends Controller
             $this->courseInstanceService->create($data);
 
             /*--------------------------------------------------------------------*/
-           if(!empty($request->input('personas', []))){
+            if (!empty($request->input('personas', []))) {
                 $selectedPersons = $request->input('personas', []);
                 $manager = $this->personaService->getByDni(Auth::user()->dni);
                 $instance_id = $nextInstanceId;
-    
+
                 if (empty($selectedPersons)) {
                     return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
                 }
-    
+
                 $imagePath2 = storage_path('app/public/courses/firma.jpg');
-    
+
                 if (file_exists($imagePath2)) {
                     $imageData = base64_encode(file_get_contents($imagePath2));
                     $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
@@ -1108,46 +1139,45 @@ class CourseInstanceController extends Controller
                 } else {
                     $imageBase64Firma = null;
                 }
-    
+
                 $successfulRegistrations = 0;  // Contador de inscripciones exitosas
-    
+
                 foreach ($selectedPersons as $id_persona => $inscribir) {
                     if ($inscribir == 1) {  // Solo inscribir si la persona fue seleccionada
                         $user = $this->personaService->getById($id_persona);
                         $manager = $this->personaService->getByDni($manager->dni);
-    
+
                         // Inscribir a la persona
                         $this->enrolamientoCursoService->enroll($user->dni, $instance_id, $courseId);
-    
+
                         // Enviar el correo de inscripción
                         $course = $this->courseService->getById($courseId);
                         $startDate = $this->courseInstanceService->getStartDate($courseId, $instance_id);
                         $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                         $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
-    
+
                         if ($request->input('mail') && !empty($user->correo)) {
                             Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                         }
-    
-                        $successfulRegistrations++;  
+
+                        $successfulRegistrations++;
                     }
                 }
             }
-              
-        if($flag == 0){
-                return redirect()->route('cursos.instancias.index', $courseId)
-                ->with('success', 'Instancia creada correctamente');
 
-        }
-        elseif($flag == 1){
-            return redirect()->route('cursos.createOptimized',)
-                ->with('success', 'Instancia creada correctamente');
-        }
-            
+            if ($flag == 0) {
+                return redirect()->route('cursos.instancias.index', $courseId)
+                    ->with('success', 'Instancia creada correctamente');
+
+            } elseif ($flag == 1) {
+                return redirect()->route('cursos.createOptimized', )
+                    ->with('success', 'Instancia creada correctamente');
+            }
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema creando la instancia del curso.');
         }
     }
-    
+
 }
