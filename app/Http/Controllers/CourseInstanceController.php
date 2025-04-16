@@ -220,7 +220,7 @@ class CourseInstanceController extends Controller
 
 
             return redirect()->route('cursos.instancias.index', $courseId)
-                ->with('success', 'Instance created successfully.');
+                ->with('success', 'Instancia creada correctamente.');
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
             return redirect()->back()->withErrors('There was a problem creating the course instance.');
@@ -243,8 +243,7 @@ class CourseInstanceController extends Controller
 
             $this->courseInstanceService->delete($instance, $courseId);
 
-            return redirect()->route('curso.instancias.index', ['cursoId' => $courseId])
-                ->with('success', 'Instance successfully deleted.');
+            return redirect()->back()->with('success', 'Instancia eliminada correctamente.');
         } catch (Exception $e) {
 
             Log::error('Error in class: ' . get_class($this) . ' .Error deleting course instance: ' . $e->getMessage());
