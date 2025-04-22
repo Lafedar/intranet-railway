@@ -32,6 +32,8 @@ class PersonaService
                 ->where('nombre_p', '<>', 'Administrador')
                 ->orderBy('apellido', 'asc')
                 ->get();
+
+                
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas' . $e->getMessage());
             throw $e;

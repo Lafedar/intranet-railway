@@ -63,9 +63,11 @@
 
     @endrole
     
-
-    <a href="{{ route('cursos.create') }}" id="BCC">
+    <a href="{{ route('cursos.createOptimized') }}" id="BCC">
         Crear Capacitación
+    </a>
+    <a href="{{ route('cursos.create') }}" id="BCC">
+        Crear Capacitación Avanzado
     </a>
     <a href="{{ route('employee.courses.dni', Auth::user()->dni) }}" title="Capacitaciones de: {{ Auth::user()->name }}"><img
       src="{{ asset('storage/cursos/ver.png') }}" alt="Ver Capacitaciones" id="img-icono" style="margin-top: -75px;"></a>
