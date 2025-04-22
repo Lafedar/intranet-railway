@@ -258,7 +258,17 @@ class CourseController extends Controller
         $areas = $this->courseService->getAreasByCourseId(($courseId));
         return view('cursos.verCurso', compact('course', 'areas'));
     }
+    public function displayCourseDetailsJson($courseId)
+    {
+        $course = $this->courseService->getById($courseId);
+        $areas = $this->courseService->getAreasByCourseId($courseId);
 
+        // Devolver los datos como JSON para la petición AJAX
+        return response()->json([
+            'course' => $course,
+            'areas' => $areas
+        ]);
+    }
 
 
     public function listUserCourses(int $userId)
@@ -276,8 +286,102 @@ class CourseController extends Controller
 
         return view('empleado.cursos', compact('coursesWithDetails', 'person'));
     }
+    public function showCreateNewOptimizedCourse()
+    {
+        $areas = $this->areaService->getAll();
+        $persons = $this->personaService->getAll();
+        $persons = $this->personaService->getAll();
 
+        $persons->each(function ($person) {
+            $person->area = $this->areaService->getAreaById($person->area);
+        });
+        $courses = $this->courseService->getAll();
+
+        return view('cursos.createOptimized', compact('areas', 'persons', 'courses'));
+    }
+
+
+    public function saveNewOptimizedCourse(Request $request)
+    {
+        try {
+
+            $flag = $request->input('flag2');
+           
+            $courseId = $request->input('course');
+            if($flag == 3){
+                $validatedData = $request->validate([
+                    'titulo' => 'required|string|max:253',
+                    'area' => 'required|array|min:1',
+                   
+                ]);
+    
+                $validatedData['obligatorio'] = 1;
+                $validatedData['tipo'] = 'Interna';
+                $validatedData['descripcion'] = null;
+              
+                if (empty($validatedData['area'])) {
+                    return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+                }
+    
+    
+                $course = $this->courseService->create($validatedData);
+                $course->areas()->attach($validatedData['area']);
+    
+    
+                return redirect()->route('cursos.createOptimized', compact('course'))->with('success', 'Capacitación creada exitosamente.')->with('courseId', $course->id);;
+            }elseif($flag == 2){
+               
+                $validatedData = $request->validate([
+                    'titulo' => 'required|string|max:253',
+                    'area' => 'required|array|min:1',
+                    
+                ]);
+                
+                $date = $request->input('start_date');
+                $trainer = $request->input('trainer');
+                $anotherTrainer = $request->input('another_trainer');
+              
+
+                if (empty($validatedData['area'])) {
+                    return redirect()->back()->withErrors('Debe seleccionar al menos un área.');
+                }
+                
+                $course=$this->courseService->getById($courseId);
+                if (!$courseId) {
+                    return redirect()->back()->withErrors('No se recibió el ID del curso. Por favor, seleccione uno.');
+                }
+                if (in_array("tod", $validatedData['area'])) {
+                    $course->titulo = $validatedData['titulo'];
+                    $course->areas()->detach();
+                    $course->areas()->attach("tod");
+                    $course->save();
+                }else{
+                    $course->titulo = $validatedData['titulo'];
+                    $course->areas()->detach();
+                    $course->areas()->attach($validatedData['area']);
+                    $course->save();
+                }
+                
+    
+    
+                return redirect()->route('cursos.createOptimized', compact('date', 'trainer', 'anotherTrainer'))->with('success', 'Capacitación actualizada exitosamente.')
+                ->withInput();  // Esto permitirá mantener los datos del formulario, incluido el campo 'course'
+
+            }
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return redirect()->back()->withErrors($e->validator->errors());
+        } catch (Exception $e) {
+
+            return redirect()->back()->withErrors('Hubo un problema creando el curso: ' . $e->getMessage());
+        }
+    }
+
+    
+
+
+   
 }
-
 
 

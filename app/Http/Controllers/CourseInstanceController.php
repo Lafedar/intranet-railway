@@ -132,10 +132,24 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.create', compact('course', 'persons', 'annexes'));
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error returning course to courses.instances.create' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem returning the course to courses.instancias.create.');
+            return redirect()->back()->withErrors('Hubo un problema al mostrar el curso.');
         }
 
     }
+
+    public function getAllAnnexes(Request $request)
+    {
+        try {
+            $courseId = $request->input('course_id');
+            $course = $this->courseService->getById($courseId);
+            $annexes = $this->annexService->getAll(); // O filtrado por curso
+            return view('cursos.defaultFeatures', compact('annexes', 'courseId', 'course'));
+        } catch (Exception $e) {
+            Log::error('Error obteniendo anexos: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudieron obtener los anexos'], 500);
+        }
+    }
+
 
     public function saveNewCourseInstance(Request $request, $courseId)
     {
@@ -223,7 +237,7 @@ class CourseInstanceController extends Controller
                 ->with('success', 'Instancia creada correctamente.');
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem creating the course instance.');
+            return redirect()->back()->withErrors('Hubo un problema creando la instancia del curso.');
         }
     }
 
@@ -243,11 +257,13 @@ class CourseInstanceController extends Controller
 
             $this->courseInstanceService->delete($instance, $courseId);
 
-            return redirect()->back()->with('success', 'Instancia eliminada correctamente.');
+            return redirect()->route('curso.instancias.index', ['cursoId' => $courseId])
+                ->with('success', 'Instancia eliminada correctamente.');
+
         } catch (Exception $e) {
 
             Log::error('Error in class: ' . get_class($this) . ' .Error deleting course instance: ' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem deleting the course instance.');
+            return redirect()->back()->withErrors('Hubo un problema eliminando la instancia del curso.');
         }
     }
 
@@ -269,7 +285,7 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.edit', compact('instance', 'course', 'trainer', 'persons', 'modality', 'annexes', 'selectedAnnexes'));
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error returning the instance to courses.instancias.edit' . $e->getMessage());
-            return redirect()->back()->withErrors('There was a problem returning the instance to courses.instancias.edit.');
+            return redirect()->back()->withErrors('Hubo un problema mostrando la instancia del curso.');
         }
 
 
@@ -462,7 +478,7 @@ class CourseInstanceController extends Controller
             return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining'));
 
         } catch (Exception $e) {
-            Log::error('Error al obtener las personas para inscribir: ' . $e->getMessage());
+            Log::error('Error getting people to register: ' . $e->getMessage());
             return redirect()->back()->withErrors('Hubo un problema al obtener las personas para inscribir.');
         }
     }
@@ -954,6 +970,215 @@ class CourseInstanceController extends Controller
     }
 
 
+    public function saveNewOptimizedCourseInstance(Request $request, $courseId)
+    {
+        try {
+            $request->validate([
+                'start_date' => 'required|date',
+                'trainer' => 'nullable|string|max:255',
+                'another_trainer' => 'nullable|string|max:255',
 
+
+            ]);
+            $trainer = $request->input('trainer');
+
+
+
+            if ($request->input('another_trainer')) {
+                $trainer = $request->input('another_trainer');
+
+            }
+            $flag = $request->input('flag');
+
+            $data = $request->all();
+            $data['capacitador'] = $trainer;
+            $data['fecha_inicio'] = $request->input('start_date');
+            $data['id_curso'] = $courseId;
+
+            if ($data['code'] == null) {
+                $data['codigo'] = "N/A";
+            } else {
+                $data['codigo'] = $data['code'];
+            }
+
+            if ($data['certificate'] == null) {
+                $data['certificado'] = "Aprobacion";
+            } else {
+                $data['certificado'] = $data['certificate'];
+            }
+
+            if ($data['place'] == null) {
+                $data['lugar'] = "Lafedar";
+            } else {
+                $data['lugar'] = $data['place'];
+            }
+
+            if ($data['status'] == null) {
+                $data['estado'] = "Activo";
+            } else {
+                $data['estado'] = $data['status'];
+            }
+
+            if ($data['hour'] == null) {
+                $data['hora'] = "00:00:00";
+            } else {
+                $data['hora'] = $data['hour'];
+            }
+
+            if ($data['quota'] == null) {
+                $data['cupo'] = 100;
+            } else {
+                $data['cupo'] = $data['quota'];
+            }
+
+            if ($data['modality'] == null) {
+                $data['modalidad'] = "Presencial";
+            } else {
+                $data['modalidad'] = $data['modality'];
+            }
+
+            if ($data['end_date'] == null) {
+                $data['fecha_fin'] = $data['fecha_inicio'];
+            } else {
+                $data['fecha_fin'] = $data['end_date'];
+            }
+
+            if ($data['exam'] == null) {
+                $data['examen'] = null;
+            } else {
+                $data['examen'] = $data['exam'];
+            }
+
+            if ($data['exam'] == null) {
+                
+                $data['examen'] = null;
+            } else {
+                $data['examen'] = $data['exam'];
+            }
+
+            if ($data['version'] == null) {
+                $version = $this->courseInstanceService->getCountInstances($courseId);
+                $data['version'] = $version + 1;
+            } else {
+                $data['version'] = $data['version'];
+            }
+
+           
+            $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
+            $data['id_instancia'] = $nextInstanceId;
+
+            $course = $this->courseService->getById($courseId);
+
+            
+            if ($data['description'] == null) {
+                $course->descripcion = "N/A";
+            } else {
+                $course->descripcion =$data['description'];
+            }
+
+            if ($data['mandatory'] == null) {
+                $course->obligatorio = 1;
+            } else {
+                $course->obligatorio = $data['mandatory'];
+            }
+
+            if ($data['type'] == null) {
+                $course->tipo = "Interna";
+            } else {
+                $course->tipo = $data['type'];
+            }
+        
+            $course->save();
+
+            if ($request->has('annexes_main')) {
+                // Obtener el valor del campo como JSON
+                $annexesJson = $request->input('annexes_main');
+
+                // Decodificar el JSON para obtener un arreglo de PHP
+                $annexes = json_decode($annexesJson, true);
+
+                // Verifica que $annexes sea un arreglo
+                if (is_array($annexes)) {
+
+                    foreach ($annexes as $annexId) {
+                        $annexType = $this->annexService->getById($annexId);
+
+                        // Verificamos si el tipo de anexo existe
+                        if ($annexType) {
+                            $this->annexService->insert_annex_course_instance($courseId, $nextInstanceId, $annexId, $annexType);
+                        } else {
+                            Log::warning("Attachment type not found for formulario_id: $annexId");
+                        }
+                    }
+                } else {
+                    Log::warning('Invalid annexes data received');
+                }
+
+            }
+            if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
+                return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
+            }
+
+            $this->courseInstanceService->create($data);
+
+            /*--------------------------------------------------------------------*/
+            if (!empty($request->input('personas', []))) {
+                $selectedPersons = $request->input('personas', []);
+                $manager = $this->personaService->getByDni(Auth::user()->dni);
+                $instance_id = $nextInstanceId;
+
+                if (empty($selectedPersons)) {
+                    return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
+                }
+
+                $imagePath2 = storage_path('app/public/courses/firma.jpg');
+
+                if (file_exists($imagePath2)) {
+                    $imageData = base64_encode(file_get_contents($imagePath2));
+                    $mimeType = mime_content_type($imagePath2); // Obtener el tipo MIME de la imagen (ej. image/png)
+                    $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
+                } else {
+                    $imageBase64Firma = null;
+                }
+
+                $successfulRegistrations = 0;  // Contador de inscripciones exitosas
+
+                foreach ($selectedPersons as $id_persona => $inscribir) {
+                    if ($inscribir == 1) {  // Solo inscribir si la persona fue seleccionada
+                        $user = $this->personaService->getById($id_persona);
+                        $manager = $this->personaService->getByDni($manager->dni);
+
+                        // Inscribir a la persona
+                        $this->enrolamientoCursoService->enroll($user->dni, $instance_id, $courseId);
+
+                        // Enviar el correo de inscripción
+                        $course = $this->courseService->getById($courseId);
+                        $startDate = $this->courseInstanceService->getStartDate($courseId, $instance_id);
+                        $room = $this->courseInstanceService->get_room($courseId, $instance_id);
+                        $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
+
+                        if ($request->input('mail') && !empty($user->correo)) {
+                            Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
+                        }
+
+                        $successfulRegistrations++;
+                    }
+                }
+            }
+
+            if ($flag == 0) {
+                return redirect()->route('cursos.instancias.index', $courseId)
+                    ->with('success', 'Instancia creada correctamente');
+
+            } elseif ($flag == 1) {
+                return redirect()->route('cursos.createOptimized', )
+                    ->with('success', 'Instancia creada correctamente');
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating course instance: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Hubo un problema creando la instancia del curso.');
+        }
+    }
 
 }

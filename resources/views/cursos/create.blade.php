@@ -30,13 +30,13 @@
 
             <div class="form-group">
                 <label for="titulo">Título</label>
-                <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252">
+                <input type="text" class="form-control" id="titulo" name="titulo" required maxlength="252" oninput="updateCharacterCount()">
                 <small id="titulo-count" class="form-text text-muted">Quedan 252 caracteres</small>
             </div>
 
             <div class="form-group">
                 <label for="descripcion">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" maxlength="252"></textarea>
+                <textarea class="form-control" id="descripcion" name="descripcion" maxlength="252" oninput="updateCharacterCountDesc()"></textarea>
                 <small id="descripcion-count" class="form-text text-muted">Quedan 252 caracteres</small>
             </div>
 
@@ -89,7 +89,22 @@
     </div>
 
 </div>
-
+<script>
+    function updateCharacterCount() {
+        const tituloInput = document.getElementById('titulo');
+        const tituloCount = document.getElementById('titulo-count');
+        const remainingChars = 252 - tituloInput.value.length;
+        tituloCount.textContent = `Quedan ${remainingChars} caracteres`;
+    }
+</script>
+<script>
+    function updateCharacterCountDesc() {
+        const tituloInput = document.getElementById('descripcion');
+        const tituloCount = document.getElementById('descripcion-count');
+        const remainingChars = 252 - tituloInput.value.length;
+        tituloCount.textContent = `Quedan ${remainingChars} caracteres`;
+    }
+</script>
 <script>
     $(document).ready(function () {
         // Inicializar el select2 si lo necesitas
