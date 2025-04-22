@@ -33,7 +33,7 @@ class PersonaService
                 ->orderBy('apellido', 'asc')
                 ->get();
 
-                
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener todas las personas' . $e->getMessage());
             throw $e;
@@ -136,7 +136,8 @@ class PersonaService
 
     }
 
-    public function getAreaByDni(int $dni){
+    public function getAreaByDni(int $dni)
+    {
         $persona = Persona::where('dni', $dni)->first();
 
         // Verificar si se encontró la persona
@@ -149,29 +150,34 @@ class PersonaService
         }
     }
 
-  
+
 
     public function updateUserByDni(int $dni, int $id_user)
     {
         try {
             // Buscar la persona por DNI
             $persona = Persona::where('dni', $dni)->first();
-    
+
             if (!$persona) {
                 return false;
             }
-    
+
             $persona->usuario = $id_user;
             $persona->save();
-    
+
             return true;
-    
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el usuario por Dni' . $e->getMessage());
-            return false; 
+            return false;
         }
     }
-    
+    // En PersonaRepository.php
+    public function getByDnis(array $dnis)
+    {
+        return Persona::whereIn('dni', $dnis)->get();
+    }
+
 
 
 }
