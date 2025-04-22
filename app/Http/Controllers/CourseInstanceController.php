@@ -259,6 +259,7 @@ class CourseInstanceController extends Controller
 
             return redirect()->route('curso.instancias.index', ['cursoId' => $courseId])
                 ->with('success', 'Instancia eliminada correctamente.');
+
         } catch (Exception $e) {
 
             Log::error('Error in class: ' . get_class($this) . ' .Error deleting course instance: ' . $e->getMessage());

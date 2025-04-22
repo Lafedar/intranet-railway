@@ -121,7 +121,11 @@
                                     N/A
                                 @endif
                             </td>
-                            <td>{{ number_format($instance->percentageAPP, 2) }}%</td>
+                            @if($instance->certificado == "Aprobacion")
+                                <td>{{ number_format($instance->percentageAPP, 2) }}%</td>
+                            @else
+                                <td>N/A</td>
+                            @endif
                             <td>{{ $instance->certificado}}</td>
 
                             @endrole
