@@ -276,9 +276,11 @@ nav {
 }
 
 #powerbi-principal {
-    margin-left: 128px;
+    margin-left: 75px;
 }
-
+#medicamentos-principal {
+    margin-left: 75px;
+}
 #permisos-principal {
     margin-left: 120px;
 }

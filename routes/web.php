@@ -332,6 +332,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
+//**********************************Medications********************************************//
+Route::group(['middleware' => ['auth']], function () {
+  Route::get('medications', 'MedicationsRequestController@listsMedicationRequests');
+  Route::get('medications/{dni}', 'MedicationsRequestController@listsMedicationRequestsByDni');
+  Route::get('medications/delete/{id}', 'MedicationsRequestController@deleteMedicationRequest')->name('medications.delete');
+
+});
 //****************Ventas**********************
 
 Route::group(['middleware' => ['auth']], function () {

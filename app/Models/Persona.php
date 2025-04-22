@@ -52,6 +52,7 @@ class Persona extends Model
     {
         return DB::table('personas')->orderBy('personas.nombre_p', 'asc')->get();
     }
+  
 
 
 }
