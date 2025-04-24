@@ -328,12 +328,33 @@ table thead th {
     margin-top: -20px;
 
 }
-
+.filter-item{
+    background: linear-gradient(90deg, #206190 0%, #357AAB 44.5%, #3D83B5 54%, #5098CD 100%);
+    border: 1px solid #357AAB;
+    color: rgba(255, 255, 255, 1) !important;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    height: 40px;
+   
+}
+.filter-item input::placeholder {
+    color: rgba(255, 255, 255, 1);
+}
+.filter-item::placeholder {
+    color: white;
+}
+.forms-medication-requests{
+    display: inline-block; 
+    margin-right: 5px;
+}
 #recepcion-tabla {
     margin-top: -30px;
 }
 
-
+#container-edit-medications{
+    margin-top: 80px;
+}
 
 /*EMPLEADOS*/
 #empleados-container {

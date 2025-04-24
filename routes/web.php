@@ -336,11 +336,11 @@ Route::group(['middleware' => ['auth']], function () {
 Route::group(['middleware' => ['auth']], function () {
   Route::get('medications', 'MedicationsRequestController@listsMedicationRequests')->name('medications.index');
   
-  Route::get('medications/delete/{id}', 'MedicationsRequestController@deleteMedicationRequest')->name('medications.delete');
-  Route::get('medications/approve/{id}', 'MedicationsRequestController@approveMedicationRequest')->name('medications.approval');
-  Route::get('medications/certificate/{id}', 'MedicationsRequestController@generateCertificateMedicationRequest')->name('medications.certificate');
-  Route::put('medications/edit/{id}', 'MedicationsRequestController@updateMedicationRequest')->name('medications.edit');
-  Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequest')->name('medications.show');
+  Route::get('medications/delete/{id}', 'MedicationsRequestController@changeMedicationRequestToPendingApproval')->name('medications.delete');
+  Route::get('medications/approve/{id}/{id_p}', 'MedicationsRequestController@completeMedicationRequest')->name('medications.approval');
+  Route::get('medications/certificate/{id}/{id_p}', 'MedicationsRequestController@generateMedicationRequestDeliveryNote')->name('medications.certificate');
+  Route::put('medications/update/{id}', 'MedicationsRequestController@reviewAndUpdateMedicationRequest')->name('medications.update');
+  Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
   
 
 });

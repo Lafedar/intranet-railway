@@ -6,7 +6,7 @@ use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Exception;
-
+use DB;
 
 class PersonaService
 {
@@ -92,7 +92,6 @@ class PersonaService
         }
 
     }
-
     /**
      * Crear una nueva persona.
      *

@@ -44,37 +44,58 @@ class MedicationsRequestService
     public function deleteRequestById($id)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'No Aprobada']);
+            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'Aprobacion Pendiente']);
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error deletting medications requests by id ' . $e->getMessage());
             return null;
         }
     }
 
-    public function approveRequestById($id)
+    public function approveRequestById($id, $approved1, $approved2, $approved3)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'Aprobada']);
+
+            DB::table('solicitudes_medicamentos')
+                ->where('id', $id)
+                ->update([
+                    'estado' => 'Completada',
+                    'aprobado1' => $approved1,
+                    'aprobado2' => $approved2,
+                    'aprobado3' => $approved3,
+                ]);
+
+            return true;
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error approving medications requests by id ' . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function updateMedicationRequestById($id, $validateData)
+    {
+        try {
+
+            return DB::table('solicitudes_medicamentos')
+                ->where('id', $id)
+                ->update([
+                    'medicamento1' => $validateData['medication1'],
+                    'cantidad1' => $validateData['amount1'],
+                    'aprobado1' => $validateData['approved1'],
+                    'medicamento2' => $validateData['medication2'],
+                    'cantidad2' => $validateData['amount2'],
+                    'aprobado2' => $validateData['approved2'],
+                    'medicamento3' => $validateData['medication3'],
+                    'cantidad3' => $validateData['amount3'],
+                    'aprobado3' => $validateData['approved3'],
+                ]);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating medications requests by id ' . $e->getMessage());
             return null;
         }
     }
 
-    public function updateMedicationRequestById($id, $medicamento, $cantidad)
-    {
-        try {
-            DB::table('solicitudes_medicamentos')
-                ->where('id', $id)
-                ->update([
-                    'medicamento' => $medicamento,
-                    'cantidad' => $cantidad,
-                ]);
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error approving medications requests by id ' . $e->getMessage());
-            return null;
-        }
-    }
+
 
 
 
