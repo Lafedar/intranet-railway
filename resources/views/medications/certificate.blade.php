@@ -95,12 +95,35 @@
 
                 <br>
                 <br>
-                <b style="margin-left: 350px;">Firma RRHH: <img src="{{ $base64image_signature }}" alt="Logo" width="130"
-                        height="80" /></b>
+                <b style="margin-left: 350px;">Firma RRHH: <img src="{{ $base64image_signature }}" alt="Logo"
+                        width="130" height="80" /></b>
             </div>
         </div>
     </div>
 
+    <div class="boton-pdf-medicamentos"> 
+        @if(!$isPdf)
+            @if(is_object($person))
+                <form action="{{ route('medications.delete', ['id' => $medication->id, 'id_p' => $person->id_p]) }}"
+                    class="forms-medication-requests d-inline-block"> <!-- d-inline-block para que el form no ocupe todo el ancho -->
+                    @csrf
+                    @method('GET')
+                    <button type="submit" title="Pasar a Aprobacion Pendiente" id="icono" class="btn btn-primary">
+                        Generar PDF
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('medications.generatePdf', ['id' => $medication->id, 'personId' => $person]) }}"
+                    class="forms-medication-requests d-inline-block">
+                    @csrf
+                    @method('GET')
+                    <button type="submit" title="Pasar a Aprobacion Pendiente" id="icono" class="btn btn-primary">
+                        Generar PDF
+                    </button>
+                </form>
+            @endif
+        @endif
+    </div>
 </body>
 
 </html>

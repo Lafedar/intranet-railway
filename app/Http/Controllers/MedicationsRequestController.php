@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 
 
 class MedicationsRequestController extends Controller
@@ -160,10 +161,11 @@ class MedicationsRequestController extends Controller
             }
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
             $emails = explode(';', $recipients);
+            $isPdf = true;
             if ($update == true) {
                 foreach ($emails as $email) {
 
-                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $person, $base64image, $base64image_signature, $date));
+                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $person, $base64image, $base64image_signature, $date, $isPdf));
                 }
                 if (!empty($person->correo)) {
                     Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $person, $date));
@@ -216,9 +218,9 @@ class MedicationsRequestController extends Controller
 
                 $base64image_signature = null;
             }
-
+            $isPdf = false;
             $date = date('d/m/Y');
-            return view('medications.certificate', ['medication' => $medicationRequest, 'base64image' => $base64image, 'person' => $person, 'base64image_signature' => $base64image_signature, 'fecha' => $date]);
+            return view('medications.certificate', ['medication' => $medicationRequest, 'base64image' => $base64image, 'person' => $person, 'base64image_signature' => $base64image_signature, 'fecha' => $date, 'isPdf' => $isPdf]);
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error displaying the delivery note: ' . $e->getMessage());
@@ -264,6 +266,69 @@ class MedicationsRequestController extends Controller
             Log::error('Error in class: ' . get_class($this) . ' .Error displaying medication request data: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al mostrar los datos para editar de la solicitud de medicamentos ' . $e->getMessage());
         }
+    }
+
+    public function generatePDFcertificate($id, $personId)
+    {
+        
+        $medication = $this->medicationsRequestService->getRequestById($id);
+
+        $person = $this->personaService->getById($personId);
+        if ($person == null) {
+
+            $person = $personId;
+
+        }
+        $fecha = now()->format('d/m/Y');
+        
+        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+
+        if (file_exists($imagePath)) {
+
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+
+            $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
+        } else {
+
+            $base64image = null;
+        }
+
+
+        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
+
+        if (file_exists($firmaPath)) {
+
+            $imageData2 = base64_encode(file_get_contents($firmaPath));
+            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+            // Crear la cadena de imagen Base64
+            $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+        } else {
+
+            $base64image_signature = null;
+        }
+
+       $isPdf = true;
+
+        
+        $html = view('medications.certificate', compact( 'medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
+
+       
+
+        $pdf = SnappyPdf::loadHTML($html)
+            ->setOption('orientation', 'portrait') // Establece la orientación a apaisado
+            ->setOption('enable-local-file-access', true)
+            ->setOption('enable-javascript', true)
+            ->setOption('javascript-delay', 200)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 2)
+            ->setOption('margin-left', 10);
+
+
+        return $pdf->download('remito.pdf');
     }
 
 

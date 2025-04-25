@@ -16,13 +16,15 @@ class MedicationApprovedMail extends Mailable
     public $base64image;
     public $base64image_signature;
     public $date;
-    public function __construct($medicationRequest, $person, $base64image, $base64image_signature, $date)
+    public $isPdf;
+    public function __construct($medicationRequest, $person, $base64image, $base64image_signature, $date, $isPdf)
     {
         $this->medicationRequest = $medicationRequest;
         $this->person = $person;
         $this->base64image = $base64image;
         $this->base64image_signature = $base64image_signature;
         $this->fecha = $date;
+        $this->isPdf = $isPdf;
     }
  
    
@@ -36,7 +38,8 @@ class MedicationApprovedMail extends Mailable
                         'person' => $this->person,
                         'imageBase64' => $this->base64image,
                         'imageBase64_firma' => $this->base64image_signature,
-                        'fecha' => $this->date
+                        'fecha' => $this->date,
+                        'isPdf' => $this->isPdf
                     ]);
     }
 }

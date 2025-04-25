@@ -341,6 +341,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('medications/certificate/{id}/{id_p}', 'MedicationsRequestController@generateMedicationRequestDeliveryNote')->name('medications.certificate');
   Route::put('medications/update/{id}', 'MedicationsRequestController@reviewAndUpdateMedicationRequest')->name('medications.update');
   Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
+  Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
   
 
 });
