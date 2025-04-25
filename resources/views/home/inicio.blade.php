@@ -99,6 +99,7 @@
                     <a href="/internos" class="nav-btn">Internos <span id="internos-principal">></span></a>
                 @endrole
                 <a href="/mantenimiento" class="nav-btn">Mantenimiento <span id="mantenimiento-principal2">></span></a>
+                <a href="/medications" class="nav-btn">Medicamentos<span id="medicamentos-principal">></span></a>
                 @role(['medico', 'rrhh'])
                 <a href="/medico" class="nav-btn">Medico <span id="medico-principal2">></span></a>
                 @endrole

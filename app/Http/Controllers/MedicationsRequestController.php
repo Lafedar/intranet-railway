@@ -12,6 +12,7 @@ use App\Mail\MedicationApprovedMail;
 use Illuminate\Http\Request;
 use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
+use App\Services\GeneralParametersService;
 
 
 class MedicationsRequestController extends Controller
@@ -19,11 +20,14 @@ class MedicationsRequestController extends Controller
     protected $medicationsRequestService;
     protected $personaService;
 
+    protected $genParametersService;
 
-    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService)
+
+    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService)
     {
         $this->medicationsRequestService = $medicationsRequestService;
         $this->personaService = $personaService;
+        $this->genParametersService = $genParametersService;
     }
 
     public function listsMedicationRequests(Request $request)
@@ -146,7 +150,7 @@ class MedicationsRequestController extends Controller
                 $base64image_signature = null;
             }
 
-            $recipients = ['geronimo.alles@lafedar.com'];
+            $recipients = $this->genParametersService->getMailsToMedicationRequests();
             $date = date('d/m/Y');
             if ($approved1 !== "1" && $approved2 !== "1" && $approved3 !== "1") {
                 return back()->with('error', 'Debe aprobar al menos un medicamento.')->withInput();
@@ -155,8 +159,9 @@ class MedicationsRequestController extends Controller
                 $update = $this->medicationsRequestService->approveRequestById($id, $approved1, $approved2, $approved3);
             }
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            $emails = explode(';', $recipients);
             if ($update == true) {
-                foreach ($recipients as $email) {
+                foreach ($emails as $email) {
 
                     Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $person, $base64image, $base64image_signature, $date));
                 }
