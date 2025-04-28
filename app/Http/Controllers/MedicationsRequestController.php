@@ -97,9 +97,9 @@ class MedicationsRequestController extends Controller
                 ->with('success', 'Solicitud actualizada a Aprobacion pendiente.');
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error deleting medication request: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating request to Pending Approval: ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Error al desaprobar la solicitud de medicamentos.');
+                ->with('error', 'Error al actualizar la solicitud a Aprobación Pendiente.');
         }
     }
 
