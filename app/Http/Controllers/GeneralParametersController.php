@@ -7,6 +7,7 @@ use App\Services\PersonaService;
 use Illuminate\Http\Request;
 use DB;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 
 class GeneralParametersController extends Controller
@@ -22,49 +23,69 @@ class GeneralParametersController extends Controller
     }
     public function listAllParameters()
     {
-        $parameters = $this->genParameterService->listAll();
-        return view('parametros_gen.index', compact('parameters'));
+        try{
+            $parameters = $this->genParameterService->listAll();
+            return view('parametros_gen.index', compact('parameters'));
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting all parameters: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al obtener los parámetros');
+        }
+        
 
 
     }
     public function listAllParametersToSystems()
     {
-        $parameters = $this->genParameterService->listAll();
-        return view('parametros_gen_sistemas.index', compact('parameters'));
+        try{
+            $parameters = $this->genParameterService->listAll();
+            return view('parametros_gen_sistemas.index', compact('parameters'));
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting all parameters to systems: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al obtener los parámetros para sistemas');
+        }
+        
     }
 
     public function saveNewParameter(Request $request)
     {
-        $request->validate([
-            'id_param' => 'required',
-            'descripcion_param' => 'required',
-            'valor_param' => 'required',
-            'origen' => 'required',
-        ]);
-
-        $exist = $this->genParameterService->checkIfExists($request->id_param);
-
-        if ($exist) {
-            return redirect()->back()->with('error', 'El ID ya existe en la tabla. No se puede ingresar nuevamente.');
-        } else {
-            $store = $this->genParameterService->store($request->id_param, $request->descripcion_param, $request->valor_param, $request->origen);
-            if($store){
-                return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
-            }else{
-                return redirect()->back()->with('error', 'Error al agregar el parámetro.');
+        try{
+            $request->validate([
+                'id_param' => 'required',
+                'descripcion_param' => 'required',
+                'valor_param' => 'required',
+                'origen' => 'required',
+            ]);
+    
+            $exist = $this->genParameterService->checkIfExists($request->id_param);
+    
+            if ($exist) {
+                return redirect()->back()->with('error', 'El ID ya existe, por favor ingresar uno nuevo.');
+            } else {
+                $store = $this->genParameterService->store($request->id_param, $request->descripcion_param, $request->valor_param, $request->origen);
+                if($store){
+                    return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
+                }else{
+                    return redirect()->back()->with('error', 'Error al agregar el parámetro.');
+                }
+    
+                
             }
-
-            
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving new parameter: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al guardar el parámetro' );
         }
+        
     }
 
     public function updateParameterAndValidateEmails(Request $request, $id)
     {
-        $request->validate([
-            'descripcion_param' => 'required|string|max:255',
-            'valor_param' => 'required|string|max:255',
-        ]);
+        
         try {
+
+            $request->validate([
+                'descripcion_param' => 'required|string|max:255',
+                'valor_param' => 'required|string|max:255',
+            ]);
 
             if ($id == "PMAIL") {
                 $mailExist = $this->personaService->checkIfMailExists($request->valor_param);
@@ -72,7 +93,7 @@ class GeneralParametersController extends Controller
                 if (!$mailExist) {
                     return redirect()->back()->with(
                         'error',
-                        'El correo no existe en la base de datos'
+                        'El correo no existe'
                     )->withInput();
                 }
             }
@@ -90,7 +111,7 @@ class GeneralParametersController extends Controller
                 }
 
                 if (!empty($invalidMails)) {
-                    return redirect()->back()->with('error', 'Los siguientes correos no existen en la base de datos: ' . implode(', ', $invalidMails))->withInput();
+                    return redirect()->back()->with('error', 'Los siguientes correos no existen: ' . implode(', ', $invalidMails))->withInput();
                 }
 
             }
@@ -105,7 +126,8 @@ class GeneralParametersController extends Controller
 
 
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error al actualizar el parámetro: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating parameter: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el parámetro');
         }
 
 
@@ -122,7 +144,8 @@ class GeneralParametersController extends Controller
             }
             
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error al eliminar el parámetro en el controlador: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error deleting parameter: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el parámetro' );
         }
     }
 
@@ -132,13 +155,14 @@ class GeneralParametersController extends Controller
     {
         try{
             $megabytesMax = $this->genParameterService->getMegabytesMax();
-            if($megabytesMax ) {
+            if($megabytesMax) {
                 return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
             }else{
                 return redirect()->back()->with('error', 'Error al obtener los MB maximos');
             }
         }catch(Exception $e){
-            return redirect()->back()->with('error', 'Error al obtener los MB maximos en el controlador: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting maximum support megabytes: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al obtener los MB maximos' );
         }
         
 

@@ -271,76 +271,81 @@ class MedicationsRequestController extends Controller
 
     public function generatePDFcertificate($id, $personId)
     {
+        try {
+            $medication = $this->medicationsRequestService->getRequestById($id);
 
-        $medication = $this->medicationsRequestService->getRequestById($id);
+            $person = $this->personaService->getById($personId);
+            if ($person == null) {
 
-        $person = $this->personaService->getById($personId);
-        if ($person == null) {
+                $person = $personId;
 
-            $person = $personId;
+            }
+            $fecha = now()->format('d/m/Y');
 
+            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+
+            if (file_exists($imagePath)) {
+
+                $imageData = base64_encode(file_get_contents($imagePath));
+                $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+
+                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
+            } else {
+
+                $base64image = null;
+            }
+
+
+            $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
+
+            if (file_exists($firmaPath)) {
+
+                $imageData2 = base64_encode(file_get_contents($firmaPath));
+                $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+                // Crear la cadena de imagen Base64
+                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+            } else {
+
+                $base64image_signature = null;
+            }
+
+            $isPdf = true;
+
+
+            $html = view('medications.certificate', compact('medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
+
+
+
+            $pdf = SnappyPdf::loadHTML($html)
+                ->setOption('orientation', 'portrait') // Establece la orientación a apaisado
+                ->setOption('enable-local-file-access', true)
+                ->setOption('enable-javascript', true)
+                ->setOption('javascript-delay', 200)
+                ->setOption('margin-top', 10)
+                ->setOption('margin-right', 10)
+                ->setOption('margin-bottom', 2)
+                ->setOption('margin-left', 10);
+
+
+            return $pdf->download('remito.pdf');
+        }catch(Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error generating PDF certificate: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al generar el PDF del remito de la solicitud de medicamentos');
         }
-        $fecha = now()->format('d/m/Y');
 
-        $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-
-        if (file_exists($imagePath)) {
-
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-
-            $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
-        } else {
-
-            $base64image = null;
-        }
-
-
-        $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-        if (file_exists($firmaPath)) {
-
-            $imageData2 = base64_encode(file_get_contents($firmaPath));
-            $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-            // Crear la cadena de imagen Base64
-            $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-        } else {
-
-            $base64image_signature = null;
-        }
-
-        $isPdf = true;
-
-
-        $html = view('medications.certificate', compact('medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
-
-
-
-        $pdf = SnappyPdf::loadHTML($html)
-            ->setOption('orientation', 'portrait') // Establece la orientación a apaisado
-            ->setOption('enable-local-file-access', true)
-            ->setOption('enable-javascript', true)
-            ->setOption('javascript-delay', 200)
-            ->setOption('margin-top', 10)
-            ->setOption('margin-right', 10)
-            ->setOption('margin-bottom', 2)
-            ->setOption('margin-left', 10);
-
-
-        return $pdf->download('remito.pdf');
     }
 
     public function saveDataFromApi(Request $request)
     {
-        try{
+        try {
             $data = $request->all();
             $recipients = $this->genParametersService->getMailsToMedicationRequests();
             $emails = explode(';', $recipients);
             $person = $this->personaService->getByDni($data['dni_persona']);
 
-            if(!is_object($person)){
+            if (!is_object($person)) {
                 $person = $data['dni_persona'];
             }
             foreach ($emails as $email) {
@@ -352,8 +357,9 @@ class MedicationsRequestController extends Controller
                 'success' => true,
                 'message' => 'Correo enviado correctamente.'
             ], 200);
-        
+
         } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al enviar el correo.',
