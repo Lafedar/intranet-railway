@@ -14,6 +14,7 @@ use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
+use App\Mail\MedicationWarningMail;
 
 
 class MedicationsRequestController extends Controller
@@ -37,7 +38,7 @@ class MedicationsRequestController extends Controller
             $nombrePersona = $request->input('persona');
             $nombreMedicamento = $request->input('medicamento');
 
-            if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) {
+            if (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) {
                 $medicationsRequests = $this->medicationsRequestService->getAll();
                 $dnis = $medicationsRequests->pluck('dni_persona')->unique()->toArray();
 
@@ -270,7 +271,7 @@ class MedicationsRequestController extends Controller
 
     public function generatePDFcertificate($id, $personId)
     {
-        
+
         $medication = $this->medicationsRequestService->getRequestById($id);
 
         $person = $this->personaService->getById($personId);
@@ -280,7 +281,7 @@ class MedicationsRequestController extends Controller
 
         }
         $fecha = now()->format('d/m/Y');
-        
+
         $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
 
         if (file_exists($imagePath)) {
@@ -310,12 +311,12 @@ class MedicationsRequestController extends Controller
             $base64image_signature = null;
         }
 
-       $isPdf = true;
+        $isPdf = true;
 
-        
-        $html = view('medications.certificate', compact( 'medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
 
-       
+        $html = view('medications.certificate', compact('medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
+
+
 
         $pdf = SnappyPdf::loadHTML($html)
             ->setOption('orientation', 'portrait') // Establece la orientación a apaisado
@@ -329,6 +330,36 @@ class MedicationsRequestController extends Controller
 
 
         return $pdf->download('remito.pdf');
+    }
+
+    public function saveDataFromApi(Request $request)
+    {
+        try{
+            $data = $request->all();
+            $recipients = $this->genParametersService->getMailsToMedicationRequests();
+            $emails = explode(';', $recipients);
+            $person = $this->personaService->getByDni($data['dni_persona']);
+
+            if(!is_object($person)){
+                $person = $data['dni_persona'];
+            }
+            foreach ($emails as $email) {
+
+                Mail::to($email)->send(new MedicationWarningMail($data, $person));
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Correo enviado correctamente.'
+            ], 200);
+        
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al enviar el correo.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 

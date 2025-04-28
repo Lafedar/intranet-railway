@@ -23,12 +23,12 @@ class ExcelService
         PersonaService $personaService,
         courseService $courseService,
         CourseInstanceService $courseInstanceService,
-        EnrolamientocourseService $enrolamientocourseService
+        
     ) {
         $this->personaService = $personaService;
         $this->courseService = $courseService;
         $this->courseInstanceService = $courseInstanceService;
-        $this->enrolamientocourseService = $enrolamientocourseService;
+        
     }
     public function inscribirDesdeExcel($request, int $instancia_id, int $cursoId)
     {

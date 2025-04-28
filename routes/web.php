@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\MedicationsRequestController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseInstanceController;
@@ -268,7 +269,7 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //***************Evento-Calendario-reserva*********************
-Route::get('Evento/form', 'EventController@form');
+/*Route::get('Evento/form', 'EventController@form');
 Route::post('Evento/create', 'EventController@create');
 // Detalles de evento
 Route::get('Evento/details/{id}', 'EventController@details');
@@ -277,7 +278,7 @@ Route::post('Evento/', 'EventController@updates');
 Route::get('Evento', 'EventController@index');
 Route::get('Evento/index/{month}', 'EventController@index_month');
 //cancelar evento
-Route::patch('update/{evento}', 'EventController@updates')->name('event.update');
+Route::patch('update/{evento}', 'EventController@updates')->name('event.update');*/
 
 
 //*******************Software**********************************
@@ -342,9 +343,12 @@ Route::group(['middleware' => ['auth']], function () {
   Route::put('medications/update/{id}', 'MedicationsRequestController@reviewAndUpdateMedicationRequest')->name('medications.update');
   Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
   Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
+ 
+  
   
 
 });
+Route::post('/api/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
 //****************Ventas**********************
 
 Route::group(['middleware' => ['auth']], function () {

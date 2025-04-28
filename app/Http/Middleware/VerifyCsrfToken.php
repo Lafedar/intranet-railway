@@ -19,6 +19,9 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        
+        'api/save-data', // Desactiva CSRF para las rutas de la API
+        
+        
     ];
 }
