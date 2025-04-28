@@ -176,7 +176,15 @@ class PersonaService
     {
         return Persona::whereIn('dni', $dnis)->get();
     }
-
+    public function checkIfMailExists($mail){
+        try{
+            return DB::table('personas')->where('correo', $mail)->exists();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error al verificar si el correo existe' . $e->getMessage());
+            return false;
+        }
+        
+    }
 
 
 }

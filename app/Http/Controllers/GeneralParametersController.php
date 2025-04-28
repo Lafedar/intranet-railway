@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\GeneralParametersService;
+use App\Services\PersonaService;
 use Illuminate\Http\Request;
 use DB;
 use Exception;
@@ -11,10 +12,12 @@ use Exception;
 class GeneralParametersController extends Controller
 {
     private GeneralParametersService $genParameterService;
+    private PersonaService $personaService;
 
-    public function __construct(GeneralParametersService $genParameterService)
+    public function __construct(GeneralParametersService $genParameterService, PersonaService $personaService)
     {
         $this->genParameterService = $genParameterService;
+        $this->personaService = $personaService;
 
     }
     public function listAllParameters()
@@ -39,7 +42,7 @@ class GeneralParametersController extends Controller
             'origen' => 'required',
         ]);
 
-        $exist = DB::table('parametros_mant')->where('id_param', $request->id_param)->exists();
+        $exist = $this->genParameterService->checkIfExists($request->id_param);
 
         if ($exist) {
             return redirect()->back()->with('error', 'El ID ya existe en la tabla. No se puede ingresar nuevamente.');
@@ -64,7 +67,7 @@ class GeneralParametersController extends Controller
         try {
 
             if ($id == "PMAIL") {
-                $mailExist = DB::table('personas')->where('correo', $request->valor_param)->exists();
+                $mailExist = $this->personaService->checkIfMailExists($request->valor_param);
 
                 if (!$mailExist) {
                     return redirect()->back()->with(
@@ -80,7 +83,7 @@ class GeneralParametersController extends Controller
                 $invalidMails = [];
 
                 foreach ($emails as $email) {
-                    $existe = DB::table('personas')->where('correo', $email)->exists();
+                    $existe = $this->personaService->checkIfMailExists($email);
                     if (!$existe) {
                         $invalidMails[] = $email;
                     }

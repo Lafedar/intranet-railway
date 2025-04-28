@@ -88,4 +88,14 @@ class GeneralParametersService
         }
         
     }
+
+    public function checkIfExists($id){
+
+        try{
+            return DB::table('parametros_mant')->where('id_param', $id)->exists();
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting parameter by id' . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -15,16 +15,7 @@
             </div>
         </div>
 
-        @if(Session::has('message'))
-            <div class="container" id="div.alert">
-                <div class="row">
-                    <div class="col-1"></div>
-                    <div class="alert {{Session::get('alert-class')}} col-10 text-center" role="alert">
-                        {{Session::get('message')}}
-                    </div>
-                </div>
-            </div>
-        @endif
+       
         @if (session('success'))
             <div class="alert alert-success alert-message">
                 {{ session('success') }}
