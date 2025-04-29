@@ -111,15 +111,9 @@ class MedicationsRequestController extends Controller
             $approved2 = $request->input('approved2_checkbox');
             $approved3 = $request->input('approved3_checkbox');
 
-            if ($approved1 == null) {
-                $approved1 = "0";
-            }
-            if ($approved2 == null) {
-                $approved2 = "0";
-            }
-            if ($approved3 == null) {
-                $approved3 = "0";
-            }
+            $approved1 = $request->input('approved_checkbox') ?: "0";
+            $approved2 = $request->input('approved2_checkbox') ?: "0";
+            $approved3 = $request->input('approved3_checkbox') ?: "0";
 
 
             $person = $this->personaService->getById($person_id);
