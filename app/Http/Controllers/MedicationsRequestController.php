@@ -347,18 +347,9 @@ class MedicationsRequestController extends Controller
                 Mail::to($email)->send(new MedicationWarningMail($data, $person));
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Correo enviado correctamente.'
-            ], 200);
-
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al enviar el correo.',
-                'error' => $e->getMessage()
-            ], 500);
+           
         }
     }
 
