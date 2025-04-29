@@ -20,7 +20,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         
-        'api/save-data', // Desactiva CSRF para las rutas de la API
+        
         
         
     ];

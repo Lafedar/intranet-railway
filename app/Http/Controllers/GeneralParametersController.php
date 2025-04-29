@@ -23,63 +23,63 @@ class GeneralParametersController extends Controller
     }
     public function listAllParameters()
     {
-        try{
+        try {
             $parameters = $this->genParameterService->listAll();
             return view('parametros_gen.index', compact('parameters'));
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all parameters: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al obtener los parámetros');
         }
-        
+
 
 
     }
     public function listAllParametersToSystems()
     {
-        try{
+        try {
             $parameters = $this->genParameterService->listAll();
             return view('parametros_gen_sistemas.index', compact('parameters'));
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all parameters to systems: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al obtener los parámetros para sistemas');
         }
-        
+
     }
 
     public function saveNewParameter(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'id_param' => 'required',
                 'descripcion_param' => 'required',
                 'valor_param' => 'required',
                 'origen' => 'required',
             ]);
-    
+
             $exist = $this->genParameterService->checkIfExists($request->id_param);
-    
+
             if ($exist) {
                 return redirect()->back()->with('error', 'El ID ya existe, por favor ingresar uno nuevo.');
             } else {
                 $store = $this->genParameterService->store($request->id_param, $request->descripcion_param, $request->valor_param, $request->origen);
-                if($store){
+                if ($store) {
                     return redirect()->back()->with('success', 'Parámetro agregado correctamente.');
-                }else{
+                } else {
                     return redirect()->back()->with('error', 'Error al agregar el parámetro.');
                 }
-    
-                
+
+
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving new parameter: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al guardar el parámetro' );
+            return redirect()->back()->with('error', 'Error al guardar el parámetro');
         }
-        
+
     }
 
     public function updateParameterAndValidateEmails(Request $request, $id)
     {
-        
+
         try {
 
             $request->validate([
@@ -137,15 +137,15 @@ class GeneralParametersController extends Controller
     {
         try {
             $delete = $this->genParameterService->delete($id);
-            if($delete){
+            if ($delete) {
                 return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
-            }else{
+            } else {
                 return redirect()->back()->with('error', 'Error al eliminar el parámetro');
             }
-            
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error deleting parameter: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al eliminar el parámetro' );
+            return redirect()->back()->with('error', 'Error al eliminar el parámetro');
         }
     }
 
@@ -153,20 +153,20 @@ class GeneralParametersController extends Controller
 
     public function getMaximunSupportMegabytes()
     {
-        try{
+        try {
             $megabytesMax = $this->genParameterService->getMegabytesMax();
-            if($megabytesMax) {
+            if ($megabytesMax) {
                 return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
-            }else{
+            } else {
                 return redirect()->back()->with('error', 'Error al obtener los MB maximos');
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting maximum support megabytes: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al obtener los MB maximos' );
+            return redirect()->back()->with('error', 'Error al obtener los MB maximos');
         }
-        
 
-        
+
+
     }
 
 }

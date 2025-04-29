@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\MedicationsRequestService;
 use App\Services\PersonaService;
-
-use Illuminate\Support\Facades\Session;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MedicationApprovedMail;
@@ -14,7 +12,7 @@ use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
-use App\Mail\MedicationWarningMail;
+use App\Mail\MedicationNotificationMail;
 
 
 class MedicationsRequestController extends Controller
@@ -324,7 +322,7 @@ class MedicationsRequestController extends Controller
 
 
             return $pdf->download('remito.pdf');
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error generating PDF certificate: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al generar el PDF del remito de la solicitud de medicamentos');
         }
@@ -344,12 +342,12 @@ class MedicationsRequestController extends Controller
             }
             foreach ($emails as $email) {
 
-                Mail::to($email)->send(new MedicationWarningMail($data, $person));
+                Mail::to($email)->send(new MedicationNotificationMail($data, $person));
             }
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
-           
+
         }
     }
 

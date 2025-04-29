@@ -344,11 +344,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
   Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
  
-  
-  
-
 });
-Route::post('/api/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
+
 //****************Ventas**********************
 
 Route::group(['middleware' => ['auth']], function () {
