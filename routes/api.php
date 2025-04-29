@@ -18,10 +18,5 @@ use App\Http\Controllers\MedicationsRequestController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/almuerzo/{id_e}/sel','AlmuerzoController@byAlmuerzo');
-Route::get('/comi/{id}/sel','AlmuerzoController@byComida');
+Route::post('/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
 
-
-Route::middleware('api')->group(function () {
-    Route::post('/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
-});
