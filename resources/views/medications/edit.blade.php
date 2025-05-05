@@ -42,7 +42,7 @@
                     <div class="col-md-1">
                         <label for="amount1"><b>Cantidad</b></label>
                         <input type="number" class="form-control" id="amount1" name="amount1"
-                            value="{{ $medication->cantidad1 }}" required>
+                            value="{{ $medication->cantidad1 }}"  min="1" required>
                     </div>
                     <div class="col-md-1">
                         <label for="approved1"><b>Aprobar</b></label>
@@ -64,7 +64,7 @@
                     <div class="col-md-1">
                         <label for="amount2"><b>Cantidad</b></label>
                         <input type="number" class="form-control" id="amount2" name="amount2"
-                            value="{{ $medication->cantidad2 }}">
+                            value="{{ $medication->cantidad2 }}"  min="1">
                     </div>
                     <div class="col-md-1">
                         <label for="approved2"><b>Aprobar</b></label>
@@ -83,7 +83,7 @@
                     <div class="col-md-1">
                         <label for="amount3"><b>Cantidad</b></label>
                         <input type="number" class="form-control" id="amount3" name="amount3"
-                            value="{{ $medication->cantidad3 }}">
+                            value="{{ $medication->cantidad3 }}"  min="1">
                     </div>
                     <div class="col-md-1">
                         <label for="approved3"><b>Aprobar</b></label>

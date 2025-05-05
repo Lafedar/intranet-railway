@@ -14,7 +14,8 @@ class MedicationsRequestService
     public function getAll()
     {
         try {
-            return DB::table('solicitudes_medicamentos')->get();
+            return DB::table('solicitudes_medicamentos')->
+            orderBy('id','desc' )->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all medications requests ' . $e->getMessage());
             return null;
@@ -24,7 +25,8 @@ class MedicationsRequestService
     public function getRequestsByDni($dni)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('dni_persona', $dni)->get();
+            return DB::table('solicitudes_medicamentos')->where('dni_persona', $dni)
+            ->orderBy('id','desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting medications requests by dni ' . $e->getMessage());
             return null;
@@ -44,7 +46,7 @@ class MedicationsRequestService
     public function deleteRequestById($id)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'Aprobacion Pendiente']);
+            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'Aprobación Pendiente']);
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error deletting medications requests by id ' . $e->getMessage());
             return null;
@@ -58,7 +60,7 @@ class MedicationsRequestService
             DB::table('solicitudes_medicamentos')
                 ->where('id', $id)
                 ->update([
-                    'estado' => 'Completada',
+                    'estado' => 'Aprobada',
                     'aprobado1' => $approved1,
                     'aprobado2' => $approved2,
                     'aprobado3' => $approved3,

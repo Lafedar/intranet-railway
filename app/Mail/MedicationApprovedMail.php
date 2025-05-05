@@ -23,7 +23,7 @@ class MedicationApprovedMail extends Mailable
         $this->person = $person;
         $this->base64image = $base64image;
         $this->base64image_signature = $base64image_signature;
-        $this->fecha = $date;
+        $this->date = $date;
         $this->isPdf = $isPdf;
     }
  

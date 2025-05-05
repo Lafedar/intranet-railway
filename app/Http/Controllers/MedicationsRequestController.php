@@ -92,7 +92,7 @@ class MedicationsRequestController extends Controller
         try {
             $this->medicationsRequestService->deleteRequestById($id);
             return redirect()->back()
-                ->with('success', 'Solicitud actualizada a Aprobacion pendiente.');
+                ->with('success', 'Solicitud actualizada a Aprobación pendiente.');
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error updating request to Pending Approval: ' . $e->getMessage());
@@ -153,6 +153,9 @@ class MedicationsRequestController extends Controller
                 $update = $this->medicationsRequestService->approveRequestById($id, $approved1, $approved2, $approved3);
             }
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            if($recipients == null){
+                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
+            }
             $emails = explode(';', $recipients);
             $isPdf = true;
             if ($update == true) {
@@ -186,41 +189,55 @@ class MedicationsRequestController extends Controller
             $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
             $person = $this->personaService->getById($person_id);
             if ($person == null) {
-
                 $person = $person_id;
-
             }
+    
+            $base64image = null;
             if (file_exists($imagePath)) {
                 $imageData = base64_encode(file_get_contents($imagePath));
                 $mimeType = mime_content_type($imagePath);
                 $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
-            } else {
-                $base64image = null;
             }
-
+    
             $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
-
+            $base64image_signature = null;
             if (file_exists($signaturePath)) {
-
                 $imageData2 = base64_encode(file_get_contents($signaturePath));
-                $mimeType2 = mime_content_type($signaturePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-                // Crear la cadena de imagen Base64
+                $mimeType2 = mime_content_type($signaturePath);
                 $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-            } else {
-
-                $base64image_signature = null;
             }
-            $isPdf = false;
-            $date = date('d/m/Y');
-            return view('medications.certificate', ['medication' => $medicationRequest, 'base64image' => $base64image, 'person' => $person, 'base64image_signature' => $base64image_signature, 'fecha' => $date, 'isPdf' => $isPdf]);
-
+    
+            $isPdf = true; // importante para controlar estilos condicionales en la vista
+            $date = now()->format('d/m/Y');
+    
+            $html = view('medications.certificate', [
+                'medication' => $medicationRequest,
+                'base64image' => $base64image,
+                'person' => $person,
+                'base64image_signature' => $base64image_signature,
+                'fecha' => $date,
+                'isPdf' => $isPdf
+            ])->render();
+    
+            $pdf = \SnappyPdf::loadHTML($html)
+                ->setOption('orientation', 'portrait')
+                ->setOption('enable-local-file-access', true)
+                ->setOption('enable-javascript', true)
+                ->setOption('javascript-delay', 200)
+                ->setOption('margin-top', 10)
+                ->setOption('margin-right', 10)
+                ->setOption('margin-bottom', 2)
+                ->setOption('margin-left', 10);
+    
+            // Mostrar el PDF en el navegador
+            return $pdf->inline('remito.pdf');
+    
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error displaying the delivery note: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al mostrar el remito de la solicitud de medicamento ' . $e->getMessage());
+            \Log::error('Error displaying the delivery note: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al mostrar el remito: ' . $e->getMessage());
         }
     }
-
+    
     public function reviewAndUpdateMedicationRequest(Request $request, $id)
     {
         try {
@@ -334,6 +351,9 @@ class MedicationsRequestController extends Controller
         try {
             $data = $request->all();
             $recipients = $this->genParametersService->getMailsToMedicationRequests();
+            if($recipients == null){
+                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
+            }
             $emails = explode(';', $recipients);
             $person = $this->personaService->getByDni($data['dni_persona']);
 

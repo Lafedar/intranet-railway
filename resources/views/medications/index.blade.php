@@ -88,13 +88,21 @@
 
                                         <td>
                                             @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
-                                                @if($medication->estado != "Completada")
+                                                @if($medication->estado != "Aprobada")
 
                                                     <input type="hidden" name="approved_checkbox" value="0"
                                                         form="approve-form-{{ $medication->id }}">
-                                                    <input type="checkbox" name="approved_checkbox" value="1" {{ $medication->aprobado1 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
+                                                    <input type="checkbox" 
+                                                        class="approval-checkbox" 
+                                                        data-id="{{ $medication->id }}" 
+                                                        name="approved_checkbox" 
+                                                        value="1" 
+                                                        {{ $medication->aprobado1 == 1 ? 'checked' : '' }} 
+                                                        form="approve-form-{{ $medication->id }}">
+
                                                 @else
-                                                    <input type="checkbox" name="approved_checkbox" value="1" {{ $medication->aprobado1 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
+                                                    <input type="checkbox" class="approval-checkbox" 
+                                                    data-id="{{ $medication->id }}" name="approved_checkbox" value="1" {{ $medication->aprobado1 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
                                                 @endif
 
                                             @else
@@ -109,12 +117,14 @@
                                         <td>
                                             @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                                                 @if($medication->medicamento2 != null && $medication->cantidad2 != null)
-                                                    @if($medication->estado != "Completada")
+                                                    @if($medication->estado != "Aprobada")
                                                         <input type="hidden" name="approved2_checkbox" value="0"
                                                             form="approve-form-{{ $medication->id }}">
-                                                        <input type="checkbox" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
+                                                        <input type="checkbox" class="approval-checkbox" 
+                                                        data-id="{{ $medication->id }}" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
                                                     @else
-                                                        <input type="checkbox" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
+                                                        <input type="checkbox" class="approval-checkbox" 
+                                                        data-id="{{ $medication->id }}" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
                                                     @endif
                                                 @endif
                                             @else
@@ -126,12 +136,14 @@
                                         <td>
                                             @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                                                 @if($medication->medicamento3 != null && $medication->cantidad3 != null)
-                                                    @if($medication->estado != "Completada")
+                                                    @if($medication->estado != "Aprobada")
                                                         <input type="hidden" name="approved3_checkbox" value="0"
                                                             form="approve-form-{{ $medication->id }}">
-                                                        <input type="checkbox" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
+                                                        <input type="checkbox" class="approval-checkbox" 
+                                                        data-id="{{ $medication->id }}" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
                                                     @else
-                                                        <input type="checkbox" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
+                                                        <input type="checkbox" class="approval-checkbox" 
+                                                        data-id="{{ $medication->id }}" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
                                                     @endif
                                                 @endif
                                             @else
@@ -143,20 +155,20 @@
                                         <td>{{ $medication->estado }}</td>
                                         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                                             <td>
-                                                @if($medication->estado != 'Aprobacion Pendiente')
+                                                @if($medication->estado != 'Aprobación Pendiente')
                                                     <form action="{{ route('medications.delete', $medication->id) }}"
                                                         onsubmit="return confirm('¿Estás seguro de que deseas pasar a Aprobación Pendiente esta solicitud ?');"
                                                         class="forms-medication-requests">
                                                         @csrf
                                                         @method('GET')
-                                                        <button type="submit" title="Pasar a Aprobacion Pendiente" id="icono">
+                                                        <button type="submit" title="Pasar a Aprobación Pendiente" id="icono">
                                                             <img src="{{ asset('storage/cursos/exit.png') }}" loading="lazy"
-                                                                alt="Aprobacion Pendiente" id="img-icono">
+                                                                alt="Aprobación Pendiente" id="img-icono">
                                                         </button>
                                                     </form>
                                                 @endif
 
-                                                @if($medication->estado != 'Completada')
+                                                @if($medication->estado != 'Aprobada')
                                                     @if(is_object($matchedPerson))
                                                         <form id="approve-form-{{ $medication->id }}"
                                                             action="{{ route('medications.approval', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
@@ -164,7 +176,7 @@
                                                             class="forms-medication-requests">
                                                             @csrf
                                                             @method('GET')
-                                                            <button title="Completar solicitud" id="icono">
+                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}">
                                                                 <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
                                                                     id="img-icono">
                                                             </button>
@@ -178,7 +190,7 @@
                                                             class="forms-medication-requests">
                                                             @csrf
                                                             @method('GET')
-                                                            <button title="Aprobar solicitud" id="icono">
+                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" >
                                                                 <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
                                                                     id="img-icono">
                                                             </button>
@@ -186,31 +198,20 @@
                                                     @endif
 
                                                 @else
-                                                    @if(is_object($matchedPerson))
-                                                        <form
-                                                            action="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
-                                                            class="forms-medication-requests">
-                                                            @csrf
-                                                            @method('GET')
-                                                            <button title="Ver Remito" id="icono">
-                                                                <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito"
-                                                                    id="img-icono">
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <form
-                                                            action="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $medication->dni_persona]) }}"
-                                                            class="forms-medication-requests">
-                                                            @csrf
-                                                            @method('GET')
-                                                            <button title="Ver Remito" id="icono">
-                                                                <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito"
-                                                                    id="img-icono">
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                @if(is_object($matchedPerson))
+                                                    <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
+                                                    target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
+                                                        <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $medication->dni_persona]) }}"
+                                                    target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
+                                                        <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
+                                                    </a>
                                                 @endif
-                                                @if($medication->estado != 'Completada')
+
+                                                @endif
+                                                @if($medication->estado != 'Aprobada')
                                                     <form action="{{ route('medications.show', $medication->id) }}"
                                                         class="forms-medication-requests">
                                                         @csrf
@@ -251,6 +252,25 @@
             }, 3000); // 3000 milisegundos = 3 segundos
         });
     </script>
+<script>
+    document.querySelectorAll('.approval-checkbox').forEach(checkbox => {
+        const requestId = checkbox.dataset.id;
+
+        function toggleApproveButton(id) {
+            const checkboxes = document.querySelectorAll(`.approval-checkbox[data-id="${id}"]`);
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            const button = document.getElementById(`approve-btn-${id}`);
+            if (button) {
+                button.disabled = !anyChecked;
+            }
+        }
+
+        checkbox.addEventListener('change', () => toggleApproveButton(requestId));
+
+        // Evaluar al cargar la página
+        toggleApproveButton(requestId);
+    });
+</script>
 
 
 
