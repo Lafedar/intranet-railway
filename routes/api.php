@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MedicationsRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,5 +18,5 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/almuerzo/{id_e}/sel','AlmuerzoController@byAlmuerzo');
-Route::get('/comi/{id}/sel','AlmuerzoController@byComida');
+Route::post('/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
+

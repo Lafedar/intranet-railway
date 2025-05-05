@@ -32,25 +32,24 @@ return [
     |    The environment variables to set while running the wkhtmltopdf process.
     |
     */
-    
+
     'pdf' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_PDF_BINARY', '"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"'),
+        'binary' => env('WKHTML_PDF_BINARY', 'C:\wkhtmltopdf\bin\wkhtmltopdf.exe'),
         'timeout' => false,
         'options' => [
-            // Configuración sin opciones adicionales
-            // Puedes eliminar o comentar todas las opciones si no necesitas configuraciones específicas
+            'enable-local-file-access' => true,
+            'encoding' => 'UTF-8',
+            'no-stop-slow-scripts' => true,
         ],
         'env' => [],
     ],
-    
-    
     'image' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimage'),
+        'binary' => env('WKHTML_IMG_BINARY', 'C:\wkhtmltopdf\bin\wkhtmltoimage.exe'),
         'timeout' => false,
         'options' => [],
-        'env'     => [],
+        'env' => [],
     ],
 
 ];

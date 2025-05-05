@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\MedicationsRequestController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseInstanceController;
@@ -268,7 +269,7 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //***************Evento-Calendario-reserva*********************
-Route::get('Evento/form', 'EventController@form');
+/*Route::get('Evento/form', 'EventController@form');
 Route::post('Evento/create', 'EventController@create');
 // Detalles de evento
 Route::get('Evento/details/{id}', 'EventController@details');
@@ -277,7 +278,7 @@ Route::post('Evento/', 'EventController@updates');
 Route::get('Evento', 'EventController@index');
 Route::get('Evento/index/{month}', 'EventController@index_month');
 //cancelar evento
-Route::patch('update/{evento}', 'EventController@updates')->name('event.update');
+Route::patch('update/{evento}', 'EventController@updates')->name('event.update');*/
 
 
 //*******************Software**********************************
@@ -330,6 +331,19 @@ Route::put('/cerse', 'AlmuerzoController@cerrar_semana')->name('cerrarsema');
 Route::group(['middleware' => ['auth']], function () {
   Route::resource('powerbis', 'PowerbisController')->middleware('role:administrador');
 
+});
+
+//**********************************Medications********************************************//
+Route::group(['middleware' => ['auth']], function () {
+  Route::get('medications', 'MedicationsRequestController@listsMedicationRequests')->name('medications.index');
+  
+  Route::get('medications/delete/{id}', 'MedicationsRequestController@changeMedicationRequestToPendingApproval')->name('medications.delete');
+  Route::get('medications/approve/{id}/{id_p}', 'MedicationsRequestController@completeMedicationRequest')->name('medications.approval');
+  Route::get('medications/certificate/{id}/{id_p}', 'MedicationsRequestController@generateMedicationRequestDeliveryNote')->name('medications.certificate');
+  Route::put('medications/update/{id}', 'MedicationsRequestController@reviewAndUpdateMedicationRequest')->name('medications.update');
+  Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
+  Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
+ 
 });
 
 //****************Ventas**********************
@@ -441,7 +455,7 @@ Route::group(['middleware' => ['auth']], function () {
 Route::group(['middleware' => ['auth']], function () {
   Route::resource('areas', 'AreaController')->middleware('role:administrador|Jefe-Mantenimiento');
   Route::get('show_store_area', ['uses' => 'AreaController@show_store_area'])->middleware('role:administrador|Jefe-Mantenimiento')->name('show_store_area');
-  Route::get('parametros_mantenimiento', 'HomeController@parametros_mantenimiento')->middleware('role:administrador|Jefe-Mantenimiento');
+  Route::get('parametros_mantenimiento', 'HomeController@parametros_mantenimiento')->middleware('role:administrador|Jefe-Mantenimiento|rrhh');
   Route::post('store_area', 'AreaController@store_area')->name('store_area');
   Route::get('show_update_area/{area}', ['uses' => 'AreaController@show_update_area'])->name('show_update_area');
   Route::post('update_area', 'AreaController@update_area')->name('update_area');
@@ -503,13 +517,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 //****************Parametros Gen**********************
 Route::group(['middleware' => ['auth']], function () {
-  Route::resource('parametros_gen', 'ParametrosGenController')->middleware('role:administrador|Jefe-Mantenimiento');
-  Route::get('/parametros_gen_sistemas', 'ParametrosGenController@indexSistemas')->name('parametros-gen-sistemas.index')->middleware('role:administrador');
-  Route::post('guardar-datos', 'ParametrosGenController@store')->name('guardar_datos');
-  Route::put('parametros/{parametro}', 'ParametrosGenController@update')->name('parametros.update');
-  Route::delete('/parametros/{parametro}', 'ParametrosGenController@destroy')->name('parametros.destroy');
+  Route::get('parametros_gen', 'GeneralParametersController@listAllParameters')->middleware('role:administrador|Jefe-Mantenimiento|rrhh');
+  Route::get('/parametros_gen_sistemas', 'GeneralParametersController@listAllParametersToSystems')->name('parametros-gen-sistemas.index')->middleware('role:administrador');
+  Route::post('guardar-datos', 'GeneralParametersController@saveNewParameter')->name('guardar_datos');
+  Route::put('parametros/{parametro}', 'GeneralParametersController@updateParameterAndValidateEmails')->name('parametros.update');
+  Route::delete('/parametros/{parametro}', 'GeneralParametersController@deleteParameterById')->name('parametros.destroy');
 
-  Route::get('obtener-megabytes-maximos', 'ParametrosGenController@obtenerMegabytesMaximos')->name('obtener_megabytes_maximos');
+  Route::get('obtener-megabytes-maximos', 'GeneralParametersController@getMaximunSupportMegabytes')->name('obtener_megabytes_maximos');
 
 });
 

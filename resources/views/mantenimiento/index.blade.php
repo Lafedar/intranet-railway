@@ -24,7 +24,7 @@
             <h2 style="color: #3b557a">Equipos</h2>
         </div>
         @endrole
-        @role('administrador|Jefe-Mantenimiento')
+        @role('administrador|Jefe-Mantenimiento|rrhh')
         <div class="col-md-4">
             <a href="/parametros_mantenimiento"> <img src="{{ URL::to('/img/parametros.png') }}" height="140"></a>
             <h2 style="color: #3b557a">Parametros</h2>
