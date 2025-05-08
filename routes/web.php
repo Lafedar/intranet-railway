@@ -334,7 +334,7 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //**********************************Medications********************************************//
-Route::group(['middleware' => ['auth']], function () {
+/*Route::group(['middleware' => ['auth']], function () {
   Route::get('medications', 'MedicationsRequestController@listsMedicationRequests')->name('medications.index');
   
   Route::get('medications/delete/{id}', 'MedicationsRequestController@changeMedicationRequestToPendingApproval')->name('medications.delete');
@@ -344,7 +344,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
   Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
  
-});
+});*/
 
 //****************Ventas**********************
 

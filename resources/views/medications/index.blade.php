@@ -176,7 +176,7 @@
                                                             class="forms-medication-requests">
                                                             @csrf
                                                             @method('GET')
-                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}">
+                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" class="btn-disabled-med">
                                                                 <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
                                                                     id="img-icono">
                                                             </button>
@@ -190,7 +190,7 @@
                                                             class="forms-medication-requests">
                                                             @csrf
                                                             @method('GET')
-                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" >
+                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" class="btn-disabled-med">
                                                                 <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
                                                                     id="img-icono">
                                                             </button>
