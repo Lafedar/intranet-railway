@@ -440,13 +440,13 @@ table thead th {
     padding: 0;
     cursor: pointer;
 }
-button:disabled {
+.btn-disabled-med:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
     border:none;
 }
-button:not(:disabled) {
+.btn-disabled-med:not(:disabled) {
     border: none; /* sin borde cuando está activo */
     outline: none;
     background: none;
