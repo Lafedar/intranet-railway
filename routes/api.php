@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicationsRequestController;
+use App\Http\Controllers\PersonaController;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,3 +42,14 @@ Route::post('/recibir-form', function (Request $request) {
     // Devolver respuesta al navegador
     return response()->json(['status' => 'Formulario enviado correctamente']);
 });
+
+
+
+Route::options('/buscar-persona', function () {
+    return response('', Response::HTTP_NO_CONTENT)    // 204 No Content
+        ->header('Access-Control-Allow-Origin', 'https://lighthearted-stroopwafel-225cdc.netlify.app')
+        ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type');
+});
+
+Route::post('/buscar-persona', [PersonaController::class, 'buscar']);
