@@ -347,6 +347,9 @@ Route::group(['middleware' => ['auth']], function () {
 });*/
 
 //****************Ventas**********************
+Route::get('/formulario', function () {
+  return view('api.form');
+});
 
 Route::group(['middleware' => ['auth']], function () {
   Route::resource('ventas', 'VentaController')->middleware('role:administrador|venta');
