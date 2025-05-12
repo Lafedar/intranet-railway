@@ -113,4 +113,17 @@ class PersonaController extends Controller
         }
     }
 
+    public function checkMail(Request $request)
+    {
+        $mail = $request->input('mail');
+
+        $bandera = DB::table('personas')->where('correo', $mail)->exists();
+
+        if ($bandera) {
+            return response()->json($bandera);
+        } else {
+            return response()->json(['error' => 'Persona no encontrada'], 404);
+        }
+    }
+
 }

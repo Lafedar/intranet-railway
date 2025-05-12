@@ -46,10 +46,21 @@ Route::post('/recibir-form', function (Request $request) {
 
 
 Route::options('/buscar-persona', function () {
-    return response('', Response::HTTP_NO_CONTENT)    // 204 No Content
+    return response('', Response::HTTP_NO_CONTENT)    
         ->header('Access-Control-Allow-Origin', 'https://lighthearted-stroopwafel-225cdc.netlify.app')
         ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type');
 });
 
 Route::post('/buscar-persona', [PersonaController::class, 'buscar']);
+
+
+
+Route::options('/checkMail', function () {
+    return response('', Response::HTTP_NO_CONTENT)    
+        ->header('Access-Control-Allow-Origin', 'https://lighthearted-stroopwafel-225cdc.netlify.app')
+        ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type');
+});
+
+Route::post('/checkMail', [PersonaController::class, 'checkMail']);
