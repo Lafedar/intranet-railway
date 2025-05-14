@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicationsRequestController;
 use App\Http\Controllers\PersonaController;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,24 +44,32 @@ Route::post('/recibir-form', function (Request $request) {
     return response()->json(['status' => 'Formulario enviado correctamente']);
 });
 
-
-
-Route::options('/buscar-persona', function () {
-    return response('', Response::HTTP_NO_CONTENT)    
-        ->header('Access-Control-Allow-Origin', 'https://lighthearted-stroopwafel-225cdc.netlify.app')
+/*--------------------------------------------------------------------------------------------*/
+Route::options('/login', function () {
+    return response('', Response::HTTP_NO_CONTENT)
+        ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
         ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type');
+        ->header('Access-Control-Allow-Headers', 'Content-Type, ngrok-skip-browser-warning')
+        ->header('Access-Control-Allow-Credentials', 'true');
 });
 
-Route::post('/buscar-persona', [PersonaController::class, 'buscar']);
+Route::post('/login', function (Request $request) {
+    $credentials = $request->only('email', 'password');
 
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
 
+        return response()->json([
+            'message' => 'Login exitoso',
+            'user' => $user,
+        ])
+        ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
+        ->header('Access-Control-Allow-Credentials', 'true');
+    }
 
-Route::options('/checkMail', function () {
-    return response('', Response::HTTP_NO_CONTENT)    
-        ->header('Access-Control-Allow-Origin', 'https://lighthearted-stroopwafel-225cdc.netlify.app')
-        ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type');
+    return response()->json([
+        'message' => 'Credenciales inválidas',
+    ], 401)
+    ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
+    ->header('Access-Control-Allow-Credentials', 'true');
 });
-
-Route::post('/checkMail', [PersonaController::class, 'checkMail']);
