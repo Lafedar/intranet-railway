@@ -522,7 +522,7 @@ class CourseInstanceController extends Controller
                     $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                     $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
-                    if ($request->input('mail') && !empty($user->correo)) {
+                    if (!empty($user->correo)) {
                         Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                     }
 
@@ -532,7 +532,7 @@ class CourseInstanceController extends Controller
 
             // Verificar si al menos una inscripción fue exitosa
             if ($successfulRegistrations > 0) {
-                return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente' . ($request->input('mail') ? ' y se les ha enviado un correo.' : ''));
+                return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
             } else {
                 return redirect()->back()->with('error', 'Hubo un problema al inscribir las personas.');
             }
@@ -1157,7 +1157,7 @@ class CourseInstanceController extends Controller
                         $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                         $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
-                        if ($request->input('mail') && !empty($user->correo)) {
+                        if (!empty($user->correo)) {
                             Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                         }
 
