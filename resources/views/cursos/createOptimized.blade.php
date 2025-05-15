@@ -107,11 +107,6 @@
                                 placeholder="Filtrar por Nombre, Apellido, Área o Legajo" autocomplete="off">
                         </div>
 
-                        <div class="d-inline-block">
-                            <input type="checkbox" name="mail"> <label for="mail"><b>Enviar Mail a los
-                                    inscriptos</b></label>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
