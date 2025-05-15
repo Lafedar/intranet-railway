@@ -475,7 +475,7 @@ class CourseInstanceController extends Controller
                 });
             }
 
-            return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining'));
+            return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining', 'quota'));
 
         } catch (Exception $e) {
             Log::error('Error getting people to register: ' . $e->getMessage());
@@ -1181,4 +1181,17 @@ class CourseInstanceController extends Controller
         }
     }
 
+    public function deleteAllEnrollments($courseId, $instanceId){
+
+        $enrollments = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+        
+        $result = $this->enrolamientoCursoService->deleteEnrollments($enrollments);
+        if($result){
+            return redirect()->back()->with('success', 'Se eliminaron todas las inscripciones de la instancia.');
+        }else{
+            return redirect()->back()->with('error', 'Hubo un problema al eliminar las inscripciones de la instancia.');
+        }
+        
+        
+    }
 }
