@@ -99,6 +99,19 @@
                         <button type="submit" class="btn btn-primary d-inline-block"
                             style="margin-bottom: 10px; margin-left: 10px;" id="btn-agregar">Inscribir
                             seleccionados</button>
+                            
+                        @if($remaining != $quota)
+                            <a href="{{ route('deleteAllEnrollments', ['courseId' => $course->id, 'instanceId' => $instance->id_instancia]) }}"
+                                class="btn btn-primary d-inline-block" style="margin-bottom: 10px; margin-left: 10px;"
+                                id="btn-agregar"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar todos los inscriptos? Esta acción no se puede deshacer.');">
+                                Eliminar Inscriptos
+                            </a>
+                        @endif
+
+
+
+
                     </div>
 
 
@@ -111,7 +124,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     @foreach($personsWithStatus as $person)
                                     <tr>
                                         <td>{{ $person->legajo }}</td>
