@@ -498,7 +498,7 @@ class CourseInstanceController extends Controller
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
             }
 
-            $imagePath2 = storage_path('app/public/courses/firma.jpg');
+            $imagePath2 = storage_path('app/public/cursos/firma.jpg');
 
             if (file_exists($imagePath2)) {
                 $imageData = base64_encode(file_get_contents($imagePath2));
@@ -1133,7 +1133,7 @@ class CourseInstanceController extends Controller
                     return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
                 }
 
-                $imagePath2 = storage_path('app/public/courses/firma.jpg');
+                $imagePath2 = storage_path('app/public/cursos/firma.jpg');
 
                 if (file_exists($imagePath2)) {
                     $imageData = base64_encode(file_get_contents($imagePath2));
