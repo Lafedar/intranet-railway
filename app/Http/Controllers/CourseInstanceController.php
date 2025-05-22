@@ -312,18 +312,17 @@ class CourseInstanceController extends Controller
                 'exam' => 'nullable|string|max:200',
 
             ]);
-            // Obtener el valor actual de hora de la base de datos (o del modelo)
 
-            $trainer = $request->input('trainer');
-            $hour = $request->input('hour');
+            $data = $request->all();
 
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
 
-            if ($request->input('another_trainer')) {
-                $trainer = $request->input('another_trainer');
+            $data['capacitador'] = $request->input('trainer');
 
-
+            $anotherTrainer = $request->input('another_trainer');
+            if (!empty($anotherTrainer) && $anotherTrainer !== $instance->capacitador) {
+                $data['capacitador'] = $anotherTrainer;
             }
-
 
             if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
                 return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
@@ -334,14 +333,17 @@ class CourseInstanceController extends Controller
                 return redirect()->back()->withInput()->withErrors(['cupo' => 'El cupo no puede ser menor que la cantidad de personas ya inscriptas.']);
             }
 
-            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
-
-            $data = $request->all();
-            $data['capacitador'] = $trainer;
             $data['certificado'] = $request->input('certificate');
             $data['examen'] = $request->input('exam');
-
-            $data['hora'] = $hour;
+            $data['cupo'] = $request->input('quota');
+            $data['estado'] = $request->input('status');
+            $data['lugar'] = $request->input('place');
+            $data['codigo'] = $request->input('code');
+            $data['hora'] = $request->input('hour');
+            $data['version'] = $request->input('version');
+            $data['fecha_inicio'] = $request->input('start_date');
+            $data['fecha_fin'] = $request->input('end_date');
+            $data['modalidad'] = $request->input('modality');
             $instance->update($data);
 
             $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instance->id_instancia, $courseId);
@@ -1050,7 +1052,7 @@ class CourseInstanceController extends Controller
             }
 
             if ($data['exam'] == null) {
-                
+
                 $data['examen'] = null;
             } else {
                 $data['examen'] = $data['exam'];
@@ -1063,17 +1065,17 @@ class CourseInstanceController extends Controller
                 $data['version'] = $data['version'];
             }
 
-           
+
             $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
             $course = $this->courseService->getById($courseId);
 
-            
+
             if ($data['description'] == null) {
                 $course->descripcion = "N/A";
             } else {
-                $course->descripcion =$data['description'];
+                $course->descripcion = $data['description'];
             }
 
             if ($data['mandatory'] == null) {
@@ -1087,7 +1089,7 @@ class CourseInstanceController extends Controller
             } else {
                 $course->tipo = $data['type'];
             }
-        
+
             $course->save();
 
             if ($request->has('annexes_main')) {
@@ -1181,17 +1183,18 @@ class CourseInstanceController extends Controller
         }
     }
 
-    public function deleteAllEnrollments($courseId, $instanceId){
+    public function deleteAllEnrollments($courseId, $instanceId)
+    {
 
         $enrollments = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
-        
+
         $result = $this->enrolamientoCursoService->deleteEnrollments($enrollments);
-        if($result){
+        if ($result) {
             return redirect()->back()->with('success', 'Se eliminaron todas las inscripciones de la instancia.');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Hubo un problema al eliminar las inscripciones de la instancia.');
         }
-        
-        
+
+
     }
 }
