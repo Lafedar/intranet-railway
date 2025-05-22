@@ -15,7 +15,7 @@ class MedicationsRequestService
     {
         try {
             return DB::table('solicitudes_medicamentos')->
-            orderBy('id','desc' )->get();
+                orderBy('id', 'desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all medications requests ' . $e->getMessage());
             return null;
@@ -26,7 +26,7 @@ class MedicationsRequestService
     {
         try {
             return DB::table('solicitudes_medicamentos')->where('dni_persona', $dni)
-            ->orderBy('id','desc')->get();
+                ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting medications requests by dni ' . $e->getMessage());
             return null;
@@ -97,7 +97,27 @@ class MedicationsRequestService
         }
     }
 
+    public function create($data)
+    {
+        try {
+            DB::table('solicitudes_medicamentos')->insert([
+                'dni_persona' => $data['dni'],
+                'medicamento1' => $data['medication'],
+                'cantidad1' => $data['amount'],
+                'medicamento2' => $data['medication2'],
+                'cantidad2' => $data['amount2'],
+                'medicamento3' => $data['medication3'],
+                'cantidad3' => $data['amount3'],
 
+            ]);
+            return true;
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating medication request' . $e->getMessage());
+            return false;
+        }
+
+
+    }
 
 
 

@@ -153,7 +153,7 @@ class MedicationsRequestController extends Controller
                 $update = $this->medicationsRequestService->approveRequestById($id, $approved1, $approved2, $approved3);
             }
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
-            if($recipients == null){
+            if ($recipients == null) {
                 return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
             }
             $emails = explode(';', $recipients);
@@ -191,14 +191,14 @@ class MedicationsRequestController extends Controller
             if ($person == null) {
                 $person = $person_id;
             }
-    
+
             $base64image = null;
             if (file_exists($imagePath)) {
                 $imageData = base64_encode(file_get_contents($imagePath));
                 $mimeType = mime_content_type($imagePath);
                 $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
             }
-    
+
             $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
             $base64image_signature = null;
             if (file_exists($signaturePath)) {
@@ -206,10 +206,10 @@ class MedicationsRequestController extends Controller
                 $mimeType2 = mime_content_type($signaturePath);
                 $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
             }
-    
+
             $isPdf = true; // importante para controlar estilos condicionales en la vista
             $date = now()->format('d/m/Y');
-    
+
             $html = view('medications.certificate', [
                 'medication' => $medicationRequest,
                 'base64image' => $base64image,
@@ -218,7 +218,7 @@ class MedicationsRequestController extends Controller
                 'fecha' => $date,
                 'isPdf' => $isPdf
             ])->render();
-    
+
             $pdf = \SnappyPdf::loadHTML($html)
                 ->setOption('orientation', 'portrait')
                 ->setOption('enable-local-file-access', true)
@@ -228,16 +228,16 @@ class MedicationsRequestController extends Controller
                 ->setOption('margin-right', 10)
                 ->setOption('margin-bottom', 2)
                 ->setOption('margin-left', 10);
-    
+
             // Mostrar el PDF en el navegador
             return $pdf->inline('remito.pdf');
-    
+
         } catch (Exception $e) {
             \Log::error('Error displaying the delivery note: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al mostrar el remito: ' . $e->getMessage());
         }
     }
-    
+
     public function reviewAndUpdateMedicationRequest(Request $request, $id)
     {
         try {
@@ -351,7 +351,7 @@ class MedicationsRequestController extends Controller
         try {
             $data = $request->all();
             $recipients = $this->genParametersService->getMailsToMedicationRequests();
-            if($recipients == null){
+            if ($recipients == null) {
                 return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
             }
             $emails = explode(';', $recipients);
@@ -368,6 +368,30 @@ class MedicationsRequestController extends Controller
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
 
+        }
+    }
+
+
+    public function saveNewMedicationRequest(Request $request)
+    {
+        $data = $request->all();
+        $person = $this->personaService->getByDni($data['dni']);
+
+        if ($person) {
+            $create = $this->medicationsRequestService->create($data);
+            if ($create) {
+                return response()->json([
+                    'message' => 'Solicitud creada exitosamente',
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Hubo un problema al crear la solicitud',
+                ], 401);
+            }
+        } else {
+            return response()->json([
+                'message' => 'La persona no existe',
+            ], 401);
         }
     }
 

@@ -45,31 +45,67 @@ Route::post('/recibir-form', function (Request $request) {
 });
 
 /*--------------------------------------------------------------------------------------------*/
-Route::options('/login', function () {
-    return response('', Response::HTTP_NO_CONTENT)
-        ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
-        ->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, ngrok-skip-browser-warning')
-        ->header('Access-Control-Allow-Credentials', 'true');
-});
-
 Route::post('/login', function (Request $request) {
-    $credentials = $request->only('email', 'password');
+    try {
+        $encrypted = $request->input('payload');
 
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
+        // Clave y IV (deben coincidir con React)
+        $key = 'clave_secreta_de_32_bytes_123456';
+        $key = substr($key, 0, 32);
 
+        $iv = 'vector_init_16byt';
+        $iv = substr($iv, 0, 16);
+
+        if (strlen($key) !== 32) {
+            return response()->json(['message' => 'Clave inválida'], 400);
+        }
+
+        if (strlen($iv) !== 16) {
+            return response()->json(['message' => 'IV inválido'], 400);
+        }
+
+
+        $decrypted = openssl_decrypt(
+            base64_decode($encrypted),
+            'AES-256-CBC',
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+
+        $data = json_decode($decrypted, true);
+
+        if (!$data || !isset($data['email']) || !isset($data['password'])) {
+            return response()->json(['message' => 'Datos inválidos'], 400);
+        }
+
+        $credentials = [
+            'email' => $data['email'],
+            'password' => $data['password']
+        ];
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            return response()->json([
+                'message' => 'Login exitoso',
+                'user' => $user,
+                // 'token' => $user->createToken('api')->plainTextToken // si usás tokens
+            ]);
+        }
+
+        return response()->json(['message' => 'Credenciales inválidas'], 401);
+
+    } catch (\Throwable $e) {
         return response()->json([
-            'message' => 'Login exitoso',
-            'user' => $user,
-        ])
-        ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
-        ->header('Access-Control-Allow-Credentials', 'true');
+            'message' => 'Error del servidor',
+            'error' => $e->getMessage()
+        ], 500);
     }
-
-    return response()->json([
-        'message' => 'Credenciales inválidas',
-    ], 401)
-    ->header('Access-Control-Allow-Origin', 'https://lafedar.netlify.app')
-    ->header('Access-Control-Allow-Credentials', 'true');
 });
+
+
+
+
+Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
+
+Route::post('/buscarPersona', [PersonaController::class, 'buscar']);

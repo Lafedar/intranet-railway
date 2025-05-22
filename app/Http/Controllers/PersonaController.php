@@ -103,11 +103,11 @@ class PersonaController extends Controller
     public function buscar(Request $request)
     {
         $dni = $request->input('dni');
-
+        \Log::info("DNI recibido: " . $dni); // Esto va al storage/logs/laravel.log
         $persona = Persona::where('dni', $dni)->first();
 
         if ($persona) {
-            return response()->json($persona);
+            return response()->json($persona, 200);
         } else {
             return response()->json(['error' => 'Persona no encontrada'], 404);
         }
