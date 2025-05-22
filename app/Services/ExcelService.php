@@ -149,6 +149,7 @@ class ExcelService
             }
         }
 
+        
         // Generar archivo .txt si hay datos incorrectos
         if (!empty($personasNoCorrespondientes) || !empty($personasNoEncontradas)) {
             $filepath = storage_path('app/public/archivo_personas.txt');
@@ -165,10 +166,11 @@ class ExcelService
             } else {
                 $contenido .= "No hay personas con DNI incorrecto.\n";
             }
+            
+            file_put_contents($filepath, $contenido, LOCK_EX);
 
-            file_put_contents($filepath, $contenido);
+            return ['archivo_descargable' => 'storage/archivo_personas.txt'];
 
-            return ['archivo_descargable' => 'archivo_personas.txt'];
         }
 
         return ['success' => 'Las personas fueron inscriptas exitosamente y se les envió un mail.'];

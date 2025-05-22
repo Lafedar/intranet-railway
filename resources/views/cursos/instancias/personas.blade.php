@@ -19,7 +19,7 @@
         @if(session()->has('archivo_descargable'))
             <div class="alert alert-info" id="archivo-descargable">
                 El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
-                <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
+                <a href="{{ asset('storage/archivo_personas.txt') }}" class="btn btn-secondary" download>
                     Descargar archivo
                 </a>
             </div>
