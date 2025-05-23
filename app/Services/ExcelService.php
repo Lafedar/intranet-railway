@@ -16,19 +16,21 @@ class ExcelService
     protected $personaService;
     protected $courseService;
     protected $courseInstanceService;
-    protected $enrolamientocourseService;
+    protected $enrolamientoCursoService;
 
     // Inyectar las dependencias a través del constructor
     public function __construct(
         PersonaService $personaService,
-        courseService $courseService,
+        CourseService $courseService,
         CourseInstanceService $courseInstanceService,
-        
+        EnrolamientoCursoService $enrolamientoCursoService
+
     ) {
         $this->personaService = $personaService;
         $this->courseService = $courseService;
         $this->courseInstanceService = $courseInstanceService;
-        
+        $this->enrolamientoCursoService = $enrolamientoCursoService;
+
     }
     public function inscribirDesdeExcel($request, int $instancia_id, int $cursoId)
     {
@@ -54,7 +56,7 @@ class ExcelService
             return ['error' => 'El archivo no tiene la estructura correcta.'];
         }
 
-        $inscriptos = $this->enrolamientocourseService->getPersonsByInstanceId($instancia_id, $cursoId);
+        $inscriptos = $this->enrolamientoCursoService->getPersonsByInstanceId($instancia_id, $cursoId);
         $inscriptosDni = collect($inscriptos)->pluck('dni')->toArray(); // Extraemos los DNIs de los inscriptos
 
         $personasParaInscribir = [];
@@ -113,7 +115,7 @@ class ExcelService
 
         // Verificar cuántas personas pueden ser inscritas
         $cupo = $this->courseInstanceService->checkInstanceQuota($cursoId, $instancia_id);
-        $cantInscriptos = $this->enrolamientocourseService->getCountPersonsByInstanceId($instancia_id, $cursoId);
+        $cantInscriptos = $this->enrolamientoCursoService->getCountPersonsByInstanceId($instancia_id, $cursoId);
         $restantes = $cupo - $cantInscriptos;
 
         if (count($personasParaInscribir) > $restantes) {
@@ -122,16 +124,16 @@ class ExcelService
 
         // Inscribir a las personas válidas
         foreach ($personasParaInscribir as $persona) {
-            $inscrito = $this->enrolamientocourseService->isEnrolled($persona['dni'], $instancia_id, $cursoId);
+            $inscrito = $this->enrolamientoCursoService->isEnrolled($persona['dni'], $instancia_id, $cursoId);
             if ($inscrito) {
                 continue; // Si ya está inscrito, no inscribir nuevamente
             }
 
-            $this->enrolamientocourseService->enroll($persona['dni'], $instancia_id, $cursoId);
+            $this->enrolamientoCursoService->enroll($persona['dni'], $instancia_id, $cursoId);
             $user = $this->personaService->getByDni($persona['dni']);
-            $curso = $this->courseService->getById($cursoId)->titulo;
+            $curso = $this->courseService->getById($cursoId);
             $fechaInicio = $this->courseInstanceService->getStartDate($cursoId, $instancia_id);
-
+            $instancia = $this->courseInstanceService->getInstanceById($instancia_id, $cursoId);
             $imageBase64Firma = null;
             $imagePath2 = storage_path('app/public/cursos/firma.jpg');
             if (file_exists($imagePath2)) {
@@ -139,12 +141,15 @@ class ExcelService
                 $mimeType = mime_content_type($imagePath2);
                 $imageBase64Firma = 'data:' . $mimeType . ';base64,' . $imageData;
             }
-
+            $capacitador = $instancia->capacitador;
+            $lugar = $instancia->lugar;
+            $hora = $instancia->hora;
             if (!empty($user->correo)) {
-                Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma));
+                Mail::to($user->correo)->send(new InscripcionCursoMail($user, $curso, $fechaInicio, $imageBase64Firma, $capacitador, $lugar, $hora));
             }
         }
 
+        
         // Generar archivo .txt si hay datos incorrectos
         if (!empty($personasNoCorrespondientes) || !empty($personasNoEncontradas)) {
             $filepath = storage_path('app/public/archivo_personas.txt');
@@ -161,10 +166,11 @@ class ExcelService
             } else {
                 $contenido .= "No hay personas con DNI incorrecto.\n";
             }
+            
+            file_put_contents($filepath, $contenido, LOCK_EX);
 
-            file_put_contents($filepath, $contenido);
+            return ['archivo_descargable' => 'storage/archivo_personas.txt'];
 
-            return ['archivo_descargable' => 'archivo_personas.txt'];
         }
 
         return ['success' => 'Las personas fueron inscriptas exitosamente y se les envió un mail.'];

@@ -39,7 +39,7 @@ class EnrolamientoCursoService
     {
         return EnrolamientoCurso::find($id);
     }
-  
+
 
     public function update(EnrolamientoCurso $enrolamiento, array $data)
     {
@@ -127,11 +127,11 @@ class EnrolamientoCursoService
     public function getCoursesByUserDni(int $dni)
     {
         try {
-            
+
             $results = DB::select('CALL GetCoursesByUserDni(?)', [$dni]);
-    
+
             $courses = collect();
-        
+
             foreach ($results as $row) {
                 if (isset($row->id)) {
                     $curso = [
@@ -153,11 +153,11 @@ class EnrolamientoCursoService
                         'examen' => $row->examen,
                     ];
                     $courses->push($curso);
-                } 
+                }
             }
-    
+
             return $courses;
-    
+
         } catch (Exception $e) {
             Log::error('Error al obtener los cursos y los detalles del usuario: ' . $e->getMessage());
             throw $e;
@@ -544,10 +544,26 @@ class EnrolamientoCursoService
     }
 
 
-    public function getEnrollment(int $id_persona, int $id_curso, int $id_instancia){
+    public function getEnrollment(int $id_persona, int $id_curso, int $id_instancia)
+    {
         return EnrolamientoCurso::where('id_persona', $id_persona)
-        ->where('id_curso', $id_curso)
-        ->where('id_instancia', $id_instancia)
-        ->get();
+            ->where('id_curso', $id_curso)
+            ->where('id_instancia', $id_instancia)
+            ->get();
+    }
+
+
+    public function deleteEnrollments($enrollments)
+    {
+        try {
+            foreach ($enrollments as $enrollment) {
+                $enrollment->delete();
+            }
+            return true;
+        }catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error deleting all enrollments' . $e->getMessage());
+            return false;
+        }
+
     }
 }

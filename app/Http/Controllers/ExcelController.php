@@ -45,7 +45,7 @@ class ExcelController extends Controller
                 session(['archivo_descargable' => $archivoUrl]);
 
                 // Redirigimos con un mensaje de éxito
-                return redirect()->back()->with('success', 'El archivo con los datos incorrectos está listo para descargar.');
+                return redirect()->back()->with('success', 'Las personas se han inscripto correctamente.');
             }
 
             session(['inscripcion_desde_excel' => true]);

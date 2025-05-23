@@ -593,6 +593,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/enviar-mail/{cursoId}/{instanciaId}', [CourseInstanceController::class, 'sendCertificateToPeople'])->name('enviarMail');
   Route::get('/cambiar-estado-instancia/{instanciaId}/{cursoId}/{bandera}', [CourseInstanceController::class, 'changeInstanceStatus'])->name('cambiarEstado')->middleware('role:administrador|Gestor-cursos');
   Route::get('/cursos/default-features', [CourseInstanceController::class, 'getAllAnnexes'])->name('cursos.defaultFeatures');
+  Route::get('/delete/all/enrollments/{courseId}/{instanceId}', [CourseInstanceController::class, 'deleteAllEnrollments'])->name('deleteAllEnrollments')->middleware('role:administrador|Gestor-cursos');
 
 });
 

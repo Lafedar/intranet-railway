@@ -312,18 +312,21 @@ class CourseInstanceController extends Controller
                 'exam' => 'nullable|string|max:200',
 
             ]);
-            // Obtener el valor actual de hora de la base de datos (o del modelo)
 
-            $trainer = $request->input('trainer');
-            $hour = $request->input('hour');
+            $data = $request->all();
 
+            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
 
-            if ($request->input('another_trainer')) {
-                $trainer = $request->input('another_trainer');
+            $data['capacitador'] = $request->input('trainer');
 
+            $anotherTrainer = $request->input('another_trainer');
 
+            if (!empty($anotherTrainer)) {
+                $data['capacitador'] = $anotherTrainer;
+            } elseif (empty($request->input('trainer')) && !empty($instance->capacitador)) {
+                
+                $data['capacitador'] = $instance->capacitador;
             }
-
 
             if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
                 return redirect()->back()->withInput()->withErrors(['end_date' => 'La fecha de fin debe ser mayor o igual que la fecha de inicio.']);
@@ -334,14 +337,17 @@ class CourseInstanceController extends Controller
                 return redirect()->back()->withInput()->withErrors(['cupo' => 'El cupo no puede ser menor que la cantidad de personas ya inscriptas.']);
             }
 
-            $instance = $this->courseInstanceService->getInstanceById($instanceId, $courseId);
-
-            $data = $request->all();
-            $data['capacitador'] = $trainer;
             $data['certificado'] = $request->input('certificate');
             $data['examen'] = $request->input('exam');
-
-            $data['hora'] = $hour;
+            $data['cupo'] = $request->input('quota');
+            $data['estado'] = $request->input('status');
+            $data['lugar'] = $request->input('place');
+            $data['codigo'] = $request->input('code');
+            $data['hora'] = $request->input('hour');
+            $data['version'] = $request->input('version');
+            $data['fecha_inicio'] = $request->input('start_date');
+            $data['fecha_fin'] = $request->input('end_date');
+            $data['modalidad'] = $request->input('modality');
             $instance->update($data);
 
             $registered = $this->enrolamientoCursoService->getPersonsByInstanceId($instance->id_instancia, $courseId);
@@ -475,7 +481,7 @@ class CourseInstanceController extends Controller
                 });
             }
 
-            return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining'));
+            return view('cursos.instancias.personas', compact('personsWithStatus', 'course', 'instance', 'remaining', 'quota'));
 
         } catch (Exception $e) {
             Log::error('Error getting people to register: ' . $e->getMessage());
@@ -496,7 +502,7 @@ class CourseInstanceController extends Controller
                 return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
             }
 
-            $imagePath2 = storage_path('app/public/courses/firma.jpg');
+            $imagePath2 = storage_path('app/public/cursos/firma.jpg');
 
             if (file_exists($imagePath2)) {
                 $imageData = base64_encode(file_get_contents($imagePath2));
@@ -522,7 +528,7 @@ class CourseInstanceController extends Controller
                     $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                     $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
-                    if ($request->input('mail') && !empty($user->correo)) {
+                    if (!empty($user->correo)) {
                         Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                     }
 
@@ -532,7 +538,7 @@ class CourseInstanceController extends Controller
 
             // Verificar si al menos una inscripción fue exitosa
             if ($successfulRegistrations > 0) {
-                return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente' . ($request->input('mail') ? ' y se les ha enviado un correo.' : ''));
+                return redirect()->back()->with('success', 'Las personas seleccionadas han sido inscriptas exitosamente y se les ha enviado un correo.');
             } else {
                 return redirect()->back()->with('error', 'Hubo un problema al inscribir las personas.');
             }
@@ -1050,7 +1056,7 @@ class CourseInstanceController extends Controller
             }
 
             if ($data['exam'] == null) {
-                
+
                 $data['examen'] = null;
             } else {
                 $data['examen'] = $data['exam'];
@@ -1063,17 +1069,17 @@ class CourseInstanceController extends Controller
                 $data['version'] = $data['version'];
             }
 
-           
+
             $nextInstanceId = $this->courseInstanceService->getMaxInstanceId($courseId) + 1;
             $data['id_instancia'] = $nextInstanceId;
 
             $course = $this->courseService->getById($courseId);
 
-            
+
             if ($data['description'] == null) {
                 $course->descripcion = "N/A";
             } else {
-                $course->descripcion =$data['description'];
+                $course->descripcion = $data['description'];
             }
 
             if ($data['mandatory'] == null) {
@@ -1087,7 +1093,7 @@ class CourseInstanceController extends Controller
             } else {
                 $course->tipo = $data['type'];
             }
-        
+
             $course->save();
 
             if ($request->has('annexes_main')) {
@@ -1131,7 +1137,7 @@ class CourseInstanceController extends Controller
                     return redirect()->back()->with('error', 'No se seleccionaron personas para inscribir.');
                 }
 
-                $imagePath2 = storage_path('app/public/courses/firma.jpg');
+                $imagePath2 = storage_path('app/public/cursos/firma.jpg');
 
                 if (file_exists($imagePath2)) {
                     $imageData = base64_encode(file_get_contents($imagePath2));
@@ -1157,7 +1163,7 @@ class CourseInstanceController extends Controller
                         $room = $this->courseInstanceService->get_room($courseId, $instance_id);
                         $hour = $this->courseInstanceService->get_hour($courseId, $instance_id);
 
-                        if ($request->input('mail') && !empty($user->correo)) {
+                        if (!empty($user->correo)) {
                             Mail::to($user->correo)->send(new InscripcionCursoMail($user, $course, $startDate, $imageBase64Firma, $manager, $room, $hour));
                         }
 
@@ -1181,4 +1187,18 @@ class CourseInstanceController extends Controller
         }
     }
 
+    public function deleteAllEnrollments($courseId, $instanceId)
+    {
+
+        $enrollments = $this->enrolamientoCursoService->getPersonsByInstanceId($instanceId, $courseId);
+
+        $result = $this->enrolamientoCursoService->deleteEnrollments($enrollments);
+        if ($result) {
+            return redirect()->back()->with('success', 'Se eliminaron todas las inscripciones de la instancia.');
+        } else {
+            return redirect()->back()->with('error', 'Hubo un problema al eliminar las inscripciones de la instancia.');
+        }
+
+
+    }
 }
