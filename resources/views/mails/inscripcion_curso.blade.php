@@ -10,8 +10,16 @@
 
 <body>
     <p>Hola, {{ $user->nombre_p }} {{ $user->apellido }}</p>
-    <p>Fuiste inscripto por {{ $gestor->nombre_p }} {{ $gestor->apellido }} en la capacitación:
-        <b>{{ $curso->titulo }}</b>.</p>
+    <p>Fuiste inscripto por
+        @if(is_object($gestor))
+            {{ $gestor->nombre_p }} {{ $gestor->apellido }}
+        @else
+            {{ $gestor }}
+        @endif
+        en la capacitación:
+    </p>
+
+    <b>{{ $curso->titulo }}</b>.</p>
     <p>Obligatorio:
         @if($curso->obligatorio == 1)
             <b>Si</b>

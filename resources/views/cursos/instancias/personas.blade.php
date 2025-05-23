@@ -11,25 +11,26 @@
 
 @section('content')
     <div id="container">
-        @if(session('success'))
-            <div class="alert alert-success" id="success">
-                {{ session('success') }}
+        <div class="fixed-messages-container">
+            <div class="alert-messages-wrapper">
+                @if(session('success'))
+                    <div class="alert alert-success" id="success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session()->has('archivo_descargable'))
+                    <div class="alert alert-info" id="archivo-descargable">
+                        El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
+                        <a href="{{ asset('storage/archivo_personas.txt') }}" class="btn btn-secondary" download>
+                            Descargar archivo
+                        </a>
+                    </div>
+                    @php
+                        session()->forget('archivo_descargable');
+                    @endphp
+                @endif
             </div>
-        @endif
-        @if(session()->has('archivo_descargable'))
-            <div class="alert alert-info" id="archivo-descargable">
-                El archivo con datos incorrectos ha sido generado. Puedes descargarlo ahora:
-                <a href="{{ asset(session('archivo_descargable')) }}" class="btn btn-secondary" download>
-                    Descargar archivo
-                </a>
-            </div>
-
-            @php
-                // Eliminar la variable de sesión después de mostrar el mensaje
-                session()->forget('archivo_descargable');
-            @endphp
-        @endif
-
+        </div>
 
 
         @if(session('error'))

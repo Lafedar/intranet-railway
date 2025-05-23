@@ -320,8 +320,12 @@ class CourseInstanceController extends Controller
             $data['capacitador'] = $request->input('trainer');
 
             $anotherTrainer = $request->input('another_trainer');
-            if (!empty($anotherTrainer) && $anotherTrainer !== $instance->capacitador) {
+
+            if (!empty($anotherTrainer)) {
                 $data['capacitador'] = $anotherTrainer;
+            } elseif (empty($request->input('trainer')) && !empty($instance->capacitador)) {
+                
+                $data['capacitador'] = $instance->capacitador;
             }
 
             if ($request->input('end_date') !== null && $request->input('end_date') < $request->input('start_date')) {
