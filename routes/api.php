@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicationsRequestController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\CryptoController;
+use Illuminate\Support\Facades\Http;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,3 +50,22 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
 
 Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
+
+
+
+/*Route::middleware('web')->group(function () {
+    Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
+    Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
+
+});*/
+
+Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
+
+
+Route::middleware(['aes.key'])->group(function () {
+
+    Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
+    Route::post('/login', [CryptoController::class, 'login']);
+
+
+});

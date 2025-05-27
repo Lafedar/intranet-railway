@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-           
+            \Illuminate\Session\Middleware\StartSession::class,
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'aes.key' => \App\Http\Middleware\EnsureAesKeyIsSet::class,
     ];
 
     /**

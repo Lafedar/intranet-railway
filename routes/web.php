@@ -9,6 +9,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\NovedadesController;
 use Illuminate\Support\Str;
 
+
 Auth::routes();
 
 
@@ -646,3 +647,6 @@ Route::get('/descargar/{filename}', function ($filename) {
 
 /*LOGOUT*/
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+
+
