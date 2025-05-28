@@ -7,6 +7,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CryptoController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Middleware\ForceCors;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -57,15 +58,17 @@ Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
     Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
     Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
 
-});*/
+});
+*/
 
 Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
 
-
-Route::middleware(['aes.key'])->group(function () {
-
-    Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
-    Route::post('/login', [CryptoController::class, 'login']);
-
-
+Route::middleware(['force.cors'])->group(function () {
+    // Ruta pública (sin protección adicional)
+    
+    // Grupo con middleware de encriptación
+    Route::middleware(['aes.key'])->group(function () {
+        Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
+        Route::post('/login', [CryptoController::class, 'login']);
+    });
 });

@@ -16,7 +16,7 @@ use App\User;
 
 class CryptoController extends Controller
 {
-    protected $userService; 
+    protected $userService;
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
@@ -24,7 +24,7 @@ class CryptoController extends Controller
     }
     public function getEncryptionKey(Request $request)
     {
-
+        Log::info('Solicitud de clave AES recibida: ' . $request->session()->getId());
         if (!$request->session()->has('aes_key')) {
 
             $key = random_bytes(32); // 256 bits = 32 bytes
@@ -37,14 +37,16 @@ class CryptoController extends Controller
 
         }
 
-        Log::info('Se generó clave AES y se guardó en sesión: ' . $request->session()->getId());
+        Log::info('Clave generada: ' . base64_encode($key));
 
         return response()->json([
 
             'key' => base64_encode($key)
 
-        ]);
 
+
+        ]);
+        
 
     }
     public function login(Request $request)
@@ -84,7 +86,7 @@ class CryptoController extends Controller
             }
 
             //Validar el usuario y contraseña
-          
+
             $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
             if (!is_object($user)) {
                 $respuesta = "Credenciales inválidas";
