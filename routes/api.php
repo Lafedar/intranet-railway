@@ -46,29 +46,24 @@ Route::post('/recibir-form', function (Request $request) {
 });
 
 /*--------------------------------------------------------------------------------------------*/
-Route::post('/login', [AuthController::class, 'login']);
-
-Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
-
-Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
 
 
 
-/*Route::middleware('web')->group(function () {
-    Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
-    Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
 
-});
-*/
+
+
 
 Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
 
-Route::middleware(['force.cors'])->group(function () {
-    // Ruta pública (sin protección adicional)
-    
-    // Grupo con middleware de encriptación
-    Route::middleware(['aes.key'])->group(function () {
-        Route::post('/decrypt', [CryptoController::class, 'decryptFrontendMessage']);
-        Route::post('/login', [CryptoController::class, 'login']);
-    });
+Route::middleware(['aes.key', 'force.cors'])->group(function () {
+    Route::post('/login', [CryptoController::class, 'login']);
+    Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
+    Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
+
+    // CORS preflight solo para estas rutas
+    Route::options('/{any}', function () {
+        return response('', 204);
+    })->where('any', '.*');
 });
+
+

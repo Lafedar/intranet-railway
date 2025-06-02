@@ -374,26 +374,83 @@ class MedicationsRequestController extends Controller
 
     public function saveNewMedicationRequest(Request $request)
     {
-        $data = $request->all();
-        $person = $this->personaService->getByDni($data['dni']);
+        try {
+            // Obtener datos cifrados desde el request
+            $ciphertextBase64 = $request->input('ciphertext');
+            $ivBase64 = $request->input('iv');
 
-        if ($person) {
-            $create = $this->medicationsRequestService->create($data);
-            if ($create) {
-                return response()->json([
-                    'message' => 'Solicitud creada exitosamente',
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'Hubo un problema al crear la solicitud',
-                ], 401);
+            if (!$ciphertextBase64 || !$ivBase64) {
+                return response()->json(['message' => 'Faltan datos encriptados'], 400);
             }
-        } else {
-            return response()->json([
-                'message' => 'La persona no existe',
-            ], 401);
+
+            $ciphertext = base64_decode($ciphertextBase64);
+            $iv = base64_decode($ivBase64);
+
+            // Obtener la clave AES desde la sesión
+            $aesKeyBase64 = $request->session()->get('aes_key');
+
+            if (!$aesKeyBase64) {
+                return response()->json(['message' => 'Clave AES no encontrada en la sesión'], 400);
+            }
+
+            $aesKey = base64_decode($aesKeyBase64);
+
+            // Separar tag de autenticación (últimos 16 bytes del ciphertext)
+            $tagLength = 16;
+            if (strlen($ciphertext) < $tagLength) {
+                return response()->json(['message' => 'Datos encriptados inválidos'], 400);
+            }
+
+            $tag = substr($ciphertext, -$tagLength);
+            $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
+
+            // Desencriptar con AES-GCM
+            $decrypted = openssl_decrypt(
+                $ciphertextRaw,
+                'aes-256-gcm',
+                $aesKey,
+                OPENSSL_RAW_DATA,
+                $iv,
+                $tag
+            );
+
+            if ($decrypted === false) {
+                return response()->json(['message' => 'Error al desencriptar los datos'], 400);
+            }
+
+            // Decodificar JSON
+            $data = json_decode($decrypted, true);
+
+            if (!isset($data['data'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }
+
+            $payload = $data['data'];
+
+            Log::info('Payload recibido en controlador:', ['data' => $payload]);
+
+            $person = $this->personaService->getByDni($payload['dni']);
+
+            if (!$person) {
+                return response()->json(['message' => 'La persona no existe'], 401);
+            } else {
+                $create = $this->medicationsRequestService->create($payload);
+
+                if ($create) {
+                    return response()->json(['message' => 'Solicitud creada exitosamente'], 200);
+                } else {
+                    return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
+                }
+            }
+
+
+        } catch (\Throwable $e) {
+            \Log::error('Error en saveNewMedicationRequest: ' . $e->getMessage());
+            return response()->json(['message' => 'Error interno del servidor'], 500);
         }
     }
+
+
 
 
 

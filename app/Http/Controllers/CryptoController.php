@@ -52,6 +52,7 @@ class CryptoController extends Controller
     public function login(Request $request)
     {
         try {
+            Log::info('Solicitud de login recibida: ' . $request->session()->getId());
             if (!$request->session()->has('aes_key')) {
                 return response()->json(['error' => 'Missing AES session key'], 400);
             }

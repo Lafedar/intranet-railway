@@ -104,10 +104,10 @@ class MedicationsRequestService
                 'dni_persona' => $data['dni'],
                 'medicamento1' => $data['medication'],
                 'cantidad1' => $data['amount'],
-                'medicamento2' => $data['medication2'],
-                'cantidad2' => $data['amount2'],
-                'medicamento3' => $data['medication3'],
-                'cantidad3' => $data['amount3'],
+                'medicamento2' => $data['medication2'] ?: null,
+                'cantidad2' => $data['amount2'] ?: null,
+                'medicamento3' => $data['medication3'] ?: null,
+                'cantidad3' => $data['amount3'] ?: null,
 
             ]);
             return true;
