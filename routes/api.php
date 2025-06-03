@@ -52,8 +52,9 @@ Route::post('/recibir-form', function (Request $request) {
 
 
 
-
-Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
+Route::middleware(['force.cors'])->group(function () {
+    Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
+});
 
 Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/login', [CryptoController::class, 'login']);
