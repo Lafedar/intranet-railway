@@ -46,7 +46,7 @@ class CryptoController extends Controller
 
 
         ]);
-        
+
 
     }
     public function login(Request $request)
@@ -90,7 +90,9 @@ class CryptoController extends Controller
 
             $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
             if (!is_object($user)) {
-                $respuesta = "Credenciales inválidas";
+                $respuesta = json_encode([
+                    'error' => 'Credenciales inválidas'
+                ]);
             } else {
                 $respuesta = json_encode([
                     'id' => $user->id,
