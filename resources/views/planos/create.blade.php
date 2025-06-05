@@ -16,6 +16,8 @@
             <input type="date" name="fecha"  class="form-control col-md-5" step="1" min="2019-01-01" value="<?php echo date("Y-m-d");?>">
             <label for="title"><strong>Observación:</strong></label>
             <textarea rows="3" type="text" class="form-control" name="obs" id="obs"></textarea>
+            <label for="version"><strong>Versión:</strong></label>
+            <input type="number" class="form-control w-25 mb-2" name="version" id="version" step="any"></input>
             <label for="title"><strong>PDF Original:</strong></label>
             <input type="file"  name="pdf" accept=".pdf" id="pdf">
             <label for="title"><strong>PDF Firmado:</strong></label>

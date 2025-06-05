@@ -17,10 +17,11 @@ class PlanoController extends Controller
             ->Titulo($request->get('titulo_plano'))
             ->Obs($request->get('obs_plano'))
             ->Fecha($request->get('fecha_plano'))
+            ->Version($request->get('version'))
             ->orderBy('id', 'desc')
             ->paginate(20)->withQueryString();
 
-        return view('planos.planos', array('planos' => $planos, 'id_plano' => $request->get('id_plano'), 'titulo_plano' => $request->get('titulo_plano'), 'obs_plano' => $request->get('obs_plano'), 'fecha_plano' => $request->get('fecha_plano')));
+        return view('planos.planos', array('planos' => $planos, 'id_plano' => $request->get('id_plano'), 'titulo_plano' => $request->get('titulo_plano'), 'obs_plano' => $request->get('obs_plano'), 'version' => $request->get('version'),  'fecha_plano' => $request->get('fecha_plano')));
     }
 
     public function store_planos(Request $request)
@@ -35,6 +36,7 @@ class PlanoController extends Controller
         $plano->titulo = $request['titulo'];
         $plano->obs = $request['obs'];
         $plano->fecha = $request['fecha'];
+        $plano->version = $request['version'];
 
         if ($request->file('pdf')) {
             $file = $request->file('pdf');
@@ -93,13 +95,14 @@ class PlanoController extends Controller
     public function update_planos(Request $request)
     {
 
-        if ($request['titulo'] or $request['fecha'] or $request['obs']) {
+        if ($request['titulo'] or $request['fecha'] or $request['obs'] or $request['version']) {
             $plano = DB::table('planos')
                 ->where('planos.id', $request['id'])
                 ->update([
                     'titulo' => $request['titulo'],
                     'fecha' => $request['fecha'],
                     'obs' => $request['obs'],
+                    'version' => $request['version'],
                 ]);
         }
         $aux = Plano::find($request['id']);
