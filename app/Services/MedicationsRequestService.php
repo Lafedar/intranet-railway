@@ -100,24 +100,45 @@ class MedicationsRequestService
     public function create($data)
     {
         try {
-            DB::table('solicitudes_medicamentos')->insert([
-                'dni_persona' => $data['dni'],
-                'medicamento1' => $data['medication'],
-                'cantidad1' => $data['amount'],
-                'medicamento2' => $data['medication2'] ?: null,
-                'cantidad2' => $data['amount2'] ?: null,
-                'medicamento3' => $data['medication3'] ?: null,
-                'cantidad3' => $data['amount3'] ?: null,
 
+            $idSolicitud = DB::table('solicitudes_medicamentos')->insertGetId([
+                'dni_persona' => $data['dni'],
+                'estado' => "Aprobación pendiente",
             ]);
+
+            $items = [];
+
+            foreach ($data as $key => $value) {
+                if (str_starts_with($key, 'medication')) {
+                    $index = str_replace('medication', '', $key);
+                    $amountKey = 'amount' . $index;
+
+                    if (isset($data[$amountKey])) {
+                        $items[] = [
+                            'id_solicitud' => $idSolicitud,
+                            'medicamento' => $value,
+                            'cantidad' => $data[$amountKey],
+                            'aprobado' => 0,
+                            'lote_med' => null,
+                            'vencimiento_med' => null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+            }
+
+
+            DB::table('items_medicamentos')->insert($items);
             return true;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error creating medication request' . $e->getMessage());
             return false;
         }
 
 
     }
+
 
 
 
