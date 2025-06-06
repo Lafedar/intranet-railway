@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use App\Mail\MedicationNotificationMail;
+use App\Mail\MedicationNotificationUser;
+
 
 
 class MedicationsRequestController extends Controller
@@ -422,6 +424,7 @@ class MedicationsRequestController extends Controller
             Log::info('Payload recibido en controlador:', ['data' => $payload]);
 
             $person = $this->personaService->getByDni($payload['dni']);
+            $mails = $this->genParametersService->getMailsToMedicationRequests();
 
             if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 401);
@@ -429,6 +432,10 @@ class MedicationsRequestController extends Controller
                 $create = $this->medicationsRequestService->create($payload);
 
                 if ($create) {
+                    foreach ($mails as $mail) {
+                        Mail::to($mail)->send(new MedicationNotificationMail($payload, $person));
+                    }
+                    Mail::to($person->correo)->send(new MedicationNotificationUser($payload, $person));
                     return response()->json(['message' => 'Solicitud creada exitosamente'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);

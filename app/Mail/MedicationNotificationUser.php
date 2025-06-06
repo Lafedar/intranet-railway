@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class MedicationNotificationMail extends Mailable
+class MedicationNotificationUser extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -30,10 +30,9 @@ class MedicationNotificationMail extends Mailable
         }
         
         $message = "
-        <p>Hola,</p>
-        <p><b>Hay una nueva solicitud de medicamentos:</b></p>
+        <p>Hola, {$name}</p>
+        <p><b>Tu solicitud de medicamentos fue creada:</b></p>
 
-        <p>Solicitante: <b>{$name}</b></p>
         <ul>";
 
            

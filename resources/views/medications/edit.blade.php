@@ -66,7 +66,8 @@
 
                 <input type="hidden" name="previous_url" value="{{ url()->previous() }}">
                 <div class="text-center mt-4">
-                    <a href="{{ route('medications.index') }}" id="asignar-btn">Cancelar</a>
+                    <a href="#" id="asignar-btn" class="cancelar-btn">Cancelar</a>
+
                     <button type="submit" id="asignar-btn">Guardar</button>
                 </div>
 
@@ -77,3 +78,21 @@
 
 
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cancelarBtns = document.querySelectorAll('.cancelar-btn');
+
+        cancelarBtns.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const previousUrl = document.querySelector('input[name="previous_url"]')?.value;
+                if (previousUrl) {
+                    window.location.href = previousUrl;
+                } else {
+                    alert('No se encontró la URL anterior.');
+                }
+            });
+        });
+    });
+
+</script>
