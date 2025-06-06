@@ -31,17 +31,16 @@
 
 
 
-        <a href="https://forms.office.com/r/SuSDALHbtx" target="_blank" type="button" class="btn btn-primary"
-            id="btn-agregar">
+        <a href="https://extranetlafedar.netlify.app" target="_blank" type="button" class="btn btn-primary" id="btn-agregar">
             Agregar Solicitud de Medicamentos
         </a>
+
 
         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
             <form method="GET" action="{{ route('medications.index') }}" class="mb-4 flex gap-4 items-center">
                 <input type="text" name="persona" placeholder="Buscar por persona..." value="{{ request('persona') }}"
                     class="filter-item" />
-                <input type="text" name="medicamento" placeholder="Buscar por medicamento..."
-                    value="{{ request('medicamento') }}" class="filter-item" />
+                
                 <button type="submit" id="asignar-btn">Filtrar</button>
                 <a href="{{ route('medications.index') }}" class="text-sm text-red-500 ml-2">Quitar filtros</a>
             </form>
@@ -54,17 +53,9 @@
                     <tr>
                         <th class="text-center">ID</th>
                         <th class="text-center">Solicitante</th>
-                        <th class="text-center">Medicamento 1</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Aprobado</th>
-                        <th class="text-center">Medicamento 2</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Aprobado</th>
-                        <th class="text-center">Medicamento 3</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Aprobado</th>
-                        <th class="text-center">Fecha</th>
                         <th class="text-center">Estado</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Items</th>
                         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                             <th class="text-center">Acciones</th>
                         @endif
@@ -83,76 +74,20 @@
                                             <td>{{ $medication->dni_persona }}</td>
                                         @endif
 
-                                        <td>{{ $medication->medicamento1 }}</td>
-                                        <td>{{ $medication->cantidad1 }}</td>
-
-                                        <td>
-                                            @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
-                                                @if($medication->estado != "Aprobada")
-
-                                                    <input type="hidden" name="approved_checkbox" value="0"
-                                                        form="approve-form-{{ $medication->id }}">
-                                                    <input type="checkbox" 
-                                                        class="approval-checkbox" 
-                                                        data-id="{{ $medication->id }}" 
-                                                        name="approved_checkbox" 
-                                                        value="1" 
-                                                        {{ $medication->aprobado1 == 1 ? 'checked' : '' }} 
-                                                        form="approve-form-{{ $medication->id }}">
-
-                                                @else
-                                                    <input type="checkbox" class="approval-checkbox" 
-                                                    data-id="{{ $medication->id }}" name="approved_checkbox" value="1" {{ $medication->aprobado1 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
-                                                @endif
-
-                                            @else
-                                                <input type="checkbox" disabled>
-                                            @endif
-                                        </td>
-
-
-
-                                        <td>{{ $medication->medicamento2 }}</td>
-                                        <td>{{ $medication->cantidad2}}</td>
-                                        <td>
-                                            @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
-                                                @if($medication->medicamento2 != null && $medication->cantidad2 != null)
-                                                    @if($medication->estado != "Aprobada")
-                                                        <input type="hidden" name="approved2_checkbox" value="0"
-                                                            form="approve-form-{{ $medication->id }}">
-                                                        <input type="checkbox" class="approval-checkbox" 
-                                                        data-id="{{ $medication->id }}" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
-                                                    @else
-                                                        <input type="checkbox" class="approval-checkbox" 
-                                                        data-id="{{ $medication->id }}" name="approved2_checkbox" value="1" {{ $medication->aprobado2 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
-                                                    @endif
-                                                @endif
-                                            @else
-                                                <input type="checkbox" disabled>
-                                            @endif
-                                        </td>
-                                        <td>{{ $medication->medicamento3 }}</td>
-                                        <td>{{ $medication->cantidad3 }}</td>
-                                        <td>
-                                            @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
-                                                @if($medication->medicamento3 != null && $medication->cantidad3 != null)
-                                                    @if($medication->estado != "Aprobada")
-                                                        <input type="hidden" name="approved3_checkbox" value="0"
-                                                            form="approve-form-{{ $medication->id }}">
-                                                        <input type="checkbox" class="approval-checkbox" 
-                                                        data-id="{{ $medication->id }}" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}">
-                                                    @else
-                                                        <input type="checkbox" class="approval-checkbox" 
-                                                        data-id="{{ $medication->id }}" name="approved3_checkbox" value="1" {{ $medication->aprobado3 == 1 ? 'checked' : '' }} form="approve-form-{{ $medication->id }}" disabled>
-                                                    @endif
-                                                @endif
-                                            @else
-                                                <input type="checkbox" disabled>
-                                            @endif
-
-                                        </td>
-                                        <td>{{ $medication->created_at }}</td>
                                         <td>{{ $medication->estado }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($medication->created_at)->format('d/m/Y') }}</td>
+
+
+                                        <td><form action="{{ route('medications.items', $medication->id) }}"
+                                                        class="forms-medication-requests">
+                                                        @csrf
+                                                        @method('GET')
+                                                        <button type="submit" title="Ver Items" id="icono">
+                                                            <img src="{{ asset('storage/cursos/tocar.png') }}" loading="lazy"
+                                                                alt="items" id="img-icono">
+                                                        </button>
+                                                    </form></td>
+                                        
                                         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                                             <td>
                                                 @if($medication->estado != 'Aprobación Pendiente')
@@ -211,17 +146,7 @@
                                                 @endif
 
                                                 @endif
-                                                @if($medication->estado != 'Aprobada')
-                                                    <form action="{{ route('medications.show', $medication->id) }}"
-                                                        class="forms-medication-requests">
-                                                        @csrf
-                                                        @method('GET')
-                                                        <button title="Editar Solicitud" id="icono">
-                                                            <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy"
-                                                                alt="Editar Solicitud" id="img-icono">
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                
                                             </td>
                                         @endif
                                     </tr>
@@ -275,3 +200,5 @@
 
 
 @endpush
+
+
