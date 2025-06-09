@@ -8,7 +8,7 @@
     <div id="software-container">
         <!-- Mostrar mensaje flash si existe -->
         @if(session('success'))
-            <div class="container" id="div-alert">
+            <div class="container" id="div-alert-medications">
                 <div class="row">
                     <div class="col-1"></div>
                     <div class="alert alert-success col-10 text-center" role="alert">

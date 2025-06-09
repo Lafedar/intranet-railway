@@ -6,6 +6,27 @@
 
 @section('content')
     <div id="software-container">
+        @if(session('success'))
+            <div class="container" id="div-alert">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="alert alert-success col-10 text-center" role="alert">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="container" id="div-alert">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="alert alert-danger col-10 text-center" role="alert">
+                        {{ session('error') }}
+                    </div>
+                </div>
+            </div>
+        @endif
         <h1 class="text-center">Items de la Solicitud de Medicamentos: {{ $medicationRequest->id }} </h1>
 
         <table>
@@ -35,7 +56,7 @@
                                 No
                             @endif
                         <td>{{ $item->lote_med }}</td>
-                         <td>{{ \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') }}</td>
 
                         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                             <td>
@@ -90,3 +111,17 @@
     </div>
 
 @endsection
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Ocultar los mensajes de éxito y error después de 3 segundos
+            setTimeout(function () {
+                $('.alert').fadeOut('slow'); // 'slow' es la duración de la animación
+            }, 3000); // 3000 milisegundos = 3 segundos
+        });
+    </script>
+@endpush
