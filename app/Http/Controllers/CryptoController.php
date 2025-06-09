@@ -93,13 +93,19 @@ class CryptoController extends Controller
                 $respuesta = json_encode([
                     'error' => 'Credenciales inválidas'
                 ]);
+            } elseif (is_null($user->dni)) {
+                $respuesta = json_encode([
+                    'error' => 'El usuario no tiene DNI registrado'
+                ]);
             } else {
                 $respuesta = json_encode([
                     'id' => $user->id,
                     'nombre' => $user->name,
                     'email' => $user->email,
+                    'dni' => $user->dni,
                 ]);
             }
+
 
             // Encriptar respuesta
             $responseIv = random_bytes(12);

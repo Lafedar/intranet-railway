@@ -101,7 +101,7 @@ class MedicationsRequestService
     {
         try {
             $idSolicitud = DB::table('solicitudes_medicamentos')->insertGetId([
-                'dni_persona' => $data['dni'],
+                'dni_persona' => $data['dni_user'],
                 'estado' => 'Aprobación Pendiente',
             ]);
 

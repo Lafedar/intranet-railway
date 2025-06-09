@@ -423,9 +423,9 @@ class MedicationsRequestController extends Controller
 
             Log::info('Payload recibido en controlador:', ['data' => $payload]);
 
-            $person = $this->personaService->getByDni($payload['dni']);
+            $person = $this->personaService->getByDni($payload['dni_user']);
             $mailsString = $this->genParametersService->getMailsToMedicationRequests();
-            $mails = explode(',', $mailsString); // 👈 Convertir a array
+            $mails = explode(',', $mailsString);
 
             if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 401);
