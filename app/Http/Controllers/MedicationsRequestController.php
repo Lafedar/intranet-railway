@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use App\Mail\MedicationNotificationMail;
+use App\Mail\MedicationNotificationUser;
+
 
 
 class MedicationsRequestController extends Controller
@@ -55,14 +57,6 @@ class MedicationsRequestController extends Controller
                     });
                 }
 
-                // Filtro por medicamento
-                if ($nombreMedicamento) {
-                    $medicationsRequests = $medicationsRequests->filter(function ($req) use ($nombreMedicamento) {
-                        return stripos($req->medicamento1, $nombreMedicamento) !== false ||
-                            stripos($req->medicamento2, $nombreMedicamento) !== false ||
-                            stripos($req->medicamento3, $nombreMedicamento) !== false;
-                    });
-                }
 
                 return view('medications.index', [
                     'medicationsRequests' => $medicationsRequests,
@@ -72,10 +66,15 @@ class MedicationsRequestController extends Controller
 
             } else {
                 $medicationsRequests = $this->medicationsRequestService->getRequestsByDni(auth()->user()->dni);
+                $ids = collect($medicationsRequests)->pluck('id')->toArray();
+                $itemsMedicationsRequests = $this->medicationsRequestService->getItemsForMultipleRequests($ids);
                 $person = $this->personaService->getByDni(auth()->user()->dni);
+                $groupedItems = collect($itemsMedicationsRequests)->groupBy('id_solicitud');
+
 
                 return view('medications.index', [
                     'medicationsRequests' => $medicationsRequests,
+                    'itemsMedicationsRequests' => $groupedItems,
                     'persons' => $person
                 ]);
             }
@@ -104,15 +103,6 @@ class MedicationsRequestController extends Controller
     public function completeMedicationRequest($id, $person_id, Request $request)
     {
         try {
-
-            $approved1 = $request->input('approved_checkbox');
-            $approved2 = $request->input('approved2_checkbox');
-            $approved3 = $request->input('approved3_checkbox');
-
-            $approved1 = $request->input('approved_checkbox') ?: "0";
-            $approved2 = $request->input('approved2_checkbox') ?: "0";
-            $approved3 = $request->input('approved3_checkbox') ?: "0";
-
 
             $person = $this->personaService->getById($person_id);
             if ($person == null) {
@@ -146,13 +136,15 @@ class MedicationsRequestController extends Controller
 
             $recipients = $this->genParametersService->getMailsToMedicationRequests();
             $date = date('d/m/Y');
-            if ($approved1 !== "1" && $approved2 !== "1" && $approved3 !== "1") {
+
+            $update = $this->medicationsRequestService->approveRequestById($id);
+            if (!$update) {
                 return back()->with('error', 'Debe aprobar al menos un medicamento.')->withInput();
 
-            } else {
-                $update = $this->medicationsRequestService->approveRequestById($id, $approved1, $approved2, $approved3);
             }
+
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($medicationRequest->id);
             if ($recipients == null) {
                 return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
             }
@@ -161,10 +153,10 @@ class MedicationsRequestController extends Controller
             if ($update == true) {
                 foreach ($emails as $email) {
 
-                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $person, $base64image, $base64image_signature, $date, $isPdf));
+                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $items, $person, $base64image, $base64image_signature, $date, $isPdf));
                 }
                 if (!empty($person->correo)) {
-                    Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $person, $date));
+                    Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $items, $person, $date));
                 }
             } else {
                 return redirect()->back()
@@ -186,6 +178,7 @@ class MedicationsRequestController extends Controller
     {
         try {
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($medicationRequest->id);
             $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
             $person = $this->personaService->getById($person_id);
             if ($person == null) {
@@ -212,6 +205,7 @@ class MedicationsRequestController extends Controller
 
             $html = view('medications.certificate', [
                 'medication' => $medicationRequest,
+                'items' => $items,
                 'base64image' => $base64image,
                 'person' => $person,
                 'base64image_signature' => $base64image_signature,
@@ -267,14 +261,14 @@ class MedicationsRequestController extends Controller
     public function showMedicationRequestEditForm($id)
     {
         try {
-            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            $item = $this->medicationsRequestService->getItemByMedicationRequestId($id);
 
 
-            return view('medications.edit', ['medication' => $medicationRequest]);
+            return view('medications.edit', ['item' => $item]);
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error displaying medication request data: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al mostrar los datos para editar de la solicitud de medicamentos ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error displaying item data: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al mostrar los datos para editar el item ' . $e->getMessage());
         }
     }
 
@@ -430,6 +424,8 @@ class MedicationsRequestController extends Controller
             Log::info('Payload recibido en controlador:', ['data' => $payload]);
 
             $person = $this->personaService->getByDni($payload['dni']);
+            $mailsString = $this->genParametersService->getMailsToMedicationRequests();
+            $mails = explode(',', $mailsString); // 👈 Convertir a array
 
             if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 401);
@@ -437,6 +433,10 @@ class MedicationsRequestController extends Controller
                 $create = $this->medicationsRequestService->create($payload);
 
                 if ($create) {
+                    foreach ($mails as $mail) {
+                        Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person));
+                    }
+                    Mail::to($person->correo)->send(new MedicationNotificationUser($payload, $person));
                     return response()->json(['message' => 'Solicitud creada exitosamente'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
@@ -450,7 +450,74 @@ class MedicationsRequestController extends Controller
         }
     }
 
+    public function getItems($id)
+    {
+        $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+        $itemsMedicationsRequests = $this->medicationsRequestService->getAllItemsByMedicationRequestId($id);
 
+
+        return view('medications.items', [
+            'itemsMedicationsRequests' => $itemsMedicationsRequests,
+            'medicationRequest' => $medicationRequest,
+
+        ]);
+
+
+    }
+
+    public function approveItem($id, $id_solicitud)
+    {
+        $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
+
+        if ($medicationRequest->estado != "Aprobada") {
+            if ($this->medicationsRequestService->approveItem($id)) {
+                return redirect()->back()->with('success', 'Item aprobado exitosamente.');
+            } else {
+                return redirect()->back()->with('error', 'Error al aprobar el item.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
+    }
+
+
+    public function desapproveItem($id, $id_solicitud)
+    {
+        $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
+
+        if ($medicationRequest->estado != "Aprobada") {
+            if ($this->medicationsRequestService->desapproveItem($id)) {
+                return redirect()->back()->with('success', 'Item desaprobado exitosamente.');
+            } else {
+                return redirect()->back()->with('error', 'Error al aprobar el item.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
+    }
+
+    public function updateItem($id, Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'medicamento' => 'required|string|max:255',
+                'cantidad' => 'required|integer',
+                'lote_med' => 'nullable|string|max:255',
+                'vencimiento_med' => 'nullable|date_format:Y-m-d',
+            ]);
+
+            if ($this->medicationsRequestService->updateItem($id, $data)) {
+                return redirect($request->input('previous_url'))->with('success', 'Item actualizado correctamente.');
+
+            } else {
+                return redirect()->back()->with('error', 'Error al actualizar el item.');
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating item: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el item.');
+        }
+    }
 
 
 

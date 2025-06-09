@@ -100,10 +100,9 @@ class MedicationsRequestService
     public function create($data)
     {
         try {
-
             $idSolicitud = DB::table('solicitudes_medicamentos')->insertGetId([
                 'dni_persona' => $data['dni'],
-                'estado' => "Aprobación pendiente",
+                'estado' => 'Aprobación pendiente',
             ]);
 
             $items = [];
@@ -113,11 +112,11 @@ class MedicationsRequestService
                     $index = str_replace('medication', '', $key);
                     $amountKey = 'amount' . $index;
 
-                    if (isset($data[$amountKey])) {
+                    if (!empty($value) && isset($data[$amountKey]) && $data[$amountKey] !== '') {
                         $items[] = [
                             'id_solicitud' => $idSolicitud,
                             'medicamento' => $value,
-                            'cantidad' => $data[$amountKey],
+                            'cantidad' => (int) $data[$amountKey],
                             'aprobado' => 0,
                             'lote_med' => null,
                             'vencimiento_med' => null,
@@ -128,16 +127,84 @@ class MedicationsRequestService
                 }
             }
 
+            if (!empty($items)) {
+                DB::table('items_medicamentos')->insert($items);
+            }
 
-            DB::table('items_medicamentos')->insert($items);
             return true;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating medication request' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating medication request ' . $e->getMessage());
             return false;
         }
-
-
     }
+    public function getItemsForMultipleRequests($ids)
+    {
+        if (empty($ids)) {
+            return collect();
+        }
+
+        return DB::table('items_medicamentos')
+            ->whereIn('id_solicitud', $ids)
+            ->get();
+    }
+
+    public function getAllItemsByMedicationRequestId($id)
+    {
+
+        return DB::table('items_medicamentos')
+            ->where('id_solicitud', $id)
+            ->get();
+    }
+
+    public function getItemByMedicationRequestId($id)
+    {
+        try {
+            return DB::table('items_medicamentos')->where('id', $id)->first();
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting item by id ' . $e->getMessage());
+            return null;
+        }
+    }
+
+
+    public function approveItem($id)
+    {
+        try {
+            DB::table('items_medicamentos')->where('id', $id)->update(['aprobado' => 1]);
+            return true;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error approving item by id ' . $e->getMessage());
+            return false;
+        }
+    }
+    public function desapproveItem($id)
+    {
+        try {
+            DB::table('items_medicamentos')->where('id', $id)->update(['aprobado' => 0]);
+            return true;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error desapproving item by id ' . $e->getMessage());
+            return false;
+        }
+    }
+    public function updateItem($id, $data)
+    {
+        try {
+            DB::table('items_medicamentos')
+                ->where('id', $id)
+                ->update([
+                    'medicamento' => $data['medicamento'],
+                    'cantidad' => $data['cantidad'],
+                    'lote_med' => $data['lote_med'],
+                    'vencimiento_med' => $data['vencimiento_med'],
+                ]);
+            return true;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating item by id ' . $e->getMessage());
+            return false;
+        }
+    }
+
 
 
 
