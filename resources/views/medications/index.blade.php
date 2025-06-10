@@ -133,17 +133,17 @@
                                                     @endif
 
                                                 @else
-                                                @if(is_object($matchedPerson))
-                                                    <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
-                                                    target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
-                                                        <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
-                                                    </a>
-                                                @else
-                                                    <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $medication->dni_persona]) }}"
-                                                    target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
-                                                        <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
-                                                    </a>
-                                                @endif
+                                                    @if(is_object($matchedPerson))
+                                                        <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
+                                                        target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
+                                                            <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $medication->dni_persona]) }}"
+                                                        target="_blank" class="forms-medication-requests" title="Ver Remito" id="icono">
+                                                            <img src="{{ asset('storage/cursos/documentos.png') }}" loading="lazy" alt="Ver Remito" id="img-icono">
+                                                        </a>
+                                                    @endif
 
                                                 @endif
                                                 

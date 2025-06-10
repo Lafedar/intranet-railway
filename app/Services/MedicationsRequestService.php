@@ -89,7 +89,7 @@ class MedicationsRequestService
 
             $idSolicitud = DB::table('solicitudes_medicamentos')->insertGetId([
                 'dni_persona' => $data['dni'],
-                'estado' => "Aprobación pendiente",
+                'estado' => "Aprobación Pendiente",
             ]);
 
             $items = [];

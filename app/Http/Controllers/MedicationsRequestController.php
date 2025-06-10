@@ -232,32 +232,6 @@ class MedicationsRequestController extends Controller
         }
     }
 
-    public function reviewAndUpdateMedicationRequest(Request $request, $id)
-    {
-        try {
-            $validateData = $request->validate([
-                'medication1' => 'required|string|max:255',
-                'amount1' => 'required|integer',
-                'approved1' => 'nullable|integer',
-                'medication2' => 'nullable|string|max:255',
-                'amount2' => 'nullable|integer',
-                'approved2' => 'nullable|integer',
-                'medication3' => 'nullable|string|max:255',
-                'amount3' => 'nullable|integer',
-                'approved3' => 'nullable|integer',
-
-            ]);
-
-            $this->medicationsRequestService->updateMedicationRequestById($id, $validateData);
-
-            return redirect()->route('medications.index')
-                ->with('success', 'Solicitud actualizada correctamente.');
-
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating medication request: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al actualizar la solicitud de medicamentos ' . $e->getMessage());
-        }
-    }
     public function showMedicationRequestEditForm($id)
     {
         try {

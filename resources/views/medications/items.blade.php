@@ -55,8 +55,12 @@
                             @else
                                 No
                             @endif
-                        <td>{{ $item->lote_med }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') }}</td>
+                        <td>{{ $item->lote_med ?? 'N/A' }}</td>
+
+                        <td>
+                            {{ $item->vencimiento_med ? \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') : 'N/A' }}
+                        </td>
+
 
                         @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
                             <td>
