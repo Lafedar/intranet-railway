@@ -335,17 +335,20 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 //**********************************Medications********************************************//
-/*Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
   Route::get('medications', 'MedicationsRequestController@listsMedicationRequests')->name('medications.index');
-  
+
   Route::get('medications/delete/{id}', 'MedicationsRequestController@changeMedicationRequestToPendingApproval')->name('medications.delete');
   Route::get('medications/approve/{id}/{id_p}', 'MedicationsRequestController@completeMedicationRequest')->name('medications.approval');
   Route::get('medications/certificate/{id}/{id_p}', 'MedicationsRequestController@generateMedicationRequestDeliveryNote')->name('medications.certificate');
-  Route::put('medications/update/{id}', 'MedicationsRequestController@reviewAndUpdateMedicationRequest')->name('medications.update');
   Route::get('medications/show/{id}', 'MedicationsRequestController@showMedicationRequestEditForm')->name('medications.show');
   Route::get('medications/generate/pdf/{id}/{personId}', 'MedicationsRequestController@generatePDFcertificate')->name('medications.generatePdf');
- 
-});*/
+  Route::get('medications/items/{id}', 'MedicationsRequestController@getItems')->name('medications.items');
+  Route::get('medications/items/approve/{id}/{id_solicitud}', 'MedicationsRequestController@approveItem')->name('medications.items.approve');
+  Route::get('medications/items/desapprove/{id}/{id_solicitud}', 'MedicationsRequestController@desapproveItem')->name('medications.items.desapprove');
+  Route::put('medications/items/update/{id}', 'MedicationsRequestController@updateItem')->name('medications.items.update');
+
+});
 
 //****************Ventas**********************
 Route::get('/formulario', function () {

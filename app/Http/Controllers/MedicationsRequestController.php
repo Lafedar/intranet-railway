@@ -17,6 +17,8 @@ use App\Mail\MedicationNotificationUser;
 
 
 
+
+
 class MedicationsRequestController extends Controller
 {
     protected $medicationsRequestService;
@@ -143,6 +145,7 @@ class MedicationsRequestController extends Controller
 
             }
 
+
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
             $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($medicationRequest->id);
             if ($recipients == null) {
@@ -185,12 +188,14 @@ class MedicationsRequestController extends Controller
                 $person = $person_id;
             }
 
+
             $base64image = null;
             if (file_exists($imagePath)) {
                 $imageData = base64_encode(file_get_contents($imagePath));
                 $mimeType = mime_content_type($imagePath);
                 $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
             }
+
 
             $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
             $base64image_signature = null;
@@ -200,8 +205,10 @@ class MedicationsRequestController extends Controller
                 $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
             }
 
+
             $isPdf = true; // importante para controlar estilos condicionales en la vista
             $date = now()->format('d/m/Y');
+
 
             $html = view('medications.certificate', [
                 'medication' => $medicationRequest,
@@ -213,6 +220,7 @@ class MedicationsRequestController extends Controller
                 'isPdf' => $isPdf
             ])->render();
 
+
             $pdf = \SnappyPdf::loadHTML($html)
                 ->setOption('orientation', 'portrait')
                 ->setOption('enable-local-file-access', true)
@@ -223,8 +231,10 @@ class MedicationsRequestController extends Controller
                 ->setOption('margin-bottom', 2)
                 ->setOption('margin-left', 10);
 
+
             // Mostrar el PDF en el navegador
             return $pdf->inline('remito.pdf');
+
 
         } catch (Exception $e) {
             \Log::error('Error displaying the delivery note: ' . $e->getMessage());

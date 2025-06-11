@@ -67,45 +67,46 @@
 
             </div>
 
+            @php $cantidad = 0; @endphp
+
             <div class="procedimiento-div"
-                style="margin-top: 0px;padding: 10px; border: 1px solid black; position: relative; text-align: left; font-size: 18px;">
-                <b>Detalle de los Productos: </b> <br>
-                @if($medication->aprobado1 == 1)
-                    {{ $medication->medicamento1 }} - Cantidad: {{ $medication->cantidad1 }} <br>
-                @endif
-                @if($medication->aprobado2 == 1)
-                    {{ $medication->medicamento2 }} - Cantidad: {{ $medication->cantidad2 }}<br>
-                @endif
-                @if($medication->aprobado3 == 1)
-                    {{ $medication->medicamento3 }} - Cantidad: {{ $medication->cantidad3 }}
-                    <br>
-                @endif
-                <br>
-                <b>Cantidad de Bultos: </b>
-                {{ 
-                    ($medication->aprobado1 == 1 ? $medication->cantidad1 : 0) +
-                    ($medication->aprobado2 == 1 ? $medication->cantidad2 : 0) +
-                    ($medication->aprobado3 == 1 ? $medication->cantidad3 : 0) 
-                }}
+                style="margin-top: 0px; padding: 10px; border: 1px solid black; position: relative; text-align: left; font-size: 18px;">
 
+                <b>Detalle de los Productos:</b>
+                <br>
 
+                @php $cantidad = 0; @endphp
+
+                <ul>
+                    @foreach($items as $item)
+                        @if($item->aprobado == 1)
+                            <li>{{ $item->medicamento }} – Cantidad: {{ $item->cantidad }}</li>
+                            @php $cantidad += $item->cantidad; @endphp
+                        @endif
+                        
+                    @endforeach
+                </ul>
                 <br>
-                <br>
+                <b>Cantidad de Bultos:</b> {{ $cantidad }}
+
+                <br><br>
                 <b>Descartes</b>
 
-                <br>
-                <br>
-                <b style="margin-left: 350px;">Firma RRHH: <img src="{{ $base64image_signature }}" alt="Logo"
-                        width="130" height="80" /></b>
+                <br><br>
+                <b style="margin-left: 350px;">Firma RRHH:
+                    <img src="{{ $base64image_signature }}" alt="Firma RRHH" width="130" height="80" />
+                </b>
             </div>
+
         </div>
     </div>
 
-    <div class="boton-pdf-medicamentos"> 
+    <div class="boton-pdf-medicamentos">
         @if(!$isPdf)
             @if(is_object($person))
                 <form action="{{ route('medications.delete', ['id' => $medication->id, 'id_p' => $person->id_p]) }}"
-                    class="forms-medication-requests d-inline-block"> <!-- d-inline-block para que el form no ocupe todo el ancho -->
+                    class="forms-medication-requests d-inline-block">
+                    <!-- d-inline-block para que el form no ocupe todo el ancho -->
                     @csrf
                     @method('GET')
                     <button type="submit" title="Pasar a Aprobacion Pendiente" id="icono" class="btn btn-primary">
