@@ -64,7 +64,7 @@ class MedicationsRequestService
                     ]);
 
                 return true;
-            }else{
+            } else {
                 return false;
             }
 
@@ -192,6 +192,36 @@ class MedicationsRequestService
             return false;
         }
     }
+
+    public function getAllMedicationRequestWithItemsByUserDni($dni)
+    {
+        try {
+            $requests = DB::table('items_medicamentos')
+                ->where('dni_persona', $dni)
+                ->get();
+
+            if ($requests->isEmpty()) {
+                return null;
+            }
+
+            $result = [];
+
+            foreach ($requests as $request) {
+                $items = $this->getAllItemsByMedicationRequestId($request->id);
+
+                $result[] = [
+                    'request' => $request,
+                    'items' => $items
+                ];
+            }
+
+            return $result;
+        } catch (Exception $e) {
+            Log::error('Error in ' . get_class($this) . ' - getAllMedicationRequestByUserDni: ' . $e->getMessage());
+            return false;
+        }
+    }
+
 
 
 

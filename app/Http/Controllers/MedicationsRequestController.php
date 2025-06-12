@@ -314,31 +314,6 @@ class MedicationsRequestController extends Controller
 
     }
 
-    public function saveDataFromApi(Request $request)
-    {
-        try {
-            $data = $request->all();
-            $recipients = $this->genParametersService->getMailsToMedicationRequests();
-            if ($recipients == null) {
-                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
-            }
-            $emails = explode(';', $recipients);
-            $person = $this->personaService->getByDni($data['dni_persona']);
-
-            if (!is_object($person)) {
-                $person = $data['dni_persona'];
-            }
-            foreach ($emails as $email) {
-
-                Mail::to($email)->send(new MedicationNotificationMail($data, $person));
-            }
-
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
-
-        }
-    }
-
 
     public function saveNewMedicationRequest(Request $request)
     {
