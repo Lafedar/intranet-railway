@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\User;
-use DB;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserService
@@ -14,14 +14,26 @@ class UserService
         return User::create([
             'name' => $nombre . ' ' . $apellido,
             'email' => $correo,
-            'password' => $password 
+            'password' => $password
         ]);
     }
-    public function getByDni(int $dni){
+    public function getByDni(int $dni)
+    {
         return User::where('dni', $dni)
-        ->get();
+            ->get();
     }
-  
-    
+
+    public function validate($email, $password)
+    {
+        $user = User::where('email', $email)->first();
+
+        if ($user && Hash::check($password, $user->password)) {
+            return $user;
+        } else {
+            return null;
+        }
+    }
+
+
 
 }
