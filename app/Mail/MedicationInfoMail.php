@@ -44,7 +44,8 @@ class MedicationInfoMail extends Mailable
 
         $message .= "</ul>
     <p><strong>Total de bultos:</strong> {$cantidad}</p>
-    <p>Ha sido <strong>aprobada</strong> con fecha {$this->date}.</p>
+    <p>Ha sido <strong>aprobada.</strong></p>
+    <p>Podés pasar a buscarlo por RRHH a partir del {$this->date} de 8 a 17 hs.</p>
     <p>Saludos</p>
     ";
 
