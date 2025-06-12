@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\MedicationsRequestService;
 use App\Services\PersonaService;
+use App\Services\EncryptService;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MedicationApprovedMail;
@@ -17,19 +18,23 @@ use App\Mail\MedicationNotificationUser;
 
 
 
+
+
 class MedicationsRequestController extends Controller
 {
     protected $medicationsRequestService;
     protected $personaService;
 
     protected $genParametersService;
+    protected $encryptService;
 
 
-    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService)
+    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService, EncryptService $encryptService)
     {
         $this->medicationsRequestService = $medicationsRequestService;
         $this->personaService = $personaService;
         $this->genParametersService = $genParametersService;
+        $this->encryptService = $encryptService;
     }
 
     public function listsMedicationRequests(Request $request)
@@ -143,6 +148,7 @@ class MedicationsRequestController extends Controller
 
             }
 
+
             $medicationRequest = $this->medicationsRequestService->getRequestById($id);
             $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($medicationRequest->id);
             if ($recipients == null) {
@@ -185,12 +191,14 @@ class MedicationsRequestController extends Controller
                 $person = $person_id;
             }
 
+
             $base64image = null;
             if (file_exists($imagePath)) {
                 $imageData = base64_encode(file_get_contents($imagePath));
                 $mimeType = mime_content_type($imagePath);
                 $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
             }
+
 
             $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
             $base64image_signature = null;
@@ -200,8 +208,10 @@ class MedicationsRequestController extends Controller
                 $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
             }
 
+
             $isPdf = true; // importante para controlar estilos condicionales en la vista
             $date = now()->format('d/m/Y');
+
 
             $html = view('medications.certificate', [
                 'medication' => $medicationRequest,
@@ -213,6 +223,7 @@ class MedicationsRequestController extends Controller
                 'isPdf' => $isPdf
             ])->render();
 
+
             $pdf = \SnappyPdf::loadHTML($html)
                 ->setOption('orientation', 'portrait')
                 ->setOption('enable-local-file-access', true)
@@ -223,14 +234,17 @@ class MedicationsRequestController extends Controller
                 ->setOption('margin-bottom', 2)
                 ->setOption('margin-left', 10);
 
+
             // Mostrar el PDF en el navegador
             return $pdf->inline('remito.pdf');
+
 
         } catch (Exception $e) {
             \Log::error('Error displaying the delivery note: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al mostrar el remito: ' . $e->getMessage());
         }
     }
+
 
     public function showMedicationRequestEditForm($id)
     {
@@ -313,55 +327,13 @@ class MedicationsRequestController extends Controller
         }
 
     }
-
-
     public function saveNewMedicationRequest(Request $request)
     {
         try {
-            // Obtener datos cifrados desde el request
-            $ciphertextBase64 = $request->input('ciphertext');
-            $ivBase64 = $request->input('iv');
-
-            if (!$ciphertextBase64 || !$ivBase64) {
-                return response()->json(['message' => 'Faltan datos encriptados'], 400);
-            }
-
-            $ciphertext = base64_decode($ciphertextBase64);
-            $iv = base64_decode($ivBase64);
-
-            // Obtener la clave AES desde la sesión
-            $aesKeyBase64 = $request->session()->get('aes_key');
-
-            if (!$aesKeyBase64) {
-                return response()->json(['message' => 'Clave AES no encontrada en la sesión'], 400);
-            }
-
-            $aesKey = base64_decode($aesKeyBase64);
-
-            // Separar tag de autenticación (últimos 16 bytes del ciphertext)
-            $tagLength = 16;
-            if (strlen($ciphertext) < $tagLength) {
-                return response()->json(['message' => 'Datos encriptados inválidos'], 400);
-            }
-
-            $tag = substr($ciphertext, -$tagLength);
-            $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
-
-            // Desencriptar con AES-GCM
-            $decrypted = openssl_decrypt(
-                $ciphertextRaw,
-                'aes-256-gcm',
-                $aesKey,
-                OPENSSL_RAW_DATA,
-                $iv,
-                $tag
-            );
-
-            if ($decrypted === false) {
+            $decrypted = $this->encryptService->decrypt($request);
+            if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
             }
-
-            // Decodificar JSON
             $data = json_decode($decrypted, true);
 
             if (!isset($data['data'])) {
@@ -372,8 +344,9 @@ class MedicationsRequestController extends Controller
 
             Log::info('Payload recibido en controlador:', ['data' => $payload]);
 
-            $person = $this->personaService->getByDni($payload['dni']);
-            $mails = $this->genParametersService->getMailsToMedicationRequests();
+            $person = $this->personaService->getByDni($payload['dni_user']);
+            $mailsString = $this->genParametersService->getMailsToMedicationRequests();
+            $mails = explode(',', $mailsString);
 
             if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 401);
@@ -382,10 +355,10 @@ class MedicationsRequestController extends Controller
 
                 if ($create) {
                     foreach ($mails as $mail) {
-                        Mail::to($mail)->send(new MedicationNotificationMail($payload, $person));
+                        Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person));
                     }
                     Mail::to($person->correo)->send(new MedicationNotificationUser($payload, $person));
-                    return response()->json(['message' => 'Solicitud creada exitosamente'], 200);
+                    return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
                 }
@@ -465,6 +438,40 @@ class MedicationsRequestController extends Controller
             Log::error('Error in class: ' . get_class($this) . ' .Error updating item: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al actualizar el item.');
         }
+    }
+
+    public function getAllMedicationRequestAndItemsByUserDni(Request $request)
+    {
+        //Desencripto los datos
+        $decrypted = $this->encryptService->decrypt($request);
+        $data = json_decode($decrypted, true);
+
+        // Validación
+        if (!isset($data['data']['dni_user'])) {
+            return response()->json(['message' => 'Formato de datos inválido'], 400);
+        }
+
+        // Acceder al dni_user correctamente
+        $dni = $data['data']['dni_user'];
+
+        // Obtener las solicitudes con sus items
+        $requestsData = $this->medicationsRequestService->getAllMedicationRequestAndItemsByUserDni($dni);
+
+
+
+        //Encripto los datos
+        $responseIv = random_bytes(12);
+        $aesKeyBase64 = $request->session()->get('aes_key');
+        $key = base64_decode($aesKeyBase64);
+
+        $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
+        return response()->json([
+            'ciphertext' => base64_encode($ciphertextWithTag),
+            'iv' => base64_encode($responseIv),
+        ]);
+
+
+
     }
 
 

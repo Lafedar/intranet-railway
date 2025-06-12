@@ -23,12 +23,12 @@ class MedicationNotificationMail extends Mailable
 
     public function build()
     {
-        if(is_object($this->person)){
+        if (is_object($this->person)) {
             $name = $this->person->apellido . ' ' . $this->person->nombre_p;
-        }else{
+        } else {
             $name = $this->person;
         }
-        
+
         $message = "
         <p>Hola,</p>
         <p><b>Hay una nueva solicitud de medicamentos:</b></p>
@@ -36,18 +36,20 @@ class MedicationNotificationMail extends Mailable
         <p>Solicitante: <b>{$name}</b></p>
         <ul>";
 
-           
-            $message .= "<li>" . $this->data['medication'] . " - Cantidad: " . $this->data['amount'] . "</li>";
 
-            if (isset($this->data['medication2']) && isset($this->data['amount2'])) {
-                $message .= "<li>" . $this->data['medication2'] . " - Cantidad: " . $this->data['amount2'] . "</li>";
-            }
+        $message .= "<li>" . $this->data['medication'] . " - Cantidad: " . $this->data['amount'] . "</li>";
 
-            if (isset($this->data['medication3']) && isset($this->data['amount3'])) {
-                $message .= "<li>" . $this->data['medication3'] . " - Cantidad: " . $this->data['amount3'] . "</li>";
-            }
+        if (!empty($this->data['medication2']) && !empty($this->data['amount2'])) {
 
-            $message .= "</ul>
+            $message .= "<li>" . $this->data['medication2'] . " - Cantidad: " . $this->data['amount2'] . "</li>";
+        }
+
+        if (!empty($this->data['medication3']) && !empty($this->data['amount3'])) {
+
+            $message .= "<li>" . $this->data['medication3'] . " - Cantidad: " . $this->data['amount3'] . "</li>";
+        }
+
+        $message .= "</ul>
         <br>
 
         <p>Saludos</p>";
