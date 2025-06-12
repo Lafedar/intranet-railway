@@ -4,40 +4,70 @@ namespace App\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Request;
 
 class EncryptService
 {
-    public function decrypt(string $keyBase64, array $ivArray, string $payloadBase64): ?array
+    // Servicio - solo lógica
+    public function decrypt($request)
     {
         try {
-            $key = base64_decode($keyBase64);
-            $ciphertext = base64_decode($payloadBase64);
-            $iv = implode(array_map("chr", $ivArray)); // array de enteros a string binario
+            $ciphertextBase64 = $request->input('ciphertext');
+            $ivBase64 = $request->input('iv');
 
-            // Separar el tag (últimos 16 bytes del ciphertext)
-            $tag = substr($ciphertext, -16);
-            $ciphertextBody = substr($ciphertext, 0, -16);
+            if (!$ciphertextBase64 || !$ivBase64)
+                return null;
 
-            // Desencriptar
-            $plaintext = openssl_decrypt(
-                $ciphertextBody,
+            $ciphertext = base64_decode($ciphertextBase64);
+            $iv = base64_decode($ivBase64);
+            $aesKeyBase64 = $request->session()->get('aes_key');
+            if (!$aesKeyBase64)
+                return null;
+
+            $aesKey = base64_decode($aesKeyBase64);
+            $tagLength = 16;
+            if (strlen($ciphertext) < $tagLength)
+                return null;
+
+            $tag = substr($ciphertext, -$tagLength);
+            $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
+
+            return openssl_decrypt(
+                $ciphertextRaw,
                 'aes-256-gcm',
-                $key,
+                $aesKey,
                 OPENSSL_RAW_DATA,
                 $iv,
                 $tag
+            ) ?: null;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error decrypting data: ' . $e->getMessage());
+
+        }
+    }
+
+
+    public function encrypt($data, $key, $responseIv)
+    {
+        try {
+            if (is_array($data)) {
+                $data = json_encode($data);
+            }
+            
+            $ciphertextResponse = openssl_encrypt(
+                $data,
+                'aes-256-gcm',
+                $key,
+                OPENSSL_RAW_DATA,
+                $responseIv,
+                $responseTag
             );
 
-            if (!$plaintext) {
-                return null;
-            }
-
-            return json_decode($plaintext, true);
+            $ciphertextWithTag = $ciphertextResponse . $responseTag;
+            return $ciphertextWithTag;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al desencriptar los datos: ' . $e->getMessage());
-            return null;
+            Log::error('Error in class: ' . get_class($this) . ' .Error enrypting data: ' . $e->getMessage());
         }
-
 
     }
 }

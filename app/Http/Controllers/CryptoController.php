@@ -17,9 +17,11 @@ use App\User;
 class CryptoController extends Controller
 {
     protected $userService;
-    public function __construct(UserService $userService)
+    protected $encryptService;
+    public function __construct(UserService $userService, EncryptService $encryptService)
     {
         $this->userService = $userService;
+        $this->encryptService = $encryptService;
 
     }
     public function getEncryptionKey(Request $request)
@@ -56,25 +58,9 @@ class CryptoController extends Controller
             if (!$request->session()->has('aes_key')) {
                 return response()->json(['error' => 'Missing AES session key'], 400);
             }
-
-            $key = base64_decode($request->session()->get('aes_key'));
-
-            $ciphertext = base64_decode($request->input('ciphertext'));
-            $iv = base64_decode($request->input('iv'));
-
-            $tag = substr($ciphertext, -16);
-            $ciphertextOnly = substr($ciphertext, 0, -16);
-
-            $plaintext = openssl_decrypt(
-                $ciphertextOnly,
-                'aes-256-gcm',
-                $key,
-                OPENSSL_RAW_DATA,
-                $iv,
-                $tag
-            );
-
-            if ($plaintext === false) {
+            $plaintext = $this->encryptService->decrypt($request);
+            
+            if ($plaintext === null) {
                 return response()->json(['error' => 'Decryption failed'], 400);
             }
 
@@ -109,18 +95,10 @@ class CryptoController extends Controller
 
             // Encriptar respuesta
             $responseIv = random_bytes(12);
+            $aesKeyBase64 = $request->session()->get('aes_key');
+            $key = base64_decode($aesKeyBase64);
 
-            $ciphertextResponse = openssl_encrypt(
-                $respuesta,
-                'aes-256-gcm',
-                $key,
-                OPENSSL_RAW_DATA,
-                $responseIv,
-                $responseTag
-            );
-
-            $ciphertextWithTag = $ciphertextResponse . $responseTag;
-
+            $ciphertextWithTag = $this->encryptService->encrypt($respuesta, $key, $responseIv);
             return response()->json([
                 'ciphertext' => base64_encode($ciphertextWithTag),
                 'iv' => base64_encode($responseIv),

@@ -60,11 +60,10 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/login', [CryptoController::class, 'login']);
     Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
     Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
+    Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);
 
     // CORS preflight solo para estas rutas
     Route::options('/{any}', function () {
         return response('', 204);
     })->where('any', '.*');
 });
-
-
