@@ -59,7 +59,7 @@ class CryptoController extends Controller
                 return response()->json(['error' => 'Missing AES session key'], 400);
             }
             $plaintext = $this->encryptService->decrypt($request);
-            
+
             if ($plaintext === null) {
                 return response()->json(['error' => 'Decryption failed'], 400);
             }
