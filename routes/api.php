@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicationsRequestController;
-use App\Http\Controllers\CryptoController;
 use App\Http\Controllers\PersonaController;
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CryptoController;
+use Illuminate\Support\Facades\Http;
+use App\Http\Middleware\ForceCors;
 /*
 |--------------------------------------------------------------------------
 | API Routes
