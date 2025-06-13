@@ -346,6 +346,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('medications/items/approve/{id}/{id_solicitud}', 'MedicationsRequestController@approveItem')->name('medications.items.approve');
   Route::get('medications/items/desapprove/{id}/{id_solicitud}', 'MedicationsRequestController@desapproveItem')->name('medications.items.desapprove');
   Route::put('medications/items/update/{id}', 'MedicationsRequestController@updateItem')->name('medications.items.update');
+  Route::post('/medications/approve-medication-request/{request_id}/{user_dni}', 'MedicationsRequestController@approveMedicationRequest')->name('medications.approveMedicationRequest');
 
 });
 

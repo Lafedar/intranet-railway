@@ -95,6 +95,10 @@ class MedicationsRequestController extends Controller
     {
         try {
             $this->medicationsRequestService->deleteRequestById($id);
+            $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($id);
+            foreach ($items as $item) {
+                $this->medicationsRequestService->desapproveItem($item->id);
+            }
             return redirect()->back()
                 ->with('success', 'Solicitud actualizada a Aprobación pendiente.');
 
@@ -104,82 +108,6 @@ class MedicationsRequestController extends Controller
                 ->with('error', 'Error al actualizar la solicitud a Aprobación Pendiente.');
         }
     }
-
-    public function completeMedicationRequest($id, $person_id, Request $request)
-    {
-        try {
-
-            $person = $this->personaService->getById($person_id);
-            if ($person == null) {
-
-                $person = $person_id;
-
-            }
-
-            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-            if (file_exists($imagePath)) {
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $mimeType = mime_content_type($imagePath);
-                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
-            } else {
-                $base64image = null;
-            }
-
-            $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
-
-            if (file_exists($signaturePath)) {
-
-                $imageData2 = base64_encode(file_get_contents($signaturePath));
-                $mimeType2 = mime_content_type($signaturePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-                // Crear la cadena de imagen Base64
-                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-            } else {
-
-                $base64image_signature = null;
-            }
-
-            $recipients = $this->genParametersService->getMailsToMedicationRequests();
-            $date = date('d/m/Y');
-
-            $update = $this->medicationsRequestService->approveRequestById($id);
-            if (!$update) {
-                return back()->with('error', 'Debe aprobar al menos un medicamento.')->withInput();
-
-            }
-
-
-            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
-            $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($medicationRequest->id);
-            if ($recipients == null) {
-                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
-            }
-            $emails = explode(';', $recipients);
-            $isPdf = true;
-            if ($update == true) {
-                foreach ($emails as $email) {
-
-                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $items, $person, $base64image, $base64image_signature, $date, $isPdf));
-                }
-                if (!empty($person->correo)) {
-                    Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $items, $person, $date));
-                }
-            } else {
-                return redirect()->back()
-                    ->with('error', 'Error al aprobar la solicitud de medicamento.');
-            }
-
-
-            return redirect()->back()
-                ->with('success', 'Solicitud aprobada correctamente.');
-
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error approving medication request: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al aprobar la solicitud de medicamento ' . $e->getMessage());
-        }
-    }
-
-
     public function generateMedicationRequestDeliveryNote($id, $person_id)
     {
         try {
@@ -365,56 +293,74 @@ class MedicationsRequestController extends Controller
             }
 
 
-        } catch (\Throwable $e) {
-            \Log::error('Error en saveNewMedicationRequest: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error en saveNewMedicationRequest: ' . $e->getMessage());
             return response()->json(['message' => 'Error interno del servidor'], 500);
         }
     }
 
     public function getItems($id)
     {
-        $medicationRequest = $this->medicationsRequestService->getRequestById($id);
-        $itemsMedicationsRequests = $this->medicationsRequestService->getAllItemsByMedicationRequestId($id);
+        try {
+            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
+            $itemsMedicationsRequests = $this->medicationsRequestService->getAllItemsByMedicationRequestId($id);
 
 
-        return view('medications.items', [
-            'itemsMedicationsRequests' => $itemsMedicationsRequests,
-            'medicationRequest' => $medicationRequest,
+            return view('medications.items', [
+                'itemsMedicationsRequests' => $itemsMedicationsRequests,
+                'medicationRequest' => $medicationRequest,
 
-        ]);
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error en getItems: ' . $e->getMessage());
+            return response()->json(['message' => 'Error interno del servidor'], 500);
+        }
+
 
 
     }
 
     public function approveItem($id, $id_solicitud)
     {
-        $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
+        try {
+            $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
 
-        if ($medicationRequest->estado != "Aprobada") {
-            if ($this->medicationsRequestService->approveItem($id)) {
-                return redirect()->back()->with('success', 'Item aprobado exitosamente.');
-            } else {
-                return redirect()->back()->with('error', 'Error al aprobar el item.');
+            if ($medicationRequest->estado != "Aprobada") {
+                if ($this->medicationsRequestService->approveItem($id)) {
+                    return redirect()->back()->with('success', 'Item aprobado exitosamente.');
+                } else {
+                    return redirect()->back()->with('error', 'Error al aprobar el item.');
+                }
             }
+
+            return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error approving item: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al aprobar el item');
         }
 
-        return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
     }
 
 
     public function desapproveItem($id, $id_solicitud)
     {
-        $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
+        try {
+            $medicationRequest = $this->medicationsRequestService->getRequestById($id_solicitud);
 
-        if ($medicationRequest->estado != "Aprobada") {
-            if ($this->medicationsRequestService->desapproveItem($id)) {
-                return redirect()->back()->with('success', 'Item desaprobado exitosamente.');
-            } else {
-                return redirect()->back()->with('error', 'Error al aprobar el item.');
+            if ($medicationRequest->estado != "Aprobada") {
+                if ($this->medicationsRequestService->desapproveItem($id)) {
+                    return redirect()->back()->with('success', 'Item desaprobado exitosamente.');
+                } else {
+                    return redirect()->back()->with('error', 'Error al aprobar el item.');
+                }
             }
+
+            return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error desapproving item: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al desaprobar el item');
         }
 
-        return redirect()->back()->with('error', 'La solicitud ya está aprobada y no se pueden modificar los ítems.');
     }
 
     public function updateItem($id, Request $request)
@@ -422,7 +368,8 @@ class MedicationsRequestController extends Controller
         try {
             $data = $request->validate([
                 'medicamento' => 'required|string|max:255',
-                'cantidad' => 'required|integer',
+                'cantidad_solicitada' => 'required|integer',
+                'cantidad_aprobada' => 'integer',
                 'lote_med' => 'nullable|string|max:255',
                 'vencimiento_med' => 'nullable|date_format:Y-m-d',
             ]);
@@ -442,35 +389,134 @@ class MedicationsRequestController extends Controller
 
     public function getAllMedicationRequestAndItemsByUserDni(Request $request)
     {
-        //Desencripto los datos
-        $decrypted = $this->encryptService->decrypt($request);
-        $data = json_decode($decrypted, true);
+        try {
+            //Desencripto los datos
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
 
-        // Validación
-        if (!isset($data['data']['dni_user'])) {
-            return response()->json(['message' => 'Formato de datos inválido'], 400);
+            // Validación
+            if (!isset($data['data']['dni_user'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }
+
+            // Acceder al dni_user correctamente
+            $dni = $data['data']['dni_user'];
+
+            // Obtener las solicitudes con sus items
+            $requestsData = $this->medicationsRequestService->getAllMedicationRequestAndItemsByUserDni($dni);
+
+
+
+            //Encripto los datos
+            $responseIv = random_bytes(12);
+            $aesKeyBase64 = $request->session()->get('aes_key');
+            $key = base64_decode($aesKeyBase64);
+
+            $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
+            return response()->json([
+                'ciphertext' => base64_encode($ciphertextWithTag),
+                'iv' => base64_encode($responseIv),
+            ]);
+
+
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting all medication requests by user dni: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al actualizar el item'], 500);
         }
 
-        // Acceder al dni_user correctamente
-        $dni = $data['data']['dni_user'];
+    }
 
-        // Obtener las solicitudes con sus items
-        $requestsData = $this->medicationsRequestService->getAllMedicationRequestAndItemsByUserDni($dni);
+    public function approveMedicationRequest(Request $request, $request_id, $person_dni)
+    {
+        try {
+            $request->validate([
+                'items' => 'required|array|min:1', // Asegura que al menos un ítem sea seleccionado
 
-
-
-        //Encripto los datos
-        $responseIv = random_bytes(12);
-        $aesKeyBase64 = $request->session()->get('aes_key');
-        $key = base64_decode($aesKeyBase64);
-
-        $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
-        return response()->json([
-            'ciphertext' => base64_encode($ciphertextWithTag),
-            'iv' => base64_encode($responseIv),
-        ]);
+            ]);
 
 
+            $person = $this->personaService->getByDni($person_dni);
+            if ($person == null) {
+
+                $person = $person_dni;
+
+            }
+
+            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+            if (file_exists($imagePath)) {
+                $imageData = base64_encode(file_get_contents($imagePath));
+                $mimeType = mime_content_type($imagePath);
+                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
+            } else {
+                $base64image = null;
+            }
+
+            $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
+
+            if (file_exists($signaturePath)) {
+
+                $imageData2 = base64_encode(file_get_contents($signaturePath));
+                $mimeType2 = mime_content_type($signaturePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+
+                // Crear la cadena de imagen Base64
+                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
+            } else {
+
+                $base64image_signature = null;
+            }
+
+            $recipients = $this->genParametersService->getMailsToMedicationRequests();
+            $date = date('d/m/Y');
+
+
+            $items = $this->medicationsRequestService->getAllItemsByMedicationRequestId($request_id);
+            $selectedItemIds = array_map('intval', $request->input('items'));
+            foreach ($items as $item) {
+                if (in_array($item->id, $selectedItemIds)) {
+                    $this->medicationsRequestService->approveItem($item->id);
+
+
+                }
+            }
+
+            /*obtengo lo items nuevamente para que se actualicen*/
+            $updatedItems = $this->medicationsRequestService->getAllItemsByMedicationRequestId($request_id);
+
+            $update = $this->medicationsRequestService->approveRequestById($request_id);
+            if (!$update) {
+                return back()->with('error', 'Debe aprobar al menos un medicamento.')->withInput();
+
+            }
+
+
+            $medicationRequest = $this->medicationsRequestService->getRequestById($request_id);
+            if ($recipients == null) {
+                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
+            }
+            $emails = explode(';', $recipients);
+            $isPdf = true;
+
+            if ($update == true) {
+                foreach ($emails as $email) {
+
+                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $updatedItems, $person, $base64image, $base64image_signature, $date, $isPdf));
+                }
+                if (!empty($person->correo)) {
+                    Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $updatedItems, $person, $date));
+                }
+            } else {
+                return redirect()->back()
+                    ->with('error', 'Error al aprobar la solicitud de medicamento.');
+            }
+
+            return redirect()->route('medications.index')
+                ->with('success', 'Solicitud aprobada correctamente.');
+
+        }catch(Exception $e){
+            Log::error('Error in class: ' . get_class($this) . ' .Error approving medication request and your items: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al aprobar la solicitud y sus items.');
+        }
 
     }
 

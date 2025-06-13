@@ -32,84 +32,77 @@
         <table>
             <thead>
                 <tr>
-                    <th class="text-center">ID</th>
                     <th class="text-center">Medicamento</th>
-                    <th class="text-center">Cantidad</th>
+                    <th class="text-center">Cantidad Solicitada</th>
+                    <th class="text-center">Cantidad Aprobada</th>
                     <th class="text-center">Aprobado</th>
                     <th class="text-center">Lote</th>
                     <th class="text-center">Vencimiento</th>
                     @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
+                        @if($medicationRequest->estado != "Aprobada")
+                            <th class="text-center">Aprobar</th>
+                        @endif
                         <th class="text-center">Acciones</th>
                     @endif
                 </tr>
             </thead>
             <tbody>
-                @foreach($itemsMedicationsRequests as $item)
-                    <tr class="text-center">
-                        <td>{{ $item->id }}</td>
-                        <td>{{ $item->medicamento }}</td>
-                        <td>{{ $item->cantidad }}</td>
-                        <td>
-                            @if($item->aprobado == 1)
-                                Si
-                            @else
-                                No
-                            @endif
-                        <td>{{ $item->lote_med ?? 'N/A' }}</td>
+                <form
+                    action="{{ route('medications.approveMedicationRequest', ['request_id' => $medicationRequest->id, 'user_dni' => auth()->user()->dni]) }}"
+                    method="POST" id="approve-form">
+                    @csrf
+                    @method('POST')
 
-                        <td>
-                            {{ $item->vencimiento_med ? \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') : 'N/A' }}
-                        </td>
+                    @foreach($itemsMedicationsRequests as $item)
+                        <tr class="text-center">
 
-
-                        @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
+                            <td>{{ $item->medicamento }}</td>
+                            <td>{{ $item->cantidad_solicitada }}</td>
+                            <td>{{ $item->cantidad_aprobada }}</td>
                             <td>
-                                @if($medicationRequest->estado != "Aprobada")
-                                    @if($item->aprobado == 0)
-                                        <form action="{{ route('medications.items.approve', [$item->id, $medicationRequest->id]) }}"
-                                            class="forms-medication-requests">
-                                            @csrf
-                                            @method('GET')
-                                            <button type="submit" title="Aprobar item" id="icono">
-                                                <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar item"
-                                                    id="img-icono">
-                                            </button>
-                                        </form>
-                                    @else
-                                        <form action="{{ route('medications.items.desapprove', [$item->id, $medicationRequest->id]) }}"
-                                            class="forms-medication-requests">
-                                            @csrf
-                                            @method('GET')
-                                            <button type="submit" title="Desaprobar item" id="icono">
-                                                <img src="{{ asset('storage/cursos/exit.png') }}" loading="lazy" alt="Desaprobar item"
-                                                    id="img-icono">
-                                            </button>
-                                        </form>
-                                    @endif
-                                    @if($item->aprobado != 1)
-                                        <form action="{{ route('medications.show', $item->id) }}" class="forms-medication-requests">
-                                            @csrf
-                                            @method('GET')
-                                            <button title="Editar item" id="icono">
-                                                <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar item"
-                                                    id="img-icono">
-                                            </button>
-                                        </form>
-                                    @endif
+                                @if($item->aprobado == 1)
+                                    Si
                                 @else
-                                    Solicitud Aprobada
+                                    No
                                 @endif
-
                             </td>
+                            <td>{{ $item->lote_med ?? 'N/A' }}</td>
+                            <td>
+                                {{ $item->vencimiento_med ? \Carbon\Carbon::parse($item->vencimiento_med)->format('d/m/Y') : 'N/A' }}
+                            </td>
+                            @if($medicationRequest->estado != "Aprobada")
+                                <td>
+                                    <input type="checkbox" name="items[]" value="{{ $item->id }}" class="item-checkbox">
+                                </td>
+                            @endif
+                            @if(auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh'))
+                                <td>
+                                    @if($medicationRequest->estado != "Aprobada")
 
-                        @endif
+                                        <button type="button" class="btn-edit-item" data-item-id="{{ $item->id }}" id="icono"
+                                            title="Editar item">
+                                            <img src="{{ asset('storage/cursos/editar.png') }}" loading="lazy" alt="Editar item"
+                                                id="img-icono">
+                                        </button>
 
+                                    @else
+                                        Solicitud Aprobada
+                                    @endif
+                                </td>
+                            @endif
+                        </tr>
+                    @endforeach
 
-                    </tr>
-                @endforeach
+                    <a href="{{ route('medications.index') }}" id="asignar-btn">Volver</a>
+                    @if($medicationRequest->estado != "Aprobada")
+                        <button type="submit" class="approve-selected-items ml-2" id="asignar-btn" disabled>Aprobar
+                            Solicitud</button>
+                    @endif
+                </form>
             </tbody>
+
         </table>
-        <a href="{{ route('medications.index') }}" id="asignar-btn" class="btn btn-primary">Volver</a>
+
 
 
     </div>
@@ -128,4 +121,30 @@
             }, 3000); // 3000 milisegundos = 3 segundos
         });
     </script>
+    <script>
+        // Activar o desactivar el botón de aprobar según los checkboxes seleccionados
+        $(document).ready(function () {
+            // Deshabilitar el botón de aprobar inicialmente
+            $('.approve-selected-items').prop('disabled', true);
+
+            // Comprobar si el checkbox está marcado
+            $('.item-checkbox').change(function () {
+                // Si al menos un checkbox está seleccionado, habilitar el botón de aprobar
+                if ($('.item-checkbox:checked').length > 0) {
+                    $('.approve-selected-items').prop('disabled', false);
+                } else {
+                    $('.approve-selected-items').prop('disabled', true);
+                }
+            });
+            // Manejar el clic en el botón de editar
+            $('.btn-edit-item').click(function () {
+                var itemId = $(this).data('item-id');
+                // Redirigir a la página de edición del item
+                window.location.href = '{{ url("medications/show") }}/' + itemId;
+            });
+        });
+
+    </script>
+
+
 @endpush

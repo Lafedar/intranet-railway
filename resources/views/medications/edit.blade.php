@@ -42,9 +42,14 @@
                         </div>
 
                         <div style="width: 120px;">
-                            <label for="cantidad"><b>Cantidad</b></label>
-                            <input type="number" class="form-control" id="cantidad" name="cantidad"
-                                value="{{ $item->cantidad }}" min="1" required>
+                            <label for="cantidad_solicitada"><b>Solicitado</b></label>
+                            <input type="number" class="form-control" id="cantidad_solicitada" name="cantidad_solicitada"
+                                value="{{ $item->cantidad_solicitada }}" min="1" required readonly>
+                        </div>
+                        <div style="width: 120px;">
+                            <label for="cantidad_aprobada"><b>Aprobado</b></label>
+                            <input type="number" class="form-control" id="cantidad_aprobada" name="cantidad_aprobada"
+                                value="{{ $item->cantidad_aprobada }}" min="1" max="{{ $item->cantidad_solicitada }}" required>
                         </div>
                     </div>
 

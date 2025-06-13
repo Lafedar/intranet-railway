@@ -37,8 +37,8 @@ class MedicationInfoMail extends Mailable
 
         foreach ($this->items as $item) {
             if ($item->aprobado == 1) {
-                $message .= "<li>{$item->medicamento} – Cantidad: {$item->cantidad}</li>";
-                $cantidad += $item->cantidad;
+                $message .= "<li>{$item->medicamento} – Cantidad Aprobada: {$item->cantidad_aprobada}</li>";
+                $cantidad += $item->cantidad_aprobada;
             }
         }
 

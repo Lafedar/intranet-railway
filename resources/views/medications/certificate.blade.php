@@ -11,7 +11,7 @@
 
 <body>
     <!-- Contenedor principal -->
-
+    
     <!-- Si inscriptosChunks es null o está vacío, mostrar este contenido -->
     <div class="pagina">
         <div class="contenedor" style="max-width: 900px; margin: 20px auto; padding: 20px;">
@@ -68,20 +68,20 @@
             </div>
 
             @php $cantidad = 0; @endphp
-
+            
             <div class="procedimiento-div"
                 style="margin-top: 0px; padding: 10px; border: 1px solid black; position: relative; text-align: left; font-size: 18px;">
 
                 <b>Detalle de los Productos:</b>
                 <br>
-
+                
                 @php $cantidad = 0; @endphp
 
                 <ul>
                     @foreach($items as $item)
                         @if($item->aprobado == 1)
-                            <li>{{ $item->medicamento }} – Cantidad: {{ $item->cantidad }}</li>
-                            @php $cantidad += $item->cantidad; @endphp
+                            <li>{{ $item->medicamento }} – Cantidad Aprobada: {{ $item->cantidad_aprobada }}</li>
+                            @php $cantidad += $item->cantidad_aprobada; @endphp
                         @endif
                         
                     @endforeach

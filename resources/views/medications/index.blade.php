@@ -104,34 +104,7 @@
                                                 @endif
 
                                                 @if($medication->estado != 'Aprobada')
-                                                    @if(is_object($matchedPerson))
-                                                        <form id="approve-form-{{ $medication->id }}"
-                                                            action="{{ route('medications.approval', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
-                                                            onsubmit="return confirm('¿Estás seguro de que deseas aprobar esta solicitud ?');"
-                                                            class="forms-medication-requests">
-                                                            @csrf
-                                                            @method('GET')
-                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" class="btn-disabled-med">
-                                                                <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
-                                                                    id="img-icono">
-                                                            </button>
-                                                        </form>
-
-
-                                                    @else
-                                                        <form id="approve-form-{{ $medication->id }}"
-                                                            action="{{ route('medications.approval', ['id' => $medication->id, 'id_p' => $medication->dni_persona]) }}"
-                                                            onsubmit="return confirm('¿Estás seguro de que deseas aprobar esta solicitud ?');"
-                                                            class="forms-medication-requests">
-                                                            @csrf
-                                                            @method('GET')
-                                                            <button title="Aprobar solicitud" id="approve-btn-{{ $medication->id }}" class="btn-disabled-med">
-                                                                <img src="{{ asset('storage/cursos/aprobar.png') }}" loading="lazy" alt="Aprobar"
-                                                                    id="img-icono">
-                                                            </button>
-                                                        </form>
-                                                    @endif
-
+                                                    N/A
                                                 @else
                                                     @if(is_object($matchedPerson))
                                                         <a href="{{ route('medications.certificate', ['id' => $medication->id, 'id_p' => $matchedPerson->id_p]) }}"
