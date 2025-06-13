@@ -57,7 +57,7 @@ Route::middleware(['force.cors'])->group(function () {
 });
 
 Route::middleware(['aes.key', 'force.cors'])->group(function () {
-    Route::post('/login', [CryptoController::class, 'login']);
+    Route::post('/loginApi', [CryptoController::class, 'loginApi']);
     Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
     Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
     Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);

@@ -51,7 +51,7 @@ class CryptoController extends Controller
 
 
     }
-    public function login(Request $request)
+    public function loginApi(Request $request)
     {
         try {
             Log::info('Solicitud de login recibida: ' . $request->session()->getId());
