@@ -64,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($parametros as $parametro)
+                @foreach($parameters as $parametro)
                     @if($parametro->origen == "Sistemas")
                         <tr class="text-center">
                             <td>{{ $parametro->id_param }}</td>
@@ -148,7 +148,7 @@
     </div>
 </div>
 <!-- Modal de edicion -->
-@foreach($parametros as $parametro)
+@foreach($parameters as $parametro)
     <div class="modal fade" id="editarModal{{ $parametro->id_param }}" tabindex="-1" role="dialog"
         aria-labelledby="editarModalLabel{{ $parametro->id_param }}" aria-hidden="true">
         <div class="modal-dialog" role="document">

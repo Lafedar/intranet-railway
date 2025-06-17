@@ -155,8 +155,9 @@ class GeneralParametersController extends Controller
     {
         try {
             $megabytesMax = $this->genParameterService->getMegabytesMax();
-            if ($megabytesMax) {
-                return redirect()->back()->with('success', 'Parámetro eliminado correctamente');
+            
+            if ($megabytesMax != false) {
+                return $megabytesMax;
             } else {
                 return redirect()->back()->with('error', 'Error al obtener los MB maximos');
             }
