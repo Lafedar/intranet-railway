@@ -42,10 +42,11 @@ class GeneralParametersService
 
     public function getMegabytesMax(){
         try{
-            DB::table('parametros_mant')
+            return DB::table('parametros_mant')
             ->where('id_param', 'PMB')
-            ->value('valor_param');
-            return true;
+            ->value('valor_param')
+            ->get();
+            
         }catch(Exception $e){
             Log::error('Error in class: ' . get_class($this) . ' .Error getting max megabytes' . $e->getMessage());
             return false;
