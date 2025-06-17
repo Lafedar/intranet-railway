@@ -211,7 +211,7 @@ Route::get('documentos', 'HomeController@documentos');
 Route::group(['middleware' => ['auth']], function () {
   Route::get('planos', 'PlanoController@planos')->middleware('role:administrador|planos|ingenieria|ver-planos');
   Route::post('store_planos', 'PlanoController@store_planos')->middleware('role:administrador|planos|ingenieria|');
-  Route::get('destroy_plano/{plano}', ['uses' => 'PlanoController@destroy_planos'])->middleware('role:administrador|planos|ingenieria');
+  Route::post('destroy_plano/{plano}', ['uses' => 'PlanoController@destroy_planos'])->middleware('role:administrador|planos|ingenieria');
   Route::post('update_planos', 'PlanoController@update_planos')->middleware('role:administrador|ingenieria|planos')->name('update_planos');
 });
 

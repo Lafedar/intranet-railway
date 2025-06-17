@@ -119,15 +119,20 @@
                                         @endif
 
                                         @role(['planos', 'administrador'])
-                                            <button class="btn btn-info btn-sm" data-id="{{$plano->id}}"
-                                                data-titulo="{{$plano->titulo}}" data-fecha="{{$plano->fecha}}"
-                                                data-obs="{{$plano->obs}}" data-version="{{$plano->version}}" data-pdf="{{$plano->pdf}}"
-                                                data-pdf_firmado="{{$plano->pdf_firmado}}" data-dwg="{{$plano->dwg}}"
-                                                data-ctb="{{$plano->ctb}}" data-toggle="modal" data-target="#editar"> Editar</button>
+                                        <button class="btn btn-info btn-sm" data-id="{{$plano->id}}"
+                                            data-titulo="{{$plano->titulo}}" data-fecha="{{$plano->fecha}}"
+                                            data-obs="{{$plano->obs}}" data-version="{{$plano->version}}" data-pdf="{{$plano->pdf}}"
+                                            data-pdf_firmado="{{$plano->pdf_firmado}}" data-dwg="{{$plano->dwg}}"
+                                            data-ctb="{{$plano->ctb}}" data-toggle="modal" data-target="#editar"> Editar</button>
 
-                                            <a href="{{url('destroy_plano', $plano->id)}}" class="btn btn-danger btn-sm" title="Borrar"
-                                                onclick="return confirm ('Está seguro que desea eliminar el plano?')"
-                                                data-position="top" data-delay="50" data-tooltip="Borrar">X</a>
+                                        <form action="{{ url('destroy_plano', $plano->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('POST')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Está seguro que desea eliminar el plano?')">
+                                                X
+                                            </button>
+                                        </form>
 
                                         @endrole
                                     </div>
@@ -138,8 +143,9 @@
                 </tbody>
             </table>
 
-            @include('planos.edit')
+
             @push('modales')
+                @include('planos.edit')
                 @include('planos.create')
             @endpush
 
