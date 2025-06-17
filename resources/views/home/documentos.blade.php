@@ -41,7 +41,7 @@
       </div>
     </div>
     @endrole
-    @role('planos')
+    @role(['planos', 'ver-planos'])
     <div class="col-md-3">
       <a href="/planos"> <img src="{{ URL::to('/img/planos.png') }}" height="140"></a>
     </div>
