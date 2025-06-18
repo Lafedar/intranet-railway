@@ -216,6 +216,7 @@ class MedicationsRequestService
         try {
             $requests = DB::table('solicitudes_medicamentos')
                 ->where('dni_persona', $dni)
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             if ($requests->isEmpty()) {
@@ -228,7 +229,7 @@ class MedicationsRequestService
                 $items = $this->getAllItemsByMedicationRequestId($request->id);
 
                 $result[] = [
-                    'request' => $request,
+                    'request' => json_decode(json_encode($request), true),
                     'items' => $items
                 ];
             }

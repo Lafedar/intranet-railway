@@ -48,7 +48,7 @@
             </thead>
             <tbody>
                 <form
-                    action="{{ route('medications.approveMedicationRequest', ['request_id' => $medicationRequest->id, 'user_dni' => auth()->user()->dni]) }}"
+                    action="{{ route('medications.approveMedicationRequest', ['request_id' => $medicationRequest->id, 'user_dni' => $medicationRequest->dni_persona]) }}"
                     method="POST" id="approve-form">
                     @csrf
                     @method('POST')
