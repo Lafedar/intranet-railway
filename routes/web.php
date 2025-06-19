@@ -6,6 +6,7 @@ use App\Http\Controllers\CourseInstanceController;
 use App\Exports\InscriptosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NovedadesController;
 use Illuminate\Support\Str;
 
@@ -647,3 +648,5 @@ Route::get('/descargar/{filename}', function ($filename) {
 
 /*LOGOUT*/
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+Route::get('/verificar/{token}', [AuthController::class, 'verificarEmail']);

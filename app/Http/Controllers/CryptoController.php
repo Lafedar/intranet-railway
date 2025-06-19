@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\User;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 
 
@@ -26,7 +27,7 @@ class CryptoController extends Controller
     }
     public function getEncryptionKey(Request $request)
     {
-        Log::info('Solicitud de clave AES recibida: ' . $request->session()->getId());
+        
         if (!$request->session()->has('aes_key')) {
 
             $key = random_bytes(32); // 256 bits = 32 bytes
@@ -38,8 +39,6 @@ class CryptoController extends Controller
             $key = base64_decode($request->session()->get('aes_key'));
 
         }
-
-        Log::info('Clave generada: ' . base64_encode($key));
 
         return response()->json([
 
@@ -54,7 +53,7 @@ class CryptoController extends Controller
     public function loginApi(Request $request)
     {
         try {
-            Log::info('Solicitud de login recibida: ' . $request->session()->getId());
+          
             if (!$request->session()->has('aes_key')) {
                 return response()->json(['error' => 'Missing AES session key'], 400);
             }
@@ -64,7 +63,7 @@ class CryptoController extends Controller
                 return response()->json(['error' => 'Decryption failed'], 400);
             }
 
-            Log::info('Mensaje desencriptado: ' . $plaintext);
+            
 
 
             $credentials = json_decode($plaintext, true);
@@ -72,9 +71,18 @@ class CryptoController extends Controller
                 return response()->json(['error' => 'Formato inválido'], 400);
             }
 
-            //Validar el usuario y contraseña
-
             $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
+            
+            if($user->activo == 0){
+                return response()->json([
+                    'error' => 'El usuario no está activo'
+                ], 403);
+            }
+            if ($user->email_verified_at == 0) {
+                return response()->json([
+                    'error' => 'Debes verificar tu correo electrónico antes de iniciar sesión.'
+                ], 403);
+            }
             if (!is_object($user)) {
                 $respuesta = json_encode([
                     'error' => 'Credenciales inválidas'
