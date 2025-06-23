@@ -650,3 +650,4 @@ Route::get('/descargar/{filename}', function ($filename) {
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
 Route::get('/verificar/{token}', [AuthController::class, 'verificarEmail']);
+Route::get('/redirectToResetPassword/{token}', [AuthController::class, 'redirectToResetPassword']);

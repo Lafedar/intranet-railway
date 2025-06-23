@@ -94,11 +94,7 @@ class UserService
         } else {
             return null;
         }
-        /*if ($user && $user->password == $password) {
-            return $user;
-        } else {
-            return null;
-        }*/
+       
     }
 
     public function validateMail($email)
@@ -132,6 +128,64 @@ class UserService
         return $user->remember_token;
     }
 
+
+    public function createNewTokenUser($dni)
+    {
+        $token = Str::random(60);
+        $user = User::where('dni', $dni)->first();
+
+        if (!$user) {
+            throw new Exception("Usuario no encontrado para el DNI $dni");
+        }
+        if($user->activo == 0){
+            throw new Exception("El usuario no está activo");
+        }
+
+        $user->remember_token = $token;
+        $user->remember_token_expires_at = now()->addDay();
+        $user->save();
+
+        return $user->remember_token;
+    }
+
+    public function resetPassword($dni, $password)
+    {
+        try {
+            $user = User::where('dni', $dni)->first();
+            if (!$user) {
+                throw new Exception("Usuario no encontrado para el DNI $dni");
+            }
+            if($user->activo == 0){
+                throw new Exception("El usuario no está activo");
+            }
+            $user->password = Hash::make($password);
+            $user->remember_token = null;
+            $user->remember_token_expires_at = null;
+            $user->save();
+            return true;
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function cleanTokens($dni)
+    {
+        try {
+            $user = User::where('dni', $dni)->first();
+            if (!$user) {
+                throw new Exception("Usuario no encontrado para el DNI $dni");
+            }
+            Log::info("Limpiando tokens para el usuario con DNI: $user->dni");
+            $user->remember_token = null;
+            $user->remember_token_expires_at = null;
+            $user->save();
+            return true;
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
+            return false;
+        }
+    }
 
 
 

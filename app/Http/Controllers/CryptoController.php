@@ -27,7 +27,7 @@ class CryptoController extends Controller
     }
     public function getEncryptionKey(Request $request)
     {
-        
+
         if (!$request->session()->has('aes_key')) {
 
             $key = random_bytes(32); // 256 bits = 32 bytes
@@ -53,7 +53,7 @@ class CryptoController extends Controller
     public function loginApi(Request $request)
     {
         try {
-          
+
             if (!$request->session()->has('aes_key')) {
                 return response()->json(['error' => 'Missing AES session key'], 400);
             }
@@ -63,7 +63,7 @@ class CryptoController extends Controller
                 return response()->json(['error' => 'Decryption failed'], 400);
             }
 
-            
+
 
 
             $credentials = json_decode($plaintext, true);
@@ -72,25 +72,15 @@ class CryptoController extends Controller
             }
 
             $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
-            
-            if($user->activo == 0){
-                return response()->json([
-                    'error' => 'El usuario no está activo'
-                ], 403);
-            }
-            if ($user->email_verified_at == 0) {
-                return response()->json([
-                    'error' => 'Debes verificar tu correo electrónico antes de iniciar sesión.'
-                ], 403);
-            }
+
             if (!is_object($user)) {
-                $respuesta = json_encode([
-                    'error' => 'Credenciales inválidas'
-                ]);
+                $respuesta = json_encode(['error' => 'Credenciales inválidas']);
+            } elseif ($user->activo == 0) {
+                $respuesta = json_encode(['error' => 'El usuario no está activo']);
+            } elseif ($user->email_verified_at == 0) {
+                $respuesta = json_encode(['error' => 'Debes verificar tu email antes de iniciar sesión']);
             } elseif (is_null($user->dni)) {
-                $respuesta = json_encode([
-                    'error' => 'El usuario no tiene DNI registrado'
-                ]);
+                $respuesta = json_encode(['error' => 'El usuario no tiene DNI registrado']);
             } else {
                 $respuesta = json_encode([
                     'id' => $user->id,
@@ -99,6 +89,8 @@ class CryptoController extends Controller
                     'dni' => $user->dni,
                 ]);
             }
+
+
 
 
             // Encriptar respuesta

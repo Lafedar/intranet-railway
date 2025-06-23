@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\RegistroUser;
+use App\User;
 use App\Services\UserService;
 use App\Services\EncryptService;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -61,5 +63,41 @@ class AuthController extends Controller
         return redirect()->away('https://extranetlafedar.netlify.app?message=success');
     }
 
+    public function redirectToResetPassword($token)
+    {
+        $user = User::where('remember_token', $token)->first();
+
+        if (!$user) {
+            return redirect()->away('https://extranetlafedar.netlify.app?message=token'); //al mensaje lo configuro en el frontend
+        }
+
+        
+        if (now()->lessThan($user->remember_token_expires_at)) {
+
+            $dni = $user->dni;
+            $email = $user->email;
+
+            $key = random_bytes(32);
+            $iv = random_bytes(12);
+            $data = json_encode(['dni' => $dni, 'email' => $email]);
+
+            $tag = '';
+            $ciphertext = openssl_encrypt($data, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+            $ciphertextWithTag = $ciphertext . $tag;
+
+            // Redirección con datos cifrados
+            $url = 'https://extranetlafedar.netlify.app/resetPassword?' .
+                'ciphertext=' . urlencode(base64_encode($ciphertextWithTag)) .
+                '&iv=' . urlencode(base64_encode($iv)) .
+                '&key=' . urlencode(base64_encode($key));
+
+            return redirect()->away($url);
+        } else {
+            return redirect()->away('https://extranetlafedar.netlify.app?message=expired'); //al mensaje lo configuro en el frontend
+        }
+
+
+
+    }
 
 }

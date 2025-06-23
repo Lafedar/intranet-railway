@@ -15,6 +15,7 @@ use App\Services\GeneralParametersService;
 use App\Services\UserService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use App\Mail\MedicationNotificationMail;
+use App\Mail\ResetPasswordApi;
 use App\Mail\MedicationNotificationUser;
 use App\Mail\VerificationEmail;
 use Illuminate\Support\Str;
@@ -550,9 +551,9 @@ class MedicationsRequestController extends Controller
             }
 
             /*DESCOMENTAR*/
-            /*if (is_object($this->userService->getByDni($dni))) {
+            if (is_object($this->userService->getByDni($dni))) {
                 return response()->json(['message' => 'El Dni ingresado ya tiene un usuario registrado'], 400);
-            }*/
+            }
 
             if ($this->userService->validateMail($email)) {
                 return response()->json(['message' => 'El email ya esta registrado'], 400);
@@ -593,16 +594,16 @@ class MedicationsRequestController extends Controller
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
-            
+
             $person = $this->personaService->getByDni($dni);
             if ($person->activo == 1) {
                 $nombre = $person->nombre_p . ' ' . $person->apellido;
                 $token = $this->userService->createNewToken($dni);
-               
+
                 Mail::to($email)->send(new VerificationEmail($nombre, $token));
                 return response()->json(['message' => 'Mail reenviado correctamente'], 200);
             } else {
-               
+
                 return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
             }
 
@@ -612,6 +613,100 @@ class MedicationsRequestController extends Controller
         }
 
 
+    }
+
+    public function sendMailResetPassword(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            /*if (!isset($data['data']['email'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }*/
+
+            $dni = $data['data']['dni'];
+            $email = $data['data']['email'];
+
+            $person = $this->personaService->getByDni($dni);
+            if(!is_object($person)){
+                return response()->json(['message' => 'La persona no existe'], 400);
+            }
+            $user = $this->userService->getByDni($dni);
+            if ($person->activo == 1) {
+                if ($user->activo == 1) {
+                    if ($user->email == $email) {
+                        $nombre = $person->nombre_p . ' ' . $person->apellido;
+                        $token = $this->userService->createNewTokenUser($dni);
+                        Mail::to($email)->send(new ResetPasswordApi($nombre, $token));
+                        return response()->json(['message' => 'Mail enviado correctamente!'], 200);
+                    }else{
+                        return response()->json(['message' => 'El usuario no está registrado'], 400);
+                    }
+
+                } else {
+                    return response()->json(['message' => 'El usuario no está activo'], 400);
+                }
+
+
+            } else {
+                return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
+            }
+
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error sending reset password email: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al enviar el mail de restablecimiento de contraseña'], 500);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            /*if (!isset($data['data']['dni']) || !isset($data['data']['password'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }*/
+
+            $dni = $data['data']['dni'];
+            $password = $data['data']['password'];
+            Log::info('DNI: ' . $dni);
+            Log::info('Password: ' . $password);
+
+            if ($this->userService->resetPassword($dni, $password)) {
+                return response()->json(['message' => 'Contraseña restablecida correctamente!'], 200);
+            } else {
+                return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error resetting password: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
+        }
+    }
+
+    public function cleanTokens(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            /*if (!isset($data['data']['dni'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }*/
+
+            $dni = $data['data']['dni'];
+            Log::info('DNI para limpiar tokens: ' . $dni);
+            if(!$this->userService->cleanTokens($dni)){
+                return response()->json(['message' => 'Error al limpiar los tokens'], 500);
+            }
+            return response()->json(['message' => 'Tokens limpiados correctamente'], 200);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error cleaning tokens: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al limpiar los tokens'], 500);
+        }
     }
 
 

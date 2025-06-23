@@ -63,6 +63,9 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);
     Route::post('/createUser', [MedicationsRequestController::class, 'createUserApi']);
     Route::post('/generateNewVerificationEmail', [MedicationsRequestController::class, 'generateNewVerificationEmail']);
+    Route::post('/sendMailResetPassword', [MedicationsRequestController::class, 'sendMailResetPassword']);
+    Route::post('/resetPassword', [MedicationsRequestController::class, 'resetPassword']);
+    Route::post('/cleanTokens', [MedicationsRequestController::class, 'cleanTokens']);
 
     // CORS preflight solo para estas rutas
     Route::options('/{any}', function () {
