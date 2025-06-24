@@ -6,17 +6,21 @@ use App\User;
 use App\Services\UserService;
 use App\Services\EncryptService;
 use Carbon\Carbon;
+use App\Services\PersonaService;
 
 class AuthController extends Controller
 {
     protected $userService;
     protected $encryptService;
 
-    public function __construct(UserService $userService, EncryptService $encryptService)
+    protected $personService;
+
+    public function __construct(UserService $userService, EncryptService $encryptService, PersonaService $personService)
     {
 
         $this->userService = $userService;
         $this->encryptService = $encryptService;
+        $this->personService = $personService;
     }
 
     public function verificarEmail($token)
@@ -53,12 +57,17 @@ class AuthController extends Controller
         $registerUser->remember_token = null;
         $registerUser->save();
 
-        $this->userService->createUserApi(
+        $user = $this->userService->createUserApi(
             $registerUser->dni,
             $registerUser->name,
             $registerUser->email,
             $registerUser->password
         );
+
+        $person = $this->personService->getByDni($registerUser->dni);
+        $person->usuario = $user->id;
+        $person->correo = $user->email;
+        $person->save();
 
         return redirect()->away('https://extranetlafedar.netlify.app?message=success');
     }

@@ -67,13 +67,7 @@ class UserService
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            /*if (!is_object($user)) {
-
-            } else {
-                return null;
-            }*/
-
-
+           
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
 
