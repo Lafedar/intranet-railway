@@ -164,6 +164,7 @@ class PersonaController extends Controller
             $responseData = [
                 'nombre_p' => $persona->nombre_p,
                 'apellido' => $persona->apellido,
+                'activo' => $persona->activo,
             ];
 
             $jsonResponse = json_encode($responseData);
