@@ -464,6 +464,7 @@ class MedicationsRequestController extends Controller
             $payload = $data['data'];
 
             $person = $this->personaService->getByDni($payload['dni_user']);
+            $user = $this->userService->getByDni($payload['dni_user']);
             $mailsString = $this->genParametersService->getMailsToMedicationRequests();
             $mails = explode(',', $mailsString);
 
@@ -476,7 +477,7 @@ class MedicationsRequestController extends Controller
                     foreach ($mails as $mail) {
                         Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person));
                     }
-                    Mail::to($person->correo)->send(new MedicationNotificationUser($payload, $person));
+                    Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person));
                     return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
