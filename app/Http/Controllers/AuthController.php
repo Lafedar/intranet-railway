@@ -66,7 +66,6 @@ class AuthController extends Controller
 
         $person = $this->personService->getByDni($registerUser->dni);
         $person->usuario = $user->id;
-        $person->correo = $user->email;
         $person->save();
 
         return redirect()->away('https://extranetlafedar.netlify.app?message=success');

@@ -109,51 +109,30 @@ class EmpleadoController extends Controller
                 Session::flash('alert-class', 'alert-warning');
                 return redirect()->back()->withInput();
             }
-            if ($request['password'] === $request['password2']) {
-
-                $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
-                $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
-                $empleado = new Empleado;
-                $empleado->nombre_p = $request['nombre'];
-                $empleado->apellido = $request['apellido'];
-                $empleado->dni = $request['dni'];
-                $empleado->interno = $request['interno'];
-                $empleado->correo = $request['correo'];
-                $empleado->fe_nac = $request['fe_nac'];
-                $empleado->fe_ing = $request['fe_ing'];
-                $empleado->area = $request['area'];
-                $empleado->turno = $request['turno'];
-                $empleado->activo = $activo;
-                $empleado->jefe = $jefe;
-                $empleado->legajo = $request['legajo'];
-                $empleado->activo = 1;
-                $empleado->save();
 
 
-                $nombre = $empleado->nombre_p;
-                $apellido = $empleado->apellido;
-                $correo = $empleado->correo;
-                $password = Hash::make($request['password']);
+            $activo = ($request['actividadCreate'] == 'on') ? 1 : 0;
+            $jefe = ($request['esJefeCreate'] == 'on') ? 1 : 0;
+            $empleado = new Empleado;
+            $empleado->nombre_p = $request['nombre'];
+            $empleado->apellido = $request['apellido'];
+            $empleado->dni = $request['dni'];
+            $empleado->interno = $request['interno'];
+            $empleado->correo = $request['correo'];
+            $empleado->fe_nac = $request['fe_nac'];
+            $empleado->fe_ing = $request['fe_ing'];
+            $empleado->area = $request['area'];
+            $empleado->turno = $request['turno'];
+            $empleado->activo = $activo;
+            $empleado->jefe = $jefe;
+            $empleado->usuario = null;
+            $empleado->legajo = $request['legajo'];
+            $empleado->save();
 
-                $usuario = $this->userService->createUser(
-                    $nombre,
-                    $apellido,
-                    $correo,
-                    $password
-                );
-                $usuario->dni = $empleado->dni;
-                $usuario->save();
 
-                $id_user = DB::table('users')->where('users.email', $empleado->correo)->value('id');
-                $persona = $this->personaService->updateUserByDni($empleado->dni, $id_user);
+            Session::flash('message', 'Empleado agregado con éxito');
+            Session::flash('alert-class', 'alert-success');
 
-
-                Session::flash('message', 'Empleado agregado con éxito');
-                Session::flash('alert-class', 'alert-success');
-            } else {
-                Session::flash('error', 'Las contraseñas no coinciden');
-                Session::flash('alert-class', 'alert-error');
-            }
 
             return redirect('empleado');
         } catch (Exception $e) {
@@ -205,8 +184,6 @@ class EmpleadoController extends Controller
             $activo = $request->has('actividad') ? 1 : 0;
             $jefe = $request->has('esJefe') ? 1 : 0;
             $id_p = $request['id_p'];
-            $password = $request['password'];
-            $password2 = $request['password2'];
             $nombre = $request['nombre'];
             $apellido = $request['apellido'];
             $dni = $request['dni'];
@@ -219,7 +196,7 @@ class EmpleadoController extends Controller
             $turnoEdit = $request['turnoEdit'];
 
 
-            $result = $this->empleadoService->updateEmpleado($activo, $jefe, $id_p, $password, $password2, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit);
+            $result = $this->empleadoService->updateEmpleado($activo, $jefe, $id_p, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit);
 
             if (!$result) {
                 return back()->with(['error' => 'Error al actualizar empleado']);
