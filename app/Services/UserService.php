@@ -107,7 +107,7 @@ class UserService
     public function createNewToken($dni)
     {
         $token = Str::random(60);
-        $user = RegistroUser::on('mysql_read')->where('dni', $dni)->first();
+        $user = RegistroUser::on('mysql_write')->where('dni', $dni)->first();
 
         if (!$user) {
             throw new Exception("Usuario no encontrado para el DNI $dni");
@@ -124,7 +124,7 @@ class UserService
     public function createNewTokenUser($dni)
     {
         $token = Str::random(60);
-        $user = User::on('mysql_read')->where('dni', $dni)->first();
+        $user = User::on('mysql_write')->where('dni', $dni)->first();
 
         if (!$user) {
             throw new Exception("Usuario no encontrado para el DNI $dni");
@@ -133,19 +133,17 @@ class UserService
             throw new Exception("El usuario no está activo");
         }
 
-        $userWrite = User::on('mysql_write')->find($user->id);
+        $user->remember_token = $token;
+        $user->remember_token_expires_at = now()->addDay();
+        $user->save();
 
-        $userWrite->remember_token = $token;
-        $userWrite->remember_token_expires_at = now()->addDay();
-        $userWrite->save();
-
-        return $userWrite->remember_token;
+        return $user->remember_token;
     }
 
     public function resetPassword($dni, $password)
     {
         try {
-            $user = User::on('mysql_read')->where('dni', $dni)->first();
+            $user = User::on('mysql_write')->where('dni', $dni)->first();
             if (!$user) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
@@ -166,7 +164,7 @@ class UserService
     public function cleanTokens($dni)
     {
         try {
-            $user = User::on('mysql_read')->where('dni', $dni)->first();
+            $user = User::on('mysql_write')->where('dni', $dni)->first();
             if (!$user) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
