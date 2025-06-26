@@ -13,10 +13,13 @@ class MedicationNotificationUser extends Mailable
     public $data;
     public $person;
 
-    public function __construct($data, $person)
+    public $imagePath2;
+
+    public function __construct($data, $person, $imagePath2)
     {
         $this->data = $data;
         $this->person = $person;
+        $this->imagePath2 = $imagePath2;
     }
 
 
@@ -29,32 +32,13 @@ class MedicationNotificationUser extends Mailable
             $name = $this->person;
         }
 
-        $message = "
-        <p>Hola, {$name}</p>
-        <p><b>Tu solicitud de medicamentos fue creada:</b></p>
-
-        <ul>";
-
-
-        $message .= "<li>" . $this->data['medication'] . " - Cantidad: " . $this->data['amount'] . "</li>";
-
-        if (!empty($this->data['medication2']) && !empty($this->data['amount2'])) {
-
-            $message .= "<li>" . $this->data['medication2'] . " - Cantidad: " . $this->data['amount2'] . "</li>";
-        }
-
-        if (!empty($this->data['medication3']) && !empty($this->data['amount3'])) {
-
-            $message .= "<li>" . $this->data['medication3'] . " - Cantidad: " . $this->data['amount3'] . "</li>";
-        }
-
-        $message .= "</ul>
-        <br>
-
-        <p>Saludos</p>";
-
         return $this->subject('Nueva solicitud de Medicamentos.')
-            ->html($message);
+            ->view('mails.notificationUser')
+            ->with([
+                'name' => $name,
+                'data' => $this->data,
+                'imagePath' => $this->imagePath2
+            ]);
     }
 
 

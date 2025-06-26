@@ -49,6 +49,7 @@ class MedicationsRequestController extends Controller
     public function saveNewMedicationRequest(Request $request)
     {
         try {
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
@@ -73,9 +74,9 @@ class MedicationsRequestController extends Controller
 
                 if ($create) {
                     foreach ($mails as $mail) {
-                        Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person));
+                        Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
                     }
-                    Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person));
+                    Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
                     return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
@@ -134,6 +135,7 @@ class MedicationsRequestController extends Controller
     public function createUserApi(Request $request)
     {
         try {
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
 
@@ -168,7 +170,7 @@ class MedicationsRequestController extends Controller
             $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);
 
             if ($user != null) {
-                Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token));
+                Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
                 return response()->json(['message' => 'Usuario creado exitosamente! Se enviará un correo de verificación.'], 200);
             } else {
                 return response()->json(['message' => 'La persona ya tiene usuario registrado'], 400);
@@ -190,6 +192,7 @@ class MedicationsRequestController extends Controller
             if (!isset($data['data']['email'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -199,7 +202,7 @@ class MedicationsRequestController extends Controller
                 $nombre = $person->nombre_p . ' ' . $person->apellido;
                 $token = $this->userService->createNewToken($dni);
 
-                Mail::to($email)->send(new VerificationEmail($nombre, $token));
+                Mail::to($email)->send(new VerificationEmail($nombre, $token, $imagePath2));
                 return response()->json(['message' => 'Mail reenviado correctamente'], 200);
             } else {
 
@@ -217,18 +220,16 @@ class MedicationsRequestController extends Controller
     public function sendMailResetPassword(Request $request)
     {
         try {
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
+
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
-
-            /*if (!isset($data['data']['email'])) {
-                return response()->json(['message' => 'Formato de datos inválido'], 400);
-            }*/
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
 
             $person = $this->personaService->getByDni($dni);
-            if(!is_object($person)){
+            if (!is_object($person)) {
                 return response()->json(['message' => 'La persona no existe'], 400);
             }
             $user = $this->userService->getByDni($dni);
@@ -237,9 +238,9 @@ class MedicationsRequestController extends Controller
                     if ($user->email == $email) {
                         $nombre = $person->nombre_p . ' ' . $person->apellido;
                         $token = $this->userService->createNewTokenUser($dni);
-                        Mail::to($email)->send(new ResetPasswordApi($nombre, $token));
+                        Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
                         return response()->json(['message' => 'Mail enviado correctamente!'], 200);
-                    }else{
+                    } else {
                         return response()->json(['message' => 'El usuario no está registrado'], 400);
                     }
 
@@ -264,10 +265,6 @@ class MedicationsRequestController extends Controller
         try {
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
-
-            /*if (!isset($data['data']['dni']) || !isset($data['data']['password'])) {
-                return response()->json(['message' => 'Formato de datos inválido'], 400);
-            }*/
 
             $dni = $data['data']['dni'];
             $password = $data['data']['password'];
@@ -298,7 +295,7 @@ class MedicationsRequestController extends Controller
 
             $dni = $data['data']['dni'];
             Log::info('DNI para limpiar tokens: ' . $dni);
-            if(!$this->userService->cleanTokens($dni)){
+            if (!$this->userService->cleanTokens($dni)) {
                 return response()->json(['message' => 'Error al limpiar los tokens'], 500);
             }
             return response()->json(['message' => 'Tokens limpiados correctamente'], 200);

@@ -11,11 +11,12 @@ class VerificationEmail extends Mailable
 
     public $nombre;
     public $token;
-
-    public function __construct($nombre, $token)
+    public $imagePath2;
+    public function __construct($nombre, $token, $imagePath2)
     {
         $this->nombre = $nombre;
         $this->token = $token;
+        $this->imagePath2 = $imagePath2;
     }
 
     public function build()

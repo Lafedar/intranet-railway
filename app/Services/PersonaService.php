@@ -39,6 +39,15 @@ class PersonaService
         }
 
     }
+
+    public function getByDniWrite($dni){
+        try {
+            return Persona::on('mysql_write')->where('dni', $dni)->first();
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Dni en escritura ' . $e->getMessage());
+            throw $e;
+        }
+    }
   
 
     public function checkIfMailExists($mail){

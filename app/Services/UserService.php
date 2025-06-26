@@ -65,7 +65,7 @@ class UserService
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-           
+
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
 
@@ -86,7 +86,7 @@ class UserService
         } else {
             return null;
         }
-       
+
     }
 
     public function validateMail($email)
@@ -129,15 +129,17 @@ class UserService
         if (!$user) {
             throw new Exception("Usuario no encontrado para el DNI $dni");
         }
-        if($user->activo == 0){
+        if ($user->activo == 0) {
             throw new Exception("El usuario no está activo");
         }
 
-        $user->remember_token = $token;
-        $user->remember_token_expires_at = now()->addDay();
-        $user->save();
+        $userWrite = User::on('mysql_write')->find($user->id);
 
-        return $user->remember_token;
+        $userWrite->remember_token = $token;
+        $userWrite->remember_token_expires_at = now()->addDay();
+        $userWrite->save();
+
+        return $userWrite->remember_token;
     }
 
     public function resetPassword($dni, $password)
@@ -147,7 +149,7 @@ class UserService
             if (!$user) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
-            if($user->activo == 0){
+            if ($user->activo == 0) {
                 throw new Exception("El usuario no está activo");
             }
             $user->password = Hash::make($password);
