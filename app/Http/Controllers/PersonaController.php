@@ -48,8 +48,6 @@ class PersonaController extends Controller
             $tag = substr($ciphertext, -$tagLength);
             $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
 
-            Log::info('Datos recibidos para desencriptar: ' . $ciphertextBase64 . ' con IV: ' . $ivBase64);
-
             $decrypted = openssl_decrypt(
                 $ciphertextRaw,
                 'aes-256-gcm',
@@ -59,18 +57,14 @@ class PersonaController extends Controller
                 $tag
             );
 
-            Log::info('Datos desencriptados: ' . $decrypted);
-
+    
             if ($decrypted === false) {
                 return response()->json(['message' => 'Error al desencriptar'], 400);
             }
 
             $data = json_decode($decrypted, true);
-            Log::info("datos recibidos: " . json_encode($data));
-
+        
             $dni = $data['data']['dni'];
-
-            Log::info("DNI recibido: " . $dni);
 
             $persona = Persona::where('dni', $dni)->first();
 

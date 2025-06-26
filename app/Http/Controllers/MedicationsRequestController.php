@@ -74,9 +74,21 @@ class MedicationsRequestController extends Controller
 
                 if ($create) {
                     foreach ($mails as $mail) {
-                        Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+                        try {
+                            Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+                        } catch (Exception $e) {
+                            Log::error('Error al enviar mail: ' . $e->getMessage());
+                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
+                        }
+
                     }
-                    Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+                    try {
+                        Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+                    } catch (Exception $e) {
+                        Log::error('Error al enviar mail: ' . $e->getMessage());
+                        return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
+                    }
+
                     return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
                 } else {
                     return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
@@ -170,7 +182,14 @@ class MedicationsRequestController extends Controller
             $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);
 
             if ($user != null) {
-                Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
+                try {
+                    Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
+                } catch (Exception $e) {
+                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                    $user->delete(); // Eliminar el usuario si falla el envío del correo
+                    return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cree el usuario nuevamente'], 400);
+                }
+
                 return response()->json(['message' => 'Usuario creado exitosamente! Se enviará un correo de verificación.'], 200);
             } else {
                 return response()->json(['message' => 'La persona ya tiene usuario registrado'], 400);
@@ -202,7 +221,13 @@ class MedicationsRequestController extends Controller
                 $nombre = $person->nombre_p . ' ' . $person->apellido;
                 $token = $this->userService->createNewToken($dni);
 
-                Mail::to($email)->send(new VerificationEmail($nombre, $token, $imagePath2));
+                try {
+                    Mail::to($email)->send(new VerificationEmail($nombre, $token, $imagePath2));
+                } catch (Exception $e) {
+                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                    return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor genere la verificación nuevamente'], 400);
+                }
+
                 return response()->json(['message' => 'Mail reenviado correctamente'], 200);
             } else {
 
@@ -238,7 +263,13 @@ class MedicationsRequestController extends Controller
                     if ($user->email == $email) {
                         $nombre = $person->nombre_p . ' ' . $person->apellido;
                         $token = $this->userService->createNewTokenUser($dni);
-                        Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
+                        try {
+                            Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
+                        } catch (Exception $e) {
+                            Log::error('Error al enviar mail: ' . $e->getMessage());
+                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor envie el mail nuevamente'], 400);
+                        }
+
                         return response()->json(['message' => 'Mail enviado correctamente!'], 200);
                     } else {
                         return response()->json(['message' => 'El usuario no está registrado'], 400);
@@ -268,9 +299,7 @@ class MedicationsRequestController extends Controller
 
             $dni = $data['data']['dni'];
             $password = $data['data']['password'];
-            Log::info('DNI: ' . $dni);
-            Log::info('Password: ' . $password);
-
+           
             if ($this->userService->resetPassword($dni, $password)) {
                 return response()->json(['message' => 'Contraseña restablecida correctamente!'], 200);
             } else {
@@ -288,10 +317,6 @@ class MedicationsRequestController extends Controller
         try {
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
-
-            /*if (!isset($data['data']['dni'])) {
-                return response()->json(['message' => 'Formato de datos inválido'], 400);
-            }*/
 
             $dni = $data['data']['dni'];
             Log::info('DNI para limpiar tokens: ' . $dni);

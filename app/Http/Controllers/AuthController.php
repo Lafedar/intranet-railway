@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     public function verificarEmail($token)
     {
-        $registerUser = RegistroUser::on('mysql_read')->where('remember_token', $token)->first();
+        $registerUser = RegistroUser::on('mysql_write')->where('remember_token', $token)->first();
 
         if (!$registerUser) {
             return redirect()->away('https://extranetlafedar.netlify.app?message=token');
@@ -52,7 +52,6 @@ class AuthController extends Controller
             return redirect()->away($url);
         }
 
-        $registerUser = RegistroUser::on('mysql_write')->find($registerUser->id);
         // Token válido
         $registerUser->email_verified_at = 1;
         $registerUser->remember_token = null;
