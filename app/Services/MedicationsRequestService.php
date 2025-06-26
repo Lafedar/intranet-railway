@@ -14,8 +14,8 @@ class MedicationsRequestService
     public function getAll()
     {
         try {
-            return DB::table('solicitudes_medicamentos')->
-                orderBy('id', 'desc')->get();
+            return DB::connection('mysql_read')->table('solicitudes_medicamentos')
+            ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all medications requests ' . $e->getMessage());
             return null;
@@ -25,7 +25,7 @@ class MedicationsRequestService
     public function getRequestsByDni($dni)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('dni_persona', $dni)
+            return DB::connection('mysql_read')->table('solicitudes_medicamentos')->where('dni_persona', $dni)
                 ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting medications requests by dni ' . $e->getMessage());
@@ -36,47 +36,17 @@ class MedicationsRequestService
     public function getRequestById($id)
     {
         try {
-            return DB::table('solicitudes_medicamentos')->where('id', $id)->first();
+            return DB::connection('mysql_read')->table('solicitudes_medicamentos')->where('id', $id)->first();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting medication request by id ' . $e->getMessage());
             return null;
         }
     }
 
-    public function deleteRequestById($id)
-    {
-        try {
-            return DB::table('solicitudes_medicamentos')->where('id', $id)->update(['estado' => 'Aprobación Pendiente']);
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error deletting medications requests by id ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    public function approveRequestById($id)
-    {
-        try {
-            if ($this->validateApprovedItems($id)) {
-                DB::table('solicitudes_medicamentos')
-                    ->where('id', $id)
-                    ->update([
-                        'estado' => 'Aprobada',
-                    ]);
-
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error approving medications requests by id ' . $e->getMessage());
-            return false;
-        }
-    }
     public function validateApprovedItems($id)
     {
         try {
-            $exists = DB::table('items_medicamentos')
+            $exists = DB::connection('mysql_read')->table('items_medicamentos')
                 ->where('id_solicitud', $id)
                 ->where('aprobado', 1)
                 ->exists();
@@ -92,7 +62,7 @@ class MedicationsRequestService
     public function create($data)
     {
         try {
-            $idSolicitud = DB::table('solicitudes_medicamentos')->insertGetId([
+            $idSolicitud = DB::connection('mysql_write')->table('solicitudes_medicamentos')->insertGetId([
                 'dni_persona' => $data['dni_user'],
                 'estado' => 'Aprobación Pendiente',
             ]);
@@ -121,7 +91,7 @@ class MedicationsRequestService
             }
 
             if (!empty($items)) {
-                DB::table('items_medicamentos')->insert($items);
+                DB::connection('mysql_write')->table('items_medicamentos')->insert($items);
             }
 
             return true;
@@ -131,36 +101,7 @@ class MedicationsRequestService
         }
     }
 
-
-    public function desapproveItem($id)
-    {
-        try {
-            DB::table('items_medicamentos')->where('id', $id)->update(['aprobado' => 0]);
-            return true;
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error desapproving item by id ' . $e->getMessage());
-            return false;
-        }
-    }
-    public function updateItem($id, $data)
-    {
-        try {
-            DB::table('items_medicamentos')
-                ->where('id', $id)
-                ->update([
-                    'medicamento' => $data['medicamento'],
-                    'cantidad_aprobada' => $data['cantidad_aprobada'],
-                    'lote_med' => $data['lote_med'],
-                    'vencimiento_med' => $data['vencimiento_med'],
-                ]);
-            return true;
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating item by id ' . $e->getMessage());
-            return false;
-        }
-    }
-
-
+   
     public function getItemsForMultipleRequests($ids)
     {
         try {
@@ -168,7 +109,7 @@ class MedicationsRequestService
                 return collect();
             }
 
-            return DB::table('items_medicamentos')
+            return DB::connection('mysql_read')->table('items_medicamentos')
                 ->whereIn('id_solicitud', $ids)
                 ->get();
         } catch (Exception $e) {
@@ -181,7 +122,7 @@ class MedicationsRequestService
     public function getAllItemsByMedicationRequestId($id)
     {
         try {
-            return DB::table('items_medicamentos')
+            return DB::connection('mysql_read')->table('items_medicamentos')
                 ->where('id_solicitud', $id)
                 ->get();
         } catch (Exception $e) {
@@ -193,28 +134,17 @@ class MedicationsRequestService
     public function getItemByMedicationRequestId($id)
     {
         try {
-            return DB::table('items_medicamentos')->where('id', $id)->first();
+            return DB::connection('mysql_read')->table('items_medicamentos')->where('id', $id)->first();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting item by id ' . $e->getMessage());
             return null;
         }
     }
 
-
-    public function approveItem($id)
-    {
-        try {
-            DB::table('items_medicamentos')->where('id', $id)->update(['aprobado' => 1]);
-            return true;
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error approving item by id ' . $e->getMessage());
-            return false;
-        }
-    }
     public function getAllMedicationRequestAndItemsByUserDni($dni)
     {
         try {
-            $requests = DB::table('solicitudes_medicamentos')
+            $requests = DB::connection('mysql_read')->table('solicitudes_medicamentos')
                 ->where('dni_persona', $dni)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -243,7 +173,7 @@ class MedicationsRequestService
     public function getItemById($id)
     {
         try {
-            return DB::table('items_medicamentos')->where('id', $id)->get();
+            return DB::connection('mysql_read')->table('items_medicamentos')->where('id', $id)->get();
         } catch (Exception $e) {
             Log::error('Error in ' . get_class($this) . 'Error getting the item by id: ' . $e->getMessage());
             return null;

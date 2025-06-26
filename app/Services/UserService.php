@@ -19,7 +19,7 @@ class UserService
     {
         /*validar si ya existe el usuario*/
         try {
-            return User::create([
+            return User::on('mysql_write')->create([
                 'name' => $nombre . ' ' . $apellido,
                 'email' => $correo,
                 'password' => $password
@@ -35,7 +35,7 @@ class UserService
     {
         /*validar si ya existe el usuario*/
         try {
-            return User::create([
+            return User::on('mysql_write')->create([
                 'dni' => $dni,
                 'name' => $name,
                 'email' => $correo,
@@ -53,10 +53,8 @@ class UserService
 
     public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
     {
-        /*validar si ya existe el usuario*/
         try {
-            $user = $this->getByDni($dni);
-            return RegistroUser::create([
+            return RegistroUser::on('mysql_write')->create([
                 'dni' => $dni,
                 'name' => $nombre . ' ' . $apellido,
                 'email' => $correo,
@@ -76,13 +74,13 @@ class UserService
     }
     public function getByDni(int $dni)
     {
-        return User::where('dni', $dni)
+        return User::on('mysql_read')->where('dni', $dni)
             ->first();
     }
 
     public function validate($email, $password)
     {
-        $user = User::where('email', $email)->first();
+        $user = User::on('mysql_read')->where('email', $email)->first();
         if ($user && Hash::check($password, $user->password)) {
             return $user;
         } else {
@@ -94,7 +92,7 @@ class UserService
     public function validateMail($email)
     {
         try {
-            if (User::where('email', $email)->exists()) {
+            if (User::on('mysql_read')->where('email', $email)->exists()) {
                 return true;
             } else {
                 return false;
@@ -109,7 +107,7 @@ class UserService
     public function createNewToken($dni)
     {
         $token = Str::random(60);
-        $user = RegistroUser::where('dni', $dni)->first(); 
+        $user = RegistroUser::on('mysql_read')->where('dni', $dni)->first();
 
         if (!$user) {
             throw new Exception("Usuario no encontrado para el DNI $dni");
@@ -126,7 +124,7 @@ class UserService
     public function createNewTokenUser($dni)
     {
         $token = Str::random(60);
-        $user = User::where('dni', $dni)->first();
+        $user = User::on('mysql_read')->where('dni', $dni)->first();
 
         if (!$user) {
             throw new Exception("Usuario no encontrado para el DNI $dni");
@@ -145,7 +143,7 @@ class UserService
     public function resetPassword($dni, $password)
     {
         try {
-            $user = User::where('dni', $dni)->first();
+            $user = User::on('mysql_read')->where('dni', $dni)->first();
             if (!$user) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
@@ -166,11 +164,10 @@ class UserService
     public function cleanTokens($dni)
     {
         try {
-            $user = User::where('dni', $dni)->first();
+            $user = User::on('mysql_read')->where('dni', $dni)->first();
             if (!$user) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
-            Log::info("Limpiando tokens para el usuario con DNI: $user->dni");
             $user->remember_token = null;
             $user->remember_token_expires_at = null;
             $user->save();
