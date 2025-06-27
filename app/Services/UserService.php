@@ -154,7 +154,8 @@ class UserService
             $user->remember_token = null;
             $user->remember_token_expires_at = null;
             $user->save();
-            return true;
+
+            return $user;
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
             return false;

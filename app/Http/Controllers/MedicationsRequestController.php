@@ -19,6 +19,7 @@ use App\Mail\ResetPasswordApi;
 use App\Mail\MedicationNotificationUser;
 use App\Mail\VerificationEmail;
 use Illuminate\Support\Str;
+use App\Services\SynchronizationService;
 
 
 
@@ -34,15 +35,17 @@ class MedicationsRequestController extends Controller
     protected $encryptService;
 
     protected $userService;
+    protected $synchronizationService;
 
 
-    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService, EncryptService $encryptService, UserService $userService)
+    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService, EncryptService $encryptService, UserService $userService, SynchronizationService $synchronizationService)
     {
         $this->medicationsRequestService = $medicationsRequestService;
         $this->personaService = $personaService;
         $this->genParametersService = $genParametersService;
         $this->encryptService = $encryptService;
         $this->userService = $userService;
+        $this->synchronizationService = $synchronizationService;
     }
 
     /*API*/
@@ -299,8 +302,12 @@ class MedicationsRequestController extends Controller
 
             $dni = $data['data']['dni'];
             $password = $data['data']['password'];
-           
-            if ($this->userService->resetPassword($dni, $password)) {
+
+            $user = $this->userService->resetPassword($dni, $password);
+            if (is_object($user)) {
+                $userArray = $user->toArray();
+                $userArray['password'] = $user->password;
+                $this->synchronizationService->updateUserWithAgenda($userArray);
                 return response()->json(['message' => 'Contraseña restablecida correctamente!'], 200);
             } else {
                 return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
