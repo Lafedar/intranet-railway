@@ -14,6 +14,7 @@ use App\Mail\MedicalCertificateMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use App\Mail\MedicalCertificateUser;
+use App\Services\SynchronizationService;
 
 class MedicalCertificateController extends Controller
 {
@@ -21,10 +22,11 @@ class MedicalCertificateController extends Controller
     protected $encryptService;
     protected $personService;
     protected $medicalCertificateService;
-
     protected $genParametersService;
 
-    public function __construct(UserService $userService, EncryptService $encryptService, PersonaService $personService, MedicalCertificateService $medicalCertificateService, GeneralParametersService $genParametersService)
+    protected $synchronizationService;
+
+    public function __construct(UserService $userService, EncryptService $encryptService, PersonaService $personService, MedicalCertificateService $medicalCertificateService, GeneralParametersService $genParametersService, SynchronizationService $synchronizationService)
     {
 
         $this->userService = $userService;
@@ -32,6 +34,7 @@ class MedicalCertificateController extends Controller
         $this->personService = $personService;
         $this->medicalCertificateService = $medicalCertificateService;
         $this->genParametersService = $genParametersService;
+        $this->synchronizationService = $synchronizationService;
     }
 
 
@@ -68,6 +71,7 @@ class MedicalCertificateController extends Controller
             );
 
             if (is_object($certificado)) {
+                $this->synchronizationService->saveNewMedicalCertificateInAgenda($certificado->toArray());
                 $emailsRaw = $this->genParametersService->getMailsToMedicationRequests();
 
                 if (!empty(trim($emailsRaw))) {

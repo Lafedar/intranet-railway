@@ -89,11 +89,31 @@ class SynchronizationService
                 return true;
             }
 
-            Log::error('Error al sincronizar solicitud: ' . $response->body());
+            Log::error('Error al sincronizar solicitud de medicamentos: ' . $response->body());
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar solicitud con agenda: ' . $e->getMessage());
+            Log::error('Excepción al sincronizar solicitud de medicamentos con agenda: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function saveNewMedicalCertificateInAgenda(array $data)
+    {
+        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/save-medical-certificate';
+
+        try {
+            $response = Http::post($url, $data);
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            Log::error('Error al sincronizar certificado: ' . $response->body());
+            return false;
+
+        } catch (Exception $e) {
+            Log::error('Excepción al sincronizar certificado con agenda: ' . $e->getMessage());
             return false;
         }
     }
