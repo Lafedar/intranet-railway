@@ -77,4 +77,25 @@ class SynchronizationService
             return false;
         }
     }
+
+    public function saveNewMedicationRequestInAgenda(array $data)
+    {
+        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/save-medication-request';
+
+        try {
+            $response = Http::post($url, $data);
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            Log::error('Error al sincronizar solicitud: ' . $response->body());
+            return false;
+
+        } catch (Exception $e) {
+            Log::error('Excepción al sincronizar solicitud con agenda: ' . $e->getMessage());
+            return false;
+        }
+    }
+
 }

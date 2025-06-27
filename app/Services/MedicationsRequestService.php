@@ -7,15 +7,22 @@ use Exception;
 use Log;
 use Illuminate\Database\Eloquent\Collection;
 use DB;
+use App\Services\SynchronizationService;
 
 class MedicationsRequestService
 {
+    protected $synchronizationService;
+
+    public function __construct(SynchronizationService $synchronizationService)
+    {
+        $this->synchronizationService = $synchronizationService;
+    }
 
     public function getAll()
     {
         try {
             return DB::connection('mysql_read')->table('solicitudes_medicamentos')
-            ->orderBy('id', 'desc')->get();
+                ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error getting all medications requests ' . $e->getMessage());
             return null;
@@ -52,7 +59,7 @@ class MedicationsRequestService
                 ->exists();
 
             return $exists;
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error validating approved items ' . $e->getMessage());
             return false;
         }
@@ -62,6 +69,7 @@ class MedicationsRequestService
     public function create($data)
     {
         try {
+            // Crear solicitud
             $idSolicitud = DB::connection('mysql_write')->table('solicitudes_medicamentos')->insertGetId([
                 'dni_persona' => $data['dni_user'],
                 'estado' => 'Aprobación Pendiente',
@@ -69,6 +77,7 @@ class MedicationsRequestService
 
             $items = [];
 
+            // Crear ítems
             foreach ($data as $key => $value) {
                 if (str_starts_with($key, 'medication')) {
                     $index = str_replace('medication', '', $key);
@@ -90,18 +99,36 @@ class MedicationsRequestService
                 }
             }
 
+            // Insertar ítems
             if (!empty($items)) {
                 DB::connection('mysql_write')->table('items_medicamentos')->insert($items);
             }
 
+            // Obtener datos de la solicitud para sincronizar
+            $solicitudData = [
+                'id' => $idSolicitud,
+                'dni_persona' => $data['dni_user'],
+                'estado' => 'Aprobación Pendiente',
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
+            ];
+
+            // Llamar al servicio de sincronización
+            $this->synchronizationService->saveNewMedicationRequestInAgenda([
+                'request' => $solicitudData,
+                'items' => $items,
+            ]);
+
             return true;
+
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating medication request ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' - Error creating medication request: ' . $e->getMessage());
             return false;
         }
     }
 
-   
+
+
     public function getItemsForMultipleRequests($ids)
     {
         try {
