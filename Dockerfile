@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Instalar dependencias del sistema y extensiones de PHP
+# Instalar dependencias del sistema y extensiones de PHP necesarias para Laravel
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -19,30 +19,30 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiar el código fuente al contenedor
+# Copiar el código fuente de Laravel al contenedor
 COPY . /var/www/html
 
-# Definir el directorio de trabajo
-WORKDIR /var/www/html
+# Definir el directorio de trabajo como /var/www/html/public
+WORKDIR /var/www/html/public
 
-# Activar mod_rewrite de Apache
+# Activar mod_rewrite de Apache y permitir .htaccess en la carpeta public
 RUN a2enmod rewrite \
-    && echo '<Directory /var/www/html>\n\
+    && echo '<Directory /var/www/html/public>\n\
         AllowOverride All\n\
     </Directory>' >> /etc/apache2/apache2.conf
 
-# Crear y dar permisos a carpetas necesarias
+# Crear y dar permisos a carpetas necesarias de Laravel
 RUN mkdir -p /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache \
     && chown -R www-data:www-data /var/www/html
 
-# Instalar dependencias de Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de Laravel sin paquetes de desarrollo
+RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
-# Generar app key si no hay .env
-RUN if [ ! -f ".env" ]; then cp .env.example .env; fi && \
-    php artisan key:generate || true
+# Copiar .env.example como .env si no existe, y generar APP_KEY (ignora errores si falla)
+RUN if [ ! -f "../.env" ]; then cp ../.env.example ../.env; fi && \
+    php ../artisan key:generate || true
 
-# Exponer el puerto
+# Exponer el puerto 80
 EXPOSE 80
