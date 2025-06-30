@@ -26,7 +26,7 @@ class ForceCors
 
         // Obtener el origen de la request
         $origin = $request->headers->get('Origin');
-
+        Log::info('ForceCors ejecutado. Método: ' . $request->getMethod() . ' | Origen: ' . ($origin ?? 'NULO'));
         // Si el origen es válido, lo usamos. Si no, devolvemos 'null' para bloquear.
         $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'null';
 

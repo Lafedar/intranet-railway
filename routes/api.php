@@ -51,7 +51,9 @@ Route::post('/recibir-form', function (Request $request) {
 
 
 
-
+Route::options('/get-key', function () {
+    return response('', 204);
+})->middleware('force.cors');
 
 Route::middleware(['force.cors'])->group(function () {
     Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
