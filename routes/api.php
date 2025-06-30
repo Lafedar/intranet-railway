@@ -9,6 +9,7 @@ use App\Http\Controllers\CryptoController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Middleware\ForceCors;
 use App\Http\Controllers\MedicalCertificateController;
+use App\Http\Controllers\SynchronizationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -76,3 +77,11 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
         return response('', 204);
     })->where('any', '.*');
 });
+
+
+
+//RUTAS PARA SINCRONIZAR DESDE INTRANET
+Route::post('/createPerson', [SynchronizationController::class, 'createPerson']);
+Route::post('/updatePerson', [SynchronizationController::class, 'updatePerson']);
+Route::post('/updateMedicationRequest', [SynchronizationController::class, 'updateMedicationRequest']);
+Route::post('/destroyPerson', [SynchronizationController::class, 'destroyPerson']);

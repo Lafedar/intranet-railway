@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Http;
 class SynchronizationService
 {
 
+    /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
     public function saveNewUserInAgenda(array $datosUsuario)
     {
-        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/save-user';
+        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-user';
 
         try {
             $response = Http::post($url, [
@@ -39,7 +40,7 @@ class SynchronizationService
 
     public function updatePersonWithAgenda(array $persona)
     {
-        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/update-person';
+        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/update-person';
 
         try {
             $response = Http::post($url, $persona);
@@ -60,7 +61,7 @@ class SynchronizationService
 
     public function updateUserWithAgenda(array $user)
     {
-        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/update-user';
+        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/update-user';
 
         try {
             $response = Http::post($url, $user);
@@ -80,7 +81,7 @@ class SynchronizationService
 
     public function saveNewMedicationRequestInAgenda(array $data)
     {
-        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/save-medication-request';
+        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-medication-request';
 
         try {
             $response = Http::post($url, $data);
@@ -100,7 +101,7 @@ class SynchronizationService
 
     public function saveNewMedicalCertificateInAgenda(array $data)
     {
-        $url = 'https://qt-hose-alloy-gym.trycloudflare.com/api/save-medical-certificate';
+        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-medical-certificate';
 
         try {
             $response = Http::post($url, $data);

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Empleado extends Model
 {
     //use HasFactory;
-
+    protected $connection = 'mysql_write';
     protected $table = 'personas';
 
     //el campo id de la tabla cursos_instancia lo reconoce Laravel automaticamente como primary key de la tabla

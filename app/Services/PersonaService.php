@@ -22,7 +22,17 @@ class PersonaService
     public function getById(int $id): ?Persona
     {
         try {
-            return Persona::connection('mysql_read')->find($id);
+            return Persona::on('mysql_read')->find($id);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
+            throw $e;
+        }
+
+    }
+    public function getByIdWrite(int $id): ?Persona
+    {
+        try {
+            return Persona::on('mysql_write')->find($id);
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
             throw $e;
@@ -40,7 +50,8 @@ class PersonaService
 
     }
 
-    public function getByDniWrite($dni){
+    public function getByDniWrite($dni)
+    {
         try {
             return Persona::on('mysql_write')->where('dni', $dni)->first();
         } catch (Exception $e) {
@@ -48,16 +59,17 @@ class PersonaService
             throw $e;
         }
     }
-  
 
-    public function checkIfMailExists($mail){
-        try{
+
+    public function checkIfMailExists($mail)
+    {
+        try {
             return DB::connection('mysql_read')->table('personas')->where('correo', $mail)->exists();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error al verificar si el correo existe' . $e->getMessage());
             return false;
         }
-        
+
     }
 
 

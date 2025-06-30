@@ -77,6 +77,11 @@ class UserService
         return User::on('mysql_read')->where('dni', $dni)
             ->first();
     }
+    public function getByDniWrite(int $dni)
+    {
+        return User::on('mysql_write')->where('dni', $dni)
+            ->first();
+    }
 
     public function validate($email, $password)
     {
