@@ -20,6 +20,7 @@ class ForceCors
         $allowedOrigins = [
             'https://extranetlafedar.netlify.app',
             'http://localhost:3000',
+            'https://intranet-railway-production.up.railway.app',
         ];
 
         // Obtener el origen de la request
