@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Instalar extensiones necesarias para Laravel y tus dependencias
+# Instalar dependencias del sistema y extensiones de PHP
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -11,31 +11,38 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     wkhtmltopdf \
-    && docker-php-ext-install pdo_mysql mbstring zip gd xml
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip gd dom xml
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiar proyecto al contenedor
+# Copiar el código fuente al contenedor
 COPY . /var/www/html
 
-# Establecer directorio de trabajo
+# Definir el directorio de trabajo
 WORKDIR /var/www/html
 
-# Permisos y configuraciones de Apache
-RUN chown -R www-data:www-data /var/www/html \
-    && a2enmod rewrite
+# Activar mod_rewrite de Apache
+RUN a2enmod rewrite \
+    && echo '<Directory /var/www/html>\n\
+        AllowOverride All\n\
+    </Directory>' >> /etc/apache2/apache2.conf
 
-# Apache permite override para Laravel
-RUN echo '<Directory /var/www/html>\n\
-    AllowOverride All\n\
-</Directory>' >> /etc/apache2/apache2.conf
+# Crear y dar permisos a carpetas necesarias
+RUN mkdir -p /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html
 
-# Instalar dependencias de Laravel (sin dev para producción)
+# Instalar dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Generar app key si no existe
+# Generar app key si no hay .env
 RUN if [ ! -f ".env" ]; then cp .env.example .env; fi && \
-    php artisan key:generate
+    php artisan key:generate || true
 
+# Exponer el puerto
 EXPOSE 80
