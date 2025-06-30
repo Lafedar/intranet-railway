@@ -114,7 +114,7 @@ class SynchronizationController extends Controller
                 'estado' => $data['estado'] ?? $requestModel->estado,
                 'updated_at' => now(),
             ]);
-            
+
             foreach ($items as $itemData) {
                 if (isset($itemData['id'])) {
                     DB::table('items_medicamentos')
@@ -144,9 +144,9 @@ class SynchronizationController extends Controller
     {
         try {
             $personPayload = $request->input('person');
-            
+
             $person = $this->personService->getByDniWrite($personPayload['dni']);
-            
+
             if (!$person) {
                 return response()->json(['error' => 'Empleado no encontrado'], 404);
             }
@@ -154,7 +154,7 @@ class SynchronizationController extends Controller
             $person->save();
 
             $user = $this->userService->getByDniWrite($personPayload['dni']);
-            
+
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
             }
@@ -166,9 +166,32 @@ class SynchronizationController extends Controller
             return response()->json(['error' => 'Error al sincronizar'], 500);
         }
 
+    }
 
+    public function syncPassword(Request $request)
+    {
+        try {
+            $dni = $request->input('dni');
+            $password = $request->input('password'); 
 
+            $user = $this->userService->getByDniWrite($dni);
 
+            if (is_object($user)) {
+                if ($password !== null) {
+                    $user->password = $password;
+                    $user->save();
+                    return response()->json(['message' => 'Contraseña sincronizada correctamente']);
+                } else {
+                    return response()->json(['error' => 'La password es null'], 500);
+                }
+            } else {
+                return response()->json(['error' => 'El usuario no existe'], 500);
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error al sincronizar la contraseña: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al sincronizar'], 500);
+        }
     }
 
 

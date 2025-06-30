@@ -10,54 +10,11 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Middleware\ForceCors;
 use App\Http\Controllers\MedicalCertificateController;
 use App\Http\Controllers\SynchronizationController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::post('/save-data', [MedicationsRequestController::class, 'saveDataFromApi']);
-
-Route::post('/recibir-form', function (Request $request) {
-    // Validar los datos
-    $validated = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-    ]);
-
-    // Opcional: podés guardar en base de datos, mandar mails, etc.
-
-    // Ahora, mandar los datos a Make (por ejemplo un Webhook de Make)
-    $webhookUrl = 'https://hook.us2.make.com/rk3431n6gfwlba1efxp3cw5iy6tca3k0'; // la URL de Make
-
-    $response = Http::post($webhookUrl, [
-        'nombre' => $validated['nombre'],
-        'email' => $validated['email'],
-    ]);
-
-    // Devolver respuesta al navegador
-    return response()->json(['status' => 'Formulario enviado correctamente']);
-});
-
-/*--------------------------------------------------------------------------------------------*/
-
-
-
-
 
 
 Route::middleware(['force.cors'])->group(function () {
     Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
 });
-
 
 Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/loginApi', [CryptoController::class, 'loginApi']);
@@ -85,3 +42,4 @@ Route::post('/createPerson', [SynchronizationController::class, 'createPerson'])
 Route::post('/updatePerson', [SynchronizationController::class, 'updatePerson']);
 Route::post('/updateMedicationRequest', [SynchronizationController::class, 'updateMedicationRequest']);
 Route::post('/destroyPerson', [SynchronizationController::class, 'destroyPerson']);
+Route::post('/syncPassword', [SynchronizationController::class, 'syncPassword']);
