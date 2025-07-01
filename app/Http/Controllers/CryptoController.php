@@ -11,10 +11,6 @@ use App\User;
 use Maatwebsite\Excel\Concerns\ToArray;
 
 
-
-
-
-
 class CryptoController extends Controller
 {
     protected $userService;
@@ -63,35 +59,38 @@ class CryptoController extends Controller
                 return response()->json(['error' => 'Decryption failed'], 400);
             }
 
-
-
-
             $credentials = json_decode($plaintext, true);
             if (!isset($credentials['usuario']) || !isset($credentials['password'])) {
                 return response()->json(['error' => 'Formato inválido'], 400);
             }
 
-            $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
-
-            if (!is_object($user)) {
-                $respuesta = json_encode(['error' => 'Credenciales inválidas']);
-            } elseif ($user->activo == 0) {
-                $respuesta = json_encode(['error' => 'El usuario no está activo']);
-            } elseif ($user->email_verified_at == 0) {
-                $respuesta = json_encode(['error' => 'Debes verificar tu email antes de iniciar sesión']);
-            } elseif (is_null($user->dni)) {
-                $respuesta = json_encode(['error' => 'El usuario no tiene DNI registrado']);
-            } else {
-                $respuesta = json_encode([
-                    'id' => $user->id,
-                    'nombre' => $user->name,
-                    'email' => $user->email,
-                    'dni' => $user->dni,
-                ]);
+            $flag = false;
+            $registerUser = $this->userService->validateRegisterUser($credentials['usuario'], $credentials['password']);
+            if (is_object($registerUser)) {
+                if ($registerUser->email_verified_at == 0) {
+                    $respuesta = json_encode(['error' => 'Debes verificar tu email antes de iniciar sesión']);
+                    $flag = true;
+                }
             }
-
-
-
+            $user = $this->userService->validate($credentials['usuario'], $credentials['password']);
+            if (!$flag) {
+                if (!is_object($user)) {
+                    $respuesta = json_encode(['error' => 'Credenciales inválidas']);
+                } elseif ($user->activo == 0) {
+                    $respuesta = json_encode(['error' => 'El usuario no está activo']);
+                } elseif ($user->email_verified_at == 0) {
+                    $respuesta = json_encode(['error' => 'Debes verificar tu email antes de iniciar sesión']);
+                } elseif (is_null($user->dni)) {
+                    $respuesta = json_encode(['error' => 'El usuario no tiene DNI registrado']);
+                } else {
+                    $respuesta = json_encode([
+                        'id' => $user->id,
+                        'nombre' => $user->name,
+                        'email' => $user->email,
+                        'dni' => $user->dni,
+                    ]);
+                }
+            }
 
             // Encriptar respuesta
             $responseIv = random_bytes(12);

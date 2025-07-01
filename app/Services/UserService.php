@@ -50,6 +50,23 @@ class UserService
         }
 
     }
+    public function validateUserExists($dni, $email)
+    {
+        try {
+            $exists = User::on('mysql_read')
+                ->where('dni', $dni)
+                ->orWhere('email', $email)
+                ->exists();
+
+            return $exists;
+
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
+            return false; // O manejar según convenga
+        }
+    }
+
+
 
     public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
     {
@@ -86,6 +103,16 @@ class UserService
     public function validate($email, $password)
     {
         $user = User::on('mysql_read')->where('email', $email)->first();
+        if ($user && Hash::check($password, $user->password)) {
+            return $user;
+        } else {
+            return null;
+        }
+
+    }
+    public function validateRegisterUser($email, $password)
+    {
+        $user = RegistroUser::on('mysql_read')->where('email', $email)->first();
         if ($user && Hash::check($password, $user->password)) {
             return $user;
         } else {
@@ -149,16 +176,23 @@ class UserService
     {
         try {
             $user = User::on('mysql_write')->where('dni', $dni)->first();
-            if (!$user) {
+            $registerUser = RegistroUser::on('mysql_write')->where('dni', $dni)->first();
+            if (!$user && !$registerUser) {
                 throw new Exception("Usuario no encontrado para el DNI $dni");
             }
-            if ($user->activo == 0) {
+            if ($user->activo == 0 && $registerUser->activo == 0) {
                 throw new Exception("El usuario no está activo");
             }
             $user->password = Hash::make($password);
             $user->remember_token = null;
             $user->remember_token_expires_at = null;
             $user->save();
+
+
+            $registerUser->password = Hash::make($password);
+            $registerUser->remember_token = null;
+            $registerUser->remember_token_expires_at = null;
+            $registerUser->save();
 
             return $user;
         } catch (Exception $e) {

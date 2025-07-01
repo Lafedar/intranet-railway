@@ -15,21 +15,45 @@ class SynchronizationService
     /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
     public function saveNewUserInAgenda(array $datosUsuario)
     {
-        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-user';
+        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';        // Endpoint para obtener la clave
+        $urlSave = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-user';      // Endpoint para enviar datos encriptados
 
         try {
-            $response = Http::timeout(20)->post($url, [
+            // 1) Solicitar clave efímera
+            $responseKey = Http::timeout(30)->post($urlKey);
+            if (!$responseKey->successful()) {
+                Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
+                return false;
+            }
+
+            $keyB64 = $responseKey->json('key');
+            $key = base64_decode($keyB64);
+            if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
+                Log::error('Clave efímera inválida recibida');
+                return false;
+            }
+
+            $encrypted = $this->encryptDataToAgenda([
                 'dni' => $datosUsuario['dni'],
                 'name' => $datosUsuario['name'],
                 'email' => $datosUsuario['email'],
                 'password' => $datosUsuario['password'],
+            ], $key);
+
+            if ($encrypted === false) {
+                return false;
+            }
+
+            $responseSave = Http::timeout(30)->post($urlSave, [
+                'ciphertext' => $encrypted['ciphertext'],
+                'iv' => $encrypted['iv'],
             ]);
 
-            if ($response->successful()) {
+            if ($responseSave->successful()) {
                 return true;
             }
 
-            Log::error('Error al sincronizar: ' . $response->body());
+            Log::error('Error al sincronizar: ' . $responseSave->body());
             return false;
 
         } catch (Exception $e) {
@@ -38,12 +62,41 @@ class SynchronizationService
         }
     }
 
+
     public function updatePersonWithAgenda(array $persona)
     {
+        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
         $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-person';
 
         try {
-            $response = Http::timeout(20)->post($url, $persona);
+
+            $responseKey = Http::timeout(30)->post($urlKey);
+            if (!$responseKey->successful()) {
+                Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
+                return false;
+            }
+
+            $keyB64 = $responseKey->json('key');
+            $key = base64_decode($keyB64);
+            if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
+                Log::error('Clave efímera inválida recibida');
+                return false;
+            }
+            Log::info("Persona: " . json_encode($persona));
+
+            $encrypted = $this->encryptDataToAgenda([
+                'dni' => $persona['dni'],
+                'usuario' => $persona['usuario'],
+
+            ], $key);
+
+            if ($encrypted === false) {
+                return false;
+            }
+            $response = Http::timeout(30)->post($url, [
+                'ciphertext' => $encrypted['ciphertext'],
+                'iv' => $encrypted['iv'],
+            ]);
 
             if ($response->successful()) {
                 return true;
@@ -61,15 +114,40 @@ class SynchronizationService
 
     public function updateUserWithAgenda(array $user)
     {
+        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
         $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-user';
 
         try {
-            $response = Http::timeout(20)->post($url, $user);
+            $responseKey = Http::timeout(30)->post($urlKey);
+            if (!$responseKey->successful()) {
+                Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
+                return false;
+            }
+
+            $keyB64 = $responseKey->json('key');
+            $key = base64_decode($keyB64);
+            if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
+                Log::error('Clave efímera inválida recibida');
+                return false;
+            }
+
+            $encrypted = $this->encryptDataToAgenda([
+                'dni' => $user['dni'],
+                'password' => $user['password'],
+
+            ], $key);
+
+            if ($encrypted === false) {
+                return false;
+            }
+            $response = Http::timeout(30)->post($url, [
+                'ciphertext' => $encrypted['ciphertext'],
+                'iv' => $encrypted['iv'],
+            ]);
 
             if ($response->successful()) {
                 return true;
             }
-
             Log::error('Error al sincronizar usuario: ' . $response->body());
             return false;
 
@@ -81,10 +159,37 @@ class SynchronizationService
 
     public function saveNewMedicationRequestInAgenda(array $data)
     {
+        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
         $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medication-request';
 
         try {
-            $response = Http::timeout(20)->post($url, $data);
+            $responseKey = Http::timeout(30)->post($urlKey);
+            if (!$responseKey->successful()) {
+                Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
+                return false;
+            }
+
+            $keyB64 = $responseKey->json('key');
+            $key = base64_decode($keyB64);
+            if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
+                Log::error('Clave efímera inválida recibida');
+                return false;
+            }
+
+            $encrypted = $this->encryptDataToAgenda([
+                'request' => $data['request'],
+                'items' => $data['items'],
+
+            ], $key);
+
+            if ($encrypted === false) {
+                return false;
+            }
+
+            $response = Http::timeout(30)->post($url, [
+                'ciphertext' => $encrypted['ciphertext'],
+                'iv' => $encrypted['iv'],
+            ]);
 
             if ($response->successful()) {
                 return true;
@@ -101,15 +206,43 @@ class SynchronizationService
 
     public function saveNewMedicalCertificateInAgenda(array $data)
     {
+        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
         $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medical-certificate';
 
         try {
-            $response = Http::timeout(20)->post($url, $data);
+
+            $responseKey = Http::timeout(30)->post($urlKey);
+            if (!$responseKey->successful()) {
+                Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
+                return false;
+            }
+
+            $keyB64 = $responseKey->json('key');
+            $key = base64_decode($keyB64);
+            if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
+                Log::error('Clave efímera inválida recibida');
+                return false;
+            }
+            $encrypted = $this->encryptDataToAgenda([
+                'user_id' => $data['user_id'],
+                'titulo' => $data['titulo'],
+                'descripcion' => $data['descripcion'],
+                'archivo' => $data['archivo'],
+
+            ], $key);
+
+            if ($encrypted === false) {
+                return false;
+            }
+
+            $response = Http::timeout(30)->post($url, [
+                'ciphertext' => $encrypted['ciphertext'],
+                'iv' => $encrypted['iv'],
+            ]);
 
             if ($response->successful()) {
                 return true;
             }
-
             Log::error('Error al sincronizar certificado: ' . $response->body());
             return false;
 
@@ -117,6 +250,34 @@ class SynchronizationService
             Log::error('Excepción al sincronizar certificado con agenda: ' . $e->getMessage());
             return false;
         }
+    }
+
+
+    public function encryptDataToAgenda(array $data, string $key)
+    {
+        $plaintext = json_encode($data);
+        $iv = random_bytes(12); // Tamaño recomendado para GCM
+        $tag = '';
+
+        $ciphertext = openssl_encrypt(
+            $plaintext,
+            'aes-256-gcm',
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag
+        );
+
+        if ($ciphertext === false) {
+            Log::error('Error al encriptar datos');
+            return false;
+        }
+
+        return [
+            'ciphertext' => base64_encode($ciphertext . $tag),
+            'iv' => base64_encode($iv),
+
+        ];
     }
 
 }
