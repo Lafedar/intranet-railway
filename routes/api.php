@@ -50,12 +50,12 @@ Route::post('/recibir-form', function (Request $request) {
 /*--------------------------------------------------------------------------------------------*/
 
 
-Route::options('{any}', function (Request $request) {
-    $origin = $request->headers->get('Origin');
-    Log::info('OPTIONS global ejecutado con origen: ' . ($origin ?? 'NULO'));
+//Route::options('{any}', function (Request $request) {
+  //  $origin = $request->headers->get('Origin');
+  //  Log::info('OPTIONS global ejecutado con origen: ' . ($origin ?? 'NULO'));
 
-    return response()->json([], 204);
-})->where('any', '.*')->middleware('force.cors');
+  //  return response()->json([], 204);
+//})->where('any', '.*')->middleware('force.cors');
 
 Route::options('/test-cors', function () {
     return response()->json(['ok' => true])
