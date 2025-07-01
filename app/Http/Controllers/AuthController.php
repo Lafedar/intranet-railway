@@ -33,8 +33,10 @@ class AuthController extends Controller
         $registerUser = RegistroUser::on('mysql_write')->where('remember_token', $token)->first();
 
         if (!$registerUser) {
-            Log::info("No encontro al usuario. Token: " . $token);
             return redirect()->away('https://extranetlafedar.netlify.app?message=token');
+        }
+        if ($registerUser->email_verified_at == 1) {
+            return redirect()->away('https://extranetlafedar.netlify.app?message=success');
         }
         Log::info("Encontro al usuario. Token: " . $token);
         if (now()->greaterThan($registerUser->remember_token_expires_at)) {
@@ -60,7 +62,6 @@ class AuthController extends Controller
 
         // Token válido
         $registerUser->email_verified_at = 1;
-        $registerUser->remember_token = null;
         $registerUser->remember_token_expires_at = null;
         $registerUser->save();
 

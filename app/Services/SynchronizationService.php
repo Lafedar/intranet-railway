@@ -15,10 +15,10 @@ class SynchronizationService
     /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
     public function saveNewUserInAgenda(array $datosUsuario)
     {
-        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-user';
+        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-user';
 
         try {
-            $response = Http::post($url, [
+            $response = Http::timeout(20)->post($url, [
                 'dni' => $datosUsuario['dni'],
                 'name' => $datosUsuario['name'],
                 'email' => $datosUsuario['email'],
@@ -40,10 +40,10 @@ class SynchronizationService
 
     public function updatePersonWithAgenda(array $persona)
     {
-        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/update-person';
+        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-person';
 
         try {
-            $response = Http::post($url, $persona);
+            $response = Http::timeout(20)->post($url, $persona);
 
             if ($response->successful()) {
                 return true;
@@ -61,10 +61,10 @@ class SynchronizationService
 
     public function updateUserWithAgenda(array $user)
     {
-        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/update-user';
+        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-user';
 
         try {
-            $response = Http::post($url, $user);
+            $response = Http::timeout(20)->post($url, $user);
 
             if ($response->successful()) {
                 return true;
@@ -81,10 +81,10 @@ class SynchronizationService
 
     public function saveNewMedicationRequestInAgenda(array $data)
     {
-        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-medication-request';
+        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medication-request';
 
         try {
-            $response = Http::post($url, $data);
+            $response = Http::timeout(20)->post($url, $data);
 
             if ($response->successful()) {
                 return true;
@@ -101,10 +101,10 @@ class SynchronizationService
 
     public function saveNewMedicalCertificateInAgenda(array $data)
     {
-        $url = 'https://pharmaceutical-douglas-indicator-fwd.trycloudflare.com/api/save-medical-certificate';
+        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medical-certificate';
 
         try {
-            $response = Http::post($url, $data);
+            $response = Http::timeout(20)->post($url, $data);
 
             if ($response->successful()) {
                 return true;
