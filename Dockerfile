@@ -14,8 +14,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# Ajustar Apache para servir desde public y habilitar .htaccess
-RUN a2enmod rewrite \
+# Ajustar Apache para servir desde public y habilitar módulos
+RUN a2enmod rewrite headers \
     && sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|' /etc/apache2/apache2.conf
 
