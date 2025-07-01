@@ -57,6 +57,22 @@ Route::post('/recibir-form', function (Request $request) {
   //  return response()->json([], 204);
 //})->where('any', '.*')->middleware('force.cors');
 
+// Ruta de “prueba de deploy”
+Route::get('/debug-confirm', function () {
+    Log::info('Ejecutando /debug-confirm desde limpiar-proyecto-api');
+    return response()->json([
+        'message' => 'Código correcto desde limpiar-proyecto-api',
+    ]);
+});
+
+Route::get('/debug-path', function () {
+    return response()->json([
+        'base_path'    => base_path(),             // Carpeta raíz de Laravel
+        'api_filepath' => realpath(__FILE__),      // Ruta absoluta de este mismo archivo
+        'last_line'    => trim(last(file(__FILE__))),
+    ]);
+})
+
 Route::options('/test-cors', function () {
     return response()->json(['ok' => true])
         ->header('Access-Control-Allow-Origin', '*')
