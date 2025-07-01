@@ -9,6 +9,7 @@ use App\Http\Controllers\CryptoController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Middleware\ForceCors;
 use App\Http\Controllers\MedicalCertificateController;
+use Illuminate\Support\Facades\Log;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,7 +50,12 @@ Route::post('/recibir-form', function (Request $request) {
 /*--------------------------------------------------------------------------------------------*/
 
 
+Route::options('{any}', function (Request $request) {
+    $origin = $request->headers->get('Origin');
+    Log::info('OPTIONS global ejecutado con origen: ' . ($origin ?? 'NULO'));
 
+    return response()->json([], 204);
+})->where('any', '.*')->middleware('force.cors');
 
 //Route::options('/get-key', function () {
 //    return response('', 204);
