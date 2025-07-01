@@ -71,7 +71,7 @@ Route::get('/debug-path', function () {
         'api_filepath' => realpath(__FILE__),      // Ruta absoluta de este mismo archivo
         'last_line'    => trim(last(file(__FILE__))),
     ]);
-})
+});
 
 Route::options('/test-cors', function () {
     return response()->json(['ok' => true])
