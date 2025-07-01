@@ -59,11 +59,11 @@ Route::post('/recibir-form', function (Request $request) {
 
 // Ruta de “prueba de deploy”
 Route::get('/debug-confirm', function () {
-    Log::info('Ejecutando /debug-confirm desde limpiar-proyecto-api');
+    Log::info('Ejecutando /debug-confirm desde main');
     return response()->json([
-        'message' => 'Código correcto desde limpiar-proyecto-api',
+        'message' => 'Codigo correcto desde limpiar-proyecto-api',
     ]);
-});
+})->middleware('force.cors');
 
 Route::get('/debug-path', function () {
     return response()->json([
