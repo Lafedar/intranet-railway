@@ -33,7 +33,8 @@ env COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_DISABLE_XDEBUG=1 \
     composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
-# Copiar .env y generar APP_KEY si es necesario\RUN cp .env.example .env && php artisan key:generate || true
+# Copiar .env y generar APP_KEY si es necesario\
+RUN cp .env.example .env && php artisan key:generate || true
 
 # Limpiar cachés de Laravel (rutas, configuración, vistas)
 RUN php artisan route:clear \
