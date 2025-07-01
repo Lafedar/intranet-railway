@@ -15,6 +15,7 @@ use log;
 
 
 
+
 class EmpleadoService
 {
     public function getById(int $id)
@@ -32,35 +33,40 @@ class EmpleadoService
 
 
     }
-    public function updateEmpleado($activo, $jefe, $id_p, $password, $password2, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit)
+    public function updateEmpleado($activo, $jefe, $id_p, $nombre, $apellido, $dni, $interno, $correo, $legajo, $fe_nac, $fe_ing, $area, $turnoEdit)
     {
         try {
             if (!$activo || !$jefe) {
                 DB::table('jefe_area')->where('jefe', $id_p)->delete();
             }
 
-            if (!$activo) {
-                // Eliminar todos los roles del usuario
-                DB::table('model_has_roles')
-                    ->join('users', 'users.id', '=', 'model_has_roles.model_id')
-                    ->join('personas', 'personas.usuario', '=', 'users.id')
-                    ->where('personas.id_p', $id_p)
-                    ->delete();
+            $user = User::where('dni', $dni)->first();
+           
+            if (is_object($user)) {
+                if ($activo == 0) {
+                    // Eliminar todos los roles del usuario
+                    DB::table('model_has_roles')
+                        ->join('users', 'users.id', '=', 'model_has_roles.model_id')
+                        ->join('personas', 'personas.usuario', '=', 'users.id')
+                        ->where('personas.id_p', $id_p)
+                        ->delete();
 
-                // Liberar los puestos asociados a esta persona
-                DB::table('puestos')->where('persona', $id_p)->update(['persona' => null]);
-            }
+                    // Liberar los puestos asociados a esta persona
+                    DB::table('puestos')->where('persona', $id_p)->update(['persona' => null]);
 
-            // Buscar el usuario asociado a la persona
-            $usuarioId = DB::table('personas')->where('id_p', $id_p)->value('usuario');
-            $usuario = User::find($usuarioId);
+                    $user->activo = 0;
+                    $user->save();
 
-            // Validar si las contraseñas coinciden antes de actualizar cualquier dato
-            if (!empty($password) && !empty($password2)) {
-                if ($password !== $password2) {
-                    return false;
+                    
+                }elseif($activo == 1){
+                    
+                    $user->activo = 1;
+                    $user->save();
+
                 }
             }
+
+
 
             // Actualizar datos del empleado
             DB::table('personas')
@@ -80,20 +86,6 @@ class EmpleadoService
                     'jefe' => $jefe,
                 ]);
 
-            // Si existe el usuario, actualizarlo
-            if ($usuario) {
-                $usuario->name = $nombre . ' ' . $apellido;
-                $usuario->email = $correo;
-                $usuario->dni = $dni;
-                $usuario->activo = $activo;
-
-                // Si las contraseñas fueron validadas, actualizar la contraseña
-                if (!empty($password)) {
-                    $usuario->password = Hash::make($password);
-                }
-
-                $usuario->save();
-            }
 
             return true;
         } catch (Exception $e) {

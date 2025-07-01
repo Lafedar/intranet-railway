@@ -12,14 +12,16 @@ class MedicationApprovedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $medicationRequest;
+    public $items;
     public $person;
     public $base64image;
     public $base64image_signature;
     public $date;
     public $isPdf;
-    public function __construct($medicationRequest, $person, $base64image, $base64image_signature, $date, $isPdf)
+    public function __construct($medicationRequest, $items, $person, $base64image, $base64image_signature, $date, $isPdf)
     {
         $this->medicationRequest = $medicationRequest;
+        $this->items = $items;
         $this->person = $person;
         $this->base64image = $base64image;
         $this->base64image_signature = $base64image_signature;
@@ -35,6 +37,7 @@ class MedicationApprovedMail extends Mailable
         return $this->subject('Nueva solicitud de medicamento.')
                     ->view('medications.certificate', [
                         'medication' => $this->medicationRequest,
+                        'items' => $this->items,
                         'person' => $this->person,
                         'imageBase64' => $this->base64image,
                         'imageBase64_firma' => $this->base64image_signature,

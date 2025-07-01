@@ -18,7 +18,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'dni', 'password', 
+        'name',
+        'email',
+        'dni',
+        'password',
+        'activo',
+        'remember_token',
+        'remember_token_expires_at',
+        'email_verified_at',
     ];
 
     /**
@@ -27,8 +34,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
+    protected $casts = [
+        'remember_token_expires_at' => 'datetime',
+    ];
+
 
     /**
      * Get the password reset notification mail.

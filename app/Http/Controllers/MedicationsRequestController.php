@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\MedicationsRequestService;
 use App\Services\PersonaService;
+use App\Services\EncryptService;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MedicationApprovedMail;
@@ -11,8 +12,17 @@ use Illuminate\Http\Request;
 use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
+use App\Services\UserService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use App\Mail\MedicationNotificationMail;
+use App\Mail\ResetPasswordApi;
+use App\Mail\MedicationNotificationUser;
+use App\Mail\VerificationEmail;
+use Illuminate\Support\Str;
+
+
+
+
 
 
 class MedicationsRequestController extends Controller
@@ -21,353 +31,302 @@ class MedicationsRequestController extends Controller
     protected $personaService;
 
     protected $genParametersService;
+    protected $encryptService;
+
+    protected $userService;
 
 
-    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService)
+    public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService, EncryptService $encryptService, UserService $userService)
     {
         $this->medicationsRequestService = $medicationsRequestService;
         $this->personaService = $personaService;
         $this->genParametersService = $genParametersService;
+        $this->encryptService = $encryptService;
+        $this->userService = $userService;
     }
 
-    public function listsMedicationRequests(Request $request)
+    /*API*/
+    public function saveNewMedicationRequest(Request $request)
     {
         try {
-            $nombrePersona = $request->input('persona');
-            $nombreMedicamento = $request->input('medicamento');
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            $decrypted = $this->encryptService->decrypt($request);
+            if (!$decrypted) {
+                return response()->json(['message' => 'Error al desencriptar los datos'], 400);
+            }
+            $data = json_decode($decrypted, true);
 
-            if (auth()->user()->hasRole('administrador') || auth()->user()->hasRole('rrhh')) {
-                $medicationsRequests = $this->medicationsRequestService->getAll();
-                $dnis = $medicationsRequests->pluck('dni_persona')->unique()->toArray();
-
-                $people = $this->personaService->getByDnis($dnis);
-
-                // Filtro por persona
-                if ($nombrePersona) {
-                    $peopleFiltradas = $people->filter(function ($person) use ($nombrePersona) {
-                        return stripos($person->apellido . ' ' . $person->nombre_p, $nombrePersona) !== false;
-                    });
-
-                    $dnisFiltrados = $peopleFiltradas->pluck('dni')->toArray();
-
-                    $medicationsRequests = $medicationsRequests->filter(function ($req) use ($dnisFiltrados) {
-                        return in_array($req->dni_persona, $dnisFiltrados);
-                    });
-                }
-
-                // Filtro por medicamento
-                if ($nombreMedicamento) {
-                    $medicationsRequests = $medicationsRequests->filter(function ($req) use ($nombreMedicamento) {
-                        return stripos($req->medicamento1, $nombreMedicamento) !== false ||
-                            stripos($req->medicamento2, $nombreMedicamento) !== false ||
-                            stripos($req->medicamento3, $nombreMedicamento) !== false;
-                    });
-                }
-
-                return view('medications.index', [
-                    'medicationsRequests' => $medicationsRequests,
-                    'persons' => $people,
-                    'filters' => ['persona' => $nombrePersona, 'medicamento' => $nombreMedicamento],
-                ]);
-
-            } else {
-                $medicationsRequests = $this->medicationsRequestService->getRequestsByDni(auth()->user()->dni);
-                $person = $this->personaService->getByDni(auth()->user()->dni);
-
-                return view('medications.index', [
-                    'medicationsRequests' => $medicationsRequests,
-                    'persons' => $person
-                ]);
+            if (!isset($data['data'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
 
+            $payload = $data['data'];
+
+            $person = $this->personaService->getByDni($payload['dni_user']);
+            $user = $this->userService->getByDni($payload['dni_user']);
+            $mailsString = $this->genParametersService->getMailsToMedicationRequests();
+            $mails = explode(',', $mailsString);
+
+            if (!$person) {
+                return response()->json(['message' => 'La persona no existe'], 401);
+            } else {
+                $create = $this->medicationsRequestService->create($payload);
+
+                if ($create) {
+                    foreach ($mails as $mail) {
+                        try {
+                            Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+                        } catch (Exception $e) {
+                            Log::error('Error al enviar mail: ' . $e->getMessage());
+                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
+                        }
+
+                    }
+                    try {
+                        Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+                    } catch (Exception $e) {
+                        Log::error('Error al enviar mail: ' . $e->getMessage());
+                        return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
+                    }
+
+                    return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
+                } else {
+                    return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
+                }
+            }
+
+
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error displaying medications requests: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Error al obtener las solicitudes de medicamentos.');
+            Log::error('Error en saveNewMedicationRequest: ' . $e->getMessage());
+            return response()->json(['message' => 'Error interno del servidor'], 500);
         }
     }
 
-    public function changeMedicationRequestToPendingApproval($id)
+    public function getAllMedicationRequestAndItemsByUserDni(Request $request)
     {
         try {
-            $this->medicationsRequestService->deleteRequestById($id);
-            return redirect()->back()
-                ->with('success', 'Solicitud actualizada a Aprobación pendiente.');
+            //Desencripto los datos
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
 
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating request to Pending Approval: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Error al actualizar la solicitud a Aprobación Pendiente.');
-        }
-    }
-
-    public function completeMedicationRequest($id, $person_id, Request $request)
-    {
-        try {
-
-            $approved1 = $request->input('approved_checkbox');
-            $approved2 = $request->input('approved2_checkbox');
-            $approved3 = $request->input('approved3_checkbox');
-
-            $approved1 = $request->input('approved_checkbox') ?: "0";
-            $approved2 = $request->input('approved2_checkbox') ?: "0";
-            $approved3 = $request->input('approved3_checkbox') ?: "0";
-
-
-            $person = $this->personaService->getById($person_id);
-            if ($person == null) {
-
-                $person = $person_id;
-
+            // Validación
+            if (!isset($data['data']['dni_user'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
 
-            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-            if (file_exists($imagePath)) {
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $mimeType = mime_content_type($imagePath);
-                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
-            } else {
-                $base64image = null;
-            }
+            // Acceder al dni_user correctamente
+            $dni = $data['data']['dni_user'];
 
-            $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
-
-            if (file_exists($signaturePath)) {
-
-                $imageData2 = base64_encode(file_get_contents($signaturePath));
-                $mimeType2 = mime_content_type($signaturePath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-                // Crear la cadena de imagen Base64
-                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-            } else {
-
-                $base64image_signature = null;
-            }
-
-            $recipients = $this->genParametersService->getMailsToMedicationRequests();
-            $date = date('d/m/Y');
-            if ($approved1 !== "1" && $approved2 !== "1" && $approved3 !== "1") {
-                return back()->with('error', 'Debe aprobar al menos un medicamento.')->withInput();
-
-            } else {
-                $update = $this->medicationsRequestService->approveRequestById($id, $approved1, $approved2, $approved3);
-            }
-            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
-            if($recipients == null){
-                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
-            }
-            $emails = explode(';', $recipients);
-            $isPdf = true;
-            if ($update == true) {
-                foreach ($emails as $email) {
-
-                    Mail::to($email)->send(new MedicationApprovedMail($medicationRequest, $person, $base64image, $base64image_signature, $date, $isPdf));
-                }
-                if (!empty($person->correo)) {
-                    Mail::to($person->correo)->send(new MedicationInfoMail($medicationRequest, $person, $date));
-                }
-            } else {
-                return redirect()->back()
-                    ->with('error', 'Error al aprobar la solicitud de medicamento.');
-            }
+            // Obtener las solicitudes con sus items
+            $requestsData = $this->medicationsRequestService->getAllMedicationRequestAndItemsByUserDni($dni);
 
 
-            return redirect()->back()
-                ->with('success', 'Solicitud aprobada correctamente.');
 
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error approving medication request: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al aprobar la solicitud de medicamento ' . $e->getMessage());
-        }
-    }
+            //Encripto los datos
+            $responseIv = random_bytes(12);
+            $aesKeyBase64 = $request->session()->get('aes_key');
+            $key = base64_decode($aesKeyBase64);
 
-
-    public function generateMedicationRequestDeliveryNote($id, $person_id)
-    {
-        try {
-            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
-            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
-            $person = $this->personaService->getById($person_id);
-            if ($person == null) {
-                $person = $person_id;
-            }
-    
-            $base64image = null;
-            if (file_exists($imagePath)) {
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $mimeType = mime_content_type($imagePath);
-                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
-            }
-    
-            $signaturePath = storage_path('app/public/cursos/firma_rrhh.png');
-            $base64image_signature = null;
-            if (file_exists($signaturePath)) {
-                $imageData2 = base64_encode(file_get_contents($signaturePath));
-                $mimeType2 = mime_content_type($signaturePath);
-                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-            }
-    
-            $isPdf = true; // importante para controlar estilos condicionales en la vista
-            $date = now()->format('d/m/Y');
-    
-            $html = view('medications.certificate', [
-                'medication' => $medicationRequest,
-                'base64image' => $base64image,
-                'person' => $person,
-                'base64image_signature' => $base64image_signature,
-                'fecha' => $date,
-                'isPdf' => $isPdf
-            ])->render();
-    
-            $pdf = \SnappyPdf::loadHTML($html)
-                ->setOption('orientation', 'portrait')
-                ->setOption('enable-local-file-access', true)
-                ->setOption('enable-javascript', true)
-                ->setOption('javascript-delay', 200)
-                ->setOption('margin-top', 10)
-                ->setOption('margin-right', 10)
-                ->setOption('margin-bottom', 2)
-                ->setOption('margin-left', 10);
-    
-            // Mostrar el PDF en el navegador
-            return $pdf->inline('remito.pdf');
-    
-        } catch (Exception $e) {
-            \Log::error('Error displaying the delivery note: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al mostrar el remito: ' . $e->getMessage());
-        }
-    }
-    
-    public function reviewAndUpdateMedicationRequest(Request $request, $id)
-    {
-        try {
-            $validateData = $request->validate([
-                'medication1' => 'required|string|max:255',
-                'amount1' => 'required|integer',
-                'approved1' => 'nullable|integer',
-                'medication2' => 'nullable|string|max:255',
-                'amount2' => 'nullable|integer',
-                'approved2' => 'nullable|integer',
-                'medication3' => 'nullable|string|max:255',
-                'amount3' => 'nullable|integer',
-                'approved3' => 'nullable|integer',
-
+            $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
+            return response()->json([
+                'ciphertext' => base64_encode($ciphertextWithTag),
+                'iv' => base64_encode($responseIv),
             ]);
 
-            $this->medicationsRequestService->updateMedicationRequestById($id, $validateData);
 
-            return redirect()->route('medications.index')
-                ->with('success', 'Solicitud actualizada correctamente.');
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating medication request: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al actualizar la solicitud de medicamentos ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting all medication requests by user dni: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al actualizar el item'], 500);
         }
-    }
-    public function showMedicationRequestEditForm($id)
-    {
-        try {
-            $medicationRequest = $this->medicationsRequestService->getRequestById($id);
 
-
-            return view('medications.edit', ['medication' => $medicationRequest]);
-
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error displaying medication request data: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al mostrar los datos para editar de la solicitud de medicamentos ' . $e->getMessage());
-        }
     }
 
-    public function generatePDFcertificate($id, $personId)
+
+
+    public function createUserApi(Request $request)
     {
         try {
-            $medication = $this->medicationsRequestService->getRequestById($id);
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
 
-            $person = $this->personaService->getById($personId);
-            if ($person == null) {
-
-                $person = $personId;
-
+            if (!isset($data['data']['email'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
-            $fecha = now()->format('d/m/Y');
 
-            $imagePath = storage_path('app/public/cursos/logo-lafedar.png');
+            $dni = $data['data']['dni'];
+            $email = $data['data']['email'];
+            $password = $data['data']['password'];
 
-            if (file_exists($imagePath)) {
+            if (!is_object($this->personaService->getByDni($dni))) {
+                return response()->json(['message' => 'El Dni no existe'], 400);
+            }
 
-                $imageData = base64_encode(file_get_contents($imagePath));
-                $mimeType = mime_content_type($imagePath); // Obtener el tipo MIME de la imagen (ej. image/png)
+            /*DESCOMENTAR*/
+            if (is_object($this->userService->getByDni($dni))) {
+                return response()->json(['message' => 'El Dni ingresado ya tiene un usuario registrado'], 400);
+            }
+
+            if ($this->userService->validateMail($email)) {
+                return response()->json(['message' => 'El email ya esta registrado'], 400);
+            }
 
 
-                $base64image = 'data:' . $mimeType . ';base64,' . $imageData;
+            $person = $this->personaService->getByDni($dni);
+            if ($person->activo == 0) {
+                return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
+            }
+            $nombre = $person->nombre_p . ' ' . $person->apellido;
+
+            $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);
+
+            if ($user != null) {
+                try {
+                    Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
+                } catch (Exception $e) {
+                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                    $user->delete(); // Eliminar el usuario si falla el envío del correo
+                    return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cree el usuario nuevamente'], 400);
+                }
+
+                return response()->json(['message' => 'Usuario creado exitosamente! Se enviará un correo de verificación.'], 200);
+            } else {
+                return response()->json(['message' => 'La persona ya tiene usuario registrado'], 400);
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating user: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al crear el usuario'], 500);
+        }
+
+    }
+
+    public function generateNewVerificationEmail(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            if (!isset($data['data']['email'])) {
+                return response()->json(['message' => 'Formato de datos inválido'], 400);
+            }
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
+
+            $dni = $data['data']['dni'];
+            $email = $data['data']['email'];
+
+            $person = $this->personaService->getByDni($dni);
+            if ($person->activo == 1) {
+                $nombre = $person->nombre_p . ' ' . $person->apellido;
+                $token = $this->userService->createNewToken($dni);
+
+                try {
+                    Mail::to($email)->send(new VerificationEmail($nombre, $token, $imagePath2));
+                } catch (Exception $e) {
+                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                    return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor genere la verificación nuevamente'], 400);
+                }
+
+                return response()->json(['message' => 'Mail reenviado correctamente'], 200);
             } else {
 
-                $base64image = null;
+                return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
             }
 
-
-            $firmaPath = storage_path('app/public/cursos/firma_rrhh.png');
-
-            if (file_exists($firmaPath)) {
-
-                $imageData2 = base64_encode(file_get_contents($firmaPath));
-                $mimeType2 = mime_content_type($firmaPath); // Obtener el tipo MIME de la imagen (ej. image/png)
-
-                // Crear la cadena de imagen Base64
-                $base64image_signature = 'data:' . $mimeType2 . ';base64,' . $imageData2;
-            } else {
-
-                $base64image_signature = null;
-            }
-
-            $isPdf = true;
-
-
-            $html = view('medications.certificate', compact('medication', 'base64image', 'person', 'base64image_signature', 'fecha', 'isPdf'))->render();
-
-
-
-            $pdf = SnappyPdf::loadHTML($html)
-                ->setOption('orientation', 'portrait') // Establece la orientación a apaisado
-                ->setOption('enable-local-file-access', true)
-                ->setOption('enable-javascript', true)
-                ->setOption('javascript-delay', 200)
-                ->setOption('margin-top', 10)
-                ->setOption('margin-right', 10)
-                ->setOption('margin-bottom', 2)
-                ->setOption('margin-left', 10);
-
-
-            return $pdf->download('remito.pdf');
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error generating PDF certificate: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al generar el PDF del remito de la solicitud de medicamentos');
+            Log::error('Error in class: ' . get_class($this) . ' .Error generating new verification email: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al generar el mail de verificación'], 500);
         }
+
 
     }
 
-    public function saveDataFromApi(Request $request)
+    public function sendMailResetPassword(Request $request)
     {
         try {
-            $data = $request->all();
-            $recipients = $this->genParametersService->getMailsToMedicationRequests();
-            if($recipients == null){
-                return back()->with('error', 'No se encontraron correos para enviar la notificación.')->withInput();
-            }
-            $emails = explode(';', $recipients);
-            $person = $this->personaService->getByDni($data['dni_persona']);
+            $imagePath2 = storage_path('app/public/images/firma.jpg');
 
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            $dni = $data['data']['dni'];
+            $email = $data['data']['email'];
+
+            $person = $this->personaService->getByDni($dni);
             if (!is_object($person)) {
-                $person = $data['dni_persona'];
+                return response()->json(['message' => 'La persona no existe'], 400);
             }
-            foreach ($emails as $email) {
+            $user = $this->userService->getByDni($dni);
+            if ($person->activo == 1) {
+                if ($user->activo == 1) {
+                    if ($user->email == $email) {
+                        $nombre = $person->nombre_p . ' ' . $person->apellido;
+                        $token = $this->userService->createNewTokenUser($dni);
+                        try {
+                            Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
+                        } catch (Exception $e) {
+                            Log::error('Error al enviar mail: ' . $e->getMessage());
+                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor envie el mail nuevamente'], 400);
+                        }
 
-                Mail::to($email)->send(new MedicationNotificationMail($data, $person));
+                        return response()->json(['message' => 'Mail enviado correctamente!'], 200);
+                    } else {
+                        return response()->json(['message' => 'El usuario no está registrado'], 400);
+                    }
+
+                } else {
+                    return response()->json(['message' => 'El usuario no está activo'], 400);
+                }
+
+
+            } else {
+                return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
+            }
+
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error sending reset password email: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al enviar el mail de restablecimiento de contraseña'], 500);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            $dni = $data['data']['dni'];
+            $password = $data['data']['password'];
+           
+            if ($this->userService->resetPassword($dni, $password)) {
+                return response()->json(['message' => 'Contraseña restablecida correctamente!'], 200);
+            } else {
+                return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving data from Api: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error resetting password: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
+        }
+    }
 
+    public function cleanTokens(Request $request)
+    {
+        try {
+            $decrypted = $this->encryptService->decrypt($request);
+            $data = json_decode($decrypted, true);
+
+            $dni = $data['data']['dni'];
+            Log::info('DNI para limpiar tokens: ' . $dni);
+            if (!$this->userService->cleanTokens($dni)) {
+                return response()->json(['message' => 'Error al limpiar los tokens'], 500);
+            }
+            return response()->json(['message' => 'Tokens limpiados correctamente'], 200);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error cleaning tokens: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al limpiar los tokens'], 500);
         }
     }
 

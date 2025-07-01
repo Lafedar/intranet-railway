@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class MedicationNotificationMail extends Mailable
+class MedicationNotificationUser extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -33,11 +33,11 @@ class MedicationNotificationMail extends Mailable
         }
 
         return $this->subject('Nueva solicitud de Medicamentos.')
-            ->view('mails.newMedicationRequest')
+            ->view('mails.notificationUser')
             ->with([
                 'name' => $name,
                 'data' => $this->data,
-                'imagePath2' => $this->imagePath2
+                'imagePath' => $this->imagePath2
             ]);
     }
 

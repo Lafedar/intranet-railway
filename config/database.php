@@ -33,6 +33,22 @@ return [
 
     'connections' => [
 
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'fake'),
+            'username' => env('DB_USERNAME', 'fake'),
+            'password' => env('DB_PASSWORD', 'fake'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
@@ -40,20 +56,27 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'mysql' => [
+
+        'mysql_read' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'agenda'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'database' => env('DB_DATABASE', 'extranet'),
+            'username' => env('DB_USERNAME_READ', 'app_read'),
+            'password' => env('DB_PASSWORD_READ', 'P@ssw0rdUserRe@d1973'),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
             'strict' => true,
-            'engine' => null,
+        ],
+
+        'mysql_write' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'database' => env('DB_DATABASE', 'extranet'),
+            'username' => env('DB_USERNAME_WRITE', 'app_write'),
+            'password' => env('DB_PASSWORD_WRITE', 'P@ssw0rdUserWr1te1973'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'strict' => true,
         ],
 
         'pgsql' => [
@@ -70,7 +93,7 @@ return [
             'sslmode' => 'prefer',
         ],
 
-       
+
 
     ],
 
