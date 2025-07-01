@@ -22,14 +22,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copiar el código fuente de Laravel al contenedor
 COPY . /var/www/html
 
-# Definir el directorio de trabajo como /var/www/html/public
-WORKDIR /var/www/html/public
+# Definir el directorio de trabajo como /var/www/html
+WORKDIR /var/www/html
 
 # Activar mod_rewrite de Apache y permitir .htaccess en la carpeta public
 RUN a2enmod rewrite \
-    && echo '<Directory /var/www/html/public>\n\
-        AllowOverride All\n\
-    </Directory>' >> /etc/apache2/apache2.conf
+    && echo '<Directory /var/www/html/public>\n        AllowOverride All\n    </Directory>' >> /etc/apache2/apache2.conf
 
 # Crear y dar permisos a carpetas necesarias de Laravel
 RUN mkdir -p /var/www/html/bootstrap/cache \
@@ -41,8 +39,15 @@ RUN mkdir -p /var/www/html/bootstrap/cache \
 RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
 # Copiar .env.example como .env si no existe, y generar APP_KEY (ignora errores si falla)
-RUN if [ ! -f "../.env" ]; then cp ../.env.example ../.env; fi && \
-    php ../artisan key:generate || true
+RUN if [ ! -f "/var/www/html/.env" ]; then cp /var/www/html/.env.example /var/www/html/.env; fi && \
+    php /var/www/html/artisan key:generate || true
 
-# Exponer el puerto 80
+# Limpiar cachés de Laravel en cada deploy
+RUN php /var/www/html/artisan route:clear && \
+    php /var/www/html/artisan config:clear && \
+    php /var/www/html/artisan view:clear || true
+
+# Exponer el puerto 80 y arrancar Apache después de limpiar cachés
+CMD bash -lc "php /var/www/html/artisan route:clear && php /var/www/html/artisan config:clear && php /var/www/html/artisan view:clear && apache2-foreground"
+
 EXPOSE 80
