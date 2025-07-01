@@ -38,6 +38,7 @@ class ForceCors
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
                 ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
                 ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('X-Debug-Cors', 'ForceCors-OPTIONS-EJECUTADO')
                 ->header('X-Force-Cors', 'true');
         }
 
@@ -50,6 +51,7 @@ class ForceCors
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
             ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Expose-Headers', 'Authorization')
+            ->header('X-Debug-Cors', 'ForceCors-NORMAL-EJECUTADO')
             ->header('X-Force-Cors', 'true');
     }
 
