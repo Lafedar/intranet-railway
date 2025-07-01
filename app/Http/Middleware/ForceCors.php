@@ -26,13 +26,13 @@ class ForceCors
 
         // Obtener el origen de la request
         $origin = $request->headers->get('Origin');
-        Log::info('ForceCors ejecutado. Método: ' . $request->getMethod() . ' | Origen: ' . ($origin ?? 'NULO'));
+        Log::channel('stderr')->info('ForceCors ejecutado. Método: ' . $request->getMethod() . ' | Origen: ' . ($origin ?? 'NULO'));
         // Si el origen es válido, lo usamos. Si no, devolvemos 'null' para bloquear.
         $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'null';
 
         // Manejar preflight request
         if ($request->getMethod() === 'OPTIONS') {
-            Log::info('ForceCors middleware OPTIONS request origen: ' . $origin);
+            Log::channel('stderr')->info('ForceCors middleware OPTIONS request origen: ' . ($origin ?? 'NULO'));
             return response('', 204)
                 ->header('Access-Control-Allow-Origin', $allowOrigin)
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
