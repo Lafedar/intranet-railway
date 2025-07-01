@@ -57,6 +57,12 @@ Route::options('{any}', function (Request $request) {
     return response()->json([], 204);
 })->where('any', '.*')->middleware('force.cors');
 
+Route::options('/test-cors', function () {
+    return response()->json(['ok' => true])
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('X-Debug-Cors', 'PRUEBA-CORS');
+});
+
 //Route::options('/get-key', function () {
 //    return response('', 204);
 //})->middleware('force.cors');
