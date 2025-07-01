@@ -39,5 +39,8 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
+    'agenda' => [
+        'base_url' => env('AGENDA_API_BASE_URL'),
+    ],
 
 ];

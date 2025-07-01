@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\Http;
 class SynchronizationService
 {
 
+
     /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
     public function saveNewUserInAgenda(array $datosUsuario)
     {
-        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';        // Endpoint para obtener la clave
-        $urlSave = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-user';      // Endpoint para enviar datos encriptados
+        $baseUrl = config('services.agenda.base_url');
+        $urlKey = $baseUrl . '/api/get-key-api';
+        $urlSave = $baseUrl . '/api/save-user';
 
         try {
             // 1) Solicitar clave efímera
@@ -65,8 +67,9 @@ class SynchronizationService
 
     public function updatePersonWithAgenda(array $persona)
     {
-        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
-        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-person';
+        $baseUrl = config('services.agenda.base_url');
+        $urlKey = $baseUrl . '/api/get-key-api';
+        $url = $baseUrl . '/api/update-person';
 
         try {
 
@@ -114,8 +117,9 @@ class SynchronizationService
 
     public function updateUserWithAgenda(array $user)
     {
-        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
-        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/update-user';
+        $baseUrl = config('services.agenda.base_url');
+        $urlKey = $baseUrl . '/api/get-key-api';
+        $url = $baseUrl . '/api/update-user';
 
         try {
             $responseKey = Http::timeout(30)->post($urlKey);
@@ -159,8 +163,9 @@ class SynchronizationService
 
     public function saveNewMedicationRequestInAgenda(array $data)
     {
-        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
-        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medication-request';
+        $baseUrl = config('services.agenda.base_url');
+        $urlKey = $baseUrl . '/api/get-key-api';
+        $url = $baseUrl . '/api/save-medication-request';
 
         try {
             $responseKey = Http::timeout(30)->post($urlKey);
@@ -206,8 +211,9 @@ class SynchronizationService
 
     public function saveNewMedicalCertificateInAgenda(array $data)
     {
-        $urlKey = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/get-key-api';
-        $url = 'https://songs-alexandria-won-lawyer.trycloudflare.com/api/save-medical-certificate';
+        $baseUrl = config('services.agenda.base_url');
+        $urlKey = $baseUrl . '/api/get-key-api';
+        $url = $baseUrl . '/api/save-medical-certificate';
 
         try {
 
