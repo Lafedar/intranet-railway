@@ -36,13 +36,17 @@ RUN mkdir -p bootstrap/cache \
     && chmod -R 775 bootstrap/cache \
     && chown -R www-data:www-data .
 
-# Instalar dependencias de Laravel sin paquetes de desarrollo\RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
+# Instalar dependencias de Laravel sin paquetes de desarrollo
+RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
 # Copiar .env.example como .env si no existe, y generar APP_KEY (ignora errores si falla)
-RUN if [ ! -f "/var/www/html/.env" ]; then cp /var/www/html/.env.example /var/www/html/.env; fi \
+RUN if [ ! -f "/var/www/html/.env" ]; then \
+      cp /var/www/html/.env.example /var/www/html/.env; \
+    fi \
     && php /var/www/html/artisan key:generate || true
 
-# Limpiar cachés de Laravel en cada build\RUN php /var/www/html/artisan route:clear && \
+# Limpiar caches de Laravel en cada build
+RUN php /var/www/html/artisan route:clear && \
     php /var/www/html/artisan config:clear && \
     php /var/www/html/artisan view:clear || true
 
