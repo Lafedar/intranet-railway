@@ -178,11 +178,12 @@ class MedicationsRequestController extends Controller
                 return response()->json(['message' => 'La persona no está activa en la empresa'], 400);
             }
             $nombre = $person->nombre_p . ' ' . $person->apellido;
-
+            Log::info("Antes de createRegisterUserApi");
             $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);
-
+            Log::info("Luego de createRegisterUserApi");
             if ($user != null) {
                 try {
+                    Log::info("Antes de VerificationEmail. Valor email: ". $email);
                     Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
                 } catch (Exception $e) {
                     Log::error('Error al enviar mail: ' . $e->getMessage());
