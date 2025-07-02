@@ -194,6 +194,7 @@ class UserService
             $registerUser->remember_token_expires_at = null;
             $registerUser->save();
 
+
             return $user;
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
@@ -216,6 +217,22 @@ class UserService
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function getRegisterUserByDni($dni)
+    {
+        try {
+            $registerUser = RegistroUser::on('mysql_write')->where('dni', $dni)->first();
+            if($registerUser){
+                return $registerUser;
+            }else{
+                return null;
+            }
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
+            return null;
+        }
+
     }
 
 

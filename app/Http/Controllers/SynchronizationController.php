@@ -14,6 +14,8 @@ use Log;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
 use App\Models\MedicationRequest;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 class SynchronizationController extends Controller
 {
     protected $userService;
@@ -32,11 +34,23 @@ class SynchronizationController extends Controller
         $this->synchronizationService = $synchronizationService;
     }
 
-
-    public function createPerson(Request $request)
+    /*RECIBIR DATOS DESDE INTRANET*/
+    public function createPersonFromIntranet(Request $request)
     {
         try {
-            $data = $request->input('person');
+            $validated = $request->validate([
+                'ciphertext' => 'required|string',
+                'iv' => 'required|string',
+            ]);
+
+            $data = $this->decryptFromAgenda(
+                $validated['ciphertext'],
+                $validated['iv']
+            );
+
+            if (!$data) {
+                return response()->json(['message' => 'No se pudieron desencriptar los datos.'], 400);
+            }
 
             $empleado = new Empleado();
             $empleado->nombre_p = $data['nombre_p'];
@@ -62,10 +76,22 @@ class SynchronizationController extends Controller
     }
 
 
-    public function updatePerson(Request $request)
+    public function updatePersonFromIntranet(Request $request)
     {
         try {
-            $data = $request->input('person');
+            $validated = $request->validate([
+                'ciphertext' => 'required|string',
+                'iv' => 'required|string',
+            ]);
+
+            $data = $this->decryptFromAgenda(
+                $validated['ciphertext'],
+                $validated['iv']
+            );
+
+            if (!$data) {
+                return response()->json(['message' => 'No se pudieron desencriptar los datos.'], 400);
+            }
 
             $employee = $this->personService->getByIdWrite($data['id_p']);
             if (!$employee) {
@@ -94,41 +120,52 @@ class SynchronizationController extends Controller
         }
     }
 
-    public function updateMedicationRequest(Request $request)
+    public function updateMedicationRequestFromIntranet(Request $request)
     {
         try {
-            $data = $request->input('request');
-            $items = $request->input('items', []);
+            $validated = $request->validate([
+                'ciphertext' => 'required|string',
+                'iv' => 'required|string',
+            ]);
+
+            $data = $this->decryptFromAgenda(
+                $validated['ciphertext'],
+                $validated['iv']
+            );
+
+            if (!$data) {
+                return response()->json(['message' => 'No se pudieron desencriptar los datos.'], 400);
+            }
+
+            $items = $data['items'] ?? [];
 
             if (!isset($data['id'])) {
                 return response()->json(['error' => 'Falta el ID de la solicitud'], 400);
             }
 
-            $requestModel = MedicationRequest::find($data['id']);
+            $requestModel = MedicationRequest::on('mysql_write')->find($data['id']);
             if (!$requestModel) {
                 return response()->json(['error' => 'Solicitud no encontrada'], 404);
             }
 
             $requestModel->update([
-                'dni_persona' => $data['dni_persona'] ?? $requestModel->dni_persona,
-                'estado' => $data['estado'] ?? $requestModel->estado,
-                'updated_at' => now(),
+                'dni_persona' => $data['dni_persona'],
+                'estado' => $data['estado'],
             ]);
 
             foreach ($items as $itemData) {
                 if (isset($itemData['id'])) {
-                    DB::table('items_medicamentos')
+                    DB::connection('mysql_write')->table('items_medicamentos')
                         ->where('id', $itemData['id'])
                         ->where('id_solicitud', $requestModel->id)
                         ->update([
+                            'aprobado' => $itemData['aprobado'],
                             'medicamento' => $itemData['medicamento'],
-                            'cantidad_solicitada' => $itemData['cantidad_solicitada'] ?? null,
-                            'cantidad_aprobada' => $itemData['cantidad_aprobada'] ?? null,
-                            'aprobado' => $itemData['aprobado'] ?? null,
-                            'lote_med' => $itemData['lote_med'] ?? null,
-                            'vencimiento_med' => $itemData['vencimiento_med'] ?? null,
+                            'cantidad_solicitada' => $itemData['cantidad_solicitada'],
+                            'cantidad_aprobada' => $itemData['cantidad_aprobada'],
+                            'lote_med' => $itemData['lote_med'],
+                            'vencimiento_med' => $itemData['vencimiento_med'],
                         ]);
-
                 }
             }
 
@@ -143,9 +180,21 @@ class SynchronizationController extends Controller
     public function destroyPerson(Request $request)
     {
         try {
-            $personPayload = $request->input('person');
+            $validated = $request->validate([
+                'ciphertext' => 'required|string',
+                'iv' => 'required|string',
+            ]);
 
-            $person = $this->personService->getByDniWrite($personPayload['dni']);
+            $data = $this->decryptFromAgenda(
+                $validated['ciphertext'],
+                $validated['iv']
+            );
+
+            if (!$data) {
+                return response()->json(['message' => 'No se pudieron desencriptar los datos.'], 400);
+            }
+
+            $person = $this->personService->getByDniWrite($data['dni']);
 
             if (!$person) {
                 return response()->json(['error' => 'Empleado no encontrado'], 404);
@@ -153,7 +202,7 @@ class SynchronizationController extends Controller
             $person->activo = 0;
             $person->save();
 
-            $user = $this->userService->getByDniWrite($personPayload['dni']);
+            $user = $this->userService->getByDniWrite($data['dni']);
 
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
@@ -168,18 +217,33 @@ class SynchronizationController extends Controller
 
     }
 
-    public function syncPassword(Request $request)
+    public function syncPasswordFromIntranet(Request $request)
     {
         try {
-            $dni = $request->input('dni');
-            $password = $request->input('password'); 
+            $validated = $request->validate([
+                'ciphertext' => 'required|string',
+                'iv' => 'required|string',
+            ]);
 
-            $user = $this->userService->getByDniWrite($dni);
+            $data = $this->decryptFromAgenda(
+                $validated['ciphertext'],
+                $validated['iv']
+            );
 
-            if (is_object($user)) {
-                if ($password !== null) {
-                    $user->password = $password;
+            if (!$data) {
+                return response()->json(['message' => 'No se pudieron desencriptar los datos.'], 400);
+            }
+            $user = $this->userService->getByDniWrite($data['dni']);
+            $registerUser = $this->userService->getRegisterUserByDni($data['dni']);
+
+            if ($user) {
+                if (!empty($data['password'])) {
+                    $user->password = $data['password'];
                     $user->save();
+                    if ($registerUser) {
+                        $registerUser->password = $data['password'];
+                        $registerUser->save();
+                    }
                     return response()->json(['message' => 'Contraseña sincronizada correctamente']);
                 } else {
                     return response()->json(['error' => 'La password es null'], 500);
@@ -191,6 +255,76 @@ class SynchronizationController extends Controller
         } catch (Exception $e) {
             Log::error('Error al sincronizar la contraseña: ' . $e->getMessage());
             return response()->json(['error' => 'Error al sincronizar'], 500);
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------------*/
+
+
+    public function getKey(Request $request)
+    {
+        // Clave cacheada para que sea efímera y se use durante un tiempo (ej: 5 minutos)
+        $cacheKey = 'efimera_key';
+
+        // Intentamos obtenerla del cache
+        $key = Cache::get($cacheKey);
+
+        if (!$key) {
+            // Generamos una nueva clave aleatoria de 32 bytes (AES-256)
+            $key = base64_encode(random_bytes(32));
+
+            // Guardamos la clave en cache con TTL (ej 5 minutos)
+            Cache::put($cacheKey, $key, now()->addMinutes(5));
+        }
+
+        // Devolvemos la clave en formato JSON
+        return response()->json(['key' => $key]);
+    }
+    public function decryptFromAgenda(string $ciphertextB64, string $ivB64): array|null
+    {
+        try {
+            $ciphertextWithTag = base64_decode($ciphertextB64);
+            $iv = base64_decode($ivB64);
+
+            // Obtener clave efímera desde caché
+            $keyB64 = Cache::get('efimera_key');
+            if (!$keyB64) {
+                Log::error('Clave efímera no disponible en caché.');
+                return null;
+            }
+
+            $key = base64_decode($keyB64);
+
+            // Separar tag y mensaje
+            $tagLength = 16;
+            $tag = substr($ciphertextWithTag, -$tagLength);
+            $ciphertext = substr($ciphertextWithTag, 0, -$tagLength);
+
+            // Desencriptar
+            $plaintext = openssl_decrypt(
+                $ciphertext,
+                'aes-256-gcm',
+                $key,
+                OPENSSL_RAW_DATA,
+                $iv,
+                $tag
+            );
+
+            if ($plaintext === false) {
+                Log::error('Fallo al desencriptar los datos.');
+                return null;
+            }
+
+            $data = json_decode($plaintext, true);
+            if (!is_array($data)) {
+                Log::error('El JSON desencriptado no es válido.');
+                return null;
+            }
+
+            return $data;
+        } catch (Exception $e) {
+            Log::error('Excepción al desencriptar datos: ' . $e->getMessage());
+            return null;
         }
     }
 

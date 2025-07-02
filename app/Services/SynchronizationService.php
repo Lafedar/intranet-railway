@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Exception;
 use DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 
 class SynchronizationService
 {
@@ -285,5 +287,10 @@ class SynchronizationService
 
         ];
     }
+
+
+
+    //SINCRONIZAR DATOS DESDE INTRANET
+    
 
 }

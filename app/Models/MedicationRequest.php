@@ -12,5 +12,9 @@ class MedicationRequest extends Model
     protected $table = 'solicitudes_medicamentos';
     protected $primaryKey = 'id';
 
-    // App\Models\MedicationRequest.php
+    protected $fillable = [
+        'dni_persona',
+        'estado',
+        
+    ];
 }
