@@ -100,8 +100,9 @@ class UserService
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
         }
-
+        Log::info("Hashed password : " . json_encode($user->password));
         if ($user && Hash::check($password, $user->password)) {
+            Log::info("User validated successfully: ");
             return $user;
         } else {
             return null;
