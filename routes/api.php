@@ -57,6 +57,15 @@ Route::post('/recibir-form', function (Request $request) {
   //  return response()->json([], 204);
 //})->where('any', '.*')->middleware('force.cors');
 
+Route::get('/pure-headers', function () {
+    header('Content-Type: application/json');
+    header('X-Test-Header: ¡funciona!');
+    echo json_encode(['ok' => true]);
+    exit;
+});
+
+
+
 // Ruta de “prueba de deploy”
 Route::get('/debug-confirm', function () {
     Log::info('Ejecutando /debug-confirm desde main');
