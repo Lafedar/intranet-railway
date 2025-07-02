@@ -4,12 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicationsRequestController;
 use App\Http\Controllers\PersonaController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CryptoController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Middleware\ForceCors;
 use App\Http\Controllers\MedicalCertificateController;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -88,6 +88,24 @@ Route::get('/debug-path', function () {
         'last_line'    => trim(last(file(__FILE__))),
     ]);
 });
+
+
+Route::get('/debug-db', function () {
+    try {
+        $pdo = DB::connection('mysql_read')->getPdo();
+        return response()->json([
+            'message' => 'Conexión exitosa a la base de datos',
+            'database' => $pdo->query('select database()')->fetchColumn()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
+
+
 
 /*
 Route::options('/test-cors', function () {
