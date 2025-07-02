@@ -57,6 +57,13 @@ Route::post('/recibir-form', function (Request $request) {
   //  return response()->json([], 204);
 //})->where('any', '.*')->middleware('force.cors');
 
+// Preflight CORS para test-preflight 
+Route::options('/test-options', function (Request $request) {
+    // Esta respuesta pasará por tu middleware ForceCors
+    return response('', 204);
+})->middleware('force.cors');
+
+
 Route::get('/pure-headers', function () {
     header('Content-Type: application/json');
     header('X-Test-Header: ¡funciona!');
@@ -82,12 +89,13 @@ Route::get('/debug-path', function () {
     ]);
 });
 
+/*
 Route::options('/test-cors', function () {
     return response()->json(['ok' => true])
         ->header('Access-Control-Allow-Origin', '*')
         ->header('X-Debug-Cors', 'PRUEBA-CORS');
 });
-
+*/
 //Route::options('/get-key', function () {
 //    return response('', 204);
 //})->middleware('force.cors');
