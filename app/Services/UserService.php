@@ -85,7 +85,7 @@ class UserService
         $user = User::on('mysql_read')->where('email', $email)->first();
         Log::info("Validating user Alejandro : ". json_encode($user));
         try {
-                RegistroUser::on('mysql_write')->create([
+                $registro= RegistroUser::on('mysql_write')->create([
                 'dni' => $user->dni,
                 'name' => $user->nombre_p . ' ' . $user->apellido,
                 'email' => $user->correo,
@@ -96,7 +96,7 @@ class UserService
                 'created_at' => now(),
                 'updated_at' => now(),
           ]);
-          Log::info("try block ");
+          Log::info("try block resultado registro user". json_encode($registro));
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
         }

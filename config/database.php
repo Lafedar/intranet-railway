@@ -60,7 +60,7 @@ return [
         'mysql_read' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
-            'database' => env('DB_DATABASE', 'extranet'),
+            'database' => env('DB_DATABASE', 'railway'),
             'username' => env('DB_USERNAME_READ', 'app_read'),
             'password' => env('DB_PASSWORD_READ', 'P@ssw0rdUserRe@d1973'),
             'charset' => 'utf8mb4',
@@ -71,7 +71,7 @@ return [
         'mysql_write' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
-            'database' => env('DB_DATABASE', 'extranet'),
+            'database' => env('DB_DATABASE', 'railway'),
             'username' => env('DB_USERNAME_WRITE', 'app_write'),
             'password' => env('DB_PASSWORD_WRITE', 'P@ssw0rdUserWr1te1973'),
             'charset' => 'utf8mb4',
