@@ -70,8 +70,8 @@ class SynchronizationController extends Controller
 
             return response()->json(['message' => 'Empleado sincronizado con éxito'], 201);
         } catch (Exception $e) {
-            Log::error('Error al guardar persona sincronizada: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al sincronizar'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating a new person from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la persona desde Intranet.'], 500);
         }
     }
 
@@ -115,8 +115,8 @@ class SynchronizationController extends Controller
 
             return response()->json(['message' => 'Empleado actualizado con éxito'], 200);
         } catch (Exception $e) {
-            Log::error('Error al actualizar persona sincronizada: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al sincronizar'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating person from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la persona desde Intranet.'], 500);
         }
     }
 
@@ -171,8 +171,8 @@ class SynchronizationController extends Controller
 
             return response()->json(['message' => 'Solicitud actualizada con éxito'], 200);
         } catch (Exception $e) {
-            Log::error('Error al actualizar solicitud de medicación: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al sincronizar'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating a medication request from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la solicitud de medicamentos desde Intranet.'], 500);
         }
     }
 
@@ -211,8 +211,8 @@ class SynchronizationController extends Controller
             $user->save();
 
         } catch (Exception $e) {
-            Log::error('Error al desactivar a la persona: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al sincronizar'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating the person and user from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la persona y el usuario desde Intranet.'], 500);
         }
 
     }
@@ -253,8 +253,8 @@ class SynchronizationController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error al sincronizar la contraseña: ' . $e->getMessage());
-            return response()->json(['error' => 'Error al sincronizar'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating a user password from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la contraseña del usuario desde Intranet.'], 500);
         }
     }
 
@@ -263,22 +263,28 @@ class SynchronizationController extends Controller
 
     public function getKey(Request $request)
     {
-        // Clave cacheada para que sea efímera y se use durante un tiempo (ej: 5 minutos)
-        $cacheKey = 'efimera_key';
+        try {
+            // Clave cacheada para que sea efímera y se use durante un tiempo (ej: 5 minutos)
+            $cacheKey = 'efimera_key';
 
-        // Intentamos obtenerla del cache
-        $key = Cache::get($cacheKey);
+            // Intentamos obtenerla del cache
+            $key = Cache::get($cacheKey);
 
-        if (!$key) {
-            // Generamos una nueva clave aleatoria de 32 bytes (AES-256)
-            $key = base64_encode(random_bytes(32));
+            if (!$key) {
+                // Generamos una nueva clave aleatoria de 32 bytes (AES-256)
+                $key = base64_encode(random_bytes(32));
 
-            // Guardamos la clave en cache con TTL (ej 5 minutos)
-            Cache::put($cacheKey, $key, now()->addMinutes(5));
+                // Guardamos la clave en cache con TTL (ej 5 minutos)
+                Cache::put($cacheKey, $key, now()->addMinutes(5));
+            }
+
+            // Devolvemos la clave en formato JSON
+            return response()->json(['key' => $key]);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting a epimeral key' . $e->getMessage());
+            return response()->json(['message' => 'Error al obtener la clave para desencriptar.'], 500);
         }
 
-        // Devolvemos la clave en formato JSON
-        return response()->json(['key' => $key]);
     }
     public function decryptFromAgenda(string $ciphertextB64, string $ivB64): array|null
     {
@@ -323,8 +329,8 @@ class SynchronizationController extends Controller
 
             return $data;
         } catch (Exception $e) {
-            Log::error('Excepción al desencriptar datos: ' . $e->getMessage());
-            return null;
+            Log::error('Error in class: ' . get_class($this) . ' .Error desencrypting data from Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al desecriptar los datos desde Intranet.'], 500);
         }
     }
 

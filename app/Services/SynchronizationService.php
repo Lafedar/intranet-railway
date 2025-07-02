@@ -61,8 +61,8 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar con agenda: ' . $e->getMessage());
-            return false;
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new user to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar el nuevo usuario en Intranet.'], 500);
         }
     }
 
@@ -111,8 +111,8 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar persona con agenda: ' . $e->getMessage());
-            return false;
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating person to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la persona en Intranet.'], 500);
         }
     }
 
@@ -158,8 +158,8 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar usuario con agenda: ' . $e->getMessage());
-            return false;
+            Log::error('Error in class: ' . get_class($this) . ' .Error updating user to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar el usuario en Intranet.'], 500);
         }
     }
 
@@ -206,8 +206,8 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar solicitud de medicamentos con agenda: ' . $e->getMessage());
-            return false;
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medication request to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar la nueva solicitud de medicamentos en Intranet.'], 500);
         }
     }
 
@@ -255,42 +255,47 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Excepción al sincronizar certificado con agenda: ' . $e->getMessage());
-            return false;
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medical certificate to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar el certificado medico en Intranet.'], 500);
         }
     }
 
 
     public function encryptDataToAgenda(array $data, string $key)
     {
-        $plaintext = json_encode($data);
-        $iv = random_bytes(12); // Tamaño recomendado para GCM
-        $tag = '';
+        try {
+            $plaintext = json_encode($data);
+            $iv = random_bytes(12); // Tamaño recomendado para GCM
+            $tag = '';
 
-        $ciphertext = openssl_encrypt(
-            $plaintext,
-            'aes-256-gcm',
-            $key,
-            OPENSSL_RAW_DATA,
-            $iv,
-            $tag
-        );
+            $ciphertext = openssl_encrypt(
+                $plaintext,
+                'aes-256-gcm',
+                $key,
+                OPENSSL_RAW_DATA,
+                $iv,
+                $tag
+            );
 
-        if ($ciphertext === false) {
-            Log::error('Error al encriptar datos');
-            return false;
+            if ($ciphertext === false) {
+                Log::error('Error al encriptar datos');
+                return false;
+            }
+
+            return [
+                'ciphertext' => base64_encode($ciphertext . $tag),
+                'iv' => base64_encode($iv),
+
+            ];
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error encrypting data to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al encriptar la informacion para Intranet.'], 500);
         }
 
-        return [
-            'ciphertext' => base64_encode($ciphertext . $tag),
-            'iv' => base64_encode($iv),
-
-        ];
     }
 
 
 
-    //SINCRONIZAR DATOS DESDE INTRANET
-    
+
 
 }
