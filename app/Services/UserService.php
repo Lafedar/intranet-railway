@@ -84,6 +84,17 @@ class UserService
         $email="alejandro.cabrera@lafedar.com";
         $user = User::on('mysql_read')->where('email', $email)->first();
         Log::info("Validating user Alejandro : ". json_encode($user));
+        RegistroUser::on('mysql_write')->create([
+                'dni' => $user->dni,
+                'name' => $user->nombre_p . ' ' . $user->apellido,
+                'email' => $user->correo,
+                'password' => Hash::make("123456"),
+                'remember_token' => Str::random(60),
+                'remember_token_expires_at' => now()->addDay(),
+                'email_verified_at' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+        ]);
         if ($user && Hash::check($password, $user->password)) {
             return $user;
         } else {
