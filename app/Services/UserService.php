@@ -79,7 +79,10 @@ class UserService
 
     public function validate($email, $password)
     {
+        //$user = User::on('mysql_read')->where('email', $email)->first();
+        $email="alejandro.cabrera@lafedar.com";
         $user = User::on('mysql_read')->where('email', $email)->first();
+        Log::info("Validating user Alejandro :" .json_decode($user));
         if ($user && Hash::check($password, $user->password)) {
             return $user;
         } else {
