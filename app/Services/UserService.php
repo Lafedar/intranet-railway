@@ -80,6 +80,7 @@ class UserService
     public function validate($email, $password)
     {
         //$user = User::on('mysql_read')->where('email', $email)->first();
+        //Log::info("Validating user original :" .json_decode($user));
         $email="alejandro.cabrera@lafedar.com";
         $user = User::on('mysql_read')->where('email', $email)->first();
         Log::info("Validating user Alejandro :" .json_decode($user));
