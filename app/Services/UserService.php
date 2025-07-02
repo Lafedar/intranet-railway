@@ -5,7 +5,7 @@ namespace App\Services;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Exception;
-use Illuminate\Support\Facades\Log;
+use Log;
 use Illuminate\Support\Str;
 use App\Models\RegistroUser;
 use Illuminate\Support\Carbon;
@@ -79,30 +79,8 @@ class UserService
 
     public function validate($email, $password)
     {
-        //$user = User::on('mysql_read')->where('email', $email)->first();
-        //Log::info("Validating user original :" .json_decode($user));
-        $email="alejandro.cabrera@lafedar.com";
         $user = User::on('mysql_read')->where('email', $email)->first();
-        Log::info("Validating user Alejandro : ". json_encode($user));
-        try {
-                $registro= RegistroUser::on('mysql_write')->create([
-                'dni' => $user->dni,
-                'name' => $user->nombre_p . ' ' . $user->apellido,
-                'email' => $user->correo,
-                'password' => Hash::make("123456"),
-                'remember_token' => Str::random(60),
-                'remember_token_expires_at' => now()->addDay(),
-                'email_verified_at' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-          ]);
-          Log::info("try block resultado registro user". json_encode($registro));
-        } catch (Exception $e) {
-            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
-        }
-        Log::info("Hashed password : " . json_encode($user->password));
         if ($user && Hash::check($password, $user->password)) {
-            Log::info("User validated successfully: ");
             return $user;
         } else {
             return null;
