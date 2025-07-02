@@ -180,7 +180,7 @@ class MedicationsRequestController extends Controller
             $nombre = $person->nombre_p . ' ' . $person->apellido;
             Log::info("Antes de createRegisterUserApi");
             $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);
-            Log::info("Luego de createRegisterUserApi");
+            Log::info("Luego de createRegisterUserApi. Valor user: ". json_encode($user));
             if ($user != null) {
                 try {
                     Log::info("Antes de VerificationEmail. Valor email: ". $email);
