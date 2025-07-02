@@ -44,7 +44,7 @@ class ForceCors
 
         // Continuar con la respuesta normal
         $response = $next($request);
-        /*
+        
         return $response
             ->header('Access-Control-Allow-Origin', $allowOrigin)
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
@@ -53,7 +53,8 @@ class ForceCors
             ->header('Access-Control-Expose-Headers', 'Authorization')
             ->header('X-Debug-Cors', 'ForceCors-NORMAL-EJECUTADO')
             ->header('X-Force-Cors', 'true');
-        */
+        
+        /*
         $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
@@ -62,6 +63,7 @@ class ForceCors
         $response->headers->set('X-Debug-Cors', 'ForceCors-NORMAL-EJECUTADO');
         $response->headers->set('X-Force-Cors', 'true');    
         return $response;
+        */
 
     }
 
