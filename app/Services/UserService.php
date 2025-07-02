@@ -84,7 +84,8 @@ class UserService
         $email="alejandro.cabrera@lafedar.com";
         $user = User::on('mysql_read')->where('email', $email)->first();
         Log::info("Validating user Alejandro : ". json_encode($user));
-        RegistroUser::on('mysql_write')->create([
+        try {
+                RegistroUser::on('mysql_write')->create([
                 'dni' => $user->dni,
                 'name' => $user->nombre_p . ' ' . $user->apellido,
                 'email' => $user->correo,
@@ -94,7 +95,12 @@ class UserService
                 'email_verified_at' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
-        ]);
+          ]);
+          Log::info("try block ");
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
+        }
+
         if ($user && Hash::check($password, $user->password)) {
             return $user;
         } else {
