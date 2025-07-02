@@ -180,9 +180,11 @@ class MedicationsRequestController extends Controller
             $nombre = $person->nombre_p . ' ' . $person->apellido;           
             $user = $this->userService->createRegisterUserApi($dni, $person->nombre_p, $person->apellido, $email, $password);            
             if ($user != null) {
-                try {                    
+                try { 
+                    Log::info('Antes de enviar el mail a : ' . $email);                  
                     Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
                 } catch (Exception $e) {
+                    Log::error("En MedicationRequestController");
                     Log::error('Error al enviar mail: ' . $e->getMessage());
                     $user->delete(); // Eliminar el usuario si falla el envío del correo
                     return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cree el usuario nuevamente'], 400);
