@@ -19,11 +19,11 @@ use Log;
 
 class PersonaController extends Controller
 {
-    
+
     public function buscar(Request $request)
     {
         try {
-    
+
             $ciphertextBase64 = $request->input('ciphertext');
             $ivBase64 = $request->input('iv');
 
@@ -57,13 +57,13 @@ class PersonaController extends Controller
                 $tag
             );
 
-    
+
             if ($decrypted === false) {
                 return response()->json(['message' => 'Error al desencriptar'], 400);
             }
 
             $data = json_decode($decrypted, true);
-        
+
             $dni = $data['data']['dni'];
 
             $persona = Persona::where('dni', $dni)->first();
@@ -97,8 +97,8 @@ class PersonaController extends Controller
                 'iv' => base64_encode($newIv),
             ], 200);
         } catch (Exception $e) {
-            Log::error('Error en la búsqueda: ' . $e->getMessage());
-            return response()->json(['message' => 'Error en la búsqueda'], 500);
+            Log::error('Error in class: ' . get_class($this) . ' .Error searching a person: ' . $e->getMessage());
+            return response()->json(['error' => 'Error buscando la persona'], 500);
         }
 
     }

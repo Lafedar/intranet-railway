@@ -23,27 +23,30 @@ class CryptoController extends Controller
     }
     public function getEncryptionKey(Request $request)
     {
+        try {
+            if (!$request->session()->has('aes_key')) {
 
-        if (!$request->session()->has('aes_key')) {
+                $key = random_bytes(32); // 256 bits = 32 bytes
 
-            $key = random_bytes(32); // 256 bits = 32 bytes
+                $request->session()->put('aes_key', base64_encode($key));
 
-            $request->session()->put('aes_key', base64_encode($key));
+            } else {
 
-        } else {
+                $key = base64_decode($request->session()->get('aes_key'));
 
-            $key = base64_decode($request->session()->get('aes_key'));
+            }
 
+            return response()->json([
+
+                'key' => base64_encode($key)
+
+
+
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting encryption key: ' . $e->getMessage());
+            return response()->json(['error' => 'Error obteniendo la clave de encriptacion'], 500);
         }
-
-        return response()->json([
-
-            'key' => base64_encode($key)
-
-
-
-        ]);
-
 
     }
     public function loginApi(Request $request)
@@ -103,7 +106,7 @@ class CryptoController extends Controller
                 'iv' => base64_encode($responseIv),
             ]);
         } catch (Exception $e) {
-            Log::error('Error en el login: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error in loginApi' . $e->getMessage());
             return response()->json(['error' => 'Error en el login'], 500);
         }
 

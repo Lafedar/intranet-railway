@@ -32,7 +32,7 @@ class MedicalCertificateService
                 return false;
             }
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al crear el certificado medico: ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error creating a medical certificate' . $e->getMessage());
             return false;
         }
 

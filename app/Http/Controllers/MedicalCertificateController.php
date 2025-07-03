@@ -1,11 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\RegistroUser;
-use App\User;
 use App\Services\UserService;
 use App\Services\EncryptService;
-use Carbon\Carbon;
 use App\Services\PersonaService;
 use Illuminate\Http\Request;
 use App\Services\MedicalCertificateService;
@@ -15,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use App\Mail\MedicalCertificateUser;
 use App\Services\SynchronizationService;
+use Exception;
 
 class MedicalCertificateController extends Controller
 {
@@ -105,9 +103,11 @@ class MedicalCertificateController extends Controller
                             Mail::to($email)->send(
                                 new MedicalCertificateMail($user, $certificado, $decryptedFile, $mimeType, $fileName, $imagePath2)
                             );
-                        } catch (\Exception $e) {
-                            Log::error('Error al enviar mail: ' . $e->getMessage());
+                        } catch (Exception $e) {
+                            Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to RRHH: ' . $e->getMessage());
                             return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
+
+
                         }
 
                     }
@@ -120,8 +120,8 @@ class MedicalCertificateController extends Controller
                     Mail::to($user->email)->send(
                         new MedicalCertificateUser($user, $certificado, $imagePath2)
                     );
-                } catch (\Exception $e) {
-                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                } catch (Exception $e) {
+                    Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to a user: ' . $e->getMessage());
                     return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
                 }
 
@@ -132,9 +132,9 @@ class MedicalCertificateController extends Controller
             }
 
 
-        } catch (\Throwable $e) {
-            Log::error('Error al guardar certificado: ' . $e->getMessage());
-            return response()->json(['error' => 'Error interno del servidor'], 500);
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving medical certificate to Intranet' . $e->getMessage());
+            return response()->json(['message' => 'Error al sincronizar el usuario en Intranet.'], 500);
         }
     }
 
