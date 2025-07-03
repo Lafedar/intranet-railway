@@ -13,18 +13,31 @@ use Illuminate\Http\Request;
 
 class SynchronizationService
 {
+    private string $baseUrl;
+    private string $urlGetKey;
+    private array $endpoints;
+
+    public function __construct()
+    {
+        $this->baseUrl = config('services.agenda.base_url');
+        $this->urlGetKey = $this->baseUrl . '/api/get-key-api';
+
+        $this->endpoints = [
+            'save_user' => '/api/save-user',
+            'update_user' => '/api/update-user',
+            'update_person' => '/api/update-person',
+            'save_medication' => '/api/save-medication-request',
+            'save_certificate' => '/api/save-medical-certificate',
+        ];
+    }
+
 
 
     /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
     public function saveNewUserInAgenda(array $datosUsuario)
     {
-        $baseUrl = config('services.agenda.base_url');
-        $urlKey = $baseUrl . '/api/get-key-api';
-        $urlSave = $baseUrl . '/api/save-user';
-
         try {
-            // 1) Solicitar clave efímera
-            $responseKey = Http::timeout(30)->post($urlKey);
+            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -47,7 +60,7 @@ class SynchronizationService
             if ($encrypted === false) {
                 return false;
             }
-
+            $urlSave = $this->baseUrl . $this->endpoints['save_user'];
             $responseSave = Http::timeout(30)->post($urlSave, [
                 'ciphertext' => $encrypted['ciphertext'],
                 'iv' => $encrypted['iv'],
@@ -69,13 +82,8 @@ class SynchronizationService
 
     public function updatePersonWithAgenda(array $persona)
     {
-        $baseUrl = config('services.agenda.base_url');
-        $urlKey = $baseUrl . '/api/get-key-api';
-        $url = $baseUrl . '/api/update-person';
-
         try {
-
-            $responseKey = Http::timeout(30)->post($urlKey);
+            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -98,6 +106,7 @@ class SynchronizationService
             if ($encrypted === false) {
                 return false;
             }
+            $url = $this->baseUrl . $this->endpoints['update_person'];
             $response = Http::timeout(30)->post($url, [
                 'ciphertext' => $encrypted['ciphertext'],
                 'iv' => $encrypted['iv'],
@@ -119,12 +128,8 @@ class SynchronizationService
 
     public function updateUserWithAgenda(array $user)
     {
-        $baseUrl = config('services.agenda.base_url');
-        $urlKey = $baseUrl . '/api/get-key-api';
-        $url = $baseUrl . '/api/update-user';
-
         try {
-            $responseKey = Http::timeout(30)->post($urlKey);
+            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -146,6 +151,7 @@ class SynchronizationService
             if ($encrypted === false) {
                 return false;
             }
+            $url = $this->baseUrl . $this->endpoints['update_user'];
             $response = Http::timeout(30)->post($url, [
                 'ciphertext' => $encrypted['ciphertext'],
                 'iv' => $encrypted['iv'],
@@ -165,12 +171,8 @@ class SynchronizationService
 
     public function saveNewMedicationRequestInAgenda(array $data)
     {
-        $baseUrl = config('services.agenda.base_url');
-        $urlKey = $baseUrl . '/api/get-key-api';
-        $url = $baseUrl . '/api/save-medication-request';
-
         try {
-            $responseKey = Http::timeout(30)->post($urlKey);
+            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -192,7 +194,7 @@ class SynchronizationService
             if ($encrypted === false) {
                 return false;
             }
-
+            $url = $this->baseUrl . $this->endpoints['save_medication'];
             $response = Http::timeout(30)->post($url, [
                 'ciphertext' => $encrypted['ciphertext'],
                 'iv' => $encrypted['iv'],
@@ -213,13 +215,8 @@ class SynchronizationService
 
     public function saveNewMedicalCertificateInAgenda(array $data)
     {
-        $baseUrl = config('services.agenda.base_url');
-        $urlKey = $baseUrl . '/api/get-key-api';
-        $url = $baseUrl . '/api/save-medical-certificate';
-
         try {
-
-            $responseKey = Http::timeout(30)->post($urlKey);
+            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -242,7 +239,7 @@ class SynchronizationService
             if ($encrypted === false) {
                 return false;
             }
-
+            $url = $this->baseUrl . $this->endpoints['save_certificate'];
             $response = Http::timeout(30)->post($url, [
                 'ciphertext' => $encrypted['ciphertext'],
                 'iv' => $encrypted['iv'],
