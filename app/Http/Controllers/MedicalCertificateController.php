@@ -63,6 +63,26 @@ class MedicalCertificateController extends Controller
             $fileName = $payload['archivo']['originalName'] ?? 'archivo.pdf';
             $mimeType = $payload['archivo']['type'] ?? 'application/octet-stream';
 
+            $allowedExtensions = ['pdf', 'jpg', 'jpeg'];
+            $allowedMimeTypes = ['application/pdf', 'image/jpeg'];
+
+            // Validar extensión
+            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            if (!in_array($extension, $allowedExtensions)) {
+                return response()->json(['error' => 'Extensión de archivo no permitida'], 400);
+            }
+
+            // Validar tipo MIME
+            if (!in_array($mimeType, $allowedMimeTypes)) {
+                return response()->json(['error' => 'Tipo MIME de archivo no permitido'], 400);
+            }
+            // Validar tamaño (máx. 10 MB)
+            $maxSizeInBytes = 10 * 1024 * 1024; // 10 MB
+
+            if (strlen($decryptedFile) > $maxSizeInBytes) {
+                return response()->json(['error' => 'El archivo supera el tamaño máximo permitido de 10 MB.'], 400);
+            }
+
             $certificado = $this->medicalCertificateService->create(
                 $user->id,
                 $data['data']['title'],
