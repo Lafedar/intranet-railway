@@ -7,18 +7,15 @@ use App\Services\PersonaService;
 use App\Services\EncryptService;
 use Exception;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\MedicationApprovedMail;
 use Illuminate\Http\Request;
-use App\Mail\MedicationInfoMail;
 use Illuminate\Support\Facades\Log;
 use App\Services\GeneralParametersService;
 use App\Services\UserService;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 use App\Mail\MedicationNotificationMail;
 use App\Mail\ResetPasswordApi;
 use App\Mail\MedicationNotificationUser;
 use App\Mail\VerificationEmail;
-use Illuminate\Support\Str;
+
 
 
 
@@ -29,11 +26,12 @@ class MedicationsRequestController extends Controller
 {
     protected $medicationsRequestService;
     protected $personaService;
-
     protected $genParametersService;
     protected $encryptService;
-
     protected $userService;
+    // ruta relativa desde /public
+    public const IMAGES_PATH = 'img/firma.jpg'; 
+    private $imagePath2;
 
 
     public function __construct(MedicationsRequestService $medicationsRequestService, PersonaService $personaService, GeneralParametersService $genParametersService, EncryptService $encryptService, UserService $userService)
@@ -43,13 +41,15 @@ class MedicationsRequestController extends Controller
         $this->genParametersService = $genParametersService;
         $this->encryptService = $encryptService;
         $this->userService = $userService;
+        // Definir la ruta completa de la imagen
+        $this->imagePath2 =  public_path(self::IMAGES_PATH);
     }
 
     /*API*/
     public function saveNewMedicationRequest(Request $request)
     {
         try {
-            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            //$imagePath2 = public_path(self::IMAGES_PATH);
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
@@ -75,7 +75,7 @@ class MedicationsRequestController extends Controller
                 if ($create) {
                     foreach ($mails as $mail) {
                         try {
-                            Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+                            Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $this->imagePath2 ));
                         } catch (Exception $e) {
                             Log::error('Error al enviar mail: ' . $e->getMessage());
                             return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
@@ -83,7 +83,7 @@ class MedicationsRequestController extends Controller
 
                     }
                     try {
-                        Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+                        Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $this->imagePath2 ));
                     } catch (Exception $e) {
                         Log::error('Error al enviar mail: ' . $e->getMessage());
                         return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
@@ -147,7 +147,7 @@ class MedicationsRequestController extends Controller
     public function createUserApi(Request $request)
     {
         try {
-            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            //$imagePath2 = storage_path('app/public/images/firma.jpg');
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
 
@@ -182,9 +182,9 @@ class MedicationsRequestController extends Controller
             if ($user != null) {
                 try { 
                     Log::info('Antes de enviar el mail a : ' . $email);                  
-                    Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
+                    Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $this->imagePath2 ));
                 } catch (Exception $e) {
-                    Log::error("En MedicationRequestController");
+                    Log::error("Error en clase MedicationRequestController");
                     Log::error('Error al enviar mail: ' . $e->getMessage());
                     $user->delete(); // Eliminar el usuario si falla el envío del correo
                     return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cree el usuario nuevamente'], 400);
@@ -211,7 +211,7 @@ class MedicationsRequestController extends Controller
             if (!isset($data['data']['email'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
-            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            //$imagePath2 = storage_path('img/firma.jpg');
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -222,7 +222,7 @@ class MedicationsRequestController extends Controller
                 $token = $this->userService->createNewToken($dni);
 
                 try {
-                    Mail::to($email)->send(new VerificationEmail($nombre, $token, $imagePath2));
+                    Mail::to($email)->send(new VerificationEmail($nombre, $token, $this->imagePath2 ));
                 } catch (Exception $e) {
                     Log::error('Error al enviar mail: ' . $e->getMessage());
                     return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor genere la verificación nuevamente'], 400);
@@ -245,7 +245,7 @@ class MedicationsRequestController extends Controller
     public function sendMailResetPassword(Request $request)
     {
         try {
-            $imagePath2 = storage_path('app/public/images/firma.jpg');
+            //$imagePath2 = storage_path('app/public/images/firma.jpg');
 
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
@@ -264,7 +264,7 @@ class MedicationsRequestController extends Controller
                         $nombre = $person->nombre_p . ' ' . $person->apellido;
                         $token = $this->userService->createNewTokenUser($dni);
                         try {
-                            Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
+                            Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $this->imagePath2 ));
                         } catch (Exception $e) {
                             Log::error('Error al enviar mail: ' . $e->getMessage());
                             return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor envie el mail nuevamente'], 400);
