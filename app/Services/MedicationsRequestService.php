@@ -73,18 +73,20 @@ class MedicationsRequestService
             $idSolicitud = DB::connection('mysql_write')->table('solicitudes_medicamentos')->insertGetId([
                 'dni_persona' => $data['dni_user'],
                 'estado' => 'Aprobación Pendiente',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             $items = [];
 
-            // Crear ítems
+            // Crear ítems individualmente
             foreach ($data as $key => $value) {
                 if (str_starts_with($key, 'medication')) {
                     $index = str_replace('medication', '', $key);
                     $amountKey = 'amount' . $index;
 
                     if (!empty($value) && isset($data[$amountKey]) && $data[$amountKey] !== '') {
-                        $items[] = [
+                        $item = [
                             'id_solicitud' => $idSolicitud,
                             'medicamento' => $value,
                             'cantidad_solicitada' => (int) $data[$amountKey],
@@ -95,16 +97,17 @@ class MedicationsRequestService
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
+
+                        // Insertar y obtener el ID real
+                        $idItem = DB::connection('mysql_write')->table('items_medicamentos')->insertGetId($item);
+
+                        // Agregar a lista con el ID incluido
+                        $items[] = array_merge(['id' => $idItem], $item);
                     }
                 }
             }
 
-            // Insertar ítems
-            if (!empty($items)) {
-                DB::connection('mysql_write')->table('items_medicamentos')->insert($items);
-            }
-
-            // Obtener datos de la solicitud para sincronizar
+            // Datos de la solicitud para sincronizar
             $solicitudData = [
                 'id' => $idSolicitud,
                 'dni_persona' => $data['dni_user'],
@@ -113,7 +116,7 @@ class MedicationsRequestService
                 'updated_at' => now()->toDateTimeString(),
             ];
 
-            // Llamar al servicio de sincronización
+            // Sincronizar con Agenda
             $this->synchronizationService->saveNewMedicationRequestInAgenda([
                 'request' => $solicitudData,
                 'items' => $items,
