@@ -51,6 +51,7 @@ class SynchronizationService
             }
 
             $encrypted = $this->encryptDataToAgenda([
+                'id' => $datosUsuario['id'],
                 'dni' => $datosUsuario['dni'],
                 'name' => $datosUsuario['name'],
                 'email' => $datosUsuario['email'],
