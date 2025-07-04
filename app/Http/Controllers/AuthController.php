@@ -67,7 +67,7 @@ class AuthController extends Controller
             return redirect()->away($url);
         }
 
-        DB::beginTransaction();
+        DB::connection('mysql_write')->beginTransaction();
 
         try {
             $registerUser->email_verified_at = 1;
@@ -101,12 +101,12 @@ class AuthController extends Controller
             $this->synchronizationService->updatePersonWithAgenda($person->toArray());
 
 
-            DB::commit();
+            DB::connection('mysql_write')->commit();
 
             return redirect()->away('https://extranetlafedar.netlify.app?message=success');
 
         } catch (Exception $e) {
-            DB::rollBack();
+            DB::connection('mysql_write')->rollBack();
             Log::error('Error in class: ' . get_class($this) . ' .Error verifiying user email' . $e->getMessage());
             return redirect()->away('https://extranetlafedar.netlify.app?message=error');
         }
