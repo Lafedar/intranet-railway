@@ -81,10 +81,11 @@ class AuthController extends Controller
 
             // 🧨 CRÍTICO: sincronización con la otra base
             $success = $this->synchronizationService->saveNewUserInAgenda([
-                'dni' => $registerUser->dni,
-                'name' => $registerUser->name,
-                'email' => $registerUser->email,
-                'password' => $registerUser->password
+                'id' => $user->id,
+                'dni' => $user->dni,
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password
             ]);
 
             if (!$success) {
