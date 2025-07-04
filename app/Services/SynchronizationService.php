@@ -230,6 +230,7 @@ class SynchronizationService
                 return false;
             }
             $encrypted = $this->encryptDataToAgenda([
+                'id' => $data['id'],
                 'user_id' => $data['user_id'],
                 'titulo' => $data['titulo'],
                 'descripcion' => $data['descripcion'],
