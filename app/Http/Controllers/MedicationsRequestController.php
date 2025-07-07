@@ -42,7 +42,7 @@ class MedicationsRequestController extends Controller
     public function saveNewMedicationRequest(Request $request)
     {
         try {
-            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
+            $imagePath2 = config('images.public_path') . '/firma.jpg';
 
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {

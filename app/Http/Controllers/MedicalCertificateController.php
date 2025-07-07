@@ -39,7 +39,7 @@ class MedicalCertificateController extends Controller
     public function store(Request $request)
     {
         try {
-            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
+            $imagePath2 = config('images.public_path') . '/firma.jpg';
             $payload = $request->all();
 
             $decryptedDatos = $this->encryptService->decryptFile($payload['datos'] ?? []);
