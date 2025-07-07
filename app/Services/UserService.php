@@ -68,7 +68,7 @@ class UserService
 
 
 
-    public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
+    /*public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
     {
         try {
             return RegistroUser::on('mysql_write')->create([
@@ -88,7 +88,33 @@ class UserService
 
         }
 
+    }*/
+    public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
+    {
+        try {
+            $data = [
+                'name' => $nombre . ' ' . $apellido,
+                'email' => $correo,
+                'password' => Hash::make($password),
+                'remember_token' => Str::random(60),
+                'remember_token_expires_at' => now()->addDay(),
+                'email_verified_at' => 0,
+                'updated_at' => now(),
+            ];
+
+            $registerUser = RegistroUser::on('mysql_write')->updateOrCreate(
+                ['dni' => $dni],
+                array_merge($data, ['created_at' => now()])
+            );
+
+            return $registerUser;
+
+        } catch (Exception $e) {
+            Log::error("Error en " . __METHOD__ . " - " . $e->getMessage());
+            return null;
+        }
     }
+
     public function getByDni(int $dni)
     {
         return User::on('mysql_read')->where('dni', $dni)
@@ -223,9 +249,9 @@ class UserService
     {
         try {
             $registerUser = RegistroUser::on('mysql_write')->where('dni', $dni)->first();
-            if($registerUser){
+            if ($registerUser) {
                 return $registerUser;
-            }else{
+            } else {
                 return null;
             }
         } catch (Exception $e) {
