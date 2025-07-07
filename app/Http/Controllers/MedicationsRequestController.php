@@ -42,7 +42,8 @@ class MedicationsRequestController extends Controller
     public function saveNewMedicationRequest(Request $request)
     {
         try {
-            $imagePath2 = storage_path(str_replace('storage/', '', config('images.public_path')) . '/firma.jpg');
+            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
+
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
@@ -135,9 +136,9 @@ class MedicationsRequestController extends Controller
 
     }
 
-   
 
-   
+
+
 
 
 }

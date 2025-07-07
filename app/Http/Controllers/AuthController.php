@@ -162,7 +162,7 @@ class AuthController extends Controller
             if (!isset($data['data']['email'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
-            $imagePath2 = storage_path(str_replace('storage/', '', config('images.public_path')) . '/firma.jpg');
+            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -195,7 +195,7 @@ class AuthController extends Controller
     public function sendMailResetPassword(Request $request)
     {
         try {
-            $imagePath2 = storage_path(str_replace('storage/', '', config('images.public_path')) . '/firma.jpg');
+            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
 
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);

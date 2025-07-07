@@ -26,7 +26,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         try {
-            $imagePath2 = storage_path(str_replace('storage/', '', config('images.public_path')) . '/firma.jpg');
+            $imagePath2 = storage_path(config('images.public_path') . '/firma.jpg');
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
 
