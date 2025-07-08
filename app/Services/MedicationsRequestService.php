@@ -7,15 +7,15 @@ use Exception;
 use Log;
 use Illuminate\Database\Eloquent\Collection;
 use DB;
-use App\Services\SynchronizationService;
+
 
 class MedicationsRequestService
 {
-    protected $synchronizationService;
+    
 
-    public function __construct(SynchronizationService $synchronizationService)
+    public function __construct()
     {
-        $this->synchronizationService = $synchronizationService;
+        
     }
 
     public function getAll()
@@ -24,7 +24,7 @@ class MedicationsRequestService
             return DB::connection('mysql_read')->table('solicitudes_medicamentos')
                 ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting all medications requests ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting all medications requests:' . $e->getMessage());
             return null;
         }
     }
@@ -35,7 +35,7 @@ class MedicationsRequestService
             return DB::connection('mysql_read')->table('solicitudes_medicamentos')->where('dni_persona', $dni)
                 ->orderBy('id', 'desc')->get();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting medications requests by dni ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting medications requests by dni: ' . $e->getMessage());
             return null;
         }
     }
@@ -45,7 +45,7 @@ class MedicationsRequestService
         try {
             return DB::connection('mysql_read')->table('solicitudes_medicamentos')->where('id', $id)->first();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting medication request by id ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting medications requests by id: ' . $e->getMessage());
             return null;
         }
     }
@@ -55,7 +55,7 @@ class MedicationsRequestService
         try {
             return DB::connection('mysql_write')->table('solicitudes_medicamentos')->where('id', $id)->first();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting medication request by id (write)' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting medications requests by id (write): ' . $e->getMessage());
             return null;
         }
     }
@@ -70,7 +70,7 @@ class MedicationsRequestService
 
             return $exists;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error validating approved items ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error validating approved items: ' . $e->getMessage());
             return false;
         }
 
@@ -135,7 +135,7 @@ class MedicationsRequestService
 
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' - Error creating medication request: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error creating medication request: ' . $e->getMessage());
             return false;
         }
     }
@@ -153,7 +153,7 @@ class MedicationsRequestService
                 ->whereIn('id_solicitud', $ids)
                 ->get();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . 'Error getting items of multiple requests ids ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting items of multiple requests ids: ' . $e->getMessage());
             return null;
         }
 
@@ -166,7 +166,7 @@ class MedicationsRequestService
                 ->where('id_solicitud', $id)
                 ->get();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . 'Error getting all items by your request id ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting all items by your request id: ' . $e->getMessage());
             return null;
         }
     }
@@ -176,7 +176,7 @@ class MedicationsRequestService
         try {
             return DB::connection('mysql_read')->table('items_medicamentos')->where('id', $id)->first();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting item by id ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting item by id: ' . $e->getMessage());
             return null;
         }
     }
@@ -206,7 +206,7 @@ class MedicationsRequestService
 
             return $result;
         } catch (Exception $e) {
-            Log::error('Error in ' . get_class($this) . 'Error getting medications requests and their items' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting medications requests and their items: ' . $e->getMessage());
             return null;
         }
     }
@@ -215,7 +215,7 @@ class MedicationsRequestService
         try {
             return DB::connection('mysql_read')->table('items_medicamentos')->where('id', $id)->get();
         } catch (Exception $e) {
-            Log::error('Error in ' . get_class($this) . 'Error getting the item by id: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting the item by id: ' . $e->getMessage());
             return null;
         }
     }
@@ -244,7 +244,7 @@ class MedicationsRequestService
 
 
         } catch (Exception $e) {
-            Log::error('Error in ' . get_class($this) . 'Error deleting the last medication request: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error deleting the last medication request: ' . $e->getMessage());
             return false;
         }
     }
@@ -262,7 +262,7 @@ class MedicationsRequestService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in ' . get_class($this) . 'Error updating a medication request: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating a medication request: ' . $e->getMessage());
             return false;
         }
     }
@@ -285,7 +285,7 @@ class MedicationsRequestService
 
                     return true;
                 } catch (Exception $e) {
-                    Log::error('Error in ' . get_class($this) . 'Error updating a medication request items: ' . $e->getMessage());
+                    Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating a medication request items: ' . $e->getMessage());
                     return false;
                 }
             }

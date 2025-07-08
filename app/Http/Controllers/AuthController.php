@@ -72,34 +72,13 @@ class AuthController extends Controller
             $registerUser->remember_token_expires_at = null;
             $registerUser->save();
 
-            $user = $this->userService->createUserApi(
-                $registerUser->dni,
-                $registerUser->name,
-                $registerUser->email,
-                $registerUser->password
-            );
-
-            $person = $this->personService->getByDniWrite($registerUser->dni);
-            $person->usuario = $user->id;
-            $person->save();
-
-            // 🧨 CRÍTICO: sincronización con la otra base
-            $success = $this->synchronizationService->saveNewUserInAgenda([
-                'id' => $user->id,
-                'dni' => $user->dni,
-                'name' => $user->name,
-                'email' => $user->email,
-                'password' => $user->password
-            ]);
+            //Creo el usuario y lo sincronizo con Intranet
+            $success = $this->synchronizationService->saveNewUserInAgenda($registerUser);
 
             if (!$success) {
-                if(!$this->userService->delete($user->id)){
-                    Log::error('Error in class: ' . get_class($this) . ' .Error deleting a user');
-                }
-                $person->usuario = null;
-                $person->save();
                 return redirect()->away('https://extranetlafedar.netlify.app?message=error');
             } else {
+                $person = $this->personService->getByDniWrite($registerUser->dni);
                 $this->synchronizationService->updatePersonWithAgenda($person->toArray());
                 return redirect()->away('https://extranetlafedar.netlify.app?message=success');
             }
@@ -248,11 +227,16 @@ class AuthController extends Controller
             $dni = $data['data']['dni'];
             $password = $data['data']['password'];
 
-            $user = $this->userService->resetPassword($dni, $password);
+
+            $user = $this->synchronizationService->updateUserWithAgenda($dni, $password);
             if (is_object($user)) {
+                $registerUser = $this->userService->getRegisterUserByDni($dni);
+                $registerUser->password = $user->password;
+                $registerUser->save();
+
                 $userArray = $user->toArray();
                 $userArray['password'] = $user->password;
-                $this->synchronizationService->updateUserWithAgenda($userArray);
+
                 return response()->json(['message' => 'Contraseña restablecida correctamente!'], 200);
             } else {
                 return response()->json(['message' => 'Error al restablecer la contraseña'], 500);

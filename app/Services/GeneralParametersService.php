@@ -14,7 +14,7 @@ class GeneralParametersService
         try{
             return DB::connection('mysql_read')->table('parametros_mant')->where('id_param', 'PMAILSMED')->value('valor_param');
         }catch(Exception $e){
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting mails to medication requests' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting mails to medication requests: ' . $e->getMessage());
             return false;
         }
         

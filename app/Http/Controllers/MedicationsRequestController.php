@@ -65,15 +65,7 @@ class MedicationsRequestController extends Controller
 
             $mails = explode(',', $this->genParametersService->getMailsToMedicationRequests());
 
-            $create = $this->medicationsRequestService->create($payload);
-            if (!$create) {
-                return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
-            }
-            //Sincronizo con Intranet
-            $sincronization = $this->synchronizationService->saveNewMedicationRequestInAgenda([
-                'request' => $create['solicitud'],
-                'items' => $create['items'],
-            ]);
+            $sincronization = $this->synchronizationService->saveNewMedicationRequestInAgenda($payload);
 
             if ($sincronization) {
                 foreach ($mails as $mail) {
@@ -82,9 +74,7 @@ class MedicationsRequestController extends Controller
 
                 Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
             } else {
-                if(!$this->medicationsRequestService->deleteLastRecord($create['id_solicitud'])){
-                    Log::error('Error in class: ' . get_class($this) . ' .Error deleting the last medication request.');
-                }
+                
                 return response()->json(['message' => 'Hubo un problema al crear la solicitud de medicamentos. Por favor, solicítela nuevamente.'], 500);
                 
             }

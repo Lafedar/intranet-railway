@@ -13,11 +13,15 @@ class PersonaService
 {
     private function validateData(array $data): void
     {
-        // Agregar la validación requerida para los datos de la persona
-        if (empty($data['name'])) {
-            Log::error('El nombre de la persona es obligatorio.');
-            throw new \InvalidArgumentException('El nombre es obligatorio.');
+        try {
+            if (empty($data['name'])) {
+                Log::error('El nombre de la persona es obligatorio.');
+                throw new \InvalidArgumentException('El nombre es obligatorio.');
+            }
+        }catch(Exception $e){
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error validating person data: ' . $e->getMessage());
         }
+
     }
 
     public function getById(int $id): ?Persona
@@ -25,7 +29,7 @@ class PersonaService
         try {
             return Persona::on('mysql_read')->find($id);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting person by id: ' . $e->getMessage());
             throw $e;
         }
 
@@ -35,7 +39,7 @@ class PersonaService
         try {
             return Persona::on('mysql_write')->find($id);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Id ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting person by id (write): ' . $e->getMessage());
             throw $e;
         }
 
@@ -45,7 +49,7 @@ class PersonaService
         try {
             return Persona::on('mysql_read')->where('dni', $dni)->first();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Dni ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting person by dni: ' . $e->getMessage());
             throw $e;
         }
 
@@ -56,7 +60,7 @@ class PersonaService
         try {
             return Persona::on('mysql_write')->where('dni', $dni)->first();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener la persona por Dni en escritura ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting person by dni (write): ' . $e->getMessage());
             throw $e;
         }
     }
@@ -67,7 +71,7 @@ class PersonaService
         try {
             return DB::connection('mysql_read')->table('personas')->where('correo', $mail)->exists();
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al verificar si el correo existe' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error checking if the email exists: ' . $e->getMessage());
             return false;
         }
 
@@ -94,7 +98,7 @@ class PersonaService
 
             return $employee;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al sincronizar la nueva persona desde Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error synchronizing new person from Intranet: ' . $e->getMessage());
             return null;
         }
     }
@@ -116,9 +120,9 @@ class PersonaService
             $employee->legajo = $data['legajo'];
             $employee->save();
 
-           return true;
+            return true;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al sincronizar la nueva persona desde Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating person data from Intranet: ' . $e->getMessage());
             return false;
         }
     }

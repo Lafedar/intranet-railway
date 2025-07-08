@@ -32,7 +32,7 @@ class MedicalCertificateService
                 return false;
             }
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating a medical certificate' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error creating a medical certificate: ' . $e->getMessage());
             return false;
         }
 
@@ -48,7 +48,7 @@ class MedicalCertificateService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error deleting a medical certificate' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error deleting a medical certificate: ' . $e->getMessage());
             return false;
         }
 

@@ -10,15 +10,27 @@ use DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
+use App\Services\UserService;
+use App\Services\PersonaService;
+use App\Services\MedicationsRequestService;
 
 class SynchronizationService
 {
     private string $baseUrl;
     private string $urlGetKey;
     private array $endpoints;
+    private $personaService;
+    private $userService;
 
-    public function __construct()
+    private $medicationRequestService;
+
+    public function __construct(UserService $userService, PersonaService $personaService, MedicationsRequestService $medicationRequestService)
     {
+        $this->userService = $userService;
+        $this->personaService = $personaService;
+        $this->medicationRequestService = $medicationRequestService;
+
+        
         $this->baseUrl = config('services.agenda.base_url');
         $this->urlGetKey = $this->baseUrl . '/api/get-key-api';
 
@@ -34,9 +46,23 @@ class SynchronizationService
 
 
     /*GUARDAR LOS DATOS EN AGENDA - BD DE INTRANET*/
-    public function saveNewUserInAgenda(array $datosUsuario)
+    public function saveNewUserInAgenda($registerUser)
     {
         try {
+
+            DB::connection('mysql_write')->beginTransaction();
+            $user = $this->userService->createUserApi(
+                $registerUser->dni,
+                $registerUser->name,
+                $registerUser->email,
+                $registerUser->password
+            );
+
+            $person = $this->personaService->getByDniWrite($registerUser->dni);
+            $person->usuario = $user->id;
+            $person->save();
+
+
             $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
@@ -51,11 +77,11 @@ class SynchronizationService
             }
 
             $encrypted = $this->encryptDataToAgenda([
-                'id' => $datosUsuario['id'],
-                'dni' => $datosUsuario['dni'],
-                'name' => $datosUsuario['name'],
-                'email' => $datosUsuario['email'],
-                'password' => $datosUsuario['password'],
+                'id' => $user->id,
+                'dni' => $user->dni,
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password,
             ], $key);
 
             if ($encrypted === false) {
@@ -68,15 +94,18 @@ class SynchronizationService
             ]);
 
             if ($responseSave->successful()) {
+                DB::connection('mysql_write')->commit();
                 return true;
             }
 
+            DB::connection('mysql_write')->rollBack();
             Log::error('Error al sincronizar: ' . $responseSave->body());
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new user to Intranet' . $e->getMessage());
-            return response()->json(['message' => 'Error al sincronizar el nuevo usuario en Intranet.'], 500);
+            DB::connection('mysql_write')->rollBack();
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new user to Intranet: ' . $e->getMessage());
+            return false;
         }
     }
 
@@ -121,15 +150,18 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating person to Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating person to Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la persona en Intranet.'], 500);
         }
     }
 
 
-    public function updateUserWithAgenda(array $user)
+    public function updateUserWithAgenda($dni, $password)
     {
         try {
+            DB::connection('mysql_write')->beginTransaction();
+            $user = $this->userService->resetPassword($dni, $password);
+
             $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
@@ -144,8 +176,8 @@ class SynchronizationService
             }
 
             $encrypted = $this->encryptDataToAgenda([
-                'dni' => $user['dni'],
-                'password' => $user['password'],
+                'dni' => $user->dni,
+                'password' => $user->password,
 
             ], $key);
 
@@ -159,20 +191,29 @@ class SynchronizationService
             ]);
 
             if ($response->successful()) {
-                return true;
+                DB::connection('mysql_write')->commit();
+                return $user;
             }
+            DB::connection('mysql_write')->rollBack();
             Log::error('Error al sincronizar usuario: ' . $response->body());
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating user to Intranet' . $e->getMessage());
+            DB::connection('mysql_write')->rollBack();
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating user to Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar el usuario en Intranet.'], 500);
         }
     }
 
-    public function saveNewMedicationRequestInAgenda(array $data)
+    public function saveNewMedicationRequestInAgenda($payload)
     {
         try {
+            DB::connection('mysql_write')->beginTransaction();
+            $create = $this->medicationRequestService->create($payload);
+            if(!$create){
+                Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request to Intranet');
+                return false;
+            }
             $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
@@ -187,8 +228,8 @@ class SynchronizationService
             }
 
             $encrypted = $this->encryptDataToAgenda([
-                'request' => $data['request'],
-                'items' => $data['items'],
+                'request' => $create['request'],
+                'items' => $create['items'],
 
             ], $key);
 
@@ -202,15 +243,17 @@ class SynchronizationService
             ]);
 
             if ($response->successful()) {
+                DB::connection('mysql_write')->commit();
                 return true;
             }
-
+            DB::connection('mysql_write')->rollBack();
             Log::error('Error al sincronizar solicitud de medicamentos: ' . $response->body());
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medication request to Intranet' . $e->getMessage());
-            return response()->json(['message' => 'Error al sincronizar la nueva solicitud de medicamentos en Intranet.'], 500);
+            DB::connection('mysql_write')->rollBack();
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request to Intranet: ' . $e->getMessage());
+            
         }
     }
 
@@ -254,7 +297,7 @@ class SynchronizationService
             return false;
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medical certificate to Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medical certificate to Intranet: ' . $e->getMessage());
             return false;
         }
     }
@@ -287,7 +330,7 @@ class SynchronizationService
 
             ];
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error encrypting data to Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error encrypting data to Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al encriptar la informacion para Intranet.'], 500);
         }
 

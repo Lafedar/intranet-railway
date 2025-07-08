@@ -41,7 +41,7 @@ class EncryptService
                 $tag
             ) ?: null;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error decrypting data: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error decrypting data: ' . $e->getMessage());
 
         }
     }
@@ -82,7 +82,7 @@ class EncryptService
                 $tag
             ) ?: null;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error decrypting file data: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error decrypting file data: ' . $e->getMessage());
             return null;
         }
     }
@@ -108,7 +108,7 @@ class EncryptService
             $ciphertextWithTag = $ciphertextResponse . $responseTag;
             return $ciphertextWithTag;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error enrypting data: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error enrypting data: ' . $e->getMessage());
         }
 
     }

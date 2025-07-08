@@ -27,7 +27,7 @@ class EmpleadoService
                 return false;
             }
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al obtener el empleado por Dni ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting employee by id: ' . $e->getMessage());
             return false;
         }
 
@@ -41,7 +41,7 @@ class EmpleadoService
             }
 
             $user = User::where('dni', $dni)->first();
-           
+
             if (is_object($user)) {
                 if ($activo == 0) {
                     // Eliminar todos los roles del usuario
@@ -57,9 +57,9 @@ class EmpleadoService
                     $user->activo = 0;
                     $user->save();
 
-                    
-                }elseif($activo == 1){
-                    
+
+                } elseif ($activo == 1) {
+
                     $user->activo = 1;
                     $user->save();
 
@@ -89,7 +89,7 @@ class EmpleadoService
 
             return true;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al actualizar el empleado ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating employee: ' . $e->getMessage());
             return false;
         }
 
@@ -98,29 +98,35 @@ class EmpleadoService
 
     public function obtenerDatosParaEditar(int $id)
     {
-        // Obtener los datos del empleado
-        $empleado = DB::table('personas')
-            ->leftJoin('area', 'personas.area', 'area.id_a')
-            ->where('personas.id_p', $id)
-            ->first();
+        try {
+            // Obtener los datos del empleado
+            $empleado = DB::table('personas')
+                ->leftJoin('area', 'personas.area', 'area.id_a')
+                ->where('personas.id_p', $id)
+                ->first();
 
-        if (!$empleado) {
-            throw new Exception('Empleado no encontrado.');
+            if (!$empleado) {
+                throw new Exception('Empleado no encontrado.');
+            }
+
+            // Obtener el usuario asociado al empleado
+            $usuario = DB::table('users')->where('id', $empleado->usuario)->first();
+
+            // Obtener todas las áreas y usuarios
+            $areas = DB::table('area')->get();
+            $usuarios = DB::table('users')->get();
+
+            return [
+                'empleado' => $empleado,
+                'usuario' => $usuario,
+                'areas' => $areas,
+                'usuarios' => $usuarios,
+            ];
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error retrieving data to update employee: ' . $e->getMessage());
+            return null;
         }
 
-        // Obtener el usuario asociado al empleado
-        $usuario = DB::table('users')->where('id', $empleado->usuario)->first();
-
-        // Obtener todas las áreas y usuarios
-        $areas = DB::table('area')->get();
-        $usuarios = DB::table('users')->get();
-
-        return [
-            'empleado' => $empleado,
-            'usuario' => $usuario,
-            'areas' => $areas,
-            'usuarios' => $usuarios,
-        ];
     }
 
 
@@ -153,8 +159,7 @@ class EmpleadoService
 
             return true;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error al eliminar el usuario ' . $e->getMessage());
-
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error deleting user: ' . $e->getMessage());
             return false;
         }
 
