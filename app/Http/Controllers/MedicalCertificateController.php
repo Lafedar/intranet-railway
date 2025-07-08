@@ -89,52 +89,50 @@ class MedicalCertificateController extends Controller
             );
 
             if (is_object($certificado)) {
-                $this->synchronizationService->saveNewMedicalCertificateInAgenda($certificado->toArray());
-                $emailsRaw = $this->genParametersService->getMailsToMedicationRequests();
+                if ($this->synchronizationService->saveNewMedicalCertificateInAgenda($certificado->toArray())) {
+                    $emailsRaw = $this->genParametersService->getMailsToMedicationRequests();
 
-                if (!empty(trim($emailsRaw))) {
-                    $emails = array_filter(
-                        array_map('trim', explode(',', $emailsRaw)),
-                        fn($email) => filter_var($email, FILTER_VALIDATE_EMAIL)
-                    );
+                    if (!empty(trim($emailsRaw))) {
+                        $emails = array_filter(
+                            array_map('trim', explode(',', $emailsRaw)),
+                            fn($email) => filter_var($email, FILTER_VALIDATE_EMAIL)
+                        );
 
-                    foreach ($emails as $email) {
-                        try {
-                            Mail::to($email)->send(
-                                new MedicalCertificateMail($user, $certificado, $decryptedFile, $mimeType, $fileName, $imagePath2)
-                            );
-                        } catch (Exception $e) {
-                            Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to RRHH: ' . $e->getMessage());
-                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
-
+                        foreach ($emails as $email) {
+                            try {
+                                Mail::to($email)->send(
+                                    new MedicalCertificateMail($user, $certificado, $decryptedFile, $mimeType, $fileName, $imagePath2)
+                                );
+                            } catch (Exception $e) {
+                                Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to RRHH: ' . $e->getMessage());
+                                return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
+                            }
 
                         }
-
+                    } else {
+                        return response()->json(['message' => 'Certificado cargado con éxito. Mail NO enviado a RRHH'], 200);
                     }
+                    try {
+                        Mail::to($user->email)->send(
+                            new MedicalCertificateUser($user, $certificado, $imagePath2)
+                        );
+                    } catch (Exception $e) {
+                        Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to a user: ' . $e->getMessage());
+                        return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
+                    }
+                    return response()->json(['message' => 'Certificado cargado con éxito! Se enviará un email a RRHH'], 200);
                 } else {
-                    return response()->json(['message' => 'Certificado cargado con éxito. Mail NO enviado a RRHH'], 200);
+                    return response()->json(['message' => 'Error al cargar el certificado medico. Por favor, carguelo nuevamente.'], 200);
                 }
 
 
-                try {
-                    Mail::to($user->email)->send(
-                        new MedicalCertificateUser($user, $certificado, $imagePath2)
-                    );
-                } catch (Exception $e) {
-                    Log::error('Error in class: ' . get_class($this) . ' .Error sending an email to a user: ' . $e->getMessage());
-                    return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue el certificado nuevamente'], 400);
-                }
-
-
-                return response()->json(['message' => 'Certificado cargado con éxito! Se enviará un email a RRHH'], 200);
             } else {
+                $this->medicalCertificateService->delete($certificado->id);
                 return response()->json(['error' => 'Error al guardar el certificado'], 500);
             }
-
-
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving medical certificate to Intranet' . $e->getMessage());
-            return response()->json(['message' => 'Error al sincronizar el usuario en Intranet.'], 500);
+            return response()->json(['message' => 'Error al crear el certificado medico.'], 500);
         }
     }
 

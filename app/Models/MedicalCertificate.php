@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 class MedicalCertificate extends Model
 {
     protected $table = 'certificados_medicos';  
-    protected $fillable = ['user_id', 'titulo', 'descripcion', 'archivo'];
+    protected $fillable = ['id', 'user_id', 'titulo', 'descripcion', 'archivo'];
 }

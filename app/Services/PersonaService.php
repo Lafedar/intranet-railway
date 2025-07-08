@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Exception;
 use DB;
+use App\Models\Empleado;
 
 class PersonaService
 {
@@ -70,6 +71,56 @@ class PersonaService
             return false;
         }
 
+    }
+
+    public function createFromIntranetData(array $data)
+    {
+        try {
+            $employee = new Empleado();
+            $employee->nombre_p = $data['nombre_p'];
+            $employee->apellido = $data['apellido'];
+            $employee->dni = $data['dni'];
+            $employee->interno = $data['interno'];
+            $employee->correo = $data['correo'];
+            $employee->fe_nac = $data['fe_nac'];
+            $employee->fe_ing = $data['fe_ing'];
+            $employee->area = $data['area'];
+            $employee->turno = $data['turno'];
+            $employee->activo = $data['activo'];
+            $employee->jefe = $data['jefe'];
+            $employee->usuario = null;
+            $employee->legajo = $data['legajo'];
+            $employee->save();
+
+            return $employee;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al sincronizar la nueva persona desde Intranet' . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function updateFromIntranetData($employee, array $data)
+    {
+        try {
+            $employee->dni = $data['dni'];
+            $employee->nombre_p = $data['nombre_p'];
+            $employee->apellido = $data['apellido'];
+            $employee->interno = $data['interno'];
+            $employee->correo = $data['correo'];
+            $employee->fe_nac = $data['fe_nac'];
+            $employee->fe_ing = $data['fe_ing'];
+            $employee->area = $data['area'];
+            $employee->turno = $data['turno'];
+            $employee->activo = $data['activo'];
+            $employee->jefe = $data['jefe'];
+            $employee->legajo = $data['legajo'];
+            $employee->save();
+
+           return true;
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error al sincronizar la nueva persona desde Intranet' . $e->getMessage());
+            return false;
+        }
     }
 
 

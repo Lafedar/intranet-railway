@@ -255,7 +255,7 @@ class SynchronizationService
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medical certificate to Intranet' . $e->getMessage());
-            return response()->json(['message' => 'Error al sincronizar el certificado medico en Intranet.'], 500);
+            return false;
         }
     }
 

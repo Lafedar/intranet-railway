@@ -50,6 +50,16 @@ class MedicationsRequestService
         }
     }
 
+    public function getRequestByIdWrite($id)
+    {
+        try {
+            return DB::connection('mysql_write')->table('solicitudes_medicamentos')->where('id', $id)->first();
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error getting medication request by id (write)' . $e->getMessage());
+            return null;
+        }
+    }
+
     public function validateApprovedItems($id)
     {
         try {
@@ -116,13 +126,13 @@ class MedicationsRequestService
                 'updated_at' => now()->toDateTimeString(),
             ];
 
-            // Sincronizar con Agenda
-            $this->synchronizationService->saveNewMedicationRequestInAgenda([
-                'request' => $solicitudData,
-                'items' => $items,
-            ]);
 
-            return true;
+            return [
+                'id_solicitud' => $idSolicitud,
+                'solicitud' => $solicitudData,
+                'items' => $items,
+            ];
+
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . get_class($this) . ' - Error creating medication request: ' . $e->getMessage());
@@ -207,6 +217,78 @@ class MedicationsRequestService
         } catch (Exception $e) {
             Log::error('Error in ' . get_class($this) . 'Error getting the item by id: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    public function deleteLastRecord($id_request)
+    {
+        try {
+            if ($id_request != null) {
+                DB::connection('mysql_write')
+                    ->table('items_medicamentos')
+                    ->where('id_solicitud', $id_request)
+                    ->delete();
+
+
+
+                DB::connection('mysql_write')
+                    ->table('solicitudes_medicamentos')
+                    ->where('id', $id_request)
+                    ->delete();
+
+                return true;
+            } else {
+                return false;
+            }
+
+
+
+        } catch (Exception $e) {
+            Log::error('Error in ' . get_class($this) . 'Error deleting the last medication request: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function update($medicationRequest, $data)
+    {
+        try {
+            if ($data != null) {
+                DB::connection('mysql_write')->table('solicitudes_medicamentos')->where('id', $medicationRequest->id)->update([
+                    'dni_persona' => $data['dni_persona'],
+                    'estado' => $data['estado'],
+                ]);
+                return true;
+            }
+            return false;
+
+        } catch (Exception $e) {
+            Log::error('Error in ' . get_class($this) . 'Error updating a medication request: ' . $e->getMessage());
+            return false;
+        }
+    }
+    public function updateItemsMedicamentos(array $items, int $idSolicitud)
+    {
+        foreach ($items as $itemData) {
+            if (isset($itemData['id'])) {
+                try {
+                    DB::connection('mysql_write')->table('items_medicamentos')
+                        ->where('id', $itemData['id'])
+                        ->where('id_solicitud', $idSolicitud)
+                        ->update([
+                            'aprobado' => $itemData['aprobado'],
+                            'medicamento' => $itemData['medicamento'],
+                            'cantidad_solicitada' => $itemData['cantidad_solicitada'],
+                            'cantidad_aprobada' => $itemData['cantidad_aprobada'],
+                            'lote_med' => $itemData['lote_med'],
+                            'vencimiento_med' => $itemData['vencimiento_med'],
+                        ]);
+
+                    return true;
+                } catch (Exception $e) {
+                    Log::error('Error in ' . get_class($this) . 'Error updating a medication request items: ' . $e->getMessage());
+                    return false;
+                }
+            }
         }
     }
 

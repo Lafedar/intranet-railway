@@ -44,7 +44,7 @@ class MedicationsRequestController extends Controller
     {
         try {
             $imagePath2 = config('images.public_path') . '/firma.jpg';
-        
+
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
@@ -65,26 +65,32 @@ class MedicationsRequestController extends Controller
 
             $mails = explode(',', $this->genParametersService->getMailsToMedicationRequests());
 
-            DB::connection('mysql_write')->beginTransaction();
-
             $create = $this->medicationsRequestService->create($payload);
             if (!$create) {
-                DB::connection('mysql_write')->rollBack();
                 return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
             }
+            //Sincronizo con Intranet
+            $sincronization = $this->synchronizationService->saveNewMedicationRequestInAgenda([
+                'request' => $create['solicitud'],
+                'items' => $create['items'],
+            ]);
 
-            // Envío de mails
-            foreach ($mails as $mail) {
-                Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+            if ($sincronization) {
+                foreach ($mails as $mail) {
+                    Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+                }
+
+                Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+            } else {
+                if(!$this->medicationsRequestService->deleteLastRecord($create['id_solicitud'])){
+                    Log::error('Error in class: ' . get_class($this) . ' .Error deleting the last medication request.');
+                }
+                return response()->json(['message' => 'Hubo un problema al crear la solicitud de medicamentos. Por favor, solicítela nuevamente.'], 500);
+                
             }
-
-            Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
-
-            DB::connection('mysql_write')->commit();
 
             return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
         } catch (Exception $e) {
-            DB::connection('mysql_write')->rollBack();
             Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medication request: ' . $e->getMessage());
             return response()->json(['message' => 'Error al crear la solicitud de medicamentos'], 500);
         }

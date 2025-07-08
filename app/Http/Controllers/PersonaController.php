@@ -16,9 +16,17 @@ use App\Empresa;
 use Illuminate\Routing\Controller;
 use Exception;
 use Log;
+use App\Services\PersonaService;
 
 class PersonaController extends Controller
 {
+    private $personaService;
+    public function __construct(PersonaService $personaService)
+    {
+
+        $this->personaService = $personaService;
+
+    }
 
     public function buscar(Request $request)
     {
@@ -66,7 +74,7 @@ class PersonaController extends Controller
 
             $dni = $data['data']['dni'];
 
-            $persona = Persona::where('dni', $dni)->first();
+            $persona = $this->personaService->getByDni($dni);
 
             if (!$persona) {
                 return response()->json(['message' => 'Persona no encontrada'], 404);

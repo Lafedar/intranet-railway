@@ -67,8 +67,6 @@ class AuthController extends Controller
             return redirect()->away($url);
         }
 
-        DB::connection('mysql_write')->beginTransaction();
-
         try {
             $registerUser->email_verified_at = 1;
             $registerUser->remember_token_expires_at = null;
@@ -95,18 +93,18 @@ class AuthController extends Controller
             ]);
 
             if (!$success) {
-                throw new Exception("Falló la sincronización con Agenda");
+                if(!$this->userService->delete($user->id)){
+                    Log::error('Error in class: ' . get_class($this) . ' .Error deleting a user');
+                }
+                $person->usuario = null;
+                $person->save();
+                return redirect()->away('https://extranetlafedar.netlify.app?message=error');
+            } else {
+                $this->synchronizationService->updatePersonWithAgenda($person->toArray());
+                return redirect()->away('https://extranetlafedar.netlify.app?message=success');
             }
 
-            $this->synchronizationService->updatePersonWithAgenda($person->toArray());
-
-
-            DB::connection('mysql_write')->commit();
-
-            return redirect()->away('https://extranetlafedar.netlify.app?message=success');
-
         } catch (Exception $e) {
-            DB::connection('mysql_write')->rollBack();
             Log::error('Error in class: ' . get_class($this) . ' .Error verifiying user email' . $e->getMessage());
             return redirect()->away('https://extranetlafedar.netlify.app?message=error');
         }

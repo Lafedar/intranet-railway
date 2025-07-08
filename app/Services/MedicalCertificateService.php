@@ -37,4 +37,20 @@ class MedicalCertificateService
         }
 
     }
+
+    public function delete($id)
+    {
+        try {
+            if ($id != null) {
+                MedicalCertificate::on('mysql_write')->where('id', $id)->delete();
+                return true;
+            }
+            return false;
+
+        } catch (Exception $e) {
+            Log::error('Error in class: ' . get_class($this) . ' .Error deleting a medical certificate' . $e->getMessage());
+            return false;
+        }
+
+    }
 }

@@ -62,7 +62,7 @@ class UserService
 
         } catch (Exception $e) {
             Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
-            return false; // O manejar según convenga
+            return false;
         }
     }
 
@@ -87,8 +87,8 @@ class UserService
             return $registerUser;
 
         } catch (Exception $e) {
-            Log::error("Error en " . __METHOD__ . " - " . $e->getMessage());
-            return null;
+            Log::error("Error in class: " . get_class($e) . " Error creating register user: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -236,6 +236,36 @@ class UserService
             return null;
         }
 
+    }
+
+    public function delete($id)
+    {
+        try {
+            if ($id != null) {
+                User::on('mysql_write')->where('id', $id)->delete();
+                return true;
+            }
+
+            return false;
+
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error deleting a user: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateUser($dni_person, $activo)
+    {
+        try {
+            User::on('mysql_write')
+                ->where('dni', $dni_person)
+                ->update(['activo' => $activo]);
+
+            return true;
+        } catch (Exception $e) {
+            Log::error("Error in class: " . get_class($e) . " Error activating a user: " . $e->getMessage());
+            return false;
+        }
     }
 
 
