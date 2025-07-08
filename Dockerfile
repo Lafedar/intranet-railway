@@ -14,6 +14,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . /var/www/html
 
+# Crear el enlace simbolico para acceder a las imagenes publicas
+RUN php /var/www/html/artisan storage:link
+
 # Ajustar Apache para servir desde public y habilitar módulos
 RUN a2enmod rewrite headers \
     && sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf \
