@@ -82,7 +82,7 @@ class EncryptService
                 $tag
             ) ?: null;
         } catch (Exception $e) {
-            Log::error('Error in ' . __METHOD__ . ': ' . $e->getMessage());
+            Log::error('Error in class: ' . get_class($this) . ' .Error decrypting file data: ' . $e->getMessage());
             return null;
         }
     }

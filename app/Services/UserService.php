@@ -66,29 +66,6 @@ class UserService
         }
     }
 
-
-
-    /*public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
-    {
-        try {
-            return RegistroUser::on('mysql_write')->create([
-                'dni' => $dni,
-                'name' => $nombre . ' ' . $apellido,
-                'email' => $correo,
-                'password' => Hash::make($password),
-                'remember_token' => Str::random(60),
-                'remember_token_expires_at' => now()->addDay(),
-                'email_verified_at' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-        } catch (Exception $e) {
-            Log::error("Error in class: " . get_class($e) . " Error: " . $e->getMessage());
-
-        }
-
-    }*/
     public function createRegisterUserApi(int $dni, string $nombre, string $apellido, string $correo, string $password)
     {
         try {

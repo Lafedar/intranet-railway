@@ -14,6 +14,7 @@ use App\Services\UserService;
 use App\Mail\MedicationNotificationMail;
 use App\Mail\MedicationNotificationUser;
 use App\Services\SynchronizationService;
+use DB;
 
 
 class MedicationsRequestController extends Controller
@@ -43,58 +44,52 @@ class MedicationsRequestController extends Controller
     {
         try {
             $imagePath2 = config('images.public_path') . '/firma.jpg';
-
+        
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
             }
-            $data = json_decode($decrypted, true);
 
+            $data = json_decode($decrypted, true);
             if (!isset($data['data'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
 
             $payload = $data['data'];
-
             $person = $this->personaService->getByDni($payload['dni_user']);
             $user = $this->userService->getByDni($payload['dni_user']);
-            $mailsString = $this->genParametersService->getMailsToMedicationRequests();
-            $mails = explode(',', $mailsString);
 
             if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 401);
-            } else {
-                $create = $this->medicationsRequestService->create($payload);
-
-                if ($create) {
-                    foreach ($mails as $mail) {
-                        try {
-                            Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
-                        } catch (Exception $e) {
-                            Log::error('Error al enviar mail: ' . $e->getMessage());
-                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
-                        }
-
-                    }
-                    try {
-                        Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
-                    } catch (Exception $e) {
-                        Log::error('Error al enviar mail: ' . $e->getMessage());
-                        return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cargue la solicitud nuevamente'], 400);
-                    }
-
-                    return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
-                } else {
-                    return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
-                }
             }
 
+            $mails = explode(',', $this->genParametersService->getMailsToMedicationRequests());
 
+            DB::connection('mysql_write')->beginTransaction();
+
+            $create = $this->medicationsRequestService->create($payload);
+            if (!$create) {
+                DB::connection('mysql_write')->rollBack();
+                return response()->json(['message' => 'Hubo un problema al crear la solicitud'], 500);
+            }
+
+            // Envío de mails
+            foreach ($mails as $mail) {
+                Mail::to(trim($mail))->send(new MedicationNotificationMail($payload, $person, $imagePath2));
+            }
+
+            Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
+
+            DB::connection('mysql_write')->commit();
+
+            return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
         } catch (Exception $e) {
-            Log::error('Error en saveNewMedicationRequest: ' . $e->getMessage());
-            return response()->json(['message' => 'Error interno del servidor'], 500);
+            DB::connection('mysql_write')->rollBack();
+            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medication request: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al crear la solicitud de medicamentos'], 500);
         }
     }
+
 
     public function getAllMedicationRequestAndItemsByUserDni(Request $request)
     {
