@@ -26,7 +26,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         try {
-            $imagePath2 = config('images.public_path') . '/firma.jpg';
+            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
 

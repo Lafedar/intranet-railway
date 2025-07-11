@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Services\PersonaService;
 use App\Services\MedicationsRequestService;
+use App\Services\MedicalCertificateService;
 
 class SynchronizationService
 {
@@ -21,16 +22,17 @@ class SynchronizationService
     private array $endpoints;
     private $personaService;
     private $userService;
-
     private $medicationRequestService;
+    private $medicalCertificateService;
 
-    public function __construct(UserService $userService, PersonaService $personaService, MedicationsRequestService $medicationRequestService)
+    public function __construct(UserService $userService, PersonaService $personaService, MedicationsRequestService $medicationRequestService, MedicalCertificateService $medicalCertificateService)
     {
         $this->userService = $userService;
         $this->personaService = $personaService;
         $this->medicationRequestService = $medicationRequestService;
+        $this->medicalCertificateService = $medicalCertificateService;
 
-        
+
         $this->baseUrl = config('services.agenda.base_url');
         $this->urlGetKey = $this->baseUrl . '/api/get-key-api';
 
@@ -63,6 +65,7 @@ class SynchronizationService
             $person->save();
 
 
+
             $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
@@ -93,7 +96,7 @@ class SynchronizationService
                 'iv' => $encrypted['iv'],
             ]);
 
-            if ($responseSave->successful()) {
+            if ($responseSave->successful() && $this->updatePersonWithAgenda($person->toArray())) {
                 DB::connection('mysql_write')->commit();
                 return true;
             }
@@ -210,7 +213,7 @@ class SynchronizationService
         try {
             DB::connection('mysql_write')->beginTransaction();
             $create = $this->medicationRequestService->create($payload);
-            if(!$create){
+            if (!$create) {
                 Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request to Intranet');
                 return false;
             }
@@ -228,7 +231,7 @@ class SynchronizationService
             }
 
             $encrypted = $this->encryptDataToAgenda([
-                'request' => $create['request'],
+                'request' => $create['solicitud'],
                 'items' => $create['items'],
 
             ], $key);
@@ -253,36 +256,44 @@ class SynchronizationService
         } catch (Exception $e) {
             DB::connection('mysql_write')->rollBack();
             Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request to Intranet: ' . $e->getMessage());
-            
+
         }
     }
 
-    public function saveNewMedicalCertificateInAgenda(array $data)
+    public function saveNewMedicalCertificateInAgenda(array $data, $fileName, $user)
     {
         try {
+            DB::connection('mysql_write')->beginTransaction();
+            $certificado = $this->medicalCertificateService->create(
+                $user->dni,
+                $data['data']['title'],
+                $data['data']['description'],
+                $fileName
+            );
+
             $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
-                return false;
+                return null;
             }
 
             $keyB64 = $responseKey->json('key');
             $key = base64_decode($keyB64);
             if (strlen($key) !== 32) {  // AES-256 requiere 32 bytes
                 Log::error('Clave efímera inválida recibida');
-                return false;
+                return null;
             }
             $encrypted = $this->encryptDataToAgenda([
-                'id' => $data['id'],
-                'user_id' => $data['user_id'],
-                'titulo' => $data['titulo'],
-                'descripcion' => $data['descripcion'],
-                'archivo' => $data['archivo'],
+                'id' => $certificado->id,
+                'user_id' => $user->dni,
+                'titulo' => $data['data']['title'],
+                'descripcion' => $data['data']['description'],
+                'archivo' => $fileName,
 
             ], $key);
 
             if ($encrypted === false) {
-                return false;
+                return null;
             }
             $url = $this->baseUrl . $this->endpoints['save_certificate'];
             $response = Http::timeout(30)->post($url, [
@@ -291,14 +302,18 @@ class SynchronizationService
             ]);
 
             if ($response->successful()) {
-                return true;
+                DB::connection('mysql_write')->commit();
+                return $certificado;
             }
             Log::error('Error al sincronizar certificado: ' . $response->body());
-            return false;
+            DB::connection('mysql_write')->rollBack();
+            return null;
+
 
         } catch (Exception $e) {
+            DB::connection('mysql_write')->rollBack();
             Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medical certificate to Intranet: ' . $e->getMessage());
-            return false;
+            return null;
         }
     }
 

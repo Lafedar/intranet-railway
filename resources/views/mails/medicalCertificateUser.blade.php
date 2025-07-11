@@ -9,6 +9,7 @@
 
     <p>Saludos</p>
 
-    <img src="{{ $message->embed($imagePath2) }}" alt="Firma" style="width: 100%; height: auto;">
+    
+    <img src="{{ $message->embed($imagePath2) }}" alt="Firma" style="width: 316px; height: 79px;">
 </body>
 </html>

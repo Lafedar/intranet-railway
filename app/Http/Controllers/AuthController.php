@@ -78,8 +78,6 @@ class AuthController extends Controller
             if (!$success) {
                 return redirect()->away('https://extranetlafedar.netlify.app?message=error');
             } else {
-                $person = $this->personService->getByDniWrite($registerUser->dni);
-                $this->synchronizationService->updatePersonWithAgenda($person->toArray());
                 return redirect()->away('https://extranetlafedar.netlify.app?message=success');
             }
 
@@ -139,7 +137,7 @@ class AuthController extends Controller
             if (!isset($data['data']['email'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
-            $imagePath2 = config('images.public_path') . '/firma.jpg';
+            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -172,7 +170,7 @@ class AuthController extends Controller
     public function sendMailResetPassword(Request $request)
     {
         try {
-            $imagePath2 = config('images.public_path') . '/firma.jpg';
+            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
 
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
