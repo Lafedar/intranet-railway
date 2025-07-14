@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Location;
 use Exception;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 
 class MedicationsRequestService

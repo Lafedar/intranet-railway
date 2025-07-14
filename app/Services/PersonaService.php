@@ -6,7 +6,7 @@ use App\Models\Persona;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Exception;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Models\Empleado;
 
 class PersonaService

@@ -14,7 +14,7 @@ use App\Services\UserService;
 use App\Mail\MedicationNotificationMail;
 use App\Mail\MedicationNotificationUser;
 use App\Services\SynchronizationService;
-use DB;
+
 
 
 class MedicationsRequestController extends Controller

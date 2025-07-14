@@ -5,13 +5,13 @@ namespace App\Services;
 
 
 use Illuminate\Database\Eloquent\Collection;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Models\Empleado;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 use App\Models\Persona;
-use log;
+use Illuminate\Support\Facades\Log;
 
 
 

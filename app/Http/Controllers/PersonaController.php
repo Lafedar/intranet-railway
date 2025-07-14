@@ -9,13 +9,12 @@ use App\Permiso;
 use App\Empleado;
 use App\User;
 use Auth;
-use DB;
 use Session;
 use App\Models\MiAgenda;
 use App\Empresa;
 use Illuminate\Routing\Controller;
 use Exception;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Services\PersonaService;
 
 class PersonaController extends Controller
