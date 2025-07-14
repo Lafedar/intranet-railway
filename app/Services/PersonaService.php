@@ -81,6 +81,7 @@ class PersonaService
     {
         try {
             $employee = new Empleado();
+            $employee->id_p = $data['id'];
             $employee->nombre_p = $data['nombre_p'];
             $employee->apellido = $data['apellido'];
             $employee->dni = $data['dni'];

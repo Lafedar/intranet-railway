@@ -123,7 +123,7 @@ class SynchronizationController extends Controller
             if (!isset($data['id'])) {
                 return response()->json(['error' => 'Falta el ID de la solicitud'], 400);
             }
-
+            
             $requestModel = $this->medicationRequestService->getRequestByIdWrite($data['id']);
             if (!$requestModel) {
                 return response()->json(['error' => 'Solicitud no encontrada'], 404);

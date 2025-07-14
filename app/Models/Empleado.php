@@ -22,7 +22,8 @@ class Empleado extends Model
         'id_turno',
         'jefe',
         'id_usuario',
-        'activo'
+        'activo',
+        'id'
     ];
 
     // Indicar a Laravel que los campos son de tipo fecha
