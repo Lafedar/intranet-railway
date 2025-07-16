@@ -104,7 +104,7 @@ class PersonaController extends Controller
                 'iv' => base64_encode($newIv),
             ], 200);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error searching a person: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error searching a person: ' . $e->getMessage());
             return response()->json(['error' => 'Error buscando la persona'], 500);
         }
 

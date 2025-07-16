@@ -81,7 +81,7 @@ class AuthController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error verifiying user email' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error verifiying user email: ' . $e->getMessage());
             return redirect()->away('https://extranetlafedar.netlify.app?message=error');
         }
     }
@@ -122,7 +122,7 @@ class AuthController extends Controller
 
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error redirecting to reset password' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error redirecting to reset password: ' . $e->getMessage());
         }
 
 
@@ -136,7 +136,8 @@ class AuthController extends Controller
             if (!isset($data['data']['email'])) {
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
-            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
+            $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
+        
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -160,7 +161,7 @@ class AuthController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error generating new verification email: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error generating new verification email: ' . $e->getMessage());
             return response()->json(['message' => 'Error al generar el mail de verificación'], 500);
         }
 
@@ -169,7 +170,7 @@ class AuthController extends Controller
     public function sendMailResetPassword(Request $request)
     {
         try {
-            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
+            $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
 
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
@@ -210,7 +211,7 @@ class AuthController extends Controller
 
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error sending reset password email: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error sending reset password email: ' . $e->getMessage());
             return response()->json(['message' => 'Error al enviar el mail de restablecimiento de contraseña'], 500);
         }
     }
@@ -240,7 +241,7 @@ class AuthController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error resetting password: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error resetting password: ' . $e->getMessage());
             return response()->json(['message' => 'Error al restablecer la contraseña'], 500);
         }
     }
@@ -258,7 +259,7 @@ class AuthController extends Controller
             }
             return response()->json(['message' => 'Tokens limpiados correctamente'], 200);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error cleaning tokens: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error cleaning tokens: ' . $e->getMessage());
             return response()->json(['message' => 'Error al limpiar los tokens'], 500);
         }
     }

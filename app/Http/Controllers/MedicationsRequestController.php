@@ -43,7 +43,7 @@ class MedicationsRequestController extends Controller
     public function saveNewMedicationRequest(Request $request)
     {
         try {
-            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
+            $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
 
             $decrypted = $this->encryptService->decrypt($request);
             if (!$decrypted) {
@@ -81,7 +81,7 @@ class MedicationsRequestController extends Controller
 
             return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error saving a new medication request: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request: ' . $e->getMessage());
             return response()->json(['message' => 'Error al crear la solicitud de medicamentos'], 500);
         }
     }
@@ -121,7 +121,7 @@ class MedicationsRequestController extends Controller
 
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting all medication requests by user dni: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting all medication requests by user dni: ' . $e->getMessage());
             return response()->json(['message' => 'Error al actualizar el item'], 500);
         }
 

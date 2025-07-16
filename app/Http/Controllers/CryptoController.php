@@ -44,7 +44,7 @@ class CryptoController extends Controller
 
             ]);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting encryption key: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting encryption key: ' . $e->getMessage());
             return response()->json(['error' => 'Error obteniendo la clave de encriptacion'], 500);
         }
 
@@ -106,7 +106,7 @@ class CryptoController extends Controller
                 'iv' => base64_encode($responseIv),
             ]);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error in loginApi' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - User login failed: ' . $e->getMessage());
             return response()->json(['error' => 'Error en el login'], 500);
         }
 

@@ -59,7 +59,7 @@ class SynchronizationController extends Controller
             }
             return response()->json(['message' => 'Empleado sincronizado con éxito'], 201);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating a new person from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error creating a new person from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la persona desde Intranet.'], 500);
         }
     }
@@ -95,7 +95,7 @@ class SynchronizationController extends Controller
 
             return response()->json(['message' => 'Empleado actualizado con éxito'], 200);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating person from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating person from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la persona desde Intranet.'], 500);
         }
     }
@@ -138,7 +138,7 @@ class SynchronizationController extends Controller
 
             return response()->json(['message' => 'Solicitud actualizada con éxito'], 200);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating a medication request from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating a medication request from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la solicitud de medicamentos desde Intranet.'], 500);
         }
     }
@@ -178,7 +178,7 @@ class SynchronizationController extends Controller
             $user->save();
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating the person and user from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating the person and user from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la persona y el usuario desde Intranet.'], 500);
         }
 
@@ -220,7 +220,7 @@ class SynchronizationController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error updating a user password from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating a user password from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al sincronizar la contraseña del usuario desde Intranet.'], 500);
         }
     }
@@ -248,7 +248,7 @@ class SynchronizationController extends Controller
             // Devolvemos la clave en formato JSON
             return response()->json(['key' => $key]);
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error getting a epimeral key' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error getting a epimeral key: ' . $e->getMessage());
             return response()->json(['message' => 'Error al obtener la clave para desencriptar.'], 500);
         }
 
@@ -296,7 +296,7 @@ class SynchronizationController extends Controller
 
             return $data;
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error desencrypting data from Intranet' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error desencrypting data from Intranet: ' . $e->getMessage());
             return response()->json(['message' => 'Error al desecriptar los datos desde Intranet.'], 500);
         }
     }

@@ -26,7 +26,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         try {
-            $imagePath2 = config('images.public_path') . '/firma30aniversario.png';
+            $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
             $decrypted = $this->encryptService->decrypt($request);
             $data = json_decode($decrypted, true);
 
@@ -64,7 +64,7 @@ class UserController extends Controller
                 try {
                     Mail::to($email)->send(new VerificationEmail($nombre, $user->remember_token, $imagePath2));
                 } catch (Exception $e) {
-                    Log::error('Error al enviar mail: ' . $e->getMessage());
+                    Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error sending an email to a user: ' . $e->getMessage());
                     $user->delete(); // Eliminar el usuario si falla el envío del correo
                     return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor cree el usuario nuevamente'], 400);
                 }
@@ -75,7 +75,7 @@ class UserController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in class: ' . get_class($this) . ' .Error creating user: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error creating user: ' . $e->getMessage());
             return response()->json(['message' => 'Error al crear el usuario'], 500);
         }
 
