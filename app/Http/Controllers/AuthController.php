@@ -137,7 +137,7 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Formato de datos inválido'], 400);
             }
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
-        
+
 
             $dni = $data['data']['dni'];
             $email = $data['data']['email'];
@@ -179,30 +179,35 @@ class AuthController extends Controller
             $email = $data['data']['email'];
 
             $person = $this->personService->getByDni($dni);
-            if (!is_object($person)) {
+            if (!$person) {
                 return response()->json(['message' => 'La persona no existe'], 400);
             }
             $user = $this->userService->getByDni($dni);
             if ($person->activo == 1) {
-                if ($user->activo == 1) {
-                    if ($user->email == $email) {
-                        $nombre = $person->nombre_p . ' ' . $person->apellido;
-                        $token = $this->userService->createNewTokenUser($dni);
-                        try {
-                            Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
-                        } catch (Exception $e) {
-                            Log::error('Error al enviar mail: ' . $e->getMessage());
-                            return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor envie el mail nuevamente'], 400);
+                if ($user != null) {
+                    if ($user->activo == 1) {
+                        if ($user->email == $email) {
+                            $nombre = $person->nombre_p . ' ' . $person->apellido;
+                            $token = $this->userService->createNewTokenUser($dni);
+                            try {
+                                Mail::to($email)->send(new ResetPasswordApi($nombre, $token, $imagePath2));
+                            } catch (Exception $e) {
+                                Log::error('Error al enviar mail: ' . $e->getMessage());
+                                return response()->json(['message' => 'Error, no se pudo enviar el mail. Por favor envie el mail nuevamente'], 400);
+                            }
+
+                            return response()->json(['message' => 'Mail enviado correctamente!'], 200);
+                        } else {
+                            return response()->json(['message' => 'El usuario no está registrado'], 400);
                         }
 
-                        return response()->json(['message' => 'Mail enviado correctamente!'], 200);
                     } else {
-                        return response()->json(['message' => 'El usuario no está registrado'], 400);
+                        return response()->json(['message' => 'El usuario no está activo'], 400);
                     }
-
-                } else {
-                    return response()->json(['message' => 'El usuario no está activo'], 400);
+                }else{
+                    return response()->json(['message' => 'La persona no tiene usuario existente'], 400);
                 }
+
 
 
             } else {
