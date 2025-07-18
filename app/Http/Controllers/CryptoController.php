@@ -24,6 +24,10 @@ class CryptoController extends Controller
     public function getEncryptionKey(Request $request)
     {
         try {
+            Log::info('Cookies recibidas:', $request->cookies->all());
+            Log::info('Sesión actual:', session()->all());
+            Log::info('Session ID:', session()->getId());
+            
             if (!$request->session()->has('aes_key')) {
 
                 $key = random_bytes(32); // 256 bits = 32 bytes
