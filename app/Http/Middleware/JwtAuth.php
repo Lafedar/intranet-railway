@@ -19,7 +19,7 @@ class JwtAuth
     {
         $authHeader = $request->header('Authorization');
         Log::info('Authorization Header:', ['header' => $authHeader]);
-
+        error_log('JwtAuth Middleware ejecutado - Authorization Header: ' . $authHeader);
 
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
             return response()->json(['error' => 'Token no proporcionado'], 401);
@@ -30,7 +30,7 @@ class JwtAuth
         try {
             $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
             Log::info('JWT Payload:', (array) $decoded);
-
+            error_log('JWT Payload: ' . print_r((array) $decoded, true));
             // Guardás los datos del usuario para usar en el controlador
             $request->merge(['jwt_payload' => (array) $decoded]);
         } catch (\Exception $e) {
