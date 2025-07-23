@@ -44,8 +44,8 @@ class MedicationsRequestController extends Controller
     {
         try {
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
-
-            $decrypted = $this->encryptService->decrypt($request);
+            $aesKeyHeader = $request->header('X-AES-Key');
+            $decrypted = $this->encryptService->decrypt($request, $aesKeyHeader);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
             }
@@ -74,9 +74,9 @@ class MedicationsRequestController extends Controller
 
                 Mail::to($user->email)->send(new MedicationNotificationUser($payload, $person, $imagePath2));
             } else {
-                
+
                 return response()->json(['message' => 'Hubo un problema al crear la solicitud de medicamentos. Por favor, solicítela nuevamente.'], 500);
-                
+
             }
 
             return response()->json(['message' => 'Solicitud creada exitosamente! Se enviará un correo de confirmación.'], 200);
@@ -91,7 +91,8 @@ class MedicationsRequestController extends Controller
     {
         try {
             //Desencripto los datos
-            $decrypted = $this->encryptService->decrypt($request);
+            $aesKeyHeader = $request->header('X-AES-Key');
+            $decrypted = $this->encryptService->decrypt($request, $aesKeyHeader);
             $data = json_decode($decrypted, true);
 
             // Validación
@@ -109,8 +110,8 @@ class MedicationsRequestController extends Controller
 
             //Encripto los datos
             $responseIv = random_bytes(12);
-            $aesKeyBase64 = $request->session()->get('aes_key');
-            $key = base64_decode($aesKeyBase64);
+            $aesKeyHeader = $request->header('X-AES-Key');
+            $key = base64_decode($aesKeyHeader);
 
             $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
             return response()->json([
