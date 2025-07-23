@@ -12,6 +12,11 @@ class EncryptService
     public function decrypt($request, $aesKeyHeader)
     {
         try {
+            Log::info('Datos recibidos en decrypt', [
+                'ciphertext' => $request->input('ciphertext'),
+                'iv' => $request->input('iv'),
+                'X-AES-Key' =>  $aesKeyHeader
+            ]);
             $ciphertextBase64 = $request->input('ciphertext');
             $ivBase64 = $request->input('iv');
 
@@ -20,7 +25,7 @@ class EncryptService
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
-           
+
 
             $aesKey = $aesKeyHeader;
             $tagLength = 16;
