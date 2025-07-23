@@ -27,7 +27,7 @@ class EncryptService
             $iv = base64_decode($ivBase64);
 
 
-            $aesKey = base64_decode($aesKeyHeader); 
+            $aesKey = $aesKeyHeader;
 
             $tagLength = 16;
             if (strlen($ciphertext) < $tagLength)
