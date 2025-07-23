@@ -121,7 +121,6 @@ class CryptoController extends Controller
                     //Armar respuesta
                     $respuesta = json_encode([
                         'token' => $accessToken,
-                        'refresh_token' => $refreshToken,
                         'id' => $user->id,
                         'nombre' => $user->name,
                         'email' => $user->email,
@@ -141,8 +140,19 @@ class CryptoController extends Controller
                 'ciphertext' => base64_encode($ciphertextWithTag),
                 'iv' => base64_encode($responseIv),
                 'token' => $accessToken,
-                'refresh_token' => $refreshToken,
-            ]);
+            ])->withCookie(
+                    cookie(
+                        'refresh_token',
+                        $refreshToken,
+                        60 * 24 * 7, // 7 días
+                        '/',
+                        null, // dominio automático (o definilo)
+                        true, // secure
+                        true, // httpOnly
+                        false,
+                        'None'
+                    )
+                );
 
         } catch (Exception $e) {
             Log::error('Error en loginApi: ' . $e->getMessage());
@@ -156,7 +166,8 @@ class CryptoController extends Controller
             Log::info('Llego al Refresh Token Request: ' . json_encode($request->all()));
 
             // ✅ Leer el refresh token desde el body, NO desde la cookie
-            $refreshToken = $request->input('refresh_token');
+            $refreshToken = $request->cookie('refresh_token');
+
             Log::info('Refresh Token: ' . json_encode($refreshToken));
             if (!$refreshToken) {
                 return response()->json(['error' => 'Refresh token missing'], 401);
@@ -188,8 +199,20 @@ class CryptoController extends Controller
             Log::info('Access token generado: ' . $accessToken);
             return response()->json([
                 'access_token' => $accessToken,
-                'refresh_token' => $refreshToken // opcional: lo devolvés si querés mantenerlo o rotarlo
-            ]);
+            ])->withCookie(
+                    cookie(
+                        'refresh_token',
+                        $refreshToken,       // 🔁 Reutilizás o rotás el refresh token
+                        60 * 24 * 7,         // 7 días
+                        '/',
+                        null,                // Dominio, podés usar null o tu dominio si lo necesitás
+                        true,                // Secure
+                        true,                // HttpOnly
+                        false,
+                        'None'               // SameSite=None para cross-site
+                    )
+                );
+
         } catch (Exception $e) {
             Log::error('Error al refrescar token: ' . $e->getMessage());
             return response()->json(['error' => 'Token inválido'], 401);
