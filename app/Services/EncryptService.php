@@ -15,7 +15,7 @@ class EncryptService
             Log::info('Datos recibidos en decrypt', [
                 'ciphertext' => $request->input('ciphertext'),
                 'iv' => $request->input('iv'),
-                'X-AES-Key' =>  $aesKeyHeader
+                'X-AES-Key' => $aesKeyHeader
             ]);
             $ciphertextBase64 = $request->input('ciphertext');
             $ivBase64 = $request->input('iv');
@@ -27,14 +27,20 @@ class EncryptService
             $iv = base64_decode($ivBase64);
 
 
-            $aesKey = $aesKeyHeader;
+            $aesKey = base64_decode($aesKeyHeader); 
+
             $tagLength = 16;
             if (strlen($ciphertext) < $tagLength)
                 return null;
 
             $tag = substr($ciphertext, -$tagLength);
             $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
-
+            Log::info('Antes de decrypt', [
+                'ciphertext_raw' => base64_encode($ciphertextRaw),
+                'iv' => base64_encode($iv),
+                'tag' => base64_encode($tag),
+                'aes_key_len' => strlen($aesKey),
+            ]);
             return openssl_decrypt(
                 $ciphertextRaw,
                 'aes-256-gcm',
@@ -43,6 +49,7 @@ class EncryptService
                 $iv,
                 $tag
             ) ?: null;
+
         } catch (Exception $e) {
             Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error decrypting data: ' . $e->getMessage());
 
