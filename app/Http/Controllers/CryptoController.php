@@ -133,24 +133,15 @@ class CryptoController extends Controller
             $responseIv = random_bytes(12);
             $ciphertextWithTag = $this->encryptService->encrypt($respuesta, $aesKey, $responseIv);
 
-            //Setear cookie con Refresh Token (HttpOnly, Secure)
-            $cookie = cookie(
-                'refresh_token',
-                $refreshToken,
-                60 * 24 * 7, //7 días
-                '/',
-                null,
-                true, // secure
-                true, // HttpOnly
-                false,
-                'None'
-            );
+        
             Log::info('Seteando cookie con refresh token: ' . $refreshToken);
             //Devolver respuesta con cookie
             return response()->json([
                 'ciphertext' => base64_encode($ciphertextWithTag),
                 'iv' => base64_encode($responseIv),
-            ])->withCookie($cookie);
+                'token' => $accessToken,
+                'refresh_token' => $refreshToken,
+            ]);
 
         } catch (Exception $e) {
             Log::error('Error en loginApi: ' . $e->getMessage());
@@ -162,9 +153,9 @@ class CryptoController extends Controller
     {
         try {
             Log::info('Llego al Refresh Token Request: ' . json_encode($request->all()));
-            Log::info('Cookies en RefreshToken: ' . json_encode($request->cookies->all()));
 
-            $refreshToken = $request->cookie('refresh_token');
+            // ✅ Leer el refresh token desde el body, NO desde la cookie
+            $refreshToken = $request->input('refresh_token');
 
             if (!$refreshToken) {
                 return response()->json(['error' => 'Refresh token missing'], 401);
@@ -189,12 +180,13 @@ class CryptoController extends Controller
                 'sub' => $user->id,
                 'email' => $user->email,
                 'iat' => time(),
-                'exp' => time() + (30 * 60), // 30 min
+                'exp' => time() + (1 * 60), // 1 minuto
             ];
             $accessToken = JWT::encode($accessTokenPayload, env('JWT_SECRET'), 'HS256');
-            Log::info('Salio del Refresh Token Request: ' . json_encode($request->all()));
+
             return response()->json([
                 'access_token' => $accessToken,
+                'refresh_token' => $refreshToken // opcional: lo devolvés si querés mantenerlo o rotarlo
             ]);
         } catch (Exception $e) {
             Log::error('Error al refrescar token: ' . $e->getMessage());
