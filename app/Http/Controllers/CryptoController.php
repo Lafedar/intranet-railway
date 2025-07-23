@@ -163,9 +163,8 @@ class CryptoController extends Controller
     public function refreshToken(Request $request)
     {
         try {
-            Log::info('Llego al Refresh Token Request: ' . json_encode($request->all()));
+            Log::info('Llego al Refresh Token Request: ');
 
-            // ✅ Leer el refresh token desde el body, NO desde la cookie
             $refreshToken = $request->cookie('refresh_token');
 
             Log::info('Refresh Token: ' . json_encode($refreshToken));
