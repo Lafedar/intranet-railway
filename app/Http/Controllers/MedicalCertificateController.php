@@ -52,7 +52,7 @@ class MedicalCertificateController extends Controller
 
             $user = $this->userService->getByDni($data['data']['user_dni']);
 
-            $decryptedFile = $this->encryptService->decryptFile($payload['archivo'] ?? []);
+            $decryptedFile = $this->encryptService->decryptFile($payload['archivo'] ?? [], $aesKeyHeader);
 
             if (!$decryptedFile) {
                 return response()->json(['error' => 'Archivo inválido'], 400);
