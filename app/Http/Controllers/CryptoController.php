@@ -121,6 +121,7 @@ class CryptoController extends Controller
                     //Armar respuesta
                     $respuesta = json_encode([
                         'token' => $accessToken,
+                        'refresh_token' => $refreshToken,
                         'id' => $user->id,
                         'nombre' => $user->name,
                         'email' => $user->email,
