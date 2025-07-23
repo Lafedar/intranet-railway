@@ -9,7 +9,7 @@ use Request;
 class EncryptService
 {
     // Servicio - solo lógica
-    public function decrypt($request)
+    public function decrypt($request, $headerAesKey)
     {
         try {
             $ciphertextBase64 = $request->input('ciphertext');
@@ -20,11 +20,11 @@ class EncryptService
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
-            $aesKeyBase64 = $request->session()->get('aes_key');
+            $aesKeyBase64 = $headerAesKey;
             if (!$aesKeyBase64)
                 return null;
 
-            $aesKey = base64_decode($aesKeyBase64);
+            $aesKey = $aesKeyBase64;
             $tagLength = 16;
             if (strlen($ciphertext) < $tagLength)
                 return null;

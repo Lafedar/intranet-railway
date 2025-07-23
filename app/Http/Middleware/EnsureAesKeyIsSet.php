@@ -16,12 +16,19 @@ class EnsureAesKeyIsSet
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->session()->has('aes_key')) {
+        $key = $request->header('X-AES-Key');
 
-            return response()->json(['error' => 'Missing AES session key'], 403);
-
+        if (!$key) {
+            return response()->json(['error' => 'Missing AES key'], 403);
         }
 
+        // Validar longitud y formato si querés
+        if (strlen(base64_decode($key, true)) !== 32) {
+            return response()->json(['error' => 'Invalid AES key format'], 403);
+        }
+
+        // Guardar la clave para usarla en los controladores
+        app()->instance('aes_key', base64_decode($key, true));
 
         return $next($request);
     }

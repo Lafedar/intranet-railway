@@ -12,13 +12,19 @@ use App\Http\Controllers\MedicalCertificateController;
 use App\Http\Controllers\SynchronizationController;
 use App\Http\Controllers\UserController;
 
-
 Route::middleware(['force.cors'])->group(function () {
     Route::get('/get-key', [CryptoController::class, 'getEncryptionKey']);
+    Route::post('/refresh-token', [CryptoController::class, 'refreshToken']);
 });
-
 Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/loginApi', [CryptoController::class, 'loginApi']);
+
+});
+
+
+
+Route::middleware(['aes.key', 'jwt', 'force.cors'])->group(function () {
+
     Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
     Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
     Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);
@@ -28,7 +34,7 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
     Route::post('/cleanTokens', [AuthController::class, 'cleanTokens']);
     Route::post('/medicalCertificate', [MedicalCertificateController::class, 'store']);
-    
+
 
     // CORS preflight solo para estas rutas
     Route::options('/{any}', function () {

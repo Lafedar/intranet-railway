@@ -47,6 +47,7 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ForceCors::class,
+            
         ],
 
     ];
@@ -73,6 +74,7 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'aes.key' => \App\Http\Middleware\EnsureAesKeyIsSet::class,
         'force.cors' => \App\Http\Middleware\ForceCors::class,
+        'jwt' => \App\Http\Middleware\JwtAuth::class,
     ];
 
     /**

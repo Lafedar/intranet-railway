@@ -26,14 +26,19 @@ class ForceCors
         $origin = $request->headers->get('Origin');
 
         // Si el origen es válido, lo usamos. Si no, devolvemos 'null' para bloquear.
-        $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'null';
+        //$allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'null';
+        if (!in_array($origin, $allowedOrigins)) {
+            return response('Origin not allowed', 403);
+        }
+        $allowOrigin = $origin;
+
 
         // Manejar preflight request
         if ($request->getMethod() === 'OPTIONS') {
             return response('', 204)
                 ->header('Access-Control-Allow-Origin', $allowOrigin)
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-AES-Key')
                 ->header('Access-Control-Allow-Credentials', 'true')
                 ->header('X-Force-Cors', 'true');
         }
@@ -44,7 +49,7 @@ class ForceCors
         return $response
             ->header('Access-Control-Allow-Origin', $allowOrigin)
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-AES-Key')
             ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Expose-Headers', 'Authorization')
             ->header('X-Force-Cors', 'true');
