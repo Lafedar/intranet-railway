@@ -15,41 +15,38 @@ class EncryptService
             $ciphertextBase64 = $request->input('ciphertext');
             $ivBase64 = $request->input('iv');
 
-            if (!$ciphertextBase64 || !$ivBase64) {
+            if (!$ciphertextBase64 || !$ivBase64 || !$headerAesKey) {
                 return null;
             }
-
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
+            $aesKey = base64_decode($headerAesKey);
 
-            if (!$headerAesKey) {
+            if (strlen($ciphertext) < 16 || strlen($aesKey) !== 32 || strlen($iv) !== 12) {
+                Log::warning('Datos mal formateados en decrypt');
                 return null;
             }
 
+            $tag = substr($ciphertext, -16);
+            $ciphertextRaw = substr($ciphertext, 0, -16);
 
-            $aesKey = base64_decode($headerAesKey);
-
-            $tagLength = 16;
-            if (strlen($ciphertext) < $tagLength)
-                return null;
-
-            $tag = substr($ciphertext, -$tagLength);
-            $ciphertextRaw = substr($ciphertext, 0, -$tagLength);
-
-            return openssl_decrypt(
+            $decrypted = openssl_decrypt(
                 $ciphertextRaw,
                 'aes-256-gcm',
                 $aesKey,
                 OPENSSL_RAW_DATA,
                 $iv,
                 $tag
-            ) ?: null;
-        } catch (Exception $e) {
-            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error decrypting data: ' . $e->getMessage());
+            );
 
+            return $decrypted ?: null;
+        } catch (Exception $e) {
+            Log::error('Error decrypting data: ' . $e->getMessage());
+            return null;
         }
     }
+
     public function decryptFile(array $payload, $aesKeyHeader): ?string
     {
         try {
