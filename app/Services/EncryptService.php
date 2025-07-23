@@ -45,7 +45,7 @@ class EncryptService
 
         }
     }
-    public function decryptFile(array $payload): ?string
+    public function decryptFile(array $payload, $aesKeyHeader): ?string
     {
         try {
             $ciphertextBase64 = $payload['ciphertext'] ?? null;
@@ -58,12 +58,12 @@ class EncryptService
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
 
-            $aesKeyBase64 = session()->get('aes_key');
-            if (!$aesKeyBase64) {
+            
+            if (!$aesKeyHeader) {
                 return null;
             }
 
-            $aesKey = base64_decode($aesKeyBase64);
+            $aesKey = base64_decode($aesKeyHeader);
             $tagLength = 16;
 
             if (strlen($ciphertext) < $tagLength) {

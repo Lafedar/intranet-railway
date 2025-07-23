@@ -41,8 +41,8 @@ class MedicalCertificateController extends Controller
         try {
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
             $payload = $request->all();
-
-            $decryptedDatos = $this->encryptService->decryptFile($payload['datos'] ?? []);
+            $aesKeyHeader = $request->header('X-AES-Key');
+            $decryptedDatos = $this->encryptService->decryptFile($payload['datos'] ?? [], $aesKeyHeader);
 
             if (!$decryptedDatos) {
                 return response()->json(['error' => 'Datos inválidos'], 400);
