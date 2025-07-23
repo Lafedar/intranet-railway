@@ -15,17 +15,21 @@ class EncryptService
             $ciphertextBase64 = $request->input('ciphertext');
             $ivBase64 = $request->input('iv');
 
-            if (!$ciphertextBase64 || !$ivBase64)
+            if (!$ciphertextBase64 || !$ivBase64) {
                 return null;
+            }
+
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
-            $aesKeyBase64 = base64_decode($headerAesKey);
-            
-            if (!$aesKeyBase64)
-                return null;
 
-            $aesKey = $aesKeyBase64;
+            if (!$headerAesKey) {
+                return null;
+            }
+
+
+            $aesKey = base64_decode($headerAesKey);
+
             $tagLength = 16;
             if (strlen($ciphertext) < $tagLength)
                 return null;
@@ -59,10 +63,6 @@ class EncryptService
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
 
-            
-            if (!$aesKeyHeader) {
-                return null;
-            }
 
             $aesKey = base64_decode($aesKeyHeader);
             $tagLength = 16;
