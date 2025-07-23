@@ -20,7 +20,8 @@ class EncryptService
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
-            $aesKeyBase64 = $headerAesKey;
+            $aesKeyBase64 = base64_decode($headerAesKey);
+            
             if (!$aesKeyBase64)
                 return null;
 
