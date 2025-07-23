@@ -163,29 +163,27 @@ class CryptoController extends Controller
     public function refreshToken(Request $request)
     {
         try {
-            Log::info('Llego al Refresh Token Request: ');
-
+        
             $refreshToken = $request->cookie('refresh_token');
 
-            Log::info('Refresh Token: ' . json_encode($refreshToken));
             if (!$refreshToken) {
                 return response()->json(['error' => 'Refresh token missing'], 401);
             }
-            Log::info('Se encontro refresh token: ' . $refreshToken);
+
             $decoded = JWT::decode($refreshToken, new Key(env('JWT_REFRESH_SECRET'), 'HS256'));
 
             // Verificar expiración
             if ($decoded->exp < time()) {
                 return response()->json(['error' => 'Refresh token expired'], 401);
             }
-            Log::info('Refresh token válido, continuando...');
+            
             // Obtener usuario
             $userId = $decoded->sub;
             $user = User::find($userId);
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
             }
-            Log::info('Usuario encontrado: ' . $user->email);
+            
 
             // Generar nuevo Access Token
             $accessTokenPayload = [
@@ -195,7 +193,7 @@ class CryptoController extends Controller
                 'exp' => time() + (1 * 60), // 1 minuto
             ];
             $accessToken = JWT::encode($accessTokenPayload, env('JWT_SECRET'), 'HS256');
-            Log::info('Access token generado: ' . $accessToken);
+
             return response()->json([
                 'access_token' => $accessToken,
             ])->withCookie(
