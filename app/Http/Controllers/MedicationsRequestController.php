@@ -92,7 +92,7 @@ class MedicationsRequestController extends Controller
         try {
             //Desencripto los datos
             $aesKeyHeader = $request->header('X-AES-Key');
-            $decrypted = $this->encryptService->decrypt($request, $aesKeyHeader);
+            $decrypted = $this->encryptService->decryptFile($request, $aesKeyHeader);
             $data = json_decode($decrypted, true);
 
             // Validación
@@ -110,7 +110,6 @@ class MedicationsRequestController extends Controller
 
             //Encripto los datos
             $responseIv = random_bytes(12);
-            $aesKeyHeader = $request->header('X-AES-Key');
             $key = base64_decode($aesKeyHeader);
 
             $ciphertextWithTag = $this->encryptService->encrypt($requestsData, $key, $responseIv);
