@@ -68,12 +68,12 @@ class SynchronizationController extends Controller
     public function updatePersonFromIntranet(Request $request)
     {
         try {
-            
+
             $validated = $request->validate([
                 'ciphertext' => 'required|string',
                 'iv' => 'required|string',
             ]);
-            
+
 
             $data = $this->decryptFromAgenda(
                 $validated['ciphertext'],
@@ -122,7 +122,7 @@ class SynchronizationController extends Controller
             if (!isset($data['id'])) {
                 return response()->json(['error' => 'Falta el ID de la solicitud'], 400);
             }
-            
+
             $requestModel = $this->medicationRequestService->getRequestByIdWrite($data['id']);
             if (!$requestModel) {
                 return response()->json(['error' => 'Solicitud no encontrada'], 404);
@@ -171,11 +171,12 @@ class SynchronizationController extends Controller
 
             $user = $this->userService->getByDniWrite($data['dni']);
 
-            if (!$user) {
-                return response()->json(['error' => 'Usuario no encontrado'], 404);
+            if ($user) {
+                $user->activo = 0;
+                $user->save();
             }
-            $user->activo = 0;
-            $user->save();
+            return response()->json(['success' => 'Empleado desactivado correctamente'], 200);
+
 
         } catch (Exception $e) {
             Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error updating the person and user from Intranet: ' . $e->getMessage());
