@@ -18,6 +18,8 @@ Route::middleware(['force.cors'])->group(function () {
 });
 Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/loginApi', [CryptoController::class, 'loginApi']);
+    Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
+    Route::post('/sendMailResetPassword', [AuthController::class, 'sendMailResetPassword']);
 
 });
 
@@ -25,12 +27,11 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
 
 Route::middleware(['aes.key', 'jwt', 'force.cors'])->group(function () {
 
-    Route::post('/buscarPersona', [PersonaController::class, 'buscar']);
+    
     Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
     Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);
     Route::post('/createUser', [UserController::class, 'createUser']);
     Route::post('/generateNewVerificationEmail', [AuthController::class, 'generateNewVerificationEmail']);
-    Route::post('/sendMailResetPassword', [AuthController::class, 'sendMailResetPassword']);
     Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
     Route::post('/cleanTokens', [AuthController::class, 'cleanTokens']);
     Route::post('/medicalCertificate', [MedicalCertificateController::class, 'store']);

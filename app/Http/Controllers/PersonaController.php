@@ -41,7 +41,8 @@ class PersonaController extends Controller
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
 
-            $aesKeyBase64 = $request->session()->get('aes_key');
+            $aesKeyBase64 = $request->header('X-AES-Key');
+           
             if (!$aesKeyBase64) {
                 return response()->json(['message' => 'Clave AES no encontrada en la sesión'], 400);
             }
