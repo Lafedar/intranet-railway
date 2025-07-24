@@ -156,7 +156,7 @@ class CryptoController extends Controller
                 );
 
         } catch (Exception $e) {
-            Log::error('Error en loginApi: ' . $e->getMessage());
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error in logging: ' . $e->getMessage());
             return response()->json(['error' => 'Error en el login'], 500);
         }
     }
@@ -164,7 +164,7 @@ class CryptoController extends Controller
     public function refreshToken(Request $request)
     {
         try {
-        
+
             $refreshToken = $request->cookie('refresh_token');
 
             if (!$refreshToken) {
@@ -177,14 +177,14 @@ class CryptoController extends Controller
             if ($decoded->exp < time()) {
                 return response()->json(['error' => 'Refresh token expired'], 401);
             }
-            
+
             // Obtener usuario
             $userId = $decoded->sub;
             $user = User::find($userId);
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
             }
-            
+
 
             // Generar nuevo Access Token
             $accessTokenPayload = [
@@ -212,8 +212,8 @@ class CryptoController extends Controller
                 );
 
         } catch (Exception $e) {
-            Log::error('Error al refrescar token: ' . $e->getMessage());
-            return response()->json(['error' => 'Token inválido'], 401);
+            Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error refreshing token: ' . $e->getMessage());
+            return response()->json(['error' => 'Error refrescando el token'], 500);
         }
     }
 

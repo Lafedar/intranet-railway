@@ -64,9 +64,10 @@ class SynchronizationService
             $person->usuario = $user->id;
             $person->save();
 
+            $responseKey = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($this->urlGetKey);
 
-
-            $responseKey = Http::timeout(30)->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -91,10 +92,13 @@ class SynchronizationService
                 return false;
             }
             $urlSave = $this->baseUrl . $this->endpoints['save_user'];
-            $responseSave = Http::timeout(30)->post($urlSave, [
-                'ciphertext' => $encrypted['ciphertext'],
-                'iv' => $encrypted['iv'],
-            ]);
+            $responseSave = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($urlSave, [
+                        'ciphertext' => $encrypted['ciphertext'],
+                        'iv' => $encrypted['iv'],
+                    ]);
+
 
             if ($responseSave->successful() && $this->updatePersonWithAgenda($person->toArray())) {
                 DB::connection('mysql_write')->commit();
