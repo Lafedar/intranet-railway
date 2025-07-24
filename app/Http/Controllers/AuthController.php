@@ -171,8 +171,8 @@ class AuthController extends Controller
     {
         try {
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
-
-            $decrypted = $this->encryptService->decrypt($request);
+            $aesKeyBase64 = $request->header('X-AES-Key');
+            $decrypted = $this->encryptService->decryptFile($request, $aesKeyBase64);
             $data = json_decode($decrypted, true);
 
             $dni = $data['data']['dni'];
@@ -204,7 +204,7 @@ class AuthController extends Controller
                     } else {
                         return response()->json(['message' => 'El usuario no está activo'], 400);
                     }
-                }else{
+                } else {
                     return response()->json(['message' => 'La persona no tiene usuario existente'], 400);
                 }
 
