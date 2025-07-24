@@ -22,20 +22,17 @@ Route::middleware(['aes.key', 'force.cors'])->group(function () {
     Route::post('/sendMailResetPassword', [AuthController::class, 'sendMailResetPassword']);
     Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
     Route::post('/cleanTokens', [AuthController::class, 'cleanTokens']);
+    Route::post('/createUser', [UserController::class, 'createUser']);
 
 });
 
 
 
 Route::middleware(['aes.key', 'jwt', 'force.cors'])->group(function () {
-
-    
     Route::post('/medications', [MedicationsRequestController::class, 'saveNewMedicationRequest']);
     Route::post('/medicationsRequests', [MedicationsRequestController::class, 'getAllMedicationRequestAndItemsByUserDni']);
-    Route::post('/createUser', [UserController::class, 'createUser']);
     Route::post('/generateNewVerificationEmail', [AuthController::class, 'generateNewVerificationEmail']);
     Route::post('/medicalCertificate', [MedicalCertificateController::class, 'store']);
-
 
     // CORS preflight solo para estas rutas
     Route::options('/{any}', function () {

@@ -26,8 +26,9 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         try {
+            $aesKeyBase64 = $request->header('X-AES-Key');
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
-            $decrypted = $this->encryptService->decrypt($request);
+            $decrypted = $this->encryptService->decryptFile($request, $aesKeyBase64);
             $data = json_decode($decrypted, true);
 
             if (!isset($data['data']['email'])) {
