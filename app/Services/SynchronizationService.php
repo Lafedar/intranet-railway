@@ -121,7 +121,10 @@ class SynchronizationService
     public function updatePersonWithAgenda(array $persona)
     {
         try {
-            $responseKey = Http::timeout(30)->post($this->urlGetKey);
+            $responseKey = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($this->urlGetKey);
+
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -145,10 +148,12 @@ class SynchronizationService
                 return false;
             }
             $url = $this->baseUrl . $this->endpoints['update_person'];
-            $response = Http::timeout(30)->post($url, [
-                'ciphertext' => $encrypted['ciphertext'],
-                'iv' => $encrypted['iv'],
-            ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($url, [
+                        'ciphertext' => $encrypted['ciphertext'],
+                        'iv' => $encrypted['iv'],
+                    ]);
 
             if ($response->successful()) {
                 return true;
