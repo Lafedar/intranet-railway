@@ -82,6 +82,7 @@ class CryptoController extends Controller
             $flag = false;
             $respuesta = null;
             $refreshToken = null;
+            $accessToken = null;
 
             $registerUser = $this->userService->validateRegisterUser($credentials['usuario'], $credentials['password']);
             if (is_object($registerUser) && $registerUser->email_verified_at == 0) {
