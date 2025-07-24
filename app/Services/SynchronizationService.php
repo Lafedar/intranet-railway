@@ -99,7 +99,8 @@ class SynchronizationService
                         'iv' => $encrypted['iv'],
                     ]);
 
-
+            Log::info('Response Save: ' . $responseSave->body());
+            Log::info('Update person: ' . $this->updatePersonWithAgenda($person->toArray()));
             if ($responseSave->successful() && $this->updatePersonWithAgenda($person->toArray())) {
                 DB::connection('mysql_write')->commit();
                 return true;
