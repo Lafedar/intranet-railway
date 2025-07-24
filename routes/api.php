@@ -43,9 +43,11 @@ Route::middleware(['aes.key', 'jwt', 'force.cors'])->group(function () {
 
 
 //RUTAS PARA SINCRONIZAR DESDE INTRANET
-Route::post('/get-key-api-extranet', [SynchronizationController::class, 'getKey']);
-Route::post('/createPerson', [SynchronizationController::class, 'createPersonFromIntranet']);
-Route::post('/updatePerson', [SynchronizationController::class, 'updatePersonFromIntranet']);
-Route::post('/updateMedicationRequest', [SynchronizationController::class, 'updateMedicationRequestFromIntranet']);
-Route::post('/destroyPerson', [SynchronizationController::class, 'destroyPerson']);
-Route::post('/syncPassword', [SynchronizationController::class, 'syncPasswordFromIntranet']);
+Route::middleware(['force.cors'])->group(function () {
+    Route::post('/get-key-api-extranet', [SynchronizationController::class, 'getKey']);
+    Route::post('/createPerson', [SynchronizationController::class, 'createPersonFromIntranet']);
+    Route::post('/updatePerson', [SynchronizationController::class, 'updatePersonFromIntranet']);
+    Route::post('/updateMedicationRequest', [SynchronizationController::class, 'updateMedicationRequestFromIntranet']);
+    Route::post('/destroyPerson', [SynchronizationController::class, 'destroyPerson']);
+    Route::post('/syncPassword', [SynchronizationController::class, 'syncPasswordFromIntranet']);
+});
