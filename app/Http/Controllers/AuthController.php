@@ -224,7 +224,8 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         try {
-            $decrypted = $this->encryptService->decrypt($request);
+            $aesKeyBase64 = $request->header('X-AES-Key');
+            $decrypted = $this->encryptService->decryptFile($request, $aesKeyBase64);
             $data = json_decode($decrypted, true);
 
             $dni = $data['data']['dni'];
