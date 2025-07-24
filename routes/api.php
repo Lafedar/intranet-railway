@@ -43,7 +43,7 @@ Route::middleware(['aes.key', 'jwt', 'force.cors'])->group(function () {
 
 
 //RUTAS PARA SINCRONIZAR DESDE INTRANET
-Route::middleware(['force.cors'])->group(function () {
+Route::middleware(['verify.service.api.token', 'force.cors'])->group(function () {
     Route::post('/get-key-api-extranet', [SynchronizationController::class, 'getKey']);
     Route::post('/createPerson', [SynchronizationController::class, 'createPersonFromIntranet']);
     Route::post('/updatePerson', [SynchronizationController::class, 'updatePersonFromIntranet']);

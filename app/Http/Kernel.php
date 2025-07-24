@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'aes.key' => \App\Http\Middleware\EnsureAesKeyIsSet::class,
         'force.cors' => \App\Http\Middleware\ForceCors::class,
         'jwt' => \App\Http\Middleware\JwtAuth::class,
+        'verify.service.api.token' => \App\Http\Middleware\VerifyServiceApiToken::class,
     ];
 
     /**
