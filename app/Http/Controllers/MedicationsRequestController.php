@@ -45,7 +45,7 @@ class MedicationsRequestController extends Controller
         try {
             $imagePath2 = config('images.static.path') . '/firma30aniversario.png';
             $aesKeyHeader = $request->header('X-AES-Key');
-            $decrypted = $this->encryptService->decrypt($request, $aesKeyHeader);
+            $decrypted = $this->encryptService->decryptFile($request, $aesKeyHeader);
             if (!$decrypted) {
                 return response()->json(['message' => 'Error al desencriptar los datos'], 400);
             }

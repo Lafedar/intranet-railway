@@ -79,7 +79,7 @@ class EncryptService
         }
     }
 
-    public function decryptFile(array $payload, $aesKeyHeader): ?string
+    public function decryptFile($payload, $aesKeyHeader): ?string
     {
         try {
             $ciphertextBase64 = $payload['ciphertext'] ?? null;
