@@ -175,7 +175,9 @@ class SynchronizationService
             DB::connection('mysql_write')->beginTransaction();
             $user = $this->userService->resetPassword($dni, $password);
 
-            $responseKey = Http::timeout(30)->post($this->urlGetKey);
+            $responseKey = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -198,10 +200,12 @@ class SynchronizationService
                 return false;
             }
             $url = $this->baseUrl . $this->endpoints['update_user'];
-            $response = Http::timeout(30)->post($url, [
-                'ciphertext' => $encrypted['ciphertext'],
-                'iv' => $encrypted['iv'],
-            ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($url, [
+                        'ciphertext' => $encrypted['ciphertext'],
+                        'iv' => $encrypted['iv'],
+                    ]);
 
             if ($response->successful()) {
                 DB::connection('mysql_write')->commit();
@@ -227,7 +231,9 @@ class SynchronizationService
                 Log::error('Error in class: ' . __CLASS__ . ' - Method: ' . __FUNCTION__ . ' - Error saving a new medication request to Intranet');
                 return false;
             }
-            $responseKey = Http::timeout(30)->post($this->urlGetKey);
+            $responseKey = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return false;
@@ -250,10 +256,12 @@ class SynchronizationService
                 return false;
             }
             $url = $this->baseUrl . $this->endpoints['save_medication'];
-            $response = Http::timeout(30)->post($url, [
-                'ciphertext' => $encrypted['ciphertext'],
-                'iv' => $encrypted['iv'],
-            ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($url, [
+                        'ciphertext' => $encrypted['ciphertext'],
+                        'iv' => $encrypted['iv'],
+                    ]);
 
             if ($response->successful()) {
                 DB::connection('mysql_write')->commit();
@@ -281,7 +289,9 @@ class SynchronizationService
                 $fileName
             );
 
-            $responseKey = Http::timeout(30)->post($this->urlGetKey);
+            $responseKey = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($this->urlGetKey);
             if (!$responseKey->successful()) {
                 Log::error('No se pudo obtener la clave efímera: ' . $responseKey->body());
                 return null;
@@ -306,10 +316,12 @@ class SynchronizationService
                 return null;
             }
             $url = $this->baseUrl . $this->endpoints['save_certificate'];
-            $response = Http::timeout(30)->post($url, [
-                'ciphertext' => $encrypted['ciphertext'],
-                'iv' => $encrypted['iv'],
-            ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('EMPRESA_API_TOKEN'),
+            ])->post($url, [
+                        'ciphertext' => $encrypted['ciphertext'],
+                        'iv' => $encrypted['iv'],
+                    ]);
 
             if ($response->successful()) {
                 DB::connection('mysql_write')->commit();
