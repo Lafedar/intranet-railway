@@ -28,7 +28,7 @@ class EncryptService
 
             $ciphertext = base64_decode($ciphertextBase64);
             $iv = base64_decode($ivBase64);
-            $aesKey = base64_decode($aesKeyHeader);
+            $aesKey = $aesKeyHeader;
 
             if ($ciphertext === false || $iv === false || $aesKey === false) {
                 Log::error('Error al decodificar base64 de ciphertext, iv o aesKey');
